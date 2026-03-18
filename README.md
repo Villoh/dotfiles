@@ -102,15 +102,6 @@ The setup script creates these directory junctions/symlinks, pointing directly t
 | `%APPDATA%\Vencord\settings` | `dot_config/vesktop/settings` |
 | `~/scoop/persist/btop/btop.conf` | `dot_config/btop/btop.conf` |
 
-## Encrypted files
-
-| File | Target |
-|------|--------|
-| `dot_config/git/encrypted_local.asc` | `~/.config/git/local` — name, email, signing key |
-| `AppData/Roaming/gnupg/encrypted_sshcontrol.asc` | `%APPDATA%\gnupg\sshcontrol` |
-
-GPG recipient key: `2E5BD225E500AB50`
-
 ## Package managers
 
 ### Windows (`packages/windows/`)
