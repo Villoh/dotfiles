@@ -9,12 +9,12 @@
     <img src="https://img.shields.io/badge/theme-Catppuccin_Mocha-f5c2e7?style=flat-square&logoColor=1e1e2e"/>
     <img src="https://img.shields.io/badge/license-MIT-fab387?style=flat-square&logoColor=1e1e2e"/>
   </p>
-  <a href="#preview"><kbd>Preview</kbd></a>&ensp;&ensp;
-  <a href="#fresh-install"><kbd>Install</kbd></a>&ensp;&ensp;
-  <a href="#extra-optional-setup-windows"><kbd>Extras</kbd></a>&ensp;&ensp;
-  <a href="#overview"><kbd>Features</kbd></a>&ensp;&ensp;
-  <a href="#credits"><kbd>Credits</kbd></a>&ensp;&ensp;
-  <a href="#author"><kbd>Author</kbd></a>&ensp;&ensp;
+  <a href="#preview"><kbd>&nbsp;&nbsp;Preview&nbsp;&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#fresh-install"><kbd>&nbsp;&nbsp;Install&nbsp;&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#extra-optional-setup-windows"><kbd>&nbsp;&nbsp;Extras&nbsp;&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#overview"><kbd>&nbsp;&nbsp;Features&nbsp;&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#credits"><kbd>&nbsp;&nbsp;Credits&nbsp;&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#author"><kbd>&nbsp;&nbsp;Author&nbsp;&nbsp;</kbd></a>&ensp;&ensp;
 </div>
 
 ---
