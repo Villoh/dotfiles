@@ -2,7 +2,7 @@
 # pre-hyde-install.sh - Preparar dotfiles antes de HyDE install
 
 MODULES=("$@")
-DOTFILES_DIR="$HOME/.dotfiles"
+DOTFILES_DIR="$(chezmoi source-path)"
 
 if [ ${#MODULES[@]} -eq 0 ]; then
     echo "Usage: $0 <module1> <module2> ..."

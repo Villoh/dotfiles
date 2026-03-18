@@ -2,7 +2,7 @@
 # post-hyde-install.sh - Restaurar dotfiles después de HyDE install
 
 MODULES=("$@")
-DOTFILES_DIR="$HOME/.dotfiles"
+DOTFILES_DIR="$(chezmoi source-path)"
 
 if [ ${#MODULES[@]} -eq 0 ]; then
     echo "Usage: $0 <module1> <module2> ..."
@@ -60,4 +60,4 @@ done
 echo ""
 echo "==> All modules restored!"
 echo "==> Don't forget to commit changes:"
-echo "    cd ~/.dotfiles && git add -A && git commit -m 'Update configs from HyDE'"
+echo "    dotfiles-sync"

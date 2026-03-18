@@ -6,7 +6,7 @@
 set -e
 
 # Ubicaciones por defecto
-DEFAULT_DIR="$HOME/.dotfiles/backup-packages"
+DEFAULT_DIR="$(chezmoi source-path)/packages/linux"
 DEFAULT_PACMAN="$DEFAULT_DIR/pacman.txt"
 DEFAULT_AUR="$DEFAULT_DIR/aur.txt"
 DEFAULT_FLATPAK="$DEFAULT_DIR/flatpak.txt"
@@ -68,7 +68,7 @@ USE_CUSTOM=$(gum choose \
     --selected.foreground="75" \
     --header="¿Usar ubicaciones por defecto?" \
     --header.foreground="245" \
-    "✓ Sí, usar ~/.dotfiles/backup-packages/" \
+    "✓ Sí, usar chezmoi/packages/linux/" \
     "✎ No, quiero elegir otras ubicaciones")
 
 echo ""

@@ -4,7 +4,7 @@
 
 set -e
 
-DOTFILES_DIR="$HOME/.dotfiles"
+DOTFILES_DIR="$(chezmoi source-path)"
 REMOTE="origin"
 BRANCH="main"
 
@@ -20,6 +20,10 @@ msg() { echo -e "${BLUE}==>${NC} $1"; }
 success() { echo -e "${GREEN}✓${NC} $1"; }
 error() { echo -e "${RED}✗${NC} $1" >&2; exit 1; }
 warn() { echo -e "${YELLOW}!${NC} $1"; }
+
+# Sincronizar home -> source (no-op en symlink mode, útil si se cambia a copy mode)
+msg "Sincronizando home con source..."
+chezmoi re-add 2>/dev/null || true
 
 # Verificar que estamos en el directorio correcto
 cd "$DOTFILES_DIR" || error "No se encuentra $DOTFILES_DIR"
@@ -66,9 +70,6 @@ if [[ -z $(git diff --cached --name-only) ]]; then
     msg "Añadiendo cambios..."
     git add -u
 fi
-
-# Reemplazar desde línea ~70 hasta el commit
-# ELIMINAR toda la función generate_commit_msg() y reemplazar con:
 
 # Generar mensaje simple y claro
 COMMIT_MSG="Auto sync: dotfiles - $(date +'%Y-%m-%d %H:%M')"
