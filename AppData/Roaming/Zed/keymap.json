@@ -1,0 +1,8 @@
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-shift-f1": ["task::Spawn", {"task_name": "Cheatsheet"}]
+    }
+  }
+]
