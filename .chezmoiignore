@@ -6,6 +6,9 @@ scoop/
 dot_glzr/
 {{ end -}}
 
+# Reference only — not applied to home
+packages/**
+
 # Never track nested git repos or runtime/cache data
 **/.git/**
 **/Cache/**
@@ -15,6 +18,10 @@ dot_glzr/
 **/log/**
 **/*.log
 AppData/Roaming/warp/**/previews/**
+dot_config/micro/backups/**
+dot_config/micro/buffers/**
+AppData/Roaming/warp/Warp/data/themes/dot_git/**
 AppData/Roaming/FlowLauncher/Cache/**
 AppData/Roaming/FlowLauncher/Settings/Cache/**
+AppData/Roaming/FlowLauncher/Settings/Plugins/**
 
