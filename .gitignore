@@ -15,3 +15,7 @@ AppData/Roaming/FlowLauncher/Settings/Plugins/
 # Micro editor state
 dot_config/micro/backups/
 dot_config/micro/buffers/
+
+# Yazi plugins/flavors — managed via ya pack install
+dot_config/yazi/plugins/
+dot_config/yazi/flavors/
