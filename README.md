@@ -3,11 +3,10 @@
   <h1>dotfiles — <a href="https://catppuccin.com">catppuccin</a> edition</h1>
   <p>Personal dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
   <p>
-    <img src="https://img.shields.io/badge/Windows-AtlasOS-89b4fa?style=flat-square&logo=windows11&logoColor=1e1e2e"/>
-    <img src="https://img.shields.io/badge/Linux-CachyOS-a6e3a1?style=flat-square&logo=linux&logoColor=1e1e2e"/>
-    <img src="https://img.shields.io/badge/chezmoi-managed-cba6f7?style=flat-square&logoColor=1e1e2e"/>
-    <img src="https://img.shields.io/badge/theme-Catppuccin_Mocha-f5c2e7?style=flat-square&logoColor=1e1e2e"/>
-    <img src="https://img.shields.io/badge/license-MIT-fab387?style=flat-square&logoColor=1e1e2e"/>
+    <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=EBA0AC&label=Last%20Commit&labelColor=302D41&color=EBA0AC"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles"><img src="https://img.shields.io/github/repo-size/Villoh/dotfiles?style=for-the-badge&logo=files&logoColor=F9E2AF&label=Size&labelColor=302D41&color=F9E2AF" alt="Repo Size"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Villoh/dotfiles?style=for-the-badge&logoColor=CBA6F7&labelColor=302D41&color=CBA6F7" alt="License"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles/stargazers"><img alt="Stargazers" src="https://img.shields.io/github/stars/Villoh/dotfiles?style=for-the-badge&logo=starship&logoColor=B7BDF8&labelColor=302D41&color=B7BDF8"/></a>&nbsp;&nbsp;
   </p>
   <a href="#preview"><kbd><br>&nbsp;&nbsp;Preview&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
   <a href="#fresh-install"><kbd><br>&nbsp;&nbsp;Install&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
@@ -18,6 +17,9 @@
 </div>
 
 ---
+
+> [!WARNING]
+> This repo is under active development and may contain bugs or breaking changes at any time. Use at your own risk.
 
 ## Preview
 
