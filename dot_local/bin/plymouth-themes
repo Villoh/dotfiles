@@ -14,7 +14,7 @@ MAGENTA='\033[0;35m'
 NC='\033[0m'
 
 # Rutas
-THEMES_BASE="$HOME/.dotfiles/plymouth/themes/plymouth-themes"
+THEMES_BASE="$(chezmoi source-path)/other_config/plymouth/themes"
 SYSTEM_THEMES="/usr/share/plymouth/themes"
 REGISTRY_FILE="$HOME/.local/share/plymouth-themes/registry.json"
 
