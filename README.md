@@ -8,12 +8,12 @@
     <a href="https://github.com/Villoh/dotfiles/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Villoh/dotfiles?style=for-the-badge&logoColor=CBA6F7&labelColor=302D41&color=CBA6F7" alt="License"/></a>&nbsp;&nbsp;
     <a href="https://github.com/Villoh/dotfiles/stargazers"><img alt="Stargazers" src="https://img.shields.io/github/stars/Villoh/dotfiles?style=for-the-badge&logo=starship&logoColor=B7BDF8&labelColor=302D41&color=B7BDF8"/></a>&nbsp;&nbsp;
   </p>
-  <a href="#preview"><kbd><br>&nbsp;&nbsp;Preview&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
-  <a href="#fresh-install"><kbd><br>&nbsp;&nbsp;Install&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
-  <a href="#extra-optional-setup-windows"><kbd><br>&nbsp;&nbsp;Extras&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
-  <a href="#overview"><kbd><br>&nbsp;&nbsp;Features&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
-  <a href="#credits"><kbd><br>&nbsp;&nbsp;Credits&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
-  <a href="#author"><kbd><br>&nbsp;&nbsp;Author&nbsp;&nbsp;<br></kbd></a>&ensp;&ensp;
+  <a href="#preview"><kbd>&nbsp;<br>&nbsp;Preview&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#fresh-install"><kbd>&nbsp;<br>&nbsp;Install&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#extra-optional-setup-windows"><kbd>&nbsp;<br>&nbsp;Extras&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#overview"><kbd>&nbsp;<br>&nbsp;Features&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#credits"><kbd>&nbsp;<br>&nbsp;Credits&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
+  <a href="#author"><kbd>&nbsp;<br>&nbsp;Author&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
 </div>
 
 ---
