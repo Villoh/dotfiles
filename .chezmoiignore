@@ -6,6 +6,12 @@ scoop/
 dot_glzr/
 {{ end -}}
 
+{{ if eq .chezmoi.os "windows" -}}
+# Linux-only paths — ignore on Windows
+dot_config/btop/
+{{ end -}}
+
+
 # Reference only — not applied to home
 packages/**
 program_files/**
