@@ -1,27 +1,27 @@
 {{ if eq .chezmoi.os "windows" -}}
-$config = "$env:USERPROFILE\.config"
+$source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 
-# btop: scoop/persist/btop/btop.conf -> ~/.config/btop/btop.conf
-$src = "$config\btop\btop.conf"
+# btop: scoop/persist/btop/btop.conf -> chezmoi source btop/btop.conf
+$src = "$source\dot_config\btop\btop.conf"
 $dst = "$env:USERPROFILE\scoop\persist\btop\btop.conf"
 if (Test-Path $dst) { Remove-Item $dst -Force }
 cmd /c mklink "$dst" "$src"
 
-# zed: AppData/Roaming/Zed -> ~/.config/zed  (junction)
-$src = "$config\zed"
+# zed: AppData/Roaming/Zed -> chezmoi source zed  (junction)
+$src = "$source\dot_config\zed"
 $dst = "$env:APPDATA\Zed"
 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
 cmd /c mklink /J "$dst" "$src"
 
-# yazi: AppData/Roaming/yazi/config -> ~/.config/yazi  (junction)
-$src = "$config\yazi"
+# yazi: AppData/Roaming/yazi/config -> chezmoi source yazi  (junction)
+$src = "$source\dot_config\yazi"
 $dst = "$env:APPDATA\yazi\config"
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\yazi" | Out-Null
 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
 cmd /c mklink /J "$dst" "$src"
 
 # vencord: AppData/Roaming/Vencord/settings -> chezmoi source vesktop/settings  (junction)
-$src = ("{{ .chezmoi.sourceDir }}\dot_config\vesktop\settings").Replace('/', '\')
+$src = "$source\dot_config\vesktop\settings"
 $dst = "$env:APPDATA\Vencord\settings"
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\Vencord" | Out-Null
 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
