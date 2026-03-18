@@ -1,0 +1,15 @@
+{{ if eq .chezmoi.os "windows" -}}
+$config = "$env:USERPROFILE\.config"
+
+# btop: scoop/persist/btop/btop.conf -> ~/.config/btop/btop.conf
+$src = "$config\btop\btop.conf"
+$dst = "$env:USERPROFILE\scoop\persist\btop\btop.conf"
+if (Test-Path $dst) { Remove-Item $dst -Force }
+cmd /c mklink "$dst" "$src"
+
+# zed: AppData/Roaming/Zed -> ~/.config/zed  (junction)
+$src = "$config\zed"
+$dst = "$env:APPDATA\Zed"
+if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
+cmd /c mklink /J "$dst" "$src"
+{{ end -}}
