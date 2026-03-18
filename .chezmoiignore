@@ -13,6 +13,7 @@ dot_glzr/
 **/Logs/**
 **/logs/**
 **/log/**
+**/*.log
 AppData/Roaming/warp/**/previews/**
 AppData/Roaming/FlowLauncher/Cache/**
 AppData/Roaming/FlowLauncher/Settings/Cache/**
