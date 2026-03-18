@@ -2,6 +2,10 @@
 
 Personal dotfiles for **Windows** ([AtlasOS](https://atlasos.net/)) and **Linux** ([CachyOS](https://cachyos.org/) / Hyprland), managed with [chezmoi](https://www.chezmoi.io/).
 
+### Windows
+
+<img src=".github/assets/windows.png" width="49%"/> <img src=".github/assets/terminal.png" width="49%"/>
+
 ## Overview
 
 - **Manager:** chezmoi with `mode = "symlink"` — every managed file is a symlink to the chezmoi source, so edits take effect immediately without re-adding
