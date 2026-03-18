@@ -1,0 +1,16 @@
+# State / runtime — not config
+**/*.log
+**/Cache/
+**/cache/
+**/Logs/
+**/logs/
+
+# Nested git repos (stored as dot_git by chezmoi)
+**/dot_git/
+
+# Plugin dirs that reinstall themselves
+AppData/Roaming/FlowLauncher/Settings/Plugins/
+
+# Micro editor state
+dot_config/micro/backups/
+dot_config/micro/buffers/
