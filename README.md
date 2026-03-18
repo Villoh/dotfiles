@@ -4,7 +4,8 @@ Personal dotfiles for **Windows** ([AtlasOS](https://atlasos.net/)) and **Linux*
 
 ### Windows
 
-<img src=".github/assets/windows.png" width="49%"/> <img src=".github/assets/terminal.png" width="49%"/>
+![desktop](.github/assets/desktop.png)
+![terminal](.github/assets/terminal.png)
 
 ## Overview
 
