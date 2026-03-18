@@ -1,1 +1,4 @@
-{}
+{
+    "Alt-/": "lua:comment.comment",
+    "Ctrl-/": "lua:comment.comment"
+}
