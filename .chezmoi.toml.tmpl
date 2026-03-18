@@ -1,5 +1,6 @@
 {{- $isWindows := eq .chezmoi.os "windows" -}}
 encryption = "gpg"
+mode = "symlink"
 
 [gpg]
     recipient = "2E5BD225E500AB50"
