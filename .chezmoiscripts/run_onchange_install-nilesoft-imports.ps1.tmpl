@@ -6,11 +6,13 @@
 $src = "{{ .chezmoi.sourceDir }}/program_files/nilesoft/imports"
 $dst = "C:\Program Files\Nilesoft Shell\imports"
 
-$script = @"
-Get-ChildItem '$src\*.nss' | ForEach-Object {
-    Copy-Item `$_.FullName -Destination '$dst\`$(`$_.Name)' -Force
-}
-Write-Host 'Nilesoft Shell imports updated.'
-"@
+$tmpScript = "$env:TEMP\nilesoft-install.ps1"
 
-Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-Command", $script -Wait
+@"
+Get-ChildItem '$src\*.nss' | ForEach-Object {
+    Copy-Item `$_.FullName -Destination "$dst\`$(`$_.Name)" -Force
+}
+"@ | Set-Content $tmpScript
+
+Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+Remove-Item $tmpScript -ErrorAction SilentlyContinue
