@@ -1,11 +1,27 @@
-# dotfiles
+<div align="center">
+  <img src=".github/assets/catppuccin-logo.png" width="100"/>
+  <h1>dotfiles — catppuccin edition</h1>
+  <p>Personal dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / Hyprland), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
+  <a href="#preview"><kbd> <br> Preview <br> </kbd></a>&ensp;&ensp;
+  <a href="#fresh-install"><kbd> <br> Install <br> </kbd></a>&ensp;&ensp;
+  <a href="#extra-optional-setup-windows"><kbd> <br> Extras <br> </kbd></a>&ensp;&ensp;
+  <a href="#overview"><kbd> <br> Features <br> </kbd></a>&ensp;&ensp;
+  <a href="#credits"><kbd> <br> Credits <br> </kbd></a>&ensp;&ensp;
+  <a href="#author"><kbd> <br> Author <br> </kbd></a>&ensp;&ensp;
+</div>
 
-Personal dotfiles for **Windows** ([AtlasOS](https://atlasos.net/)) and **Linux** ([CachyOS](https://cachyos.org/) / Hyprland), managed with [chezmoi](https://www.chezmoi.io/).
+---
+
+## Preview
 
 ### Windows
 
 ![desktop](.github/assets/desktop.png)
 ![terminal](.github/assets/terminal.png)
+
+### Linux
+
+> Coming soon
 
 ## Overview
 
