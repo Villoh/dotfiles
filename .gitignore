@@ -1,4 +1,5 @@
 # State / runtime — not config
+**/*.tmp
 **/*.log
 **/Cache/
 **/cache/
