@@ -32,6 +32,12 @@ Personal dotfiles for Windows ([AtlasOS](https://atlasos.net/)), managed with [c
 chezmoi init --apply github.com/Villoh/dotfiles
 ```
 
+> **Without the GPG private key**, skip encrypted files (`~/.gitconfig.local`, `gnupg/sshcontrol`):
+> ```powershell
+> chezmoi init github.com/Villoh/dotfiles
+> chezmoi apply --exclude=encrypted
+> ```
+
 This will:
 1. Clone the repo to `~/.local/share/chezmoi`
 2. Generate `~/.config/chezmoi/chezmoi.toml` from the template
