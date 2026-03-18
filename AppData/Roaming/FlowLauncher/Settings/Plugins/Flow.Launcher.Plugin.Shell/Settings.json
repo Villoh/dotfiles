@@ -1,0 +1,14 @@
+{
+  "Shell": 0,
+  "ReplaceWinR": false,
+  "CloseShellAfterPress": false,
+  "LeaveShellOpen": false,
+  "RunAsAdministrator": true,
+  "UseWindowsTerminal": false,
+  "ShowOnlyMostUsedCMDs": false,
+  "ShowOnlyMostUsedCMDsNumber": 5,
+  "CommandHistory": {
+    "ping 1.1.1.1": 1,
+    "wez": 1
+  }
+}

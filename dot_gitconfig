@@ -1,0 +1,692 @@
+[include]
+    path = ~/.gitconfig.local
+[init]
+	defaultBranch = main
+[core]
+	editor = zed
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+	longpaths = true
+[pull]
+	rebase = false
+[commit]
+	gpgsign = true
+[gpg]
+	program = C:/Program Files/GnuPG/bin/gpg.exe
+[tag]
+  gpgsign = true
+[safe]
+	directory = /home/mikel/Development/Beyond Humane/Repositories/sgt-portal
+[alias]
+  # ============================================================================
+  # SPEED - Most used commands should be short
+  # ============================================================================
+  s = status -sb
+  st = status -sb
+  a = add
+  aa = add -A
+  ap = add -p
+  gap = add -A -p
+
+  c = commit --verbose
+  ca = commit -a --verbose
+  cm = commit -m
+  cam = commit -a -m
+  m = commit --amend --verbose
+  amend = commit --amend --no-edit
+  can = commit --amend --no-edit
+  quick-amend = commit --amend -C HEAD
+
+  co = checkout
+  cob = checkout -b
+  new = checkout -b
+
+  br = branch -v
+  gbr = branch -v
+  bra = branch -a
+  brd = branch -d
+  brD = branch -D
+
+  d = diff -M
+  df = diff -M
+  dw = diff --color-words
+  dd = diff -M --color-words="."
+  dt = diff --word-diff-regex=.
+  ds = diff --stat
+  dc = diff --cached -M
+  dcs = diff --cached --stat
+  dws = diff --color-words --staged
+  dts = diff --word-diff-regex=. --staged
+  dcd = diff --cached -M --color-words="."
+  dft = difftool
+  diffst = diff --name-only
+
+  f = fetch
+  gf = fetch
+
+  p = push
+  gp = push
+  pu = push -u origin HEAD
+  pushu = push -u origin HEAD
+  pushf = push --force-with-lease
+
+  up = pull
+  gup = pull
+
+  m = commit --amend --verbose
+  gm = merge --no-ff
+  gmf = merge --ff-only
+
+  rb = rebase
+  grb = rebase -p
+  rba = rebase --abort
+  grba = rebase --abort
+  rbc = rebase --continue
+  grbc = rebase --continue
+  rbi = rebase -i
+  grbi = rebase -i
+
+  r = reset
+  gr = reset
+  rh = reset --hard
+  grh = reset --hard
+  rsh = reset --soft HEAD~
+  grsh = reset --soft HEAD~
+  unc = reset --mixed HEAD~1
+
+  rv = remote -v
+  grv = remote -v
+
+  sh = show
+  gs = show
+  shd = show --color-words="."
+  gsd = show --color-words="."
+
+  sl = stash list
+  gst = stash
+  sp = stash pop
+  gstp = stash pop
+  ss = stash save -u
+
+  ch = cherry-pick
+  gch = cherry-pick
+
+  # ============================================================================
+  # LOGS - Beautiful and useful log formats
+  # ============================================================================
+  l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+  lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+  ll = log --oneline --decorate --graph --all
+  glog = log --date-order --pretty="format:%C(yellow)%h%Cblue%d%Creset %s %C(white) %an, %ar%Creset"
+  gl = log --graph --date-order --pretty="format:%C(yellow)%h%Cblue%d%Creset %s %C(white) %an, %ar%Creset"
+  gla = log --graph --all --date-order --pretty="format:%C(yellow)%h%Cblue%d%Creset %s %C(white) %an, %ar%Creset"
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+  last = log -1 HEAD --stat
+  today = log --since='midnight' --author='$(git config user.name)' --oneline
+  log-me = "!sh -c 'git log --author=\"$(git config user.name)\" $@' -"
+  log-b = "!sh -c 'git log $(git remote-default)..HEAD $@' -"
+  log-n = "!sh -c 'git log origin/$(git remote-default)..HEAD $@' -"
+  log-t = "!sh -c 'git log --tags --simplify-by-decoration $@' -"
+
+  # ============================================================================
+  # BRANCH MANAGEMENT - List, sort, clean
+  # ============================================================================
+  b = "!git for-each-ref --sort='-authordate' --format='%(authordate)%09%(objectname:short)%09%(refname)' refs/heads | sed -e 's-refs/heads/--'"
+  merged = branch --merged
+  unmerged = branch --no-merged
+  dates = "!git for-each-ref --sort=-committerdate --format='%(committerdate:short) %(refname:short)' refs/heads/"
+  track = "!sh -c 'git fetch origin && git checkout --track origin/$1' -"
+
+  # Advanced branch management - shows status, ahead/behind, merged by
+  old = "!f() { \
+    printf \"Fetching and Pruning...\"; \
+    git fetch --prune >/dev/null 2>&1; \
+    printf \"\\r\"; \
+    DEFAULT=$(git remote-default); \
+    CURRENT=$(git symbolic-ref --short HEAD); \
+    MAX_LEN=$(git branch --format='%(refname:short)' | awk '{ print length }' | sort -nr | head -1); \
+    echo '---------------------------- Branches ----------------------------'; \
+    git for-each-ref --sort=-committerdate --format='%(refname:short)%09%(committerdate:relative)%09%(upstream:track)' refs/heads/ \
+      | while IFS=$'\\t' read BRANCH DATE TRACK; \
+    do \
+      AHEAD=$(git rev-list --count origin/$DEFAULT..$BRANCH 2>/dev/null); \
+      BEHIND=$(git rev-list --count $BRANCH..origin/$DEFAULT 2>/dev/null); \
+      [[ \"$TRACK\" == *gone* ]] && MERGED=\"MERGED by $(git log -1 --format=\"%cn\" \"$BRANCH\")\" || MERGED=''; \
+      if [ \"$BRANCH\" = \"$CURRENT\" ]; then STATUS='*'; \
+      elif git worktree list | grep -q \"\\[$BRANCH\\]\"; then STATUS='+'; \
+      else STATUS=' '; fi; \
+      printf \"%s %-*s | %-16s | +%-3s -%-3s | %s\\n\" \"$STATUS\" \"$MAX_LEN\" \"$BRANCH\" \"$DATE\" \"$AHEAD\" \"$BEHIND\" \"$MERGED\"; \
+    done | git column; \
+  }; f"
+
+  # Branch delete: checkout master and delete all merged branches
+  brd-merged = "!sh -c \"git checkout master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d\""
+
+  # Branch delete here: delete all branches merged to current branch
+  brd-here = "!sh -c \"git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d\""
+
+  # ============================================================================
+  # UNDO & RESET - Various ways to undo changes
+  # ============================================================================
+  undo = reset --soft HEAD~1
+  unstage = reset HEAD --
+  nuke = reset --hard HEAD
+  wipe = "!git reset --hard && git clean -fd"
+  wip = "!git add -A && git commit -m 'WIP'"
+  oops = "!git add -A && git commit --amend --no-edit"
+
+  # Quick amend: amend staged changes keeping same commit message
+  quick-amend = commit --amend -C HEAD
+
+  # Forced pull: reset local branch to match remote (DESTRUCTIVE!)
+  pullf = "!sh -c \"git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)\""
+
+  # ============================================================================
+  # SYNC & REMOTE - Fetch, pull, push helpers
+  # ============================================================================
+  sync = "!git fetch --all --prune && git pull"
+
+  remote-default = "!f() { \
+    git rev-parse --abbrev-ref origin/HEAD >/dev/null 2>&1 || git remote set-head origin -a >/dev/null 2>&1; \
+    git rev-parse --abbrev-ref origin/HEAD; \
+  }; f | sed 's|origin/||'"
+
+  remote-set = "!f() { \
+    if git remote get-url $1 >/dev/null 2>&1; then \
+      git remote set-url $@; \
+    else \
+      git remote add $@; \
+    fi; \
+  }; f"
+
+  # ============================================================================
+  # WORKTREES - Multiple working directories
+  # ============================================================================
+  wt = worktree
+  wtl = worktree list
+  wta = worktree add
+  wtr = worktree remove
+
+  # ============================================================================
+  # CONFLICTS - Pre-merge conflict detection
+  # ============================================================================
+  conflict = "!f() { \
+    TO=$1; \
+    TMP=$(mktemp); \
+    git merge-tree $(git merge-base HEAD $TO) HEAD $TO > $TMP; \
+    if grep -q '<<<<<<<' $TMP; then \
+      awk ' \
+        /<<<<<<< / { in_conflict=1; print; next } \
+        />>>>>>> / { print; in_conflict=0; next } \
+        in_conflict { print } \
+        /^=======/ { if (in_conflict) print } \
+        ' $TMP | \
+      sed -e $'s/<<<<<<<.*/\\033[31m&\\033[0m/' \
+          -e $'s/=======.*/\\033[33m&\\033[0m/' \
+          -e $'s/>>>>>>>.*/\\033[32m&\\033[0m/'; \
+      echo \"❌ $(grep -c '^+=======$' \"$TMP\") merge conflicts would occur!\"; \
+    else \
+      echo '✅ No conflicts. Safe to merge.'; \
+    fi; \
+    rm $TMP; \
+  }; f"
+
+  can-merge = "!f() { \
+    TO=$1; \
+    TMP=$(mktemp); \
+    git merge-tree $(git merge-base HEAD $TO) HEAD $TO > $TMP; \
+    if grep -q '<<<<<<<' $TMP; then \
+      echo '❌ Merge conflict would occur!'; \
+      exit 1; \
+    else \
+      echo '✅ No conflicts. Safe to merge.'; \
+    fi; \
+    rm $TMP; \
+  }; f"
+
+  # Short versions
+  cf = conflict
+  cfm = can-merge
+
+  # ============================================================================
+  # SMART WORKFLOW - Intelligent continue/abort
+  # ============================================================================
+  continue = "!f() { \
+    gitdir=$(git rev-parse --git-dir); \
+    if [ -d \"$gitdir/rebase-merge\" ] || [ -d \"$gitdir/rebase-apply\" ]; then \
+      git rebase --continue; \
+    elif [ -f \"$gitdir/MERGE_HEAD\" ]; then \
+      git merge --continue; \
+    elif [ -f \"$gitdir/CHERRY_PICK_HEAD\" ]; then \
+      git cherry-pick --continue; \
+    elif [ -f \"$gitdir/REVERT_HEAD\" ]; then \
+      git revert --continue; \
+    else \
+      echo '✅ Nothing to continue.'; \
+    fi; \
+  }; f"
+
+  abort = "!f() { \
+    gitdir=$(git rev-parse --git-dir); \
+    if [ -d \"$gitdir/rebase-merge\" ] || [ -d \"$gitdir/rebase-apply\" ]; then \
+      git rebase --abort; \
+      echo '✅ Aborted the rebase.'; \
+    elif [ -f \"$gitdir/MERGE_HEAD\" ]; then \
+      git merge --abort; \
+    elif [ -f \"$gitdir/CHERRY_PICK_HEAD\" ]; then \
+      git cherry-pick --abort; \
+    elif git status --porcelain | grep -Eq '^(UU|AA|DD|UD|DU)'; then \
+      read -p 'Unabortable conflicts detected. Reset changes? (Y/n) ' ANSWER; \
+      if [[ \"$ANSWER\" =~ ^[Yy]$ || -z \"$ANSWER\" ]]; then \
+        git reset --hard; \
+        git clean -fd; \
+      else \
+        echo '✅ Operation Canceled.'; \
+      fi; \
+    else \
+      echo '✅ Nothing to abort.'; \
+    fi; \
+  }; f"
+
+  # ============================================================================
+  # CLEANUP - Auto-prune merged branches
+  # ============================================================================
+  prune-local = "!git fetch -p && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -d"
+  clean-merged = "!git branch --merged | grep -v '\\*\\|main\\|master\\|develop' | xargs -n 1 git branch -d"
+
+  auto-prune = "!f() { \
+    if ! git diff --quiet || ! git diff --cached --quiet; then \
+      echo '❌ Cannot safely switch branches'; \
+      exit 1; \
+    fi; \
+    MAIN=$(git remote-default); \
+    git switch $MAIN >/dev/null 2>&1; \
+    git fetch --prune || exit 1; \
+    git pull || exit 1; \
+    for BRANCH in $(git for-each-ref --format='%(refname:short)' refs/heads); do \
+      if [ $BRANCH = 'main' ] || [ $BRANCH = 'master' ] || [ $BRANCH = $MAIN ]; then \
+        continue; \
+      fi; \
+      BASE=$(git merge-base $MAIN $BRANCH); \
+      MERGE_DIFF=$(git merge-tree $BASE $MAIN $BRANCH); \
+      if [ -z \"$MERGE_DIFF\" ]; then \
+        git branch -D $BRANCH; \
+      fi; \
+    done; \
+  }; f"
+
+  # ============================================================================
+  # ADVANCED WORKFLOWS
+  # ============================================================================
+  savepoint = "!bash -c 'git add -A && git commit -m \"WIP $(date \"+%Y-%m-%d %I:%M %p\")\"'"
+
+  fixup = "!f() { \
+    TARGET=$(git rev-parse $1); \
+    git commit --fixup=\"$TARGET\" || exit 1; \
+    FIXUP=$(git rev-parse HEAD); \
+    for COMMIT in $(git rev-list --reverse \"$TARGET^\"..HEAD); do \
+      PATCH=$(git diff \"$COMMIT\"^ \"$COMMIT\"); \
+      if ! echo \"$PATCH\" | git apply --check --3way -q; then \
+        SHORT=$(git rev-parse --short $COMMIT); \
+        echo \"❌ Rebase conflict would occur!\"; \
+        git reset HEAD~1 --soft; \
+        exit 1; \
+      fi; \
+    done; \
+    git rebase -i --autosquash \"$TARGET^\"; \
+  }; f"
+
+  rebranch = "!f() { \
+    MAIN=$(git remote-default); \
+    git savepoint; \
+    if ! git can-merge $MAIN; then \
+      exit 1; \
+    fi; \
+    BRANCH=$(git symbolic-ref --short HEAD); \
+    git switch $MAIN || exit 1; \
+    git pull || exit 1; \
+    git switch -; \
+    TEMP=$(uuidgen); \
+    git switch -c $TEMP; \
+    git switch $MAIN; \
+    git branch -D $BRANCH; \
+    git switch -c $BRANCH; \
+    for COMMIT in $(git rev-list --reverse \"$MAIN..$TEMP\"); do \
+      git cherry-pick $COMMIT || (echo \"❌ cherry pick failed at $COMMIT\" && exit 1); \
+    done; \
+    git branch -D $TEMP; \
+  }; f"
+
+  yank = "!f() { \
+    BRANCH=$(git rev-parse --abbrev-ref HEAD); \
+    if [ \"$BRANCH\" = \"HEAD\" ]; then \
+      echo 'Error: You are in a detached HEAD. Cannot yank.'; \
+      exit 1; \
+    fi; \
+    if ! git rev-parse --abbrev-ref --symbolic-full-name \"$BRANCH\"@{u} >/dev/null 2>&1; then \
+      echo \"Error: '$BRANCH' has no upstream remote. Cannot yank.\"; \
+      exit 1; \
+    fi; \
+    git fetch origin \"$BRANCH\" --force; \
+    git savepoint; \
+    AHEAD=$(git rev-list --count \"origin/$BRANCH..$BRANCH\"); \
+    if [ \"$AHEAD\" -ne 0 ]; then \
+      BACKUP=\"${BRANCH}-old-$(uuidgen)\"; \
+      git branch \"$BACKUP\"; \
+      echo \"Created backup branch $BACKUP\"; \
+    fi; \
+    git reset --hard \"origin/$BRANCH\"; \
+  }; f"
+
+  backmerge = "!f() { \
+    TARGET=$1; \
+    git switch $TARGET || exit 1; \
+    git pull || exit 1; \
+    git switch -; \
+    git merge $TARGET; \
+  }; f"
+
+  # ============================================================================
+  # UTILITIES - Helpful commands
+  # ============================================================================
+  pwd = "!git rev-parse --show-toplevel"
+  contributors = shortlog -sn --no-merges
+  aliases = "!git config --get-regexp '^alias\\.' | cut -d' ' -f1 | sed 's/^alias\\.//' | sort | column -c $(tput cols)"
+  la = "!git config -l | grep alias | cut -c 7-"
+  find = "!git ls-files | grep -i"
+  grep = grep -Ii
+  files = "!sh -c 'git show --name-only --pretty=\"\" $@' -"
+
+  churn = "!f() { \
+    git -p log --all -M -C --name-only --format='format:' \
+      | sort | grep -v '^$' | uniq -c | sort -r \
+      | awk 'BEGIN {print count,file} {print $1 , $2}' \
+      | head -n 25; \
+  }; f"
+
+  lines = "!f() { \
+    branch=\"$1\"; shift; excludes=\"\"; \
+    for f in \"$@\"; do excludes=\"$excludes :(exclude)$f\"; done; \
+    git diff --shortstat \"$branch\"...HEAD $excludes; \
+  }; f"
+
+  sha = "!f() { \
+    REF=\"${1:-HEAD}\"; \
+    SHA=$(git rev-parse --short $REF); \
+    echo $SHA; \
+    pbcopy <<< $SHA 2>/dev/null || echo -n $SHA | xclip -selection clipboard 2>/dev/null || echo $SHA; \
+  }; f"
+
+  # Get current tag
+  current-tag = tag --points-at HEAD
+
+  # Create zip of current tag
+  zip = "!f() { \
+    git archive --format=zip -o `git current-tag`.zip HEAD; \
+  }; f"
+
+  # Diff specific file's last commit
+  diff-file-last-commit = "!f() { \
+    project_root_dir=$(git rev-parse --show-toplevel); \
+    echo finding full file path of $1 in $project_root_dir; \
+    filepath=$(find $project_root_dir -type f -name $1); \
+    echo full file path $filepath; \
+    last_modified_commit_hash=$(git rev-list -1 HEAD $filepath); \
+    echo last commit file modified $last_modified_commit_hash; \
+    git difftool $last_modified_commit_hash^ $filepath; \
+  }; f"
+
+  # ============================================================================
+  # EXCLUDE/INCLUDE - Manage .git/info/exclude
+  # ============================================================================
+  exclude = "!f() { \
+    path=\"$1\"; \
+    exclude_path=\"$(git rev-parse --git-path info/exclude)\"; \
+    if grep -Fxq \"$path\" \"$exclude_path\"; then \
+      echo \"⚠️  Already excluded: $path\"; \
+    else \
+      echo \"$path\" >> \"$exclude_path\"; \
+      echo \"❎ Excluded: $path\"; \
+    fi; \
+  }; f"
+
+  include = "!f() { \
+    exclude_path=\"$(git rev-parse --git-path info/exclude)\"; \
+    if grep -Fxq \"$1\" \"$exclude_path\"; then \
+      grep -Fxv \"$1\" \"$exclude_path\" > \"$exclude_path.tmp\" && mv \"$exclude_path.tmp\" \"$exclude_path\"; \
+      echo \"❎ Removed: $1\"; \
+    else \
+      echo \"⚠️  Not found in exclude: $1\"; \
+    fi; \
+  }; f"
+
+  # ============================================================================
+  # TREE - Visual file tree
+  # ============================================================================
+  tree = "!f() { \
+    git ls-files --cached --others --exclude-standard | sort -f | awk ' \
+      BEGIN { FS=\"/\" } \
+      { \
+        n = split($0, parts, \"/\"); \
+        path = \"\"; \
+        for (i = 1; i < n; i++) { \
+          path = (i == 1 ? parts[i] : path \"/\" parts[i]); \
+          if (!(path in seen)) { \
+            seen[path] = 1; \
+            indent = \"\"; \
+            for (j = 1; j < i; j++) indent = indent \"│   \"; \
+            print indent \"├── \\033[34m\" parts[i] \"/\\033[0m\"; \
+          } \
+        } \
+        indent = \"\"; \
+        for (j = 1; j < n; j++) indent = indent \"│   \"; \
+        print indent bend \"├── \" parts[n]; \
+      }'; \
+  }; f"
+
+  # ============================================================================
+  # GITHUB CLI - Requires gh cli installed
+  # ============================================================================
+  whoami = "!gh api user --jq .login"
+  repo-name = "!gh repo view --json nameWithOwner -q .nameWithOwner"
+  github = "!gh repo view --web"
+  browse = "!sh -c 'gh browse $@' -"
+  pr = "!sh -c 'gh pr $@' -"
+  issue = "!sh -c 'gh issue $@' -"
+  gist = "!sh -c 'gh gist $@' -"
+  auth = "!sh -c 'gh auth $@' -"
+  org = "!sh -c 'gh org $@' -"
+  project = "!sh -c 'gh project $@' -"
+  release = "!sh -c 'gh release $@' -"
+  repo = "!sh -c 'gh repo $@' -"
+  codespace = "!sh -c 'gh codespace $@' -"
+
+  pr-info = "!f() { \
+    DEST=\"$(git remote-default)\"; \
+    git fetch origin $DEST >/dev/null 2>&1; \
+    echo \"-------------------- New PR Summary --------------------\"; \
+    echo \"$(git rev-list --count origin/$DEST..HEAD) commits $(git lines origin/$DEST)\"; \
+    git can-merge origin/$DEST; \
+    echo; \
+    git log-n --oneline; \
+  }; f"
+
+  pr-view = "!f() { \
+    if [ -z \"$1\" ]; then \
+      if gh pr view >/dev/null 2>&1; then \
+        gh pr view --web; \
+      else \
+        echo \"No PR found for current branch. Provide a commit SHA.\"; \
+      fi; \
+    else \
+      COMMIT=\"$(git rev-parse --short \"$1\")\"; \
+      PRS=$(gh pr list --search \"$COMMIT\" --state all --json number --jq \"(.[].number)\"); \
+      if [ -z \"$PRS\" ]; then \
+        echo \"No PR found for commit: $COMMIT\"; \
+      else \
+        if [ \"$(echo \"$PRS\" | wc -l | xargs)\" -gt 1 ]; then \
+          PRS=$(echo \"$PRS\"); \
+          for PR in $PRS; do \
+            TITLE=$(gh pr view $PR --json title --jq '.title'); \
+            echo \"gh pr view $PR --web    |    $TITLE\"; \
+          done; \
+        else \
+          gh pr view \"$PRS\" --web; \
+        fi; \
+      fi; \
+    fi; \
+  }; f"
+
+  co-commit = "!f() { \
+    if [ -z \"$1\" ]; then \
+      echo 'Usage: git co-commit <github-username>'; \
+      exit 1; \
+    fi; \
+    USER=\"$1\"; \
+    if ! NAME=$(gh api users/\"$USER\" --jq .name 2>/dev/null); then \
+      echo \"Could not retrieve name for user $USER\"; \
+      exit 1; \
+    fi; \
+    if ! EMAIL=$(gh api users/\"$USER\" --jq .email 2>/dev/null); then \
+      echo \"$NAME has a private email.\"; \
+    else \
+      echo \"$EMAIL\"; \
+      git commit --edit -m \"<insert summary>\" -m \"Co-authored-by: $NAME <$EMAIL>\"; \
+    fi; \
+  }; f"
+
+  init-github = "!f() { \
+    git remote show origin 2>/dev/null  && echo 'origin remote already exists!' && exit 1; \
+    ROOT=$(git pwd) && cd $ROOT || exit 1; \
+    REPO=$(basename $ROOT); \
+    gh repo create $REPO --public --source=. --remote=origin && git push; \
+  }; f"
+
+  code-review = "!f() { \
+    git switch $(git remote-default) || exit 1; \
+    git pull; \
+    gh co $1 || exit 1; \
+    MAIN=$(git remote-default); \
+    FIRST_COMMIT=$(git rev-list --reverse \"$MAIN\"..HEAD | head -n 1); \
+    BASE=$(git rev-list -n 1 ${FIRST_COMMIT}^); \
+    git reset $BASE; \
+  }; f"
+
+  publish = "!f() { \
+    TAG=$1; \
+    MESSAGE=$2; \
+    if [ -f './package-lock.json' ]; then \
+      npm version $TAG --no-git-tag-version; \
+    fi; \
+    git add .; \
+    git commit -m \"release: $MESSAGE\" || exit 1; \
+    git tag -a \"$TAG\" -m \"$MESSAGE\"; \
+    git push || exit 1; \
+    git push origin $TAG --no-verify; \
+  }; f"
+
+  languages = "!f() { \
+    DATA=$(gh api repos/$(git repo-name)/languages); \
+    PERCENT=$(perl -MJSON::PP -0777 -e \" \
+      use strict; \
+      use warnings; \
+      my \\$data = decode_json(join(\\\"\\\", <STDIN>)); \
+      my \\$total = 0; \
+      \\$total += \\$_ for values %\\$data; \
+      my @out; \
+      for my \\$k (keys %\\$data) { \
+        my \\$p = int(\\$data->{\\$k} / \\$total * 100 + 0.5); \
+        push @out, \\\"\\$k: \\$p%\\\"; \
+      } \
+      print join(\\\" \\\", @out), \\\"\\n\\\"; \
+      \" <<< \"$DATA\"); \
+    echo \"$PERCENT\"; \
+  }; f"
+
+  # ============================================================================
+  # GIST BACKUP - Store aliases in gist
+  # ============================================================================
+  aliases-gist = "!echo 'YOUR_GIST_ID_HERE'"
+
+  alist = "!gh gist view $(git aliases-gist) --filename command-list.md"
+
+  aliases-export = "!f() { \
+    ALIST=$(awk 'p && /^\\[/{exit} /^\\[alias\\]/{p=1} p' ~/.gitconfig); \
+    gh api -X PATCH /gists/$(git aliases-gist) -f files[.gitconfig][content]=\"$ALIST\"; \
+  }; f"
+
+  aliases-import = "!f() { \
+    GIST=$(git aliases-gist); \
+    git config --global --get-regexp '^alias\\.' \
+      | awk '{print $1}' | xargs -r -L1 git config --global --unset; \
+    gh api /gists/\"$GIST\" --jq '.files[\".gitconfig\"].content' >> ~/.gitconfig; \
+  }; f"
+
+  aliases-docs = "!gh gist edit $(git aliases-gist) -f command-list.md"
+
+  # ============================================================================
+  # LOCAL GIT SERVER - Share repos on LAN
+  # ============================================================================
+  server-addr = "!ifconfig | awk '/^en[0-9]/ {iface=$1} /inet / && $2 !~ /^127\\./ {print $2; exit}'"
+
+  server-start = "!f() { \
+    cd $(git pwd) || exit 1; \
+    NAME=$(basename $(pwd)); \
+    cd ..; \
+    REPO=\"$(pwd)/$NAME.git\"; \
+    echo $REPO; \
+    rm -rf $REPO || exit 1; \
+    git clone --bare \"$NAME\" \"$REPO\" || exit 1; \
+    LAN_IP=$(git server-addr); \
+    nohup git daemon --verbose --export-all --enable=receive-pack --base-path=$(pwd) \
+      --reuseaddr --strict-paths $REPO > /tmp/git-daemon.log 2>&1 & \
+    REMOTE_URL=\"git://$LAN_IP:9418/$NAME.git\"; \
+    echo \"Serving repository from $REMOTE_URL\"; \
+    cd - > /dev/null; \
+    if [ -n \"$1\" ]; then \
+      git remote-set $1 $REMOTE_URL; \
+    fi; \
+  }; f"
+
+  server-kill = "!f() { \
+    PIDS=$(ps -eo pid,comm | grep -E 'git-daemo|git daemon' | awk '{print $1}'); \
+    for PID in $PIDS; do \
+      echo \"Killing: $PID\"; \
+    done; \
+    pkill -f \"git-daemo\"; \
+    pkill -f \"git daemon\"; \
+    if lsof -i :9418; then \
+      echo 'Error: some processes not killed'; \
+    fi; \
+  }; f"
+
+  server-test = "!f() { \
+    REMOTE=\"git://$(git server-addr):9418/$1\"; \
+    if git ls-remote $REMOTE > /dev/null; then \
+      echo \"Server running at: $REMOTE\"; \
+    else exit 1; fi; \
+  }; f"
+
+  server-logs = "!tail -f /tmp/git-daemon.log"
+
+  server-clone = "!f() { \
+    REMOTE=\"git://$(git server-addr):9418/$1\"; \
+    if git server-test $1; then \
+      git clone $REMOTE; \
+    fi; \
+  }; f"
+
+  server-join = "!f() { \
+    BASE=$(basename $(git pwd)); \
+    REMOTE=\"git://$(git server-addr):9418/$BASE.git\"; \
+    if git server-test \"$BASE.git\"; then \
+      git remote-set origin $REMOTE; \
+      echo \"origin updated: (fetch & push)\"; \
+    fi; \
+  }; f"
+	rollback = revert
+	rc = revert
+	rcn = revert --no-commit
+	rce = revert --edit
+	rcq = revert --no-edit
+	rcm = revert -m 1
+	rclast = revert HEAD
