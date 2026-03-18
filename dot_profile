@@ -1,0 +1,13 @@
+
+. "$HOME/.local/share/../bin/env"
+
+# GPG SSH Agent
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+export GPG_TTY=$(tty)
+export TERMINAL=kitty
+export EXPLORER=yazi
+export EDITOR=zeditor
+export VISUAL=zeditor
+export BROWSER=brave
+export PAGER=less
+export FILE_MANAGER=yazi
