@@ -1,0 +1,7 @@
+{{ if eq .chezmoi.os "windows" -}}
+[core]
+	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
+	longpaths = true
+[gpg]
+	program = C:/Program Files/GnuPG/bin/gpg.exe
+{{ end -}}
