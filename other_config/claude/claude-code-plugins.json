@@ -1,0 +1,24 @@
+{
+  "plugins": [
+    {
+      "name": "mcp-toolkit@docker",
+      "version": "1.0.1",
+      "scope": "user"
+    },
+    {
+      "name": "context7-plugin@context7-marketplace",
+      "version": "1.0.0",
+      "scope": "user"
+    },
+    {
+      "name": "frontend-design@claude-plugins-official",
+      "version": "99e11d959269",
+      "scope": "user"
+    },
+    {
+      "name": "github@claude-plugins-official",
+      "version": "99e11d959269",
+      "scope": "user"
+    }
+  ]
+}
