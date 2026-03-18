@@ -1,0 +1,75 @@
+#!/bin/bash
+# ~/.local/bin/openvpn-stop
+
+# Encuentra VPNs activas
+find_active_vpns() {
+  local active=()
+  for pidfile in /tmp/openvpn-*.pid; do
+    [ -f "$pidfile" ] || continue
+    local provider=$(basename "$pidfile" | sed 's/openvpn-\(.*\)\.pid/\1/')
+    local pid=$(sudo cat "$pidfile" 2>/dev/null)
+    
+    # Verifica que el proceso existe
+    if [ -n "$pid" ] && sudo kill -0 "$pid" 2>/dev/null; then
+      active+=("$provider")
+    fi
+  done
+  printf "%s\n" "${active[@]}"
+}
+
+active_vpns=($(find_active_vpns))
+
+if [ ${#active_vpns[@]} -eq 0 ]; then
+  echo "💤 No hay VPNs activas"
+  exit 0
+fi
+
+# Selector
+if [ $# -eq 0 ]; then
+  if [ ${#active_vpns[@]} -eq 1 ]; then
+    PROVIDER="${active_vpns[0]}"
+  else
+    echo "🔌 VPNs activas detectadas:"
+    PS3="Elige cuál desconectar (1-${#active_vpns[@]}): "
+    select PROVIDER in "${active_vpns[@]}" "todas"; do
+      [ -n "$PROVIDER" ] && break
+      echo "Opción inválida"
+    done
+  fi
+else
+  PROVIDER=$1
+fi
+
+# Desconectar
+disconnect_vpn() {
+  local provider=$1
+  local pidfile="/tmp/openvpn-$provider.pid"
+  
+  [ ! -f "$pidfile" ] && { echo "⚠️  $provider: no PID"; return 1; }
+  
+  local pid=$(sudo cat "$pidfile")
+  echo "🔻 Desconectando $provider (PID: $pid)..."
+  
+  local ip_before=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "N/A")
+  
+  sudo kill "$pid" 2>/dev/null
+  sleep 1
+  
+  # Forzar si se resiste
+  sudo kill -0 "$pid" 2>/dev/null && sudo kill -9 "$pid" 2>/dev/null
+  
+  local ip_after=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "N/A")
+  
+  [ "$ip_before" != "$ip_after" ] && [ "$ip_before" != "N/A" ] \
+    && echo "✅ $provider desconectado: $ip_before → $ip_after" \
+    || echo "✅ $provider desconectado (IP: $ip_after)"
+}
+
+# Ejecutar
+if [ "$PROVIDER" = "todas" ]; then
+  for vpn in "${active_vpns[@]}"; do
+    disconnect_vpn "$vpn"
+  done
+else
+  disconnect_vpn "$PROVIDER"
+fi

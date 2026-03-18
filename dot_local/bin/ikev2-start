@@ -1,0 +1,159 @@
+#!/bin/bash
+# ~/.local/bin/ikev2-start
+
+CONFIG_FILE=/etc/swanctl/swanctl.conf
+CACHE_FILE=~/.cache/ikev2-servers.json
+CACHE_COUNTRIES=~/.cache/ikev2-countries.json
+CACHE_TTL=3600  # 1 hora
+
+# Función para obtener países desde la API
+fetch_countries() {
+    if [ -f "$CACHE_COUNTRIES" ]; then
+        local cache_age=$(($(date +%s) - $(stat -c %Y "$CACHE_COUNTRIES" 2>/dev/null || echo 0)))
+        if [ $cache_age -lt 86400 ]; then  # Caché de 24 horas para países
+            cat "$CACHE_COUNTRIES"
+            return
+        fi
+    fi
+    
+    mkdir -p ~/.cache
+    curl -s "https://api.nordvpn.com/v1/servers/countries" | tee "$CACHE_COUNTRIES"
+}
+
+# Función para obtener servidores desde la API
+fetch_servers() {
+    local country_id=$1
+    local use_cache=${2:-true}
+    
+    if [ "$use_cache" = true ] && [ -f "$CACHE_FILE" ]; then
+        local cache_age=$(($(date +%s) - $(stat -c %Y "$CACHE_FILE" 2>/dev/null || echo 0)))
+        if [ $cache_age -lt $CACHE_TTL ]; then
+            echo "📦 Usando caché (válido por $((($CACHE_TTL - $cache_age) / 60)) minutos más)" >&2
+            cat "$CACHE_FILE"
+            return
+        fi
+    fi
+    
+    echo "⏳ Descargando servidores desde API..." >&2
+    
+    local url="https://api.nordvpn.com/v1/servers?limit=500"
+    [ -n "$country_id" ] && url="${url}&filters\[country_id\]=${country_id}"
+    
+    mkdir -p ~/.cache
+    curl -s "$url" | tee "$CACHE_FILE"
+}
+
+# Función para listar servidores IKEv2 ordenados por carga
+list_servers() {
+    local country_id=$1
+    
+    fetch_servers "$country_id" | \
+        jq -r '.[] | 
+            select(.technologies[] | select(.identifier == "ikev2")) | 
+            select(.status == "online") |
+            "\(.load)\t\(.hostname)"' | \
+        sort -n | \
+        awk '{print $2}'
+}
+
+# Selector de país
+if [ $# -eq 0 ]; then
+    echo "🌐 IKEv2/IPSec Selector"
+    
+    echo "⏳ Cargando países..."
+    countries_json=$(fetch_countries)
+    
+    # Obtener TODOS los países con servidores
+    declare -A COUNTRIES
+    
+    while IFS=$'\t' read -r name id; do
+        COUNTRIES["$name"]="$id"
+    done < <(echo "$countries_json" | jq -r '.[] | "\(.name)\t\(.id)"' | sort)
+        
+    echo ""
+    echo "Países disponibles (${#COUNTRIES[@]}):"
+    PS3="País (1-${#COUNTRIES[@]}): "
+    select COUNTRY in "${!COUNTRIES[@]}"; do
+        [ -n "$COUNTRY" ] && break
+        echo "Opción inválida"
+    done
+    
+    COUNTRY_ID="${COUNTRIES[$COUNTRY]}"
+    
+    # Obtener servidores
+    mapfile -t servers < <(list_servers "$COUNTRY_ID")
+    
+    if [ ${#servers[@]} -eq 0 ]; then
+        echo "❌ No se encontraron servidores IKEv2 para $COUNTRY"
+        exit 1
+    fi
+    
+    echo ""
+    echo "Servidores disponibles (${#servers[@]}, ordenados por carga):"
+    PS3="Elige servidor (1-${#servers[@]}): "
+    select SERVER in "${servers[@]}"; do
+        [ -n "$SERVER" ] && break
+        echo "Opción inválida"
+    done
+else
+    SERVER=$1
+fi
+
+# Verificar que ya hay conexión activa
+if systemctl is-active --quiet strongswan && sudo swanctl --list-sas 2>/dev/null | grep -q "ESTABLISHED"; then
+    echo "⚠️  Ya hay una conexión IKEv2 activa. Desconecta primero con ikev2-stop"
+    exit 1
+fi
+
+# Verificar que el servidor resuelve
+echo "🔍 Verificando servidor..."
+if ! host "$SERVER" &>/dev/null; then
+    echo "❌ No se puede resolver $SERVER"
+    exit 1
+fi
+
+echo "🔧 Actualizando configuración..."
+sudo sed -i "s|remote_addrs = .*|remote_addrs = $SERVER|g" "$CONFIG_FILE"
+
+echo "🚀 Arrancando strongSwan y conectando a $SERVER..."
+
+# Arrancar servicio
+sudo systemctl start strongswan &
+pid=$!
+
+# Spinner mientras arranca
+chars="/-\ | "
+echo -n "   Iniciando servicio strongswan "
+while kill -0 $pid 2>/dev/null; do
+    for (( i=0; i<${#chars}; i++ )); do
+        sleep 0.1
+        echo -en "${chars:$i:1}" "\b"
+    done
+done
+echo "✓"
+
+sleep 2
+
+# Cargar config y conectar
+echo -n "🔧 Cargando configuración..."
+sudo swanctl --load-all > /dev/null 2>&1
+echo " ✓"
+
+sleep 2
+
+echo "🔌 Estableciendo conexión..."
+
+# Intentar conectar
+if sudo swanctl --initiate --child nordvpn 2>&1 | grep -q "initiate completed successfully"; then
+    sleep 2
+
+    if sudo swanctl --list-sas | grep -q "ESTABLISHED"; then
+        IP=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "N/A")
+        echo "✅ Conectado: $IP"
+        exit 0
+    fi
+fi
+
+echo "❌ Fallo. Revisa: sudo journalctl -u strongswan -n 50"
+sudo systemctl stop strongswan
+exit 1

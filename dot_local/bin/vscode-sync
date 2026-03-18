@@ -1,0 +1,105 @@
+#!/bin/bash
+
+# Uso: vscode-sync [vscodium|code-oss|vscode]
+# Sin parámetro: sincroniza TODOS los editores instalados
+
+# Detectar TODOS los editores disponibles
+detect_all_editors() {
+  if command -v codium &> /dev/null && [ -d "$HOME/.config/VSCodium/User" ]; then
+    echo "VSCodium|codium|$HOME/.config/VSCodium/User"
+  fi
+  
+  if command -v code &> /dev/null && [ -d "$HOME/.config/Code - OSS/User" ]; then
+    echo "Code-OSS|code|$HOME/.config/Code - OSS/User"
+  fi
+  
+  if command -v code &> /dev/null && [ -d "$HOME/.config/Code/User" ]; then
+    echo "VSCode|code|$HOME/.config/Code/User"
+  fi
+}
+
+# Sincronizar un editor específico
+sync_editor() {
+  local editor_info="$1"
+  local editor_name=$(echo "$editor_info" | cut -d'|' -f1)
+  local cmd=$(echo "$editor_info" | cut -d'|' -f2)
+  local config_dir=$(echo "$editor_info" | cut -d'|' -f3)
+  
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "✅ Syncing: $editor_name"
+  echo "📁 Config: $config_dir"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  
+  cd "$config_dir" || {
+    echo "❌ Failed to access $config_dir"
+    return 1
+  }
+  
+  # Exportar extensiones
+  echo "📦 Exporting extensions..."
+  $cmd --list-extensions > extensions.list
+  
+  # Git add
+  git add .
+  
+  # Verificar cambios
+  if git diff --staged --quiet; then
+    echo "✅ No changes to sync for $editor_name"
+    return 0
+  fi
+  
+  # Commit
+  git commit -m "Auto sync - $editor_name - $(date +'%Y-%m-%d %H:%M')"
+  
+  # Push
+  echo "⬆️  Pushing to GitHub..."
+  git push
+  
+  echo "✅ $editor_name synced successfully!"
+}
+
+# Main
+main() {
+  local requested="$1"
+  local all_editors
+  mapfile -t all_editors < <(detect_all_editors)
+  
+  if [ ${#all_editors[@]} -eq 0 ]; then
+    echo "❌ No VSCode variant found!"
+    exit 1
+  fi
+  
+  # Si se especificó un editor específico
+  if [ -n "$requested" ]; then
+    local found=false
+    for editor in "${all_editors[@]}"; do
+      local name=$(echo "$editor" | cut -d'|' -f1 | tr '[:upper:]' '[:lower:]')
+      local normalized=$(echo "$requested" | tr '[:upper:]' '[:lower:]')
+      if [[ "$name" == *"$normalized"* ]]; then
+        sync_editor "$editor"
+        found=true
+        break
+      fi
+    done
+    
+    if [ "$found" = false ]; then
+      echo "❌ Editor '$requested' not found or not installed"
+      echo "Available editors:"
+      for editor in "${all_editors[@]}"; do
+        echo "  - $(echo "$editor" | cut -d'|' -f1)"
+      done
+      exit 1
+    fi
+  else
+    # Sin parámetro: sincronizar TODOS
+    echo "🔄 Syncing ALL detected editors..."
+    for editor in "${all_editors[@]}"; do
+      sync_editor "$editor"
+    done
+    echo ""
+    echo "🎉 All editors synced!"
+  fi
+}
+
+main "$1"

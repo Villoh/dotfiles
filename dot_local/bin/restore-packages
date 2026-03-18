@@ -1,0 +1,365 @@
+#!/usr/bin/env bash
+
+# restore-packages - Script interactivo para restaurar paquetes
+# Requiere: gum, yay/paru (para AUR)
+
+set -e
+
+# Ubicaciones por defecto
+DEFAULT_DIR="$HOME/.dotfiles/backup-packages"
+DEFAULT_PACMAN="$DEFAULT_DIR/pacman.txt"
+DEFAULT_AUR="$DEFAULT_DIR/aur.txt"
+DEFAULT_FLATPAK="$DEFAULT_DIR/flatpak.txt"
+DEFAULT_BREW="$DEFAULT_DIR/brew.txt"
+
+# Banner principal
+gum style \
+    --foreground 75 \
+    --border-foreground 75 \
+    --border double \
+    --align center \
+    --width 60 \
+    --margin "1 2" \
+    --padding "2 4" \
+    '📦  RESTORE PACKAGES  📦' \
+    '' \
+    'Restaura tus paquetes favoritos de forma interactiva'
+
+# Función para verificar si un comando existe
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Verificar dependencias
+if ! command_exists gum; then
+    echo "❌ Error: gum no está instalado" >&2
+    echo "Instálalo con: sudo pacman -S gum" >&2
+    exit 1
+fi
+
+echo ""
+gum style --foreground 245 --bold "🎯 PASO 1: Selecciona el gestor de paquetes"
+echo ""
+
+PACKAGE_MANAGER=$(gum choose \
+    --cursor.foreground="75" \
+    --selected.foreground="75" \
+    --header="¿Qué quieres restaurar?" \
+    --header.foreground="245" \
+    "📦 pacman" \
+    "🔧 aur" \
+    "📱 flatpak" \
+    "🍺 brew" \
+    "🌟 all")
+
+if [ -z "$PACKAGE_MANAGER" ]; then
+    gum style --foreground 196 "❌ No se seleccionó ninguna opción"
+    exit 1
+fi
+
+PACKAGE_MANAGER=$(echo "$PACKAGE_MANAGER" | sed 's/^[^ ]* //')
+
+echo ""
+gum style --foreground 245 --bold "📁 PASO 2: Ubicación de los archivos"
+echo ""
+
+USE_CUSTOM=$(gum choose \
+    --cursor.foreground="75" \
+    --selected.foreground="75" \
+    --header="¿Usar ubicaciones por defecto?" \
+    --header.foreground="245" \
+    "✓ Sí, usar ~/.dotfiles/backup-packages/" \
+    "✎ No, quiero elegir otras ubicaciones")
+
+echo ""
+gum style --foreground 245 --bold "⚙️  PASO 3: Modo de instalación"
+echo ""
+
+INDIVIDUAL_CONFIRM=$(gum choose \
+    --cursor.foreground="75" \
+    --selected.foreground="75" \
+    --header="¿Cómo quieres instalar?" \
+    --header.foreground="245" \
+    "🚀 Rápido (todo de una vez)" \
+    "🎯 Selectivo (confirmar cada paquete)")
+
+echo ""
+gum style \
+    --foreground 250 \
+    --background 236 \
+    --padding "1 2" \
+    --margin "1 0" \
+    --border rounded \
+    --border-foreground 240 \
+    "⚡ Preparando instalación..."
+
+# Función para obtener ubicación del archivo
+get_file_location() {
+    local type=$1 emoji=$2 default_path=$3
+    if [[ "$USE_CUSTOM" == "✎"* ]]; then
+        local custom_path
+        custom_path=$(gum input \
+            --placeholder "$default_path" \
+            --value "$default_path" \
+            --prompt.foreground="75" \
+            --prompt="$emoji $type → " \
+            --width=60)
+        if command_exists realpath; then
+            custom_path=$(realpath -m "$custom_path" 2>/dev/null || echo "$custom_path")
+        fi
+        echo "$custom_path"
+    else
+        echo "$default_path"
+    fi
+}
+
+# Funciones de verificación
+pacman_is_installed() {
+    pacman -Qi "$1" >/dev/null 2>&1
+}
+
+aur_is_installed() {
+    pacman -Qi "$1" >/dev/null 2>&1
+}
+
+flatpak_is_installed() {
+    flatpak list --app | grep -q "$1"
+}
+
+brew_is_installed() {
+    brew list "$1" >/dev/null 2>&1
+}
+
+# Función para instalar paquetes de pacman
+install_pacman_packages() {
+    local file="$1"
+
+    if [ ! -f "$file" ]; then
+        gum style \
+            --foreground 214 \
+            --border-foreground 214 \
+            --border rounded \
+            --padding "1 2" \
+            --margin "1 0" \
+            "⚠️  Archivo no encontrado: $(basename "$file")"
+        echo "Debug: Intentando acceder a '$file'" >&2
+        ls -la "$(dirname "$file")/$(basename "$file")" 2>/dev/null || echo "No accesible" >&2
+        return 1
+    fi
+
+    echo ""
+    gum style \
+        --foreground 75 \
+        --bold \
+        --border rounded \
+        --padding "1 2" \
+        "📦 Leyendo paquetes desde: $(basename "$file")"
+
+    readarray -t packages < "$file"
+
+    if [ ${#packages[@]} -eq 0 ]; then
+        gum style --foreground 214 --border rounded --padding "1 2" "⚠️  Archivo vacío"
+        return 1
+    fi
+
+    if [[ "$INDIVIDUAL_CONFIRM" == "🎯 Selectivo"* ]]; then
+        for pkg in "${packages[@]}"; do
+            pkg=$(echo "$pkg" | xargs)
+            if [ -n "$pkg" ] && pacman_is_installed "$pkg"; then
+                gum style --foreground 245 "✅ $pkg ya instalado"
+            elif [ -n "$pkg" ]; then
+                if gum confirm "Instalar $pkg?"; then
+                    sudo pacman -S --noconfirm "$pkg"
+                fi
+            fi
+        done
+    else
+        sudo pacman -S --noconfirm $(<"$file")
+    fi
+}
+
+# Función para instalar paquetes de AUR
+install_aur_packages() {
+    local file="$1"
+
+    if [ ! -f "$file" ]; then
+        gum style \
+            --foreground 214 \
+            --border-foreground 214 \
+            --border rounded \
+            --padding "1 2" \
+            --margin "1 0" \
+            "⚠️  Archivo no encontrado: $(basename "$file")"
+        return 1
+    fi
+
+    echo ""
+    gum style \
+        --foreground 75 \
+        --bold \
+        --border rounded \
+        --padding "1 2" \
+        "🔧 Leyendo paquetes desde: $(basename "$file")"
+
+    readarray -t packages < "$file"
+
+    if [ ${#packages[@]} -eq 0 ]; then
+        gum style --foreground 214 --border rounded --padding "1 2" "⚠️  Archivo vacío"
+        return 1
+    fi
+
+    local aur_helper
+    if command_exists yay; then
+        aur_helper="yay"
+    elif command_exists paru; then
+        aur_helper="paru"
+    else
+        gum style --foreground 196 --border rounded --padding "1 2" "❌ No se encontró yay ni paru"
+        return 1
+    fi
+
+    if [[ "$INDIVIDUAL_CONFIRM" == "🎯 Selectivo"* ]]; then
+        for pkg in "${packages[@]}"; do
+            pkg=$(echo "$pkg" | xargs)
+            if [ -n "$pkg" ] && aur_is_installed "$pkg"; then
+                gum style --foreground 245 "✅ $pkg ya instalado"
+            elif [ -n "$pkg" ]; then
+                if gum confirm "Instalar $pkg?"; then
+                    $aur_helper -S --noconfirm "$pkg"
+                fi
+            fi
+        done
+    else
+        $aur_helper -S --noconfirm $(<"$file")
+    fi
+}
+
+# Función para instalar paquetes de Flatpak
+install_flatpak_packages() {
+    local file="$1"
+
+    if [ ! -f "$file" ]; then
+        gum style \
+            --foreground 214 \
+            --border-foreground 214 \
+            --border rounded \
+            --padding "1 2" \
+            --margin "1 0" \
+            "⚠️  Archivo no encontrado: $(basename "$file")"
+        return 1
+    fi
+
+    echo ""
+    gum style \
+        --foreground 75 \
+        --bold \
+        --border rounded \
+        --padding "1 2" \
+        "📱 Leyendo paquetes desde: $(basename "$file")"
+
+    readarray -t packages < "$file"
+
+    if [ ${#packages[@]} -eq 0 ]; then
+        gum style --foreground 214 --border rounded --padding "1 2" "⚠️  Archivo vacío"
+        return 1
+    fi
+
+    if [[ "$INDIVIDUAL_CONFIRM" == "🎯 Selectivo"* ]]; then
+        for pkg in "${packages[@]}"; do
+            pkg=$(echo "$pkg" | xargs)
+            if [ -n "$pkg" ] && flatpak_is_installed "$pkg"; then
+                gum style --foreground 245 "✅ $pkg ya instalado"
+            elif [ -n "$pkg" ]; then
+                if gum confirm "Instalar $pkg?"; then
+                    flatpak install -y "$pkg"
+                fi
+            fi
+        done
+    else
+        flatpak install -y $(<"$file")
+    fi
+}
+
+# Función para instalar paquetes de Brew
+install_brew_packages() {
+    local file="$1"
+
+    if [ ! -f "$file" ]; then
+        gum style \
+            --foreground 214 \
+            --border-foreground 214 \
+            --border rounded \
+            --padding "1 2" \
+            --margin "1 0" \
+            "⚠️  Archivo no encontrado: $(basename "$file")"
+        return 1
+    fi
+
+    echo ""
+    gum style \
+        --foreground 75 \
+        --bold \
+        --border rounded \
+        --padding "1 2" \
+        "🍺 Leyendo paquetes desde: $(basename "$file")"
+
+    readarray -t packages < "$file"
+
+    if [ ${#packages[@]} -eq 0 ]; then
+        gum style --foreground 214 --border rounded --padding "1 2" "⚠️  Archivo vacío"
+        return 1
+    fi
+
+    if [[ "$INDIVIDUAL_CONFIRM" == "🎯 Selectivo"* ]]; then
+        for pkg in "${packages[@]}"; do
+            pkg=$(echo "$pkg" | xargs)
+            if [ -n "$pkg" ] && brew_is_installed "$pkg"; then
+                gum style --foreground 245 "✅ $pkg ya instalado"
+            elif [ -n "$pkg" ]; then
+                if gum confirm "Instalar $pkg?"; then
+                    brew install "$pkg"
+                fi
+            fi
+        done
+    else
+        brew install $(<"$file")
+    fi
+}
+
+# EJECUTAR
+case "$PACKAGE_MANAGER" in
+    "pacman")
+        PACMAN_FILE=$(get_file_location "pacman.txt" "📦" "$DEFAULT_PACMAN")
+        install_pacman_packages "$PACMAN_FILE"
+        ;;
+    "aur")
+        AUR_FILE=$(get_file_location "aur.txt" "🔧" "$DEFAULT_AUR")
+        install_aur_packages "$AUR_FILE"
+        ;;
+    "flatpak")
+        FLATPAK_FILE=$(get_file_location "flatpak.txt" "📱" "$DEFAULT_FLATPAK")
+        install_flatpak_packages "$FLATPAK_FILE"
+        ;;
+    "brew")
+        BREW_FILE=$(get_file_location "brew.txt" "🍺" "$DEFAULT_BREW")
+        install_brew_packages "$BREW_FILE"
+        ;;
+    "all")
+        PACMAN_FILE=$(get_file_location "pacman.txt" "📦" "$DEFAULT_PACMAN")
+        AUR_FILE=$(get_file_location "aur.txt" "🔧" "$DEFAULT_AUR")
+        FLATPAK_FILE=$(get_file_location "flatpak.txt" "📱" "$DEFAULT_FLATPAK")
+        BREW_FILE=$(get_file_location "brew.txt" "🍺" "$DEFAULT_BREW")
+        install_pacman_packages "$PACMAN_FILE"
+        install_aur_packages "$AUR_FILE" || true
+        install_flatpak_packages "$FLATPAK_FILE"
+        install_brew_packages "$BREW_FILE" || true
+        ;;
+esac
+
+gum style \
+    --foreground 46 \
+    --border-foreground 46 \
+    --border double \
+    --align center \
+    --width 60 \
+    "✅ ¡Instalación completada!"

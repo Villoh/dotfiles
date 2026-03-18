@@ -1,0 +1,63 @@
+#!/bin/bash
+# post-hyde-install.sh - Restaurar dotfiles después de HyDE install
+
+MODULES=("$@")
+DOTFILES_DIR="$HOME/.dotfiles"
+
+if [ ${#MODULES[@]} -eq 0 ]; then
+    echo "Usage: $0 <module1> <module2> ..."
+    exit 1
+fi
+
+cd "$DOTFILES_DIR" || exit 1
+
+for module in "${MODULES[@]}"; do
+    echo "==> Processing module: $module"
+    
+    # 1. Copiar cambios de config a dotfiles
+    echo "  [1/4] Copying updates from config to dotfiles..."
+    if [ -d "$DOTFILES_DIR/$module/.config" ]; then
+        for dir in "$DOTFILES_DIR/$module/.config/"*; do
+            dirname=$(basename "$dir")
+            if [ -e "$HOME/.config/$dirname" ]; then
+                rm -rf "$dir"
+                cp -r "$HOME/.config/$dirname" "$dir"
+                echo "    ✓ Updated $dirname"
+            fi
+        done
+    fi
+    
+    # 2. Backup de config
+    echo "  [2/4] Creating backups..."
+    if [ -d "$DOTFILES_DIR/$module/.config" ]; then
+        for dir in "$DOTFILES_DIR/$module/.config/"*; do
+            dirname=$(basename "$dir")
+            if [ -e "$HOME/.config/$dirname" ] && [ ! -L "$HOME/.config/$dirname" ]; then
+                mv "$HOME/.config/$dirname" "$HOME/.config/${dirname}.backup"
+                echo "    ✓ Backed up $dirname"
+            fi
+        done
+    fi
+    
+    # 3. Stow
+    echo "  [3/4] Stowing $module..."
+    stow "$module"
+    
+    # 4. Borrar backups
+    echo "  [4/4] Removing backups..."
+    if [ -d "$DOTFILES_DIR/$module/.config" ]; then
+        for dir in "$DOTFILES_DIR/$module/.config/"*; do
+            dirname=$(basename "$dir")
+            if [ -e "$HOME/.config/${dirname}.backup" ]; then
+                rm -rf "$HOME/.config/${dirname}.backup"
+            fi
+        done
+    fi
+    
+    echo "  ✓ $module restored"
+done
+
+echo ""
+echo "==> All modules restored!"
+echo "==> Don't forget to commit changes:"
+echo "    cd ~/.dotfiles && git add -A && git commit -m 'Update configs from HyDE'"

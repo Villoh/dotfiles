@@ -1,0 +1,106 @@
+#!/bin/bash
+
+# Uso: vscode-clone-config <repo-url> [vscodium|code-oss|vscode]
+
+if [ -z "$1" ]; then
+  echo "Usage: vscode-clone-config <github-repo-url> [editor]"
+  echo "Example: vscode-clone-config git@github.com:user/config.git"
+  echo "         vscode-clone-config git@github.com:user/config.git vscodium"
+  exit 1
+fi
+
+REPO_URL=$1
+EDITOR_PARAM=$2
+
+# Detectar TODOS los editores disponibles
+detect_all_editors() {
+  local editors=()
+  
+  if command -v codium &> /dev/null; then
+    editors+=("VSCodium:codium:$HOME/.config/VSCodium/User")
+  fi
+  
+  if command -v code &> /dev/null; then
+    editors+=("Code-OSS:code:$HOME/.config/Code - OSS/User")
+    editors+=("VSCode:code:$HOME/.config/Code/User")
+  fi
+  
+  echo "${editors[@]}"
+}
+
+# Seleccionar editor
+select_editor() {
+  local requested="$1"
+  local all_editors=($(detect_all_editors))
+  
+  if [ ${#all_editors[@]} -eq 0 ]; then
+    echo "❌ No VSCode variant found!"
+    exit 1
+  fi
+  
+  # Si se especificó editor por parámetro
+  if [ -n "$requested" ]; then
+    for editor in "${all_editors[@]}"; do
+      local name=$(echo "$editor" | cut -d: -f1 | tr '[:upper:]' '[:lower:]')
+      local normalized=$(echo "$requested" | tr '[:upper:]' '[:lower:]')
+      if [[ "$name" == *"$normalized"* ]]; then
+        echo "$editor"
+        return
+      fi
+    done
+    echo "❌ Editor '$requested' not found or not installed"
+    exit 1
+  fi
+  
+  # Sin parámetro: si solo hay uno, usar ese
+  if [ ${#all_editors[@]} -eq 1 ]; then
+    echo "${all_editors[0]}"
+    return
+  fi
+  
+  # Múltiples editores: preguntar
+  echo "🔍 Multiple editors detected:"
+  local i=1
+  for editor in "${all_editors[@]}"; do
+    local name=$(echo "$editor" | cut -d: -f1)
+    echo "  $i) $name"
+    ((i++))
+  done
+  
+  echo -n "Select editor (1-${#all_editors[@]}): "
+  read selection
+  
+  if [[ "$selection" =~ ^[0-9]+$ ]] && [ "$selection" -ge 1 ] && [ "$selection" -le ${#all_editors[@]} ]; then
+    echo "${all_editors[$((selection-1))]}"
+  else
+    echo "❌ Invalid selection"
+    exit 1
+  fi
+}
+
+SELECTED=$(select_editor "$EDITOR_PARAM")
+EDITOR_NAME=$(echo "$SELECTED" | cut -d: -f1)
+CONFIG_DIR=$(echo "$SELECTED" | cut -d: -f3)
+
+echo "✅ Setting up config for: $EDITOR_NAME"
+echo "📁 Target: $CONFIG_DIR"
+
+# Backup si existe
+if [ -d "$CONFIG_DIR" ]; then
+  echo "⚠️  Backing up existing config to $CONFIG_DIR.backup"
+  mv "$CONFIG_DIR" "$CONFIG_DIR.backup"
+fi
+
+# Crear directorio padre si no existe
+mkdir -p "$(dirname "$CONFIG_DIR")"
+
+# Clonar
+echo "📥 Cloning config..."
+git clone "$REPO_URL" "$CONFIG_DIR"
+
+# Instalar extensiones
+cd "$CONFIG_DIR"
+vscode-install-extensions "$EDITOR_PARAM"
+
+echo "✅ $EDITOR_NAME config cloned and extensions installed!"
+echo "🎉 You're ready to go!"

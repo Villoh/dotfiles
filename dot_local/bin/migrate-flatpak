@@ -1,0 +1,382 @@
+#!/bin/bash
+# ~/.local/bin/migrate-flatpak
+
+# Colores
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Variables
+DRY_RUN=false
+EXCLUDE_PKGS=()
+SPECIFIC_PKGS=()
+INCLUDE_BIG_APPS=false
+INCLUDE_AUR=false
+INTERACTIVE=true
+
+# Apps grandes que suelen ser mejor en Flatpak (no migrar por defecto)
+BETTER_IN_FLATPAK=(
+    "org.blender.Blender"
+    "org.gimp.GIMP"
+    "org.kde.krita"
+    "org.inkscape.Inkscape"
+    "com.obsproject.Studio"
+)
+
+# Función de ayuda
+show_help() {
+    echo -e "${CYAN}Uso:${NC} migrate-flatpak [OPCIONES] [PAQUETES...]"
+    echo ""
+    echo -e "${YELLOW}Descripción:${NC}"
+    echo "  Migra aplicaciones de Flatpak a repositorios nativos."
+    echo "  Por defecto SOLO busca en repos oficiales (pacman)."
+    echo "  Prioridad: cachyos > chaotic-aur > extra/core > AUR (si --include-aur)"
+    echo ""
+    echo -e "${YELLOW}Opciones:${NC}"
+    echo "  -n, --dry-run              Simular migración sin realizar cambios"
+    echo "  -y, --yes                  No preguntar (migrar todos automáticamente)"
+    echo "  -e, --exclude PKG[,PKG...] Excluir paquetes (usar App ID de flatpak)"
+    echo "  -a, --all                  Incluir apps grandes (Blender, GIMP, etc.)"
+    echo "  --include-aur              Incluir AUR en la búsqueda (NO recomendado)"
+    echo "  -h, --help                 Mostrar esta ayuda"
+    echo ""
+    echo -e "${YELLOW}Ejemplos:${NC}"
+    echo "  migrate-flatpak                           # Migrar (interactivo)"
+    echo "  migrate-flatpak -y                        # Migrar todos sin preguntar"
+    echo "  migrate-flatpak --include-aur             # Incluir AUR"
+    echo "  migrate-flatpak -n                        # Ver qué se migraría"
+    echo "  migrate-flatpak -e \"org.gimp.GIMP\"        # Migrar todas excepto GIMP"
+    echo ""
+    echo -e "${GREEN}Nota:${NC} Por defecto NO migra a AUR (Flatpak > AUR)."
+    echo "      Usa --include-aur solo si realmente prefieres AUR sobre Flatpak."
+    exit 0
+}
+
+# Función para detectar instalación de flatpak (system o user)
+get_flatpak_installation() {
+    local flatpak_id="$1"
+    flatpak list --app --columns=application,installation 2>/dev/null | \
+        grep "^$flatpak_id" | awk '{print $2}'
+}
+
+# Mapeo de Flatpak ID → nombre de paquete
+map_flatpak_to_package() {
+    local flatpak_id="$1"
+
+    case "$flatpak_id" in
+        "com.github.unrud.VideoDownloader") echo "video-downloader" ;;
+        "io.github.flattool.Warehouse") echo "warehouse" ;;
+        "io.gitlab.adhami3310.Impression") echo "impression" ;;
+        "io.gitlab.theevilskeleton.Upscaler") echo "upscaler" ;;
+        "io.missioncenter.MissionCenter") echo "mission-center" ;;
+        "org.blender.Blender") echo "blender" ;;
+        "org.gimp.GIMP") echo "gimp" ;;
+        "com.obsproject.Studio") echo "obs-studio" ;;
+        "org.gnome.Boxes") echo "gnome-boxes" ;;
+        "org.gnome.eog") echo "eog" ;;
+        "org.inkscape.Inkscape") echo "inkscape" ;;
+        "org.kde.krita") echo "krita" ;;
+        "com.github.rafostar.Clapper") echo "clapper" ;;
+        "com.github.tchx84.Flatseal") echo "flatseal" ;;
+        *)
+            echo "$flatpak_id" | awk -F'.' '{print tolower($NF)}'
+            ;;
+    esac
+}
+
+# Función para buscar paquete en repos/AUR
+find_native_package() {
+    local pkg_name="$1"
+    local include_aur="$2"
+
+    # Buscar en repos oficiales primero
+    local repo=$(pacman -Sp --print-format '%r' "$pkg_name" 2>/dev/null | head -1)
+
+    if [ -n "$repo" ] && [ "$repo" != "aur" ]; then
+        echo "$repo|pacman|$pkg_name"
+        return 0
+    fi
+
+    # Si include_aur está activado, buscar en AUR
+    if [ "$include_aur" = true ]; then
+        local variants=(
+            "$pkg_name"
+            "$pkg_name-bin"
+            "$pkg_name-git"
+        )
+
+        for variant in "${variants[@]}"; do
+            if paru -Ss "$variant" 2>/dev/null | grep -q "^aur/$variant "; then
+                echo "aur|paru|$variant"
+                return 0
+            fi
+        done
+    fi
+
+    return 1
+}
+
+# Función para verificar si es mejor en Flatpak
+is_better_in_flatpak() {
+    local flatpak_id="$1"
+    for big_app in "${BETTER_IN_FLATPAK[@]}"; do
+        if [[ "$flatpak_id" == "$big_app" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Función para verificar si está excluido
+is_excluded() {
+    local pkg="$1"
+    for excluded in "${EXCLUDE_PKGS[@]}"; do
+        if [[ "$pkg" == "$excluded" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Parsear argumentos
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -y|--yes)
+            INTERACTIVE=false
+            shift
+            ;;
+        -e|--exclude)
+            IFS=',' read -ra EXCLUDE_PKGS <<< "$2"
+            shift 2
+            ;;
+        -a|--all)
+            INCLUDE_BIG_APPS=true
+            shift
+            ;;
+        --include-aur)
+            INCLUDE_AUR=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        -*)
+            echo -e "${RED}Error: Opción desconocida '$1'${NC}"
+            echo "Usa --help para ver las opciones disponibles"
+            exit 1
+            ;;
+        *)
+            SPECIFIC_PKGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Banner
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${CYAN}================================================================${NC}"
+    echo -e "${CYAN}     ${YELLOW}SIMULACIÓN: MIGRACIÓN FLATPAK → NATIVO (DRY-RUN)${NC}"
+    echo -e "${CYAN}================================================================${NC}"
+else
+    echo -e "${CYAN}================================================================${NC}"
+    echo -e "${CYAN}           ${YELLOW}MIGRACIÓN FLATPAK → PAQUETES NATIVOS${NC}"
+    echo -e "${CYAN}================================================================${NC}"
+fi
+
+# Mostrar modo
+if [ "$INTERACTIVE" = true ]; then
+    echo -e "${GREEN}✓ Modo: Interactivo (pregunta por cada paquete)${NC}"
+else
+    echo -e "${YELLOW}⚠ Modo: Batch (migra todos sin preguntar)${NC}"
+fi
+
+if [ "$INCLUDE_AUR" = true ]; then
+    echo -e "${YELLOW}⚠️  Buscando en repos oficiales Y AUR${NC}"
+else
+    echo -e "${GREEN}✓ Solo repos oficiales (Flatpak > AUR)${NC}"
+fi
+echo ""
+
+# Arrays para resultados
+declare -a migrables_flatpak_id=()
+declare -a migrables_pkg_name=()
+declare -a migrables_repo=()
+declare -a migrables_installer=()
+declare -a excluded_list=()
+declare -a big_app_list=()
+declare -A flatpak_installations
+
+# Obtener lista de flatpaks
+if [ ${#SPECIFIC_PKGS[@]} -gt 0 ]; then
+    echo -e "${BLUE}🔍 Revisando flatpaks específicos...${NC}\n"
+    FLATPAKS_TO_CHECK=("${SPECIFIC_PKGS[@]}")
+else
+    echo -e "${BLUE}🔍 Buscando flatpaks instalados...${NC}\n"
+    mapfile -t FLATPAKS_TO_CHECK < <(flatpak list --app --columns=application 2>/dev/null)
+fi
+
+# Revisar cada flatpak
+for flatpak_id in "${FLATPAKS_TO_CHECK[@]}"; do
+    if is_excluded "$flatpak_id"; then
+        excluded_list+=("$flatpak_id")
+        printf "${MAGENTA}⊘${NC} %-40s ${YELLOW}[excluido]${NC}\n" "$flatpak_id"
+        continue
+    fi
+
+    if is_better_in_flatpak "$flatpak_id" && [ "$INCLUDE_BIG_APPS" = false ]; then
+        big_app_list+=("$flatpak_id")
+        printf "${BLUE}ℹ${NC}  %-40s ${YELLOW}[flatpak]${NC} → ${BLUE}[mejor en flatpak]${NC}\n" "$flatpak_id"
+        continue
+    fi
+
+    pkg_name=$(map_flatpak_to_package "$flatpak_id")
+    result=$(find_native_package "$pkg_name" "$INCLUDE_AUR")
+
+    if [ -n "$result" ]; then
+        repo=$(echo "$result" | cut -d'|' -f1)
+        installer=$(echo "$result" | cut -d'|' -f2)
+        final_pkg_name=$(echo "$result" | cut -d'|' -f3)
+
+        # Detectar instalación (system/user)
+        installation=$(get_flatpak_installation "$flatpak_id")
+        flatpak_installations["$flatpak_id"]="$installation"
+
+        migrables_flatpak_id+=("$flatpak_id")
+        migrables_pkg_name+=("$final_pkg_name")
+        migrables_repo+=("$repo")
+        migrables_installer+=("$installer")
+
+        printf "${GREEN}✓${NC} %-40s ${YELLOW}[flatpak]${NC} → ${BLUE}[$repo/$final_pkg_name]${NC}\n" "$flatpak_id"
+    else
+        if [ "$INCLUDE_AUR" = true ]; then
+            printf "${RED}✗${NC} %-40s ${YELLOW}[flatpak]${NC} → ${RED}no disponible en repos/AUR${NC}\n" "$flatpak_id"
+        else
+            printf "${RED}✗${NC} %-40s ${YELLOW}[flatpak]${NC} → ${RED}no en repos oficiales${NC}\n" "$flatpak_id"
+        fi
+    fi
+done
+
+# Resumen
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                       ${YELLOW}RESUMEN${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Paquetes migrables:    ${GREEN}${#migrables_flatpak_id[@]}${NC}"
+if [ ${#excluded_list[@]} -gt 0 ]; then
+    echo -e "${CYAN}Paquetes excluidos:    ${MAGENTA}${#excluded_list[@]}${NC}"
+fi
+if [ ${#big_app_list[@]} -gt 0 ]; then
+    echo -e "${CYAN}Apps grandes omitidas: ${BLUE}${#big_app_list[@]}${NC} (usa --all)"
+fi
+echo -e "${CYAN}================================================================${NC}\n"
+
+# Si no hay nada
+if [ ${#migrables_flatpak_id[@]} -eq 0 ]; then
+    echo -e "${GREEN}✓ No hay flatpaks migrables.${NC}"
+    if [ ${#big_app_list[@]} -gt 0 ]; then
+        echo -e "${YELLOW}💡 Hay ${#big_app_list[@]} apps grandes omitidas (mejor en flatpak).${NC}"
+        echo -e "${YELLOW}   Usa --all para migrarlas de todos modos.${NC}"
+    fi
+    exit 0
+fi
+
+# Dry-run
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${YELLOW}ℹ️  Modo simulación: no se realizaron cambios${NC}"
+    echo -e "${YELLOW}💡 Ejecuta sin -n | --dry-run para realizar la migración${NC}"
+    exit 0
+fi
+
+# Migrar
+echo -e "${BLUE}🚀 Iniciando migración...${NC}\n"
+
+SUCCESS_COUNT=0
+FAILED_COUNT=0
+SKIPPED_COUNT=0
+
+for i in "${!migrables_flatpak_id[@]}"; do
+    flatpak_id="${migrables_flatpak_id[$i]}"
+    pkg_name="${migrables_pkg_name[$i]}"
+    repo="${migrables_repo[$i]}"
+    installer="${migrables_installer[$i]}"
+    installation="${flatpak_installations[$flatpak_id]}"
+
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+    echo -e "📦 ${GREEN}$flatpak_id${NC}"
+    echo -e "   ${YELLOW}[flatpak-$installation]${NC} → ${BLUE}[$repo/$pkg_name]${NC}"
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+
+    # Modo interactivo: preguntar
+    if [ "$INTERACTIVE" = true ]; then
+        echo -e "${YELLOW}¿Migrar este paquete? [S/n/q(quit)]${NC}"
+        read -r respuesta
+
+        if [[ "$respuesta" =~ ^[qQ]$ ]]; then
+            echo -e "${RED}❌ Migración cancelada por el usuario${NC}\n"
+            break
+        elif [[ "$respuesta" =~ ^[nN]$ ]]; then
+            echo -e "${YELLOW}⊘ Omitido${NC}\n"
+            SKIPPED_COUNT=$((SKIPPED_COUNT + 1))
+            continue
+        fi
+    fi
+
+    echo -e "${YELLOW}Desinstalando flatpak ($installation)...${NC}"
+    if flatpak uninstall --$installation --noninteractive "$flatpak_id" 2>/dev/null; then
+        echo -e "${GREEN}✓ Flatpak desinstalado${NC}"
+    else
+        echo -e "${RED}✗ Error al desinstalar flatpak${NC}\n"
+        FAILED_COUNT=$((FAILED_COUNT + 1))
+        continue
+    fi
+
+    echo -e "${YELLOW}Instalando desde $repo...${NC}"
+    if [ "$installer" = "pacman" ]; then
+        if sudo pacman -S --noconfirm "$pkg_name" 2>/dev/null; then
+            echo -e "${GREEN}✓ Instalado desde $repo${NC}\n"
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+        else
+            echo -e "${RED}✗ Error al instalar, revertiendo...${NC}"
+            flatpak install --$installation --noninteractive flathub "$flatpak_id" 2>/dev/null
+            echo -e "${YELLOW}⚠ Restaurado a flatpak${NC}\n"
+            FAILED_COUNT=$((FAILED_COUNT + 1))
+        fi
+    else
+        if paru -S --noconfirm "$pkg_name" 2>/dev/null; then
+            echo -e "${GREEN}✓ Instalado desde AUR${NC}\n"
+            SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+        else
+            echo -e "${RED}✗ Error al instalar, revertiendo...${NC}"
+            flatpak install --$installation --noninteractive flathub "$flatpak_id" 2>/dev/null
+            echo -e "${YELLOW}⚠ Restaurado a flatpak${NC}\n"
+            FAILED_COUNT=$((FAILED_COUNT + 1))
+        fi
+    fi
+done
+
+# Resumen final
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                   ${GREEN}MIGRACIÓN COMPLETADA${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Exitosos:  ${GREEN}$SUCCESS_COUNT${NC}"
+if [ $SKIPPED_COUNT -gt 0 ]; then
+    echo -e "${CYAN}Omitidos:  ${YELLOW}$SKIPPED_COUNT${NC}"
+fi
+echo -e "${CYAN}Fallidos:  ${RED}$FAILED_COUNT${NC}"
+echo -e "${CYAN}================================================================${NC}\n"
+
+# Limpiar flatpaks sin usar
+if [ $SUCCESS_COUNT -gt 0 ]; then
+    echo -e "${YELLOW}💡 Ejecutando limpieza de flatpak...${NC}"
+    flatpak uninstall --unused --noninteractive 2>/dev/null
+    echo -e "${GREEN}✓ Limpieza completada${NC}\n"
+fi
+
+echo -e "${YELLOW}💡 Tip: Ejecuta 'list-packages' para verificar los cambios${NC}"

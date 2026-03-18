@@ -15,12 +15,29 @@ dot_bashrc
 dot_bash_profile
 dot_bash_logout
 dot_config/zsh/**
+dot_config/kitty/**
+dot_config/tmux/**
+dot_config/swayosd/**
+dot_config/cliphist/**
+dot_config/autostart/**
+dot_config/mimeapps.list
+dot_config/nchat/**
+dot_config/aerc/**
+dot_config/vesktop/**
+dot_config/hypr/**
+dot_config/waybar/**
+dot_config/swaync/**
+dot_config/FreeTube/**
+dot_config/openvpn/**
+dot_config/ghostty/**
+dot_local/**
 {{ end -}}
 
 
 # Reference only — not applied to home
 packages/**
 program_files/**
+other_config/**
 dot_config/stylus/**
 
 # Never track nested git repos or runtime/cache data

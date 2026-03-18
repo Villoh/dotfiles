@@ -1,0 +1,254 @@
+#!/bin/bash
+# ~/.local/bin/migrate-aur
+
+# Colores
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Variables
+DRY_RUN=false
+EXCLUDE_PKGS=()
+SPECIFIC_PKGS=()
+
+# Función de ayuda
+show_help() {
+    cat << EOF
+${CYAN}Uso:${NC} migrate-aur [OPCIONES] [PAQUETES...]
+
+${YELLOW}Descripción:${NC}
+  Migra paquetes de AUR a repositorios oficiales si están disponibles.
+  Prioridad: cachyos > chaotic-aur > core/extra/multilib
+  Busca automáticamente variantes sin sufijos -bin, -git, etc.
+
+${YELLOW}Opciones:${NC}
+  -n, --dry-run              Simular migración sin realizar cambios
+  -e, --exclude PKG[,PKG...] Excluir paquetes de la migración
+  -h, --help                 Mostrar esta ayuda
+
+${YELLOW}Ejemplos:${NC}
+  migrate-aur                    # Migrar todos los paquetes disponibles
+  migrate-aur vscodium-bin       # Migrar solo vscodium-bin
+  migrate-aur -n                 # Ver qué se migraría (dry-run)
+  migrate-aur -e megasync        # Migrar todos excepto megasync
+  migrate-aur -e "pkg1,pkg2"     # Excluir múltiples paquetes
+
+${GREEN}Nota:${NC} Este proceso NO borra configuraciones de usuario (~/.config, /etc/)
+EOF
+    exit 0
+}
+
+# Función para obtener nombre base del paquete (quitar sufijos)
+get_base_name() {
+    local pkg="$1"
+    echo "$pkg" | sed -E 's/-(bin|git|svn|hg|bzr|cvs)$//'
+}
+
+# Función para buscar paquete en repos
+find_in_repos() {
+    local aur_pkg="$1"
+    local base_name=$(get_base_name "$aur_pkg")
+    
+    # Primero intentar con el nombre exacto
+    local repo=$(pacman -Sp --print-format '%r' "$aur_pkg" 2>/dev/null | head -1)
+    if [ -n "$repo" ] && [ "$repo" != "aur" ]; then
+        echo "$repo|$aur_pkg"
+        return 0
+    fi
+    
+    # Si no existe, intentar con el nombre base (sin sufijo)
+    if [ "$base_name" != "$aur_pkg" ]; then
+        repo=$(pacman -Sp --print-format '%r' "$base_name" 2>/dev/null | head -1)
+        if [ -n "$repo" ] && [ "$repo" != "aur" ]; then
+            echo "$repo|$base_name"
+            return 0
+        fi
+    fi
+    
+    return 1
+}
+
+# Parsear argumentos
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -e|--exclude)
+            IFS=',' read -ra EXCLUDE_PKGS <<< "$2"
+            shift 2
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        -*)
+            echo -e "${RED}Error: Opción desconocida '$1'${NC}"
+            echo "Usa --help para ver las opciones disponibles"
+            exit 1
+            ;;
+        *)
+            SPECIFIC_PKGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Función para verificar si un paquete está excluido
+is_excluded() {
+    local pkg="$1"
+    for excluded in "${EXCLUDE_PKGS[@]}"; do
+        if [[ "$pkg" == "$excluded" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Banner
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${CYAN}================================================================${NC}"
+    echo -e "${CYAN}      ${YELLOW}SIMULACIÓN: MIGRACIÓN AUR → REPOS (DRY-RUN)${NC}"
+    echo -e "${CYAN}================================================================${NC}\n"
+else
+    echo -e "${CYAN}================================================================${NC}"
+    echo -e "${CYAN}         ${YELLOW}MIGRACIÓN AUR → REPOSITORIOS OFICIALES${NC}"
+    echo -e "${CYAN}================================================================${NC}\n"
+fi
+
+# Arrays para almacenar paquetes migrables
+declare -a migrables_aur_pkg=()
+declare -a migrables_repo_pkg=()
+declare -a migrables_repo=()
+declare -a excluded_list=()
+
+# Obtener lista de paquetes a revisar
+if [ ${#SPECIFIC_PKGS[@]} -gt 0 ]; then
+    echo -e "${BLUE}🔍 Revisando paquetes específicos...${NC}\n"
+    PKGS_TO_CHECK=("${SPECIFIC_PKGS[@]}")
+else
+    echo -e "${BLUE}🔍 Buscando todos los paquetes AUR instalados...${NC}\n"
+    mapfile -t PKGS_TO_CHECK < <(pacman -Qem | awk '{print $1}')
+fi
+
+# Revisar cada paquete
+for aur_pkg in "${PKGS_TO_CHECK[@]}"; do
+    if is_excluded "$aur_pkg"; then
+        excluded_list+=("$aur_pkg")
+        printf "${MAGENTA}⊘${NC} %-30s ${YELLOW}[AUR]${NC} → ${MAGENTA}[excluido]${NC}\n" "$aur_pkg"
+        continue
+    fi
+    
+    if ! pacman -Qm "$aur_pkg" &>/dev/null; then
+        printf "${RED}✗${NC} %-30s ${RED}no está instalado desde AUR${NC}\n" "$aur_pkg"
+        continue
+    fi
+    
+    result=$(find_in_repos "$aur_pkg")
+    
+    if [ -n "$result" ]; then
+        repo=$(echo "$result" | cut -d'|' -f1)
+        repo_pkg=$(echo "$result" | cut -d'|' -f2)
+        
+        migrables_aur_pkg+=("$aur_pkg")
+        migrables_repo_pkg+=("$repo_pkg")
+        migrables_repo+=("$repo")
+        
+        if [ "$aur_pkg" != "$repo_pkg" ]; then
+            printf "${GREEN}✓${NC} %-30s ${YELLOW}[AUR]${NC} → ${BLUE}[%s/%s]${NC}\n" "$aur_pkg" "$repo" "$repo_pkg"
+        else
+            printf "${GREEN}✓${NC} %-30s ${YELLOW}[AUR]${NC} → ${BLUE}[%s]${NC}\n" "$aur_pkg" "$repo"
+        fi
+    else
+        printf "${RED}✗${NC} %-30s ${YELLOW}[AUR]${NC} → ${RED}no disponible${NC}\n" "$aur_pkg"
+    fi
+done
+
+# Resumen
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                       ${YELLOW}RESUMEN${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Paquetes migrables: ${GREEN}${#migrables_aur_pkg[@]}${NC}"
+if [ ${#excluded_list[@]} -gt 0 ]; then
+    echo -e "${CYAN}Paquetes excluidos: ${MAGENTA}${#excluded_list[@]}${NC}"
+fi
+echo -e "${CYAN}================================================================${NC}\n"
+
+# Si no hay nada que migrar
+if [ ${#migrables_aur_pkg[@]} -eq 0 ]; then
+    echo -e "${GREEN}✓ No hay paquetes AUR migrables a repos oficiales.${NC}"
+    exit 0
+fi
+
+# Si es dry-run, terminar aquí
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${YELLOW}ℹ️  Modo simulación: no se realizaron cambios${NC}"
+    echo -e "${YELLOW}💡 Ejecuta sin -n | --dry-run para realizar la migración${NC}"
+    exit 0
+fi
+
+# Preguntar si migrar
+echo -e "${YELLOW}¿Deseas migrar estos paquetes? [s/N]${NC}"
+read -r respuesta
+
+if [[ ! "$respuesta" =~ ^[sS]$ ]]; then
+    echo -e "${RED}❌ Migración cancelada${NC}"
+    exit 0
+fi
+
+# Migrar paquetes
+echo -e "\n${BLUE}🚀 Iniciando migración...${NC}\n"
+
+SUCCESS_COUNT=0
+FAILED_COUNT=0
+
+for i in "${!migrables_aur_pkg[@]}"; do
+    aur_pkg="${migrables_aur_pkg[$i]}"
+    repo_pkg="${migrables_repo_pkg[$i]}"
+    repo="${migrables_repo[$i]}"
+    
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+    if [ "$aur_pkg" != "$repo_pkg" ]; then
+        echo -e "📦 Migrando: ${GREEN}$aur_pkg${NC} ${YELLOW}[AUR]${NC} → ${BLUE}[$repo/$repo_pkg]${NC}"
+    else
+        echo -e "📦 Migrando: ${GREEN}$aur_pkg${NC} ${YELLOW}[AUR]${NC} → ${BLUE}[$repo]${NC}"
+    fi
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+    
+    echo -e "${YELLOW}Desinstalando versión AUR ($aur_pkg)...${NC}"
+    if sudo pacman -Rdd --noconfirm "$aur_pkg" 2>/dev/null; then
+        echo -e "${GREEN}✓ Desinstalado${NC}"
+    else
+        echo -e "${RED}✗ Error al desinstalar${NC}"
+        FAILED_COUNT=$((FAILED_COUNT + 1))
+        continue
+    fi
+    
+    echo -e "${YELLOW}Instalando desde $repo ($repo_pkg)...${NC}"
+    if sudo pacman -S --noconfirm "$repo/$repo_pkg" 2>/dev/null; then
+        echo -e "${GREEN}✓ Instalado desde $repo${NC}\n"
+        SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    else
+        echo -e "${RED}✗ Error al instalar, revertiendo...${NC}"
+        if paru -S --noconfirm "$aur_pkg" 2>/dev/null; then
+            echo -e "${YELLOW}⚠ Restaurado a versión AUR${NC}\n"
+        else
+            echo -e "${RED}✗ Error crítico: no se pudo restaurar${NC}\n"
+        fi
+        FAILED_COUNT=$((FAILED_COUNT + 1))
+    fi
+done
+
+# Resumen final
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                   ${GREEN}MIGRACIÓN COMPLETADA${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Exitosos:  ${GREEN}$SUCCESS_COUNT${NC}"
+echo -e "${CYAN}Fallidos:  ${RED}$FAILED_COUNT${NC}"
+echo -e "${CYAN}================================================================${NC}\n"
+
+echo -e "${YELLOW}💡 Tip: Ejecuta 'list-packages' para verificar los cambios${NC}"
