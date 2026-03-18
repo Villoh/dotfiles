@@ -1,0 +1,7 @@
+[
+  {
+    "label": "Cheatsheet",
+    "command": "zed $HOME/AppData/Roaming/Zed/cheatsheet-vim.md",
+    "allow_concurrent_runs": false
+  }
+]
