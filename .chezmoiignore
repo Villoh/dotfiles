@@ -1,0 +1,7 @@
+{{ if ne .chezmoi.os "windows" -}}
+# Windows-only paths — ignore on Linux/macOS
+AppData/
+Documents/
+scoop/
+dot_glzr/
+{{ end -}}

@@ -1,0 +1,2 @@
+.github/assets/*.png !text !filter !merge !diff
+.github/assets/*.jpg !text !filter !merge !diff
