@@ -8,7 +8,7 @@ set -euo pipefail
 
 readonly THEME_NAME="sddm-astronaut-theme"
 readonly THEMES_DIR="/usr/share/sddm/themes"
-readonly LOCAL_THEME_PATH="$HOME/.dotfiles/sddm/themes/$THEME_NAME"
+readonly LOCAL_THEME_PATH="$(chezmoi source-path)/other_config/sddm/themes/$THEME_NAME"
 readonly METADATA="$THEMES_DIR/$THEME_NAME/metadata.desktop"
 readonly DATE=$(date +%s)
 
