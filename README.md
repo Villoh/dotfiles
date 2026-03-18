@@ -146,8 +146,3 @@ chezmoi status
 chezmoi update
 ```
 
-## Known quirks
-
-- **Large adds + autoCommit:** Adding 100+ files at once can cause chezmoi's auto-commit to fail (Windows command-line length limit). Workaround: temporarily set `autoCommit = false` in `~/.config/chezmoi/chezmoi.toml`, run `chezmoi add`, commit manually with `chezmoi git -- commit -m "..."`, then re-enable.
-- **`Documents/` prefix:** Windows marks shell folders (`Documents`, `Desktop`, etc.) with a `ReadOnly` attribute. If chezmoi ever re-adds files from `Documents/`, rename any `readonly_Documents` back to `Documents` in the source.
-- **Warp themes:** The `previews/` subdirectories are excluded (hundreds of SVG files). The themes themselves are fully tracked.
