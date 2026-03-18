@@ -1,0 +1,12 @@
+{{- $isWindows := eq .chezmoi.os "windows" -}}
+encryption = "gpg"
+
+[gpg]
+    recipient = "2E5BD225E500AB50"
+
+[git]
+    autoCommit = true
+    autoPush = true
+
+[data]
+    isWindows = {{ $isWindows }}

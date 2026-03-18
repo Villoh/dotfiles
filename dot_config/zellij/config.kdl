@@ -1,0 +1,52 @@
+// =============================================================================
+// Zellij - Windows Configuration
+// =============================================================================
+// Path: C:\Users\Mikel\.config\zellij\config.kdl
+// Docs: https://zellij.dev/documentation/
+// =============================================================================
+
+default_shell "pwsh"
+pane_frames true
+scroll_buffer_size 10000
+copy_on_select false
+copy_command "powershell.exe -Command Set-Clipboard"
+mouse_mode true
+default_layout "default" // Set this to compact when you feel okey with the keybinds, it will hide the bottom bar.
+mirror_session false
+
+// =============================================================================
+// THEME - Catppuccin Mocha
+// =============================================================================
+theme "catppuccin-mocha"
+
+// =============================================================================
+// KEYBINDINGS
+// =============================================================================
+// clear-defaults=true will clear
+keybinds clear-defaults=false {
+    normal {
+        bind "Ctrl a"       { SwitchToMode "Pane"; }
+        bind "Ctrl d"       { NewPane "Down"; }
+        bind "Ctrl Shift d" { NewPane "Right"; }
+        bind "Alt h"        { MoveFocus "Left"; }
+        bind "Alt l"        { MoveFocus "Right"; }
+        bind "Alt j"        { MoveFocus "Down"; }
+        bind "Alt k"        { MoveFocus "Up"; }
+        bind "Alt n"        { NewTab; }
+        bind "Alt w"        { CloseTab; }
+        bind "Alt ["        { GoToPreviousTab; }
+        bind "Alt ]"        { GoToNextTab; }
+        bind "Alt 1"        { GoToTab 1; }
+        bind "Alt 2"        { GoToTab 2; }
+        bind "Alt 3"        { GoToTab 3; }
+        bind "Alt 4"        { GoToTab 4; }
+        bind "Alt 5"        { GoToTab 5; }
+        bind "Ctrl q"       { Detach; }
+    }
+    pane {
+        bind "h" "Left"  { MoveFocus "Left";  }
+        bind "l" "Right" { MoveFocus "Right"; }
+        bind "j" "Down"  { MoveFocus "Down";  }
+        bind "k" "Up"    { MoveFocus "Up";    }
+    }
+}
