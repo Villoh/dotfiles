@@ -1,17 +1,14 @@
 [include]
-    path = ~/.gitconfig.local
+    path = ~/.config/git/local
+    path = ~/.config/git/platform
 [init]
 	defaultBranch = main
 [core]
 	editor = zed
-	sshCommand = C:/Windows/System32/OpenSSH/ssh.exe
-	longpaths = true
 [pull]
 	rebase = false
 [commit]
 	gpgsign = true
-[gpg]
-	program = C:/Program Files/GnuPG/bin/gpg.exe
 [tag]
   gpgsign = true
 [safe]
