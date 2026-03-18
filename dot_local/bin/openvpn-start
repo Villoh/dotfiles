@@ -1,0 +1,386 @@
+#!/bin/bash
+# ~/.local/bin/openvpn-start
+#
+# VPN connection manager for vpnd and NordVPN providers.
+# Interactive mode uses fzf (if available) with NordVPN API for smart server selection.
+# Falls back gracefully to local .ovpn files when API is unreachable.
+#
+# Usage:
+#   openvpn-start                               → interactive mode
+#   openvpn-start <server> [proto] [provider]   → direct mode
+
+set -euo pipefail
+
+# ─── Constants ────────────────────────────────────────────────────────────────
+
+readonly NORDVPN_CONFIG_DIR="${HOME}/.config/openvpn/nordvpn"
+readonly VPND_CONFIG_DIR="${HOME}/.config/openvpn/vpnd"
+readonly NORDVPN_API="https://api.nordvpn.com/v1"
+readonly API_TIMEOUT=5   # segundos antes de caer al fallback local
+readonly DEFAULT_LIMIT=20  # servidores a pedir a la API de recomendaciones
+
+# ─── Utilidades ───────────────────────────────────────────────────────────────
+
+# Imprime un mensaje de error en stderr y termina con código 1.
+# $1 - mensaje de error
+die() {
+  echo "❌ $1" >&2
+  exit 1
+}
+
+# Wrapper de selección interactiva. Lee las opciones de stdin (una por línea).
+# Usa fzf si está disponible; si no, usa 'select' de bash como fallback.
+# $1 - prompt que se muestra al usuario
+# $2 - header descriptivo del contexto
+# stdin - opciones, una por línea
+# stdout - la opción elegida
+fzf_select() {
+  local prompt=$1 header=$2
+
+  if command -v fzf &>/dev/null; then
+    fzf --prompt="${prompt} " \
+        --header="$header" \
+        --height=50% \
+        --border \
+        --ansi \
+        --cycle
+  else
+    # Fallback: cargamos stdin en array y usamos select
+    local items=()
+    mapfile -t items
+    PS3="${prompt} "
+    local item
+    select item in "${items[@]}"; do
+      [ -n "$item" ] && echo "$item" && break
+      echo "Opción inválida, prueba de nuevo" >&2
+    done
+  fi
+}
+
+# ─── Providers ────────────────────────────────────────────────────────────────
+
+# Emite los providers disponibles (uno por línea) según directorios existentes.
+list_providers() {
+  [ -d "$VPND_CONFIG_DIR" ]    && echo "vpnd"
+  [ -d "$NORDVPN_CONFIG_DIR" ] && echo "nordvpn"
+}
+
+# ─── vpnd ─────────────────────────────────────────────────────────────────────
+
+# Lista los nombres de servidor vpnd disponibles para el protocolo dado.
+# $1 - protocolo (tcp|udp)
+list_vpnd_servers() {
+  local proto=$1
+  ls "$VPND_CONFIG_DIR/$proto/"*.ovpn 2>/dev/null \
+    | xargs -n1 basename \
+    | sed 's/\.ovpn$//'
+}
+
+# ─── NordVPN: países ──────────────────────────────────────────────────────────
+
+# Obtiene la lista de países de la API de NordVPN.
+# Emite líneas con formato: "CODE\tID\tName" ordenadas por nombre.
+# Retorna 1 si la API no está disponible o jq falla.
+fetch_nordvpn_countries_api() {
+  curl -sf --max-time "$API_TIMEOUT" \
+    "${NORDVPN_API}/servers/countries" 2>/dev/null \
+  | jq -r '.[] | "\(.code)\t\(.id)\t\(.name)"' 2>/dev/null \
+  | sort -t$'\t' -k3 \
+  || return 1
+}
+
+# Extrae códigos de país únicos de los ficheros .ovpn locales.
+# Emite códigos en mayúsculas, uno por línea (ej: ES, DE, US).
+# $1 - protocolo (tcp|udp)
+list_nordvpn_countries_local() {
+  local proto=$1
+  ls "${NORDVPN_CONFIG_DIR}/ovpn_${proto}/"*.ovpn 2>/dev/null \
+    | xargs -n1 basename \
+    | grep -oP '^[a-z]+(?=\d)' \
+    | sort -u \
+    | tr '[:lower:]' '[:upper:]'
+}
+
+# Punto de entrada para obtener países de NordVPN.
+# Intenta la API primero; si falla, parsea ficheros locales.
+# Emite líneas con formato "CODE\tID\tName" (API) o "CODE\t\t(local)" (fallback).
+# $1 - protocolo (tcp|udp)
+get_nordvpn_countries() {
+  local proto=$1
+  local countries
+
+  echo "  🌐 Consultando API NordVPN..." >&2
+  if countries=$(fetch_nordvpn_countries_api); then
+    echo "  ✅ API OK" >&2
+    echo "$countries"
+    return 0
+  fi
+
+  echo "  ⚠️  API no disponible, usando ficheros locales..." >&2
+  list_nordvpn_countries_local "$proto" | while IFS= read -r code; do
+    printf '%s\t\t(local)\n' "$code"
+  done
+}
+
+# ─── NordVPN: servidores ──────────────────────────────────────────────────────
+
+# Obtiene servidores recomendados de NordVPN para un país concreto vía API.
+# Emite líneas con formato "LOAD%\tHOSTNAME" ordenadas por carga ascendente.
+# $1 - country_id numérico (de la API)
+# $2 - protocolo (tcp|udp)
+fetch_nordvpn_servers_api() {
+  local country_id=$1 proto=$2 limit=$3
+
+  # Corchetes URL-encodeados (%5B/%5D) — algunos entornos los rechazan en crudo
+  local url="${NORDVPN_API}/servers/recommendations?filters%5Bcountry_id%5D=${country_id}&filters%5Bservers_technologies%5D%5Bidentifier%5D=openvpn_${proto}&limit=${limit}"
+
+  echo "  🔗 API servidores: ${url}" >&2
+
+  local response
+  response=$(curl -sf --max-time "$API_TIMEOUT" "$url" 2>/dev/null) || return 1
+
+  # Emite: load: N%\tCIUDAD\tHOSTNAME — ciudad vacía si la API no la devuelve
+  echo "$response" \
+    | jq -r 'sort_by(.load) | .[] | "load: \(.load)%\t\(.locations[0].country.city.name // "?")\t\(.hostname | gsub("\\.nordvpn\\.com$";""))"' \
+    2>/dev/null \
+    || return 1
+}
+
+# Lista servidores NordVPN filtrando los .ovpn locales por código de país.
+# Emite hostnames cortos (ej: es123), uno por línea.
+# $1 - código de país en minúsculas (ej: es)
+# $2 - protocolo (tcp|udp)
+list_nordvpn_servers_local() {
+  local country_code=$1 proto=$2
+  ls "${NORDVPN_CONFIG_DIR}/ovpn_${proto}/${country_code}"*.ovpn 2>/dev/null \
+    | xargs -n1 basename \
+    | sed 's/\.nordvpn\.com\..*\.ovpn$//'
+}
+
+# Punto de entrada para obtener servidores NordVPN de un país.
+# Intenta API si tenemos country_id; si falla o no hay ID, usa ficheros locales.
+# Emite "load: LOAD%\tHOSTNAME" (API) o "local\tHOSTNAME" (fallback).
+# $1 - código de país en mayúsculas (ej: US)
+# $2 - country_id numérico (vacío o "(local)" si venimos del fallback)
+# $3 - protocolo (tcp|udp)
+# $4 - límite de servidores a pedir a la API
+get_nordvpn_servers() {
+  local country_code=$1 country_id=$2 proto=$3 limit=$4
+  local code_lower
+  code_lower=$(echo "$country_code" | tr '[:upper:]' '[:lower:]')
+
+  if [ -n "$country_id" ] && [ "$country_id" != "(local)" ]; then
+    local servers
+    if servers=$(fetch_nordvpn_servers_api "$country_id" "$proto" "$limit"); then
+      echo "$servers"
+      return 0
+    fi
+    echo "  ⚠️  API servidores no disponible, usando ficheros locales..." >&2
+  fi
+
+  list_nordvpn_servers_local "$code_lower" "$proto" | while IFS= read -r s; do
+    printf 'local\t?\t%s\n' "$s"
+  done
+}
+
+# ─── Selección interactiva NordVPN ────────────────────────────────────────────
+
+# Orquesta la selección interactiva de servidor NordVPN: país → servidor.
+# Rellena las variables globales SERVER, COUNTRY_CODE y COUNTRY_ID.
+# $1 - protocolo (tcp|udp)
+# $2 - límite de servidores a pedir a la API
+select_nordvpn_server() {
+  local proto=$1 limit=$2
+
+  # — Países —
+  local countries_raw
+  countries_raw=$(get_nordvpn_countries "$proto")
+  [ -z "$countries_raw" ] && die "No se encontraron países para NordVPN/$proto"
+
+  # Mostramos "ES  Spain" en fzf; internamente guardamos la línea completa
+  local country_line
+  country_line=$(echo "$countries_raw" \
+    | awk -F'\t' '{print $1 "  " $3}' \
+    | fzf_select "🌍 País:" "NordVPN — Elige país (${proto^^})") \
+    || die "No se eligió país"
+
+  # Extraemos el código y el nombre del país de la línea elegida
+  COUNTRY_CODE=$(echo "$country_line" | awk '{print $1}')
+  local country_name
+  country_name=$(echo "$country_line" | awk '{$1=""; print substr($0,2)}')
+
+  # Recuperamos el ID numérico del raw usando el código como clave
+  COUNTRY_ID=$(echo "$countries_raw" \
+    | awk -F'\t' -v code="$COUNTRY_CODE" '$1 == code {print $2; exit}')
+
+  # — Servidores (fetch único, filtro client-side) —
+  local servers_raw
+  servers_raw=$(get_nordvpn_servers "$COUNTRY_CODE" "$COUNTRY_ID" "$proto" "$limit")
+  [ -z "$servers_raw" ] && die "No se encontraron servidores para $COUNTRY_CODE/$proto"
+
+  # — Filtro por estado/ciudad (solo si hay más de una) —
+  local cities_unique
+  cities_unique=$(echo "$servers_raw" | awk -F'\t' '{print $2}' | sort -u)
+  local city_count
+  city_count=$(echo "$cities_unique" | wc -l)
+
+  local servers_filtered="$servers_raw"
+  if [ "$city_count" -gt 1 ]; then
+    local chosen_city
+    chosen_city=$(printf 'All
+%s
+' "$cities_unique" \
+      | fzf_select "📍 Estado/Ciudad:" "NordVPN — ${COUNTRY_CODE} ${country_name} — elige zona o All") \
+      || die "No se eligió estado"
+    if [ "$chosen_city" != "All" ]; then
+      servers_filtered=$(echo "$servers_raw" | awk -F'\t' -v city="$chosen_city" '$2 == city')
+      [ -z "$servers_filtered" ] && die "Sin servidores para $chosen_city"
+    fi
+  fi
+
+  # — Servidor final —
+  local server_line
+  server_line=$(echo "$servers_filtered" \
+    | awk -F'\t' '{
+        if ($1 == "local") printf "%-25s  %s\n", $2, $3
+        else printf "%s  %-25s  %s\n", $1, $2, $3
+      }' \
+    | fzf_select "🖥️  Servidor:" "NordVPN — ${COUNTRY_CODE} ${country_name} (${proto^^}) — top ${limit} por carga") \
+    || die "No se eligió servidor"
+
+  # El hostname es siempre el último campo de la línea
+  SERVER=$(echo "$server_line" | awk '{print $NF}')
+}
+
+# ─── Selección interactiva vpnd ───────────────────────────────────────────────
+
+# Selección interactiva de servidor vpnd.
+# Rellena la variable global SERVER.
+# $1 - protocolo (tcp|udp)
+select_vpnd_server() {
+  local proto=$1
+
+  SERVER=$(list_vpnd_servers "$proto" \
+    | fzf_select "🖥️  Servidor:" "vpnd (${proto^^})") \
+    || die "No se eligió servidor"
+
+  [ -z "$SERVER" ] && die "No servers vpnd/$proto"
+}
+
+# ─── Modo interactivo ─────────────────────────────────────────────────────────
+
+# Orquesta el flujo interactivo completo.
+# Rellena las variables globales PROVIDER, PROTOCOL y SERVER.
+interactive_mode() {
+  echo "🌐 VPN Selector Interactivo"
+  echo ""
+
+  # Provider
+  local providers_list
+  providers_list=$(list_providers)
+  [ -z "$providers_list" ] && die "No providers encontrados"
+
+  PROVIDER=$(echo "$providers_list" \
+    | fzf_select "🔌 Provider:" "Providers disponibles") \
+    || die "No se eligió provider"
+
+  # Protocolo
+  PROTOCOL=$(printf 'tcp\nudp\n' \
+    | fzf_select "📡 Protocolo:" "Elige protocolo") \
+    || die "No se eligió protocolo"
+
+  # Servidor según provider
+  case $PROVIDER in
+    nordvpn) select_nordvpn_server "$PROTOCOL" "$LIMIT" ;;
+    vpnd)    select_vpnd_server    "$PROTOCOL" ;;
+  esac
+}
+
+# ─── Main ─────────────────────────────────────────────────────────────────────
+
+PROVIDER=""
+PROTOCOL=""
+SERVER=""
+COUNTRY_CODE=""
+COUNTRY_ID=""
+LIMIT=$DEFAULT_LIMIT
+
+# Parseo de --limit N (compatible con cualquier posición de los argumentos)
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --limit)
+      [[ -n "${2:-}" && "${2}" =~ ^[0-9]+$ ]] || die "--limit requiere un número entero"
+      LIMIT=$2
+      shift 2
+      ;;
+    *) POSITIONAL+=("$1"); shift ;;
+  esac
+done
+set -- "${POSITIONAL[@]+"${POSITIONAL[@]}"}"
+
+if [ $# -eq 0 ]; then
+  interactive_mode
+else
+  SERVER=$1
+  PROTOCOL=${2:-tcp}
+  PROVIDER=${3:-vpnd}
+fi
+
+# ─── Resolución de paths ──────────────────────────────────────────────────────
+
+case $PROVIDER in
+  vpnd)
+    CONFIG_FILE="${VPND_CONFIG_DIR}/${PROTOCOL}/${SERVER}.ovpn"
+    AUTH_FILE="/etc/openvpn/vpnd/auth"
+    ;;
+  nordvpn)
+    CONFIG_FILE="${NORDVPN_CONFIG_DIR}/ovpn_${PROTOCOL}/${SERVER}.nordvpn.com.${PROTOCOL}.ovpn"
+    AUTH_FILE="/etc/openvpn/nordvpn/auth"
+    ;;
+  *)
+    die "Provider '$PROVIDER' inválido"
+    ;;
+esac
+
+# ─── Validaciones ─────────────────────────────────────────────────────────────
+
+[[ "$PROTOCOL" =~ ^(udp|tcp)$ ]] || die "Protocolo inválido: $PROTOCOL"
+[ -f "$CONFIG_FILE" ]            || die "Config no encontrada: $CONFIG_FILE"
+[ -f "$AUTH_FILE" ]              || die "Auth no encontrado: $AUTH_FILE"
+
+# ─── Desconectar instancia previa del mismo provider ─────────────────────────
+
+PID_FILE="/tmp/openvpn-${PROVIDER}.pid"
+
+if [ -f "$PID_FILE" ]; then
+  pid=$(sudo cat "$PID_FILE" 2>/dev/null || true)
+  if [ -n "$pid" ] && sudo kill -0 "$pid" 2>/dev/null; then
+    echo "🔄 Desconectando $PROVIDER anterior (PID $pid)..."
+    openvpn-stop "$PROVIDER" || true
+    sleep 5
+  else
+    sudo rm -f "$PID_FILE"
+  fi
+fi
+
+# ─── Conexión ─────────────────────────────────────────────────────────────────
+
+echo ""
+echo "🚀 Conectando ${PROVIDER}/${SERVER} (${PROTOCOL})..."
+
+sudo openvpn \
+  --config         "$CONFIG_FILE" \
+  --auth-user-pass "$AUTH_FILE" \
+  --writepid       "$PID_FILE" \
+  --daemon \
+  --log            "/tmp/openvpn-${PROVIDER}.log"
+
+sleep 3
+
+if [ -f "$PID_FILE" ]; then
+  echo "✅ Conectado | IP pública: $(curl -s --max-time 5 ifconfig.me)"
+else
+  echo "❌ Falló la conexión. Revisa: tail -f /tmp/openvpn-${PROVIDER}.log"
+  exit 1
+fi

@@ -1,0 +1,45 @@
+#!/bin/bash
+# ~/.local/bin/list-packages
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+echo -e "${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${NC}          ${YELLOW}📦 PAQUETES INSTALADOS (NO DEPENDENCIAS)   ${NC}          ${CYAN}║${NC}"
+echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}\n"
+
+# PACMAN - Solo explícitos de repos oficiales
+echo -e "${GREEN}=== PACMAN (Paquetes Explícitos) ===${NC}\n"
+while read -r pkg ver; do
+    # Obtener solo el PRIMER repo (el que realmente usas)
+    repo=$(pacman -Sp --print-format '%r' "$pkg" 2>/dev/null)
+    [ -z "$repo" ] && repo="unknown"
+    printf "${GREEN}%-35s${NC} %-20s ${BLUE}%-20s${NC}\n" "$pkg" "$ver" "[$repo]"
+done < <(pacman -Qen)
+
+# AUR - Solo explícitos
+echo -e "\n${YELLOW}=== AUR (Paquetes Explícitos) ===${NC}\n"
+while read -r pkg ver; do
+    printf "${YELLOW}%-35s${NC} %-20s ${MAGENTA}%-20s${NC}\n" "$pkg" "$ver" "[aur]"
+done < <(pacman -Qem)
+
+# FLATPAK
+echo -e "\n${CYAN}=== FLATPAK (Aplicaciones) ===${NC}\n"
+flatpak list --app --columns=name,version,origin 2>/dev/null | tail -n +1 | while IFS=$'\t' read -r name ver origin; do
+    [ -z "$name" ] && continue
+    printf "${CYAN}%-35s${NC} %-20s ${RED}%-20s${NC}\n" "$name" "$ver" "[flatpak:$origin]"
+done
+
+# Resumen
+echo -e "\n${CYAN}╔═══════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║${NC}                         ${YELLOW}RESUMEN${NC}                               ${CYAN}║${NC}"
+echo -e "${CYAN}╠═══════════════════════════════════════════════════════════════╣${NC}"
+printf "${CYAN}║${NC} Pacman (oficial):  ${GREEN}%-4d${NC}                                       ${CYAN}║${NC}\n" "$(pacman -Qen | wc -l)"
+printf "${CYAN}║${NC} AUR:               ${MAGENTA}%-4d${NC}                                       ${CYAN}║${NC}\n" "$(pacman -Qem | wc -l)"
+printf "${CYAN}║${NC} Flatpak:           ${RED}%-4d${NC}                                       ${CYAN}║${NC}\n" "$(flatpak list --app 2>/dev/null | wc -l)"
+echo -e "${CYAN}╚═══════════════════════════════════════════════════════════════╝${NC}"

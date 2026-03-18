@@ -1,0 +1,92 @@
+#!/bin/bash
+set -e
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+DOTFILES_DIR="${HOME}/.dotfiles"
+BACKUP_DIR="${DOTFILES_DIR}/backup-packages"
+echo -e "${BLUE}📦 Backing up installed packages...${NC}\n"
+# Create backup directory
+mkdir -p "${BACKUP_DIR}"
+# ============================================================================
+# Backup Pacman packages (explicitly installed, no dependencies)
+# ============================================================================
+echo -e "${GREEN}📦 Pacman packages (explicit):${NC}"
+pacman -Qqe > "${BACKUP_DIR}/pacman.txt"
+PACMAN_COUNT=$(wc -l < "${BACKUP_DIR}/pacman.txt")
+echo -e "  ${YELLOW}→ ${PACMAN_COUNT} packages saved to pacman.txt${NC}\n"
+# ============================================================================
+# Backup AUR packages
+# ============================================================================
+echo -e "${GREEN}🔧 AUR packages:${NC}"
+pacman -Qqm > "${BACKUP_DIR}/aur.txt"
+AUR_COUNT=$(wc -l < "${BACKUP_DIR}/aur.txt")
+echo -e "  ${YELLOW}→ ${AUR_COUNT} packages saved to aur.txt${NC}\n"
+# ============================================================================
+# Backup Flatpak packages
+# ============================================================================
+if command -v flatpak >/dev/null 2>&1; then
+    echo -e "${GREEN}📱 Flatpak packages:${NC}"
+    flatpak list --app --columns=application 2>/dev/null > "${BACKUP_DIR}/flatpak.txt" || echo "" > "${BACKUP_DIR}/flatpak.txt"
+    FLATPAK_COUNT=$(wc -l < "${BACKUP_DIR}/flatpak.txt")
+    echo -e "  ${YELLOW}→ ${FLATPAK_COUNT} packages saved to flatpak.txt${NC}\n"
+else
+    echo -e "${YELLOW}⚠️  Flatpak not installed, skipping${NC}\n"
+    FLATPAK_COUNT=0
+fi
+# ============================================================================
+# Backup uv tools
+# ============================================================================
+if command -v uv >/dev/null 2>&1; then
+    echo -e "${GREEN}🐍 uv tools:${NC}"
+    uv tool list 2>/dev/null | grep -v '^\s' | awk '{print $1}' > "${BACKUP_DIR}/uv-tools.txt" || echo "" > "${BACKUP_DIR}/uv-tools.txt"
+    UV_COUNT=$(wc -l < "${BACKUP_DIR}/uv-tools.txt")
+    echo -e "  ${YELLOW}→ ${UV_COUNT} tools saved to uv-tools.txt${NC}\n"
+else
+    echo -e "${YELLOW}⚠️  uv not installed, skipping${NC}\n"
+    UV_COUNT=0
+fi
+# ============================================================================
+# Backup bun global packages
+# ============================================================================
+if command -v bun >/dev/null 2>&1; then
+    echo -e "${GREEN}🍞 Bun global packages:${NC}"
+    bun pm ls -g 2>/dev/null | tail -n +2 | awk '{print $2}' | sed 's/@[^@]*$//' > "${BACKUP_DIR}/bun-global.txt"
+    BUN_COUNT=$(wc -l < "${BACKUP_DIR}/bun-global.txt")
+    echo -e "  ${YELLOW}→ ${BUN_COUNT} packages saved to bun-global.txt${NC}\n"
+else
+    echo -e "${YELLOW}⚠️  Bun not installed, skipping${NC}\n"
+    BUN_COUNT=0
+fi
+# ============================================================================
+# Backup npm global packages
+# ============================================================================
+if command -v npm >/dev/null 2>&1; then
+    echo -e "${GREEN}📦 npm global packages:${NC}"
+    npm ls -g --depth=0 --json 2>/dev/null | jq -r '.dependencies | keys[]' > "${BACKUP_DIR}/npm-global.txt" || echo "" > "${BACKUP_DIR}/npm-global.txt"
+    NPM_COUNT=$(wc -l < "${BACKUP_DIR}/npm-global.txt")
+    echo -e "  ${YELLOW}→ ${NPM_COUNT} packages saved to npm-global.txt${NC}\n"
+else
+    echo -e "${YELLOW}⚠️  npm not installed, skipping${NC}\n"
+    NPM_COUNT=0
+fi
+# ============================================================================
+# Backup Brew packages
+# ============================================================================
+if command -v brew >/dev/null 2>&1; then
+    echo -e "${GREEN}🍺 Brew packages:${NC}"
+    brew leaves > "${BACKUP_DIR}/brew.txt" || echo "" > "${BACKUP_DIR}/brew.txt"
+    BREW_COUNT=$(wc -l < "${BACKUP_DIR}/brew.txt")
+    echo -e "  ${YELLOW}→ ${BREW_COUNT} packages saved to brew.txt${NC}\n"
+else
+    echo -e "${YELLOW}⚠️  Brew not installed, skipping${NC}\n"
+    BREW_COUNT=0
+fi
+# ============================================================================
+# Summary
+# ============================================================================
+echo -e "${GREEN}✅ Backup completed!${NC}"
+echo -e "${BLUE}📁 Location: ${BACKUP_DIR}${NC}"
+echo -e "${BLUE}📊 Total: ${PACMAN_COUNT} pacman + ${AUR_COUNT} AUR + ${FLATPAK_COUNT} flatpak + ${UV_COUNT} uv + ${BUN_COUNT} bun + ${NPM_COUNT} npm + ${BREW_COUNT} brew${NC}"

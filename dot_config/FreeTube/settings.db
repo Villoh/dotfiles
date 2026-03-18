@@ -1,0 +1,12 @@
+{"_id":"backendPreference","value":"local"}
+{"_id":"baseTheme","value":"catppuccinMocha"}
+{"_id":"bounds","value":{"x":0,"y":0,"width":702,"height":1026,"maximized":true,"fullScreen":false}}
+{"_id":"defaultQuality","value":"1080"}
+{"_id":"mainColor","value":"CatppuccinMochaLavender"}
+{"_id":"proxyVideos","value":true}
+{"_id":"quickBookmarkTargetPlaylistId","value":"favorites"}
+{"_id":"secColor","value":"CatppuccinMochaLavender"}
+{"_id":"useDeArrowThumbnails","value":true}
+{"_id":"useDeArrowTitles","value":true}
+{"_id":"useRssFeeds","value":false}
+{"_id":"useSponsorBlock","value":true}

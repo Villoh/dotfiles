@@ -1,0 +1,32 @@
+#!/bin/bash
+# ~/.local/bin/ikev2-stop
+
+if ! systemctl is-active --quiet strongswan; then
+  echo "💤 IKEv2 no está corriendo"
+  exit 0
+fi
+
+echo "🔻 Desconectando IKEv2..."
+
+IP_BEFORE=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "N/A")
+
+# Desconectar
+sudo swanctl --terminate --ike nordvpn
+sleep 1
+
+# Parar el servicio completamente
+sudo systemctl stop strongswan
+
+IP_AFTER=$(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo "N/A")
+
+if [ "$IP_BEFORE" != "$IP_AFTER" ] && [ "$IP_BEFORE" != "N/A" ]; then
+  echo "✅ Desconectado y servicio parado: $IP_BEFORE → $IP_AFTER"
+else
+  echo "✅ Desconectado y servicio parado (IP: $IP_AFTER)"
+fi
+
+# Restaurar DNS originales reiniciando NetworkManager
+echo "🔄 Restaurando configuración de red..."
+sudo systemctl restart NetworkManager
+sleep 2
+echo "✅ DNS restaurados"

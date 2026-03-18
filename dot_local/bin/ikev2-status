@@ -1,0 +1,16 @@
+#!/bin/bash
+# ~/.local/bin/ikev2-status
+
+if systemctl is-active --quiet strongswan; then
+  if sudo swanctl --list-sas 2>/dev/null | grep -q "ESTABLISHED"; then
+    echo "🟢 IKEv2: Conectada"
+    echo "IP: $(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo 'N/A')"
+    echo
+    sudo swanctl --list-sas | grep -E "nordvpn|ESTABLISHED|remote:"
+  else
+    echo "🟡 IKEv2: Servicio activo pero sin conexión establecida"
+  fi
+else
+  echo "🔴 IKEv2: Desconectada (servicio parado)"
+  echo "IP: $(curl -s --max-time 3 ifconfig.me 2>/dev/null || echo 'N/A')"
+fi

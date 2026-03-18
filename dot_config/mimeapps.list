@@ -1,0 +1,55 @@
+[Added Associations]
+application/json=vscodium-wayland.desktop;firefox.desktop;vscodium.desktop;vim.desktop;micro.desktop;nvim.desktop;org.xfce.mousepad.desktop;
+application/pdf=okularApplication_pdf.desktop;brave-browser.desktop;org.gimp.GIMP.desktop;firefox.desktop;org.inkscape.Inkscape.desktop;helium.desktop;
+text/plain=vscodium-wayland.desktop;vim.desktop;vscodium.desktop;org.xfce.mousepad.desktop;nvim.desktop;micro.desktop;
+text/x-ms-regedit=org.xfce.mousepad.desktop;micro.desktop;vscodium-wayland.desktop;vim.desktop;nvim.desktop;vscodium.desktop;
+
+[Default Applications]
+application/json=vscodium-wayland.desktop;
+application/pdf=okularApplication_pdf.desktop;
+inode/directory=yazi.desktop
+text/html=brave-browser.desktop
+text/plain=vscodium-wayland.desktop;
+text/x-ms-regedit=org.xfce.mousepad.desktop;
+x-scheme-handler/about=brave-browser.desktop
+x-scheme-handler/discord=vesktop.desktop
+x-scheme-handler/http=brave-browser.desktop
+x-scheme-handler/https=brave-browser.desktop
+x-scheme-handler/hydralauncher=hydralauncher.desktop
+x-scheme-handler/unknown=brave-browser.desktop
+devpod=dev-pod-desktop-handler.desktop
+x-scheme-handler/figma=figma-linux.desktop
+x-scheme-handler/nxm=ModOrganizer-steamtinkerlaunch-dl.desktop
+x-scheme-handler/nxm-protocol=ModOrganizer-steamtinkerlaunch-dl.desktop
+x-scheme-handler/jetbrains=jetbrains-toolbox.desktop
+x-scheme-handler/opencode=OpenCode-handler.desktop
+x-scheme-handler/terminal=kitty.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=onlyoffice-desktopeditors.desktop
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=onlyoffice-desktopeditors.desktop
+application/vnd.openxmlformats-officedocument.presentationml.presentation=onlyoffice-desktopeditors.desktop
+text/csv=onlyoffice-desktopeditors.desktop
+
+# Images
+image/png=imv.desktop
+image/jpeg=imv.desktop
+image/jpg=imv.desktop
+image/gif=imv.desktop
+image/webp=org.gnome.Loupe.desktop
+image/bmp=imv.desktop
+image/svg+xml=imv.desktop
+image/tiff=imv.desktop
+
+# Videos
+video/mp4=mpv.desktop
+video/x-matroska=mpv.desktop
+video/webm=mpv.desktop
+video/x-msvideo=mpv.desktop
+video/avi=mpv.desktop
+video/quicktime=mpv.desktop
+video/x-flv=mpv.desktop
+video/x-f4v=mpv.desktop
+video/mkv=mpv.desktop
+video/mpeg=mpv.desktop
+video/ogg=mpv.desktop
+video/3gpp=mpv.desktop
+x-scheme-handler/bruno=bruno.desktop

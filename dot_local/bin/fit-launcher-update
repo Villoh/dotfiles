@@ -1,0 +1,66 @@
+#!/bin/bash
+
+REPO_DIR="$HOME/Development/Other/Games/Fit-Launcher"
+BRANCH="feat/cef-support"
+CURRENT_COMMIT_FILE="$HOME/.local/share/fit-launcher-version"
+
+echo "🔍 Checking for Fit Launcher updates..."
+
+# Ir al directorio del repo
+cd "$REPO_DIR" || exit 1
+
+# Fetch cambios sin merge
+git fetch origin "$BRANCH" --quiet
+
+# Obtener commit actual local
+LOCAL_COMMIT=$(git rev-parse HEAD)
+
+# Obtener commit remoto
+REMOTE_COMMIT=$(git rev-parse origin/$BRANCH)
+
+# Comparar
+if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
+    echo "✓ Already up to date (commit: ${LOCAL_COMMIT:0:7})"
+    exit 0
+fi
+
+echo "🆕 New version available!"
+echo "   Local:  ${LOCAL_COMMIT:0:7}"
+echo "   Remote: ${REMOTE_COMMIT:0:7}"
+read -p "Update now? [Y/n] " -n 1 -r
+echo
+
+if [[ ! $REPLY =~ ^[Yy]$ ]] && [[ -n $REPLY ]]; then
+    echo "Update cancelled"
+    exit 0
+fi
+
+echo "📥 Pulling changes..."
+git pull origin "$BRANCH" || exit 1
+
+echo "📦 Installing dependencies..."
+npm install || exit 1
+
+echo "🔨 Building (this may take a few minutes)..."
+npm run tauri build || exit 1
+
+echo "📋 Installing..."
+
+# Copiar binario
+sudo cp "src-tauri/target/release/Fit Launcher" ~/.local/bin/fit-launcher
+sudo chmod +x ~/.local/bin/fit-launcher
+
+# Copiar iconos
+mkdir -p ~/.local/share/icons/hicolor/{32x32,128x128,256x256}/apps
+cp src-tauri/icons/32x32.png ~/.local/share/icons/hicolor/32x32/apps/fit-launcher.png
+cp src-tauri/icons/128x128.png ~/.local/share/icons/hicolor/128x128/apps/fit-launcher.png
+cp src-tauri/icons/128x128@2x.png ~/.local/share/icons/hicolor/256x256/apps/fit-launcher.png
+
+# Actualizar cache de iconos
+gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor/ 2>/dev/null
+
+# Guardar versión instalada
+echo "$REMOTE_COMMIT" > "$CURRENT_COMMIT_FILE"
+
+echo "✓ Fit Launcher updated successfully!"
+echo "  New version: ${REMOTE_COMMIT:0:7}"

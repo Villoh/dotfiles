@@ -1,0 +1,129 @@
+#!/bin/bash
+set -e
+
+# Colores para la salida
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+DOTFILES_DIR="${HOME}/.dotfiles"
+OUTPUT_DIR="${DOTFILES_DIR}/claude-config-docs"
+
+echo -e "${BLUE}🔍 Extracting Claude configuration (Sanitized)...${NC}\n"
+
+mkdir -p "${OUTPUT_DIR}"
+
+# ============================================================================
+# FILTRO JQ "PARANOICO" (Basado en contenido, no en posición)
+# ============================================================================
+JQ_SANITIZE_FILTER='
+with_entries(
+    .value |= (
+        # 1. Limpiar variables de entorno (env)
+        if .env then
+            .env |= with_entries(.value = "YOUR_\(.key)_HERE")
+        else . end |
+
+        # 2. Limpiar argumentos (args)
+        if .args then
+            .args |= (
+                to_entries |
+                map(
+                    .value as $val |
+
+                    # SI NO ES TEXTO (Booleanos, números), se salva.
+                    if ($val | type) != "string" then
+                        $val
+
+                    # EXCEPCIONES (Lista blanca de cosas seguras)
+                    # - Empieza por "@" (paquetes scoped)
+                    # - Contiene "mcp" (nombres de paquetes)
+                    # - Es un path de archivo (empieza por / o ./)
+                    # - Es una flag simple (empieza por -) PERO no contiene "=" (eso se revisa abajo)
+                    elif ($val | try test("^@|/|\\./") catch false) or
+                         ($val | try test("(?i)mcp") catch false) or
+                         ($val | try test("^-") catch false and ($val | contains("=") | not)) then
+                        $val
+
+                    # REGLAS DE CENSURA (Lista negra)
+                    # A. Si contiene "=" (flags tipo --key=valor)
+                    elif ($val | contains("=")) then
+                         ($val | split("=")[0] + " (REDACTED)")
+
+                    # B. Palabras clave de peligro (api-key, token, secret)
+                    elif ($val | try test("(?i)api[-_]?key|token|secret|password|auth") catch false) then
+                        "YOUR_REDACTED_HERE"
+
+                    # C. Cadenas de alta entropía (Hashes, IDs largos)
+                    # Si mide más de 15 caracteres y tiene números y letras mezclados
+                    elif ($val | try test("^[a-zA-Z0-9_-]{15,}$") catch false) then
+                        "YOUR_REDACTED_HERE"
+
+                    # Si no cumple nada de lo anterior (comandos cortos como "run", "stdio"), se queda.
+                    else
+                        $val
+                    end
+                )
+            )
+        else . end
+    )
+)'
+
+# ============================================================================
+# Extract Claude Desktop MCP Servers
+# ============================================================================
+if [ -f "${HOME}/.config/Claude/claude_desktop_config.json" ]; then
+    echo -e "${GREEN}📦 Claude Desktop MCP Servers:${NC}"
+
+    jq -r '.mcpServers | keys[]' "${HOME}/.config/Claude/claude_desktop_config.json" | while read server; do
+        echo "  - ${server}"
+    done
+
+    jq ".mcpServers | ${JQ_SANITIZE_FILTER}" "${HOME}/.config/Claude/claude_desktop_config.json" \
+        > "${OUTPUT_DIR}/claude-desktop-mcps.json"
+
+    echo -e "  ${YELLOW}→ Saved to: ${OUTPUT_DIR}/claude-desktop-mcps.json${NC}\n"
+fi
+
+# ============================================================================
+# Extract Claude Code MCP Servers
+# ============================================================================
+if [ -f "${HOME}/.claude.json" ]; then
+    echo -e "${GREEN}📦 Claude Code MCP Servers:${NC}"
+
+    jq -r '.mcpServers | keys[]' "${HOME}/.claude.json" 2>/dev/null | while read server; do
+        echo "  - ${server}"
+    done
+
+    jq "{
+        lastReleaseNotesSeen: \"\",
+        mcpServers: (.mcpServers | ${JQ_SANITIZE_FILTER})
+    }" "${HOME}/.claude.json" 2>/dev/null \
+        > "${OUTPUT_DIR}/claude-code-mcps.json"
+
+    echo -e "  ${YELLOW}→ Saved to: ${OUTPUT_DIR}/claude-code-mcps.json${NC}\n"
+fi
+
+# ============================================================================
+# Plugins & Marketplaces (Sin cambios, son seguros)
+# ============================================================================
+if [ -f "${HOME}/.claude/plugins/known_marketplaces.json" ]; then
+    echo -e "${GREEN}🛒 Claude Code Marketplaces:${NC}"
+    jq 'with_entries(.value |= {source: .source})' "${HOME}/.claude/plugins/known_marketplaces.json" > "${OUTPUT_DIR}/claude-code-marketplaces.json"
+    echo -e "  ${YELLOW}→ Saved to: ${OUTPUT_DIR}/claude-code-marketplaces.json${NC}\n"
+fi
+
+if [ -f "${HOME}/.claude/plugins/installed_plugins.json" ]; then
+    echo -e "${GREEN}🔌 Claude Code Installed Plugins:${NC}"
+    jq '{plugins: [.plugins | to_entries[] | .key as $name | .value[0] | {name: $name, version: .version, scope: .scope}]}' "${HOME}/.claude/plugins/installed_plugins.json" > "${OUTPUT_DIR}/claude-code-plugins.json"
+    echo -e "  ${YELLOW}→ Saved to: ${OUTPUT_DIR}/claude-code-plugins.json${NC}\n"
+fi
+
+# Generar README
+cat > "${OUTPUT_DIR}/README.md" << 'EOF'
+# Claude Configuration Documentation
+Auto-generated documentation. **All sensitive keys and tokens have been redacted.**
+EOF
+
+echo -e "${GREEN}✅ Configuration extracted successfully!${NC}"

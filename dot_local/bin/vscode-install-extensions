@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Uso: vscode-install-extensions [vscodium|code-oss|vscode]
+# Sin parámetro: instala extensiones en TODOS los editores instalados
+
+# Detectar TODOS los editores disponibles
+detect_all_editors() {
+  if command -v codium &> /dev/null && [ -d "$HOME/.config/VSCodium/User" ]; then
+    echo "VSCodium|codium|$HOME/.config/VSCodium/User"
+  fi
+  
+  if command -v code &> /dev/null && [ -d "$HOME/.config/Code - OSS/User" ]; then
+    echo "Code-OSS|code|$HOME/.config/Code - OSS/User"
+  fi
+  
+  if command -v code &> /dev/null && [ -d "$HOME/.config/Code/User" ]; then
+    echo "VSCode|code|$HOME/.config/Code/User"
+  fi
+}
+
+# Instalar extensiones en un editor específico
+install_extensions() {
+  local editor_info="$1"
+  local editor_name=$(echo "$editor_info" | cut -d'|' -f1)
+  local cmd=$(echo "$editor_info" | cut -d'|' -f2)
+  local config_dir=$(echo "$editor_info" | cut -d'|' -f3)
+  
+  echo ""
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "📦 Installing extensions for: $editor_name"
+  echo "📁 Config: $config_dir"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  
+  cd "$config_dir" || {
+    echo "❌ Failed to access $config_dir"
+    return 1
+  }
+  
+  if [ ! -f extensions.list ]; then
+    echo "❌ extensions.list not found in $config_dir"
+    return 1
+  fi
+  
+  echo "Installing extensions..."
+  
+  while read extension; do
+    if [ -n "$extension" ]; then
+      echo "  → $extension"
+      $cmd --install-extension "$extension" --force
+    fi
+  done < extensions.list
+  
+  echo "✅ Extensions installed for $editor_name!"
+}
+
+# Main
+main() {
+  local requested="$1"
+  local all_editors
+  mapfile -t all_editors < <(detect_all_editors)
+  
+  if [ ${#all_editors[@]} -eq 0 ]; then
+    echo "❌ No VSCode variant found!"
+    exit 1
+  fi
+  
+  # Si se especificó un editor específico
+  if [ -n "$requested" ]; then
+    local found=false
+    for editor in "${all_editors[@]}"; do
+      local name=$(echo "$editor" | cut -d'|' -f1 | tr '[:upper:]' '[:lower:]')
+      local normalized=$(echo "$requested" | tr '[:upper:]' '[:lower:]')
+      if [[ "$name" == *"$normalized"* ]]; then
+        install_extensions "$editor"
+        found=true
+        break
+      fi
+    done
+    
+    if [ "$found" = false ]; then
+      echo "❌ Editor '$requested' not found or not installed"
+      echo "Available editors:"
+      for editor in "${all_editors[@]}"; do
+        echo "  - $(echo "$editor" | cut -d'|' -f1)"
+      done
+      exit 1
+    fi
+  else
+    # Sin parámetro: instalar en TODOS
+    echo "📦 Installing extensions in ALL detected editors..."
+    for editor in "${all_editors[@]}"; do
+      install_extensions "$editor"
+    done
+    echo ""
+    echo "🎉 Extensions installed in all editors!"
+  fi
+}
+
+main "$1"

@@ -1,0 +1,228 @@
+#!/bin/bash
+
+# Script para gestión de prefijos Proton
+# Autor: Un tío que se hartó de hacer esto a mano
+# Uso: ./proton-cleanup.sh [opciones]
+
+set -e
+
+# Colores para output (porque somos fancy)
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+STEAM_DIR="${HOME}/.steam/steam/steamapps"
+STEAM_LIBRARY="${HOME}/.steam/steam"
+
+# Función para mostrar uso
+show_usage() {
+    cat << EOF
+Uso: $0 [opciones] [APPID]
+
+Opciones:
+    -l, --list              Lista todos los prefijos instalados
+    -s, --shaders-only      Solo elimina shaders, mantiene compatdata
+    -c, --compatdata-only   Solo elimina compatdata, mantiene shaders
+    -a, --all               Limpia todo (compatdata + shaders)
+    -i, --interactive       Modo interactivo con confirmación
+    -d, --dry-run           Muestra qué se haría sin ejecutar
+    -f, --find <nombre>     Busca un juego por nombre
+    -h, --help              Muestra esta ayuda
+
+Ejemplos:
+    $0 -l                   # Lista todos los prefijos
+    $0 -i 570               # Limpia Dota 2 (interactivo)
+    $0 -s 271590            # Solo limpia shaders de GTA V
+    $0 -f "Elden Ring"      # Busca el APPID de Elden Ring
+EOF
+}
+
+# Función para obtener el nombre del juego (si existe el manifest)
+get_game_name() {
+    local appid=$1
+    local manifest="${STEAM_DIR}/appmanifest_${appid}.acf"
+    
+    if [ -f "$manifest" ]; then
+        grep -E '^\s+"name"' "$manifest" | sed 's/.*"\(.*\)"/\1/'
+    else
+        echo "Desconocido"
+    fi
+}
+
+# Listar todos los prefijos
+list_prefixes() {
+    echo -e "${BLUE}=== Prefijos de Proton instalados ===${NC}\n"
+    
+    printf "%-10s %-50s %-15s %-15s\n" "APPID" "NOMBRE" "COMPATDATA" "SHADERS"
+    echo "--------------------------------------------------------------------------------"
+    
+    for dir in "${STEAM_DIR}/compatdata"/*; do
+        if [ -d "$dir" ]; then
+            appid=$(basename "$dir")
+            name=$(get_game_name "$appid")
+            
+            compat_size=$(du -sh "$dir" 2>/dev/null | cut -f1)
+            shader_size="N/A"
+            
+            if [ -d "${STEAM_DIR}/shadercache/${appid}" ]; then
+                shader_size=$(du -sh "${STEAM_DIR}/shadercache/${appid}" 2>/dev/null | cut -f1)
+            fi
+            
+            printf "%-10s %-50s %-15s %-15s\n" "$appid" "${name:0:50}" "$compat_size" "$shader_size"
+        fi
+    done
+}
+
+# Buscar juego por nombre
+find_game() {
+    local search_term="$1"
+    echo -e "${BLUE}Buscando: '${search_term}'${NC}\n"
+    
+    for manifest in "${STEAM_DIR}"/appmanifest_*.acf; do
+        if [ -f "$manifest" ]; then
+            name=$(grep -E '^\s+"name"' "$manifest" | sed 's/.*"\(.*\)"/\1/')
+            if echo "$name" | grep -i "$search_term" > /dev/null; then
+                appid=$(basename "$manifest" | sed 's/appmanifest_\(.*\)\.acf/\1/')
+                echo -e "${GREEN}✓${NC} $name (APPID: $appid)"
+            fi
+        fi
+    done
+}
+
+# Función para limpiar
+cleanup() {
+    local appid=$1
+    local target=$2  # "all", "shaders", "compatdata"
+    local dry_run=$3
+    
+    local game_name=$(get_game_name "$appid")
+    
+    echo -e "\n${YELLOW}Juego:${NC} $game_name (APPID: $appid)"
+    
+    local compat_dir="${STEAM_DIR}/compatdata/${appid}"
+    local shader_dir="${STEAM_DIR}/shadercache/${appid}"
+    
+    # Calcular espacio a liberar
+    local total_space=0
+    
+    if [[ "$target" == "all" || "$target" == "compatdata" ]] && [ -d "$compat_dir" ]; then
+        local compat_size=$(du -sb "$compat_dir" | cut -f1)
+        total_space=$((total_space + compat_size))
+        echo -e "${BLUE}Compatdata:${NC} $(du -sh "$compat_dir" | cut -f1)"
+    fi
+    
+    if [[ "$target" == "all" || "$target" == "shaders" ]] && [ -d "$shader_dir" ]; then
+        local shader_size=$(du -sb "$shader_dir" | cut -f1)
+        total_space=$((total_space + shader_size))
+        echo -e "${BLUE}Shaders:${NC} $(du -sh "$shader_dir" | cut -f1)"
+    fi
+    
+    if [ $total_space -gt 0 ]; then
+        echo -e "${GREEN}Espacio a liberar:${NC} $(numfmt --to=iec-i --suffix=B $total_space)"
+    else
+        echo -e "${YELLOW}No hay nada que limpiar para este APPID${NC}"
+        return
+    fi
+    
+    if [ "$dry_run" = true ]; then
+        echo -e "${YELLOW}[DRY RUN] No se eliminó nada${NC}"
+        return
+    fi
+    
+    # Ejecutar limpieza
+    if [[ "$target" == "all" || "$target" == "compatdata" ]] && [ -d "$compat_dir" ]; then
+        rm -rf "$compat_dir"
+        echo -e "${GREEN}✓ Compatdata eliminado${NC}"
+    fi
+    
+    if [[ "$target" == "all" || "$target" == "shaders" ]] && [ -d "$shader_dir" ]; then
+        rm -rf "$shader_dir"
+        echo -e "${GREEN}✓ Shaders eliminados${NC}"
+    fi
+}
+
+# Parsear argumentos
+INTERACTIVE=false
+DRY_RUN=false
+TARGET="all"
+ACTION=""
+APPID=""
+SEARCH_TERM=""
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -l|--list)
+            ACTION="list"
+            shift
+            ;;
+        -s|--shaders-only)
+            TARGET="shaders"
+            shift
+            ;;
+        -c|--compatdata-only)
+            TARGET="compatdata"
+            shift
+            ;;
+        -a|--all)
+            TARGET="all"
+            shift
+            ;;
+        -i|--interactive)
+            INTERACTIVE=true
+            shift
+            ;;
+        -d|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -f|--find)
+            ACTION="find"
+            SEARCH_TERM="$2"
+            shift 2
+            ;;
+        -h|--help)
+            show_usage
+            exit 0
+            ;;
+        *)
+            APPID="$1"
+            shift
+            ;;
+    esac
+done
+
+# Ejecutar acción
+case $ACTION in
+    list)
+        list_prefixes
+        exit 0
+        ;;
+    find)
+        find_game "$SEARCH_TERM"
+        exit 0
+        ;;
+esac
+
+# Si no hay APPID, mostrar uso
+if [ -z "$APPID" ]; then
+    show_usage
+    exit 1
+fi
+
+# Modo interactivo
+if [ "$INTERACTIVE" = true ]; then
+    game_name=$(get_game_name "$APPID")
+    echo -e "${YELLOW}¿Seguro que quieres limpiar '$game_name' (APPID: $APPID)?${NC}"
+    read -p "Escribe 'si' para confirmar: " confirm
+    if [ "$confirm" != "si" ]; then
+        echo "Operación cancelada"
+        exit 0
+    fi
+fi
+
+# Ejecutar limpieza
+cleanup "$APPID" "$TARGET" "$DRY_RUN"
+
+echo -e "\n${GREEN}¡Listo! 🎮${NC}"

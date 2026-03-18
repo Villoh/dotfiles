@@ -1,0 +1,897 @@
+#!/bin/bash
+#
+# Script de gestión de temas de Plymouth
+# Instalación, preview y gestión de temas
+# Uso: plymouth-themes [--list|--installed|--preview|--interactive|--uninstall|--clean|--help]
+
+# Colores
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+MAGENTA='\033[0;35m'
+NC='\033[0m'
+
+# Rutas
+THEMES_BASE="$HOME/.dotfiles/plymouth/themes/plymouth-themes"
+SYSTEM_THEMES="/usr/share/plymouth/themes"
+REGISTRY_FILE="$HOME/.local/share/plymouth-themes/registry.json"
+
+print_success() { echo -e "${GREEN}[✓]${NC} $1"; }
+print_info() { echo -e "${BLUE}[i]${NC} $1"; }
+print_warning() { echo -e "${YELLOW}[!]${NC} $1"; }
+print_error() { echo -e "${RED}[✗]${NC} $1"; }
+print_section() { echo -e "${CYAN}▶${NC} $1"; }
+print_preview() { echo -e "${MAGENTA}[▶]${NC} $1"; }
+
+# ==================== GESTIÓN DE REGISTRO JSON ====================
+
+# Inicializar registro JSON
+init_registry() {
+    local registry_dir=$(dirname "$REGISTRY_FILE")
+    mkdir -p "$registry_dir"
+
+    if [[ ! -f "$REGISTRY_FILE" ]]; then
+        echo '{"themes":{}}' > "$REGISTRY_FILE"
+    fi
+}
+
+# Añadir tema al registro
+add_to_registry() {
+    local theme_name="$1"
+    local source_path="$2"
+    local install_date=$(date -Iseconds)
+
+    init_registry
+
+    # Usar jq si está disponible, sino usar sed/awk
+    if command -v jq &> /dev/null; then
+        local temp_file=$(mktemp)
+        jq --arg name "$theme_name" \
+           --arg source "$source_path" \
+           --arg date "$install_date" \
+           '.themes[$name] = {"source": $source, "installed": $date}' \
+           "$REGISTRY_FILE" > "$temp_file"
+        mv "$temp_file" "$REGISTRY_FILE"
+    else
+        # Fallback sin jq (básico)
+        local temp_file=$(mktemp)
+        python3 -c "
+import json
+import sys
+
+try:
+    with open('$REGISTRY_FILE', 'r') as f:
+        data = json.load(f)
+except:
+    data = {'themes': {}}
+
+data['themes']['$theme_name'] = {
+    'source': '$source_path',
+    'installed': '$install_date'
+}
+
+with open('$temp_file', 'w') as f:
+    json.dump(data, f, indent=2)
+" 2>/dev/null || echo '{"themes":{}}' > "$temp_file"
+        mv "$temp_file" "$REGISTRY_FILE"
+    fi
+}
+
+# Eliminar tema del registro
+remove_from_registry() {
+    local theme_name="$1"
+
+    if [[ ! -f "$REGISTRY_FILE" ]]; then
+        return
+    fi
+
+    if command -v jq &> /dev/null; then
+        local temp_file=$(mktemp)
+        jq --arg name "$theme_name" 'del(.themes[$name])' "$REGISTRY_FILE" > "$temp_file"
+        mv "$temp_file" "$REGISTRY_FILE"
+    else
+        # Fallback sin jq
+        local temp_file=$(mktemp)
+        python3 -c "
+import json
+
+try:
+    with open('$REGISTRY_FILE', 'r') as f:
+        data = json.load(f)
+
+    if '$theme_name' in data.get('themes', {}):
+        del data['themes']['$theme_name']
+
+    with open('$temp_file', 'w') as f:
+        json.dump(data, f, indent=2)
+except:
+    pass
+" 2>/dev/null
+        [[ -f "$temp_file" ]] && mv "$temp_file" "$REGISTRY_FILE"
+    fi
+}
+
+# Verificar si tema está en el registro
+is_in_registry() {
+    local theme_name="$1"
+
+    if [[ ! -f "$REGISTRY_FILE" ]]; then
+        return 1
+    fi
+
+    if command -v jq &> /dev/null; then
+        jq -e --arg name "$theme_name" '.themes[$name] != null' "$REGISTRY_FILE" &>/dev/null
+    else
+        # Fallback sin jq
+        python3 -c "
+import json
+import sys
+
+try:
+    with open('$REGISTRY_FILE', 'r') as f:
+        data = json.load(f)
+    sys.exit(0 if '$theme_name' in data.get('themes', {}) else 1)
+except:
+    sys.exit(1)
+" 2>/dev/null
+    fi
+}
+
+# Listar temas del registro
+list_registry() {
+    if [[ ! -f "$REGISTRY_FILE" ]]; then
+        return
+    fi
+
+    if command -v jq &> /dev/null; then
+        jq -r '.themes | keys[]' "$REGISTRY_FILE" 2>/dev/null
+    else
+        python3 -c "
+import json
+try:
+    with open('$REGISTRY_FILE', 'r') as f:
+        data = json.load(f)
+    for theme in data.get('themes', {}).keys():
+        print(theme)
+except:
+    pass
+" 2>/dev/null
+    fi
+}
+
+# Reconstruir registro desde temas instalados
+rebuild_registry() {
+    echo "======================================"
+    echo "  Reconstruyendo registro de temas"
+    echo "======================================"
+    echo
+
+    print_info "Escaneando temas instalados..."
+
+    init_registry
+
+    # Limpiar registro actual
+    echo '{"themes":{}}' > "$REGISTRY_FILE"
+
+    find_all_themes
+
+    local count=0
+    for theme_dir in "$SYSTEM_THEMES"/*; do
+        if [[ -d "$theme_dir" ]] && is_plymouth_theme "$theme_dir"; then
+            local installed_theme_name=$(basename "$theme_dir")
+
+            # Obtener nombre del archivo .plymouth del tema instalado
+            local installed_plymouth_file=$(find -L "$theme_dir" -maxdepth 1 -name "*.plymouth" -type f 2>/dev/null | head -1)
+
+            if [[ -z "$installed_plymouth_file" ]]; then
+                print_warning "Omitido: $installed_theme_name (sin archivo .plymouth)"
+                continue
+            fi
+
+            local installed_plymouth_name=$(basename "$installed_plymouth_file")
+
+            # Buscar en dotfiles un tema con el MISMO archivo .plymouth
+            local found_source=""
+            for theme_key in "${!AVAILABLE_THEMES[@]}"; do
+                local dotfiles_theme_path="${AVAILABLE_THEMES[$theme_key]}"
+
+                # Buscar archivo .plymouth en dotfiles
+                local dotfiles_plymouth_file=$(find -L "$dotfiles_theme_path" -maxdepth 1 -name "*.plymouth" -type f 2>/dev/null | head -1)
+
+                if [[ -n "$dotfiles_plymouth_file" ]]; then
+                    local dotfiles_plymouth_name=$(basename "$dotfiles_plymouth_file")
+
+                    # Comparar nombres de archivos .plymouth
+                    if [[ "$dotfiles_plymouth_name" == "$installed_plymouth_name" ]]; then
+                        found_source="$dotfiles_theme_path"
+                        break
+                    fi
+                fi
+            done
+
+            if [[ -n "$found_source" ]]; then
+                add_to_registry "$installed_theme_name" "$found_source"
+                print_success "Registrado: $installed_theme_name → $installed_plymouth_name"
+                ((count++))
+            else
+                print_warning "Omitido: $installed_theme_name (archivo .plymouth: $installed_plymouth_name no encontrado en dotfiles)"
+            fi
+        fi
+    done
+
+    echo
+    print_success "Registro reconstruido: $count temas"
+}
+
+# ==================== FUNCIONES DE GESTIÓN ====================
+
+# Verificar que existe el directorio base
+check_base() {
+    if [[ ! -d "$THEMES_BASE" ]]; then
+        print_error "No se encuentra el directorio de temas en: $THEMES_BASE"
+        echo "Créalo primero:"
+        echo "  mkdir -p ~/.dotfiles/plymouth/themes/plymouth-themes"
+        exit 1
+    fi
+}
+
+# Detectar si un directorio es un tema de Plymouth
+is_plymouth_theme() {
+    local dir="$1"
+    local dir_name=$(basename "$dir")
+
+    # Excluir template
+    [[ "$dir_name" == "template" ]] && return 1
+
+    # Buscar archivos .plymouth
+    local plymouth_files=$(find -L "$dir" -maxdepth 1 -type f -name "*.plymouth" 2>/dev/null | wc -l)
+    [[ $plymouth_files -gt 0 ]] && return 0
+
+    return 1
+}
+
+# Función recursiva para encontrar temas
+find_themes_recursive() {
+    local current_dir="$1"
+
+    # Evitar directorios ocultos y .git
+    local dir_name=$(basename "$current_dir")
+    if [[ "$dir_name" == "."* ]] || [[ "$dir_name" == ".git" ]]; then
+        return
+    fi
+
+    # Si es un tema, registrarlo
+    if is_plymouth_theme "$current_dir"; then
+        local rel_path="${current_dir#$THEMES_BASE/}"
+        local repo_name=$(echo "$rel_path" | cut -d'/' -f1)
+
+        AVAILABLE_THEMES["$rel_path"]="$current_dir"
+        THEME_REPOS["$rel_path"]="$repo_name"
+        return
+    fi
+
+    # Explorar subdirectorios
+    for subdir in "$current_dir"/*; do
+        [[ -d "$subdir" ]] && find_themes_recursive "$subdir"
+    done
+}
+
+# Escanear todos los temas disponibles
+find_all_themes() {
+    declare -gA AVAILABLE_THEMES
+    declare -gA THEME_REPOS
+
+    find_themes_recursive "$THEMES_BASE"
+}
+
+# ==================== LISTADO ====================
+
+# Listar temas disponibles
+list_available() {
+    echo "======================================"
+    echo "  Temas disponibles en dotfiles"
+    echo "======================================"
+    echo
+
+    find_all_themes
+
+    if [[ ${#AVAILABLE_THEMES[@]} -eq 0 ]]; then
+        print_warning "No se encontraron temas"
+        echo "Clona algunos repos en: $THEMES_BASE"
+        return
+    fi
+
+    local sorted_repos=($(printf '%s\n' "${THEME_REPOS[@]}" | sort -u))
+
+    for repo in "${sorted_repos[@]}"; do
+        echo
+        print_section "Repo: $repo"
+
+        for theme_key in $(printf '%s\n' "${!AVAILABLE_THEMES[@]}" | sort); do
+            if [[ "${THEME_REPOS[$theme_key]}" == "$repo" ]]; then
+                local path="${AVAILABLE_THEMES[$theme_key]}"
+                local theme_name=$(basename "$path")
+                local display_key="${theme_key#$repo/}"
+
+                # Verificar si está instalado
+                if is_in_registry "$theme_name"; then
+                    echo -e "  ${GREEN}✓${NC} $display_key (instalado)"
+                else
+                    echo "    $display_key"
+                fi
+            fi
+        done
+    done
+    echo
+}
+
+# Listar temas instalados
+list_installed() {
+    echo "======================================"
+    echo "  Temas instalados en el sistema"
+    echo "======================================"
+    echo
+
+    local current=$(plymouth-set-default-theme 2>/dev/null)
+    local installed=false
+    init_registry
+
+    while IFS= read -r theme_name; do
+        if [[ -n "$theme_name" ]]; then
+            if [[ "$theme_name" == "$current" ]]; then
+                echo -e "${GREEN}✓${NC} $theme_name ${CYAN}(activo)${NC}"
+            else
+                echo -e "${GREEN}✓${NC} $theme_name"
+            fi
+            installed=true
+        fi
+    done < <(list_registry)
+
+    if [[ "$installed" == false ]]; then
+        print_info "No hay temas instalados por el script"
+    fi
+    echo
+}
+
+# ==================== INSTALACIÓN ====================
+
+# Al inicio del script, añadir función:
+has_luks_encryption() {
+    # Verificar si hay hooks de encrypt/sd-encrypt en mkinitcpio
+    grep -qE '^HOOKS=.*\b(encrypt|sd-encrypt)\b' /etc/mkinitcpio.conf 2>/dev/null
+}
+
+# Instalar tema(s) - COPIAR archivos con nombre correcto
+install_themes() {
+    local theme_keys=("$@")
+    local installed=false
+    local installed_themes=()
+    local has_script_themes=false
+
+    if [[ ${#theme_keys[@]} -eq 0 ]]; then
+        print_error "Debes especificar al menos un tema"
+        echo "Usa --list para ver temas disponibles"
+        exit 1
+    fi
+
+    find_all_themes
+
+    for theme_key in "${theme_keys[@]}"; do
+        local found=false
+        local full_path=""
+        local matched_key=""
+
+        # Match exacto primero
+        for available_key in "${!AVAILABLE_THEMES[@]}"; do
+            if [[ "$available_key" == "$theme_key" ]]; then
+                full_path="${AVAILABLE_THEMES[$available_key]}"
+                matched_key="$available_key"
+                found=true
+                break
+            fi
+        done
+
+        # Match parcial
+        if [[ "$found" == false ]]; then
+            for available_key in "${!AVAILABLE_THEMES[@]}"; do
+                if [[ "$available_key" == *"$theme_key" ]] || \
+                   [[ "$(basename "${AVAILABLE_THEMES[$available_key]}")" == "$theme_key" ]]; then
+                    full_path="${AVAILABLE_THEMES[$available_key]}"
+                    matched_key="$available_key"
+                    found=true
+                    break
+                fi
+            done
+        fi
+
+        if [[ "$found" == false ]]; then
+            print_error "No encontrado: $theme_key"
+            print_info "  └─ Temas similares:"
+            printf '%s\n' "${!AVAILABLE_THEMES[@]}" | grep -i "$theme_key" | head -5 | sed 's/^/       /'
+            continue
+        fi
+
+        # VALIDACIÓN: Verificar que full_path no esté vacío
+        if [[ -z "$full_path" ]] || [[ ! -d "$full_path" ]]; then
+            print_error "Ruta inválida para: $theme_key"
+            print_info "  └─ Matched key: $matched_key"
+            print_info "  └─ Full path: '$full_path'"
+            continue
+        fi
+
+        # Extraer el nombre REAL del archivo .plymouth ANTES de copiar
+        local plymouth_file=$(find -L "$full_path" -maxdepth 1 -name "*.plymouth" -type f 2>/dev/null | head -1)
+
+        if [[ -z "$plymouth_file" ]]; then
+            print_error "No se encontró archivo .plymouth en: $full_path"
+            print_info "  └─ Archivos en el directorio:"
+            ls -la "$full_path" 2>/dev/null | head -10 | sed 's/^/       /'
+            continue
+        fi
+
+        # El nombre de la carpeta DEBE ser el nombre del archivo .plymouth (sin extensión)
+        local theme_name=$(basename "$plymouth_file" .plymouth)
+        local dest_path="$SYSTEM_THEMES/$theme_name"
+
+        # Si ya existe, preguntar si sobrescribir
+        if [[ -d "$dest_path" ]] && is_in_registry "$theme_name"; then
+            print_warning "El tema $theme_name ya está instalado"
+            read -p "¿Sobrescribir? [y/N]: " -r confirm
+            if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+                print_info "Omitido: $theme_name"
+                continue
+            fi
+            sudo rm -rf "$dest_path"
+        elif [[ -d "$dest_path" ]]; then
+            print_warning "El directorio $dest_path ya existe (no está en el registro)"
+            read -p "¿Sobrescribir? [y/N]: " -r confirm
+            if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+                print_info "Omitido: $theme_name"
+                continue
+            fi
+            sudo rm -rf "$dest_path"
+        fi
+
+        # COPIAR el tema con el nombre CORRECTO
+        if sudo cp -r "$full_path" "$dest_path" 2>/dev/null; then
+            print_success "Instalado: $theme_name (desde $matched_key)"
+            add_to_registry "$theme_name" "$full_path"
+            installed=true
+            installed_themes+=("$theme_name")
+
+            # Verificar si es un tema script
+            local module_name=$(grep -E "^ModuleName=" "$plymouth_file" 2>/dev/null | cut -d'=' -f2 | tr -d ' ')
+            if [[ "$module_name" == "script" ]]; then
+                has_script_themes=true
+            fi
+        else
+            print_error "Error copiando el tema: $theme_name"
+            print_info "  └─ Source: $full_path"
+            print_info "  └─ Dest: $dest_path"
+        fi
+    done
+
+    # Si no se instaló nada, salir
+    if [[ "$installed" != true ]]; then
+        return
+    fi
+
+    # ADVERTENCIA sobre temas script + LUKS
+    if [[ "$has_script_themes" == true ]]; then
+        # Verificar si hay LUKS
+        if grep -qE '^HOOKS=.*\b(encrypt|sd-encrypt)\b' /etc/mkinitcpio.conf 2>/dev/null; then
+            echo
+            print_warning "⚠️  IMPORTANTE: Tienes cifrado LUKS + temas script"
+            print_info "  └─ Los temas script NO muestran el prompt de contraseña LUKS"
+            print_info "  └─ La pantalla quedará negra/gris al arrancar"
+            print_info "  └─ Solución: Introduce tu contraseña LUKS 'a ciegas' (funcionará)"
+            print_info "  └─ Recomendación: Usa temas con ModuleName=two-step para LUKS"
+        fi
+    fi
+
+    echo
+
+    # Preguntar si activar tema
+    local theme_to_activate=""
+
+    if [[ ${#installed_themes[@]} -eq 1 ]]; then
+        # Un solo tema instalado
+        local theme_name="${installed_themes[0]}"
+
+        print_info "Tema instalado: $theme_name"
+        read -p "¿Activar este tema ahora? [Y/n]: " -r activate
+
+        if [[ ! "$activate" =~ ^[Nn]$ ]]; then
+            theme_to_activate="$theme_name"
+        fi
+
+    elif [[ ${#installed_themes[@]} -gt 1 ]]; then
+        # Múltiples temas instalados
+        echo "Se instalaron ${#installed_themes[@]} temas:"
+        local i=1
+        for theme in "${installed_themes[@]}"; do
+            echo "  [$i] $theme"
+            ((i++))
+        done
+        echo "  [0] No activar ninguno"
+        echo
+        read -p "¿Qué tema activar? [0-${#installed_themes[@]}]: " -r selection
+
+        if [[ "$selection" =~ ^[1-9][0-9]*$ ]] && [[ $selection -le ${#installed_themes[@]} ]]; then
+            theme_to_activate="${installed_themes[$((selection-1))]}"
+        fi
+    fi
+
+    # Activar el tema (plymouth-set-default-theme -R ya regenera initramfs)
+    if [[ -n "$theme_to_activate" ]]; then
+        echo
+        print_info "Activando tema y regenerando initramfs..."
+        if sudo plymouth-set-default-theme -R "$theme_to_activate"; then
+            print_success "✓ Tema activado: $theme_to_activate"
+            print_info "Reinicia para ver los cambios en el boot"
+        else
+            print_error "Error activando el tema: $theme_to_activate"
+            print_info "  └─ Verifica que el tema esté correctamente instalado"
+        fi
+    else
+        print_info "No se activó ningún tema"
+        if [[ ${#installed_themes[@]} -gt 0 ]]; then
+            echo
+            echo "Para activar un tema manualmente:"
+            for theme in "${installed_themes[@]}"; do
+                echo "  sudo plymouth-set-default-theme -R $theme"
+            done
+        fi
+    fi
+}
+
+# Desinstalar tema(s)
+uninstall_themes() {
+    local themes=("$@")
+    local uninstalled=false
+    local active_uninstalled=false
+
+    # Obtener tema activo
+    local current_theme=$(plymouth-set-default-theme 2>/dev/null)
+
+    if [[ ${#themes[@]} -eq 0 ]]; then
+        print_error "Debes especificar al menos un tema"
+        exit 1
+    fi
+
+    for theme_name in "${themes[@]}"; do
+        local theme_path="$SYSTEM_THEMES/$theme_name"
+
+        if [[ ! -d "$theme_path" ]]; then
+            print_warning "$theme_name no está instalado"
+            continue
+        fi
+
+        # Permitir desinstalar aunque no esté en registro
+        if ! is_in_registry "$theme_name"; then
+            print_warning "$theme_name no está en el registro (¿instalado manualmente?)"
+            read -p "¿Desinstalar de todas formas? [y/N]: " -r confirm
+            if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+                print_info "Omitido: $theme_name"
+                continue
+            fi
+        fi
+
+        # Verificar si es el tema activo
+        if [[ "$theme_name" == "$current_theme" ]]; then
+            print_warning "⚠️  $theme_name es el tema activo"
+            active_uninstalled=true
+        fi
+
+        # Eliminar el tema
+        if sudo rm -rf "$theme_path"; then
+            print_success "Desinstalado: $theme_name"
+            remove_from_registry "$theme_name"
+            uninstalled=true
+        else
+            print_error "Error desinstalando: $theme_name"
+        fi
+    done
+
+    # Solo regenerar si se desinstaló el tema activo
+    if [[ "$active_uninstalled" == true ]]; then
+        echo
+        print_warning "Se desinstaló el tema activo, regenerando initramfs..."
+        sudo mkinitcpio -P
+    elif [[ "$uninstalled" == true ]]; then
+        echo
+        print_info "No es necesario regenerar initramfs (tema no estaba activo)"
+    fi
+}
+
+# Limpiar TODOS los temas instalados por el script
+clean_all() {
+    echo "======================================"
+    echo "  Limpieza de temas instalados"
+    echo "======================================"
+    echo
+
+    init_registry
+
+    # Obtener tema activo
+    local current_theme=$(plymouth-set-default-theme 2>/dev/null)
+
+    local themes_to_delete=()
+    while IFS= read -r theme_name; do
+        [[ -n "$theme_name" ]] && themes_to_delete+=("$theme_name")
+    done < <(list_registry)
+
+    if [[ ${#themes_to_delete[@]} -eq 0 ]]; then
+        print_info "No hay temas instalados por el script"
+        return
+    fi
+
+    local count=${#themes_to_delete[@]}
+    local active_will_be_deleted=false
+
+    echo "Temas a eliminar:"
+    for theme_name in "${themes_to_delete[@]}"; do
+        if [[ "$theme_name" == "$current_theme" ]]; then
+            echo -e "${YELLOW}[!]${NC} $theme_name ${RED}(activo - se regenerará initramfs)${NC}"
+            active_will_be_deleted=true
+        else
+            echo -e "${YELLOW}[!]${NC} $theme_name"
+        fi
+    done
+
+    echo
+    print_warning "Se eliminarán $count tema(s)"
+    if [[ "$active_will_be_deleted" == true ]]; then
+        print_warning "⚠️  Se eliminará el tema activo, se regenerará initramfs"
+    fi
+    echo
+    read -p "¿Continuar? [y/N]: " -r confirm
+
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        print_info "Cancelado"
+        return
+    fi
+
+    echo
+    local deleted=0
+    for theme_name in "${themes_to_delete[@]}"; do
+        if sudo rm -rf "$SYSTEM_THEMES/$theme_name"; then
+            print_success "Eliminado: $theme_name"
+            remove_from_registry "$theme_name"
+            ((deleted++))
+        else
+            print_error "Error eliminando: $theme_name"
+        fi
+    done
+
+    echo
+    print_success "Limpieza completada: $deleted/$count eliminados"
+
+    # Solo regenerar si se eliminó el tema activo
+    if [[ "$active_will_be_deleted" == true ]] && [[ $deleted -gt 0 ]]; then
+        echo
+        print_warning "Regenerando initramfs (se eliminó el tema activo)..."
+        sudo mkinitcpio -P
+    elif [[ $deleted -gt 0 ]]; then
+        print_info "No es necesario regenerar initramfs (tema activo no fue eliminado)"
+    fi
+}
+
+# ==================== PREVIEW ====================
+
+preview_theme() {
+    local theme_name="$1"
+    local duration="${2:-10}"
+
+    if [[ ! -d "$SYSTEM_THEMES/$theme_name" ]]; then
+        print_error "Tema no encontrado: $theme_name"
+        print_info "Usa: plymouth-themes --installed"
+        exit 1
+    fi
+
+    print_info "Tema: $theme_name"
+    print_preview "Previsualizando durante ${duration}s (Ctrl+C para detener)"
+    echo
+
+    local current_theme=$(plymouth-set-default-theme 2>/dev/null)
+    sudo pkill plymouthd 2>/dev/null
+    sleep 1
+
+    sudo plymouth-set-default-theme "$theme_name"
+
+    if sudo plymouthd --debug; then
+        sudo plymouth --show-splash
+
+        for ((i=0; i<$duration; i++)); do
+            sudo plymouth --update="Loading... $i/$duration"
+            sleep 1
+        done
+
+        sudo plymouth quit
+    else
+        print_error "Error iniciando Plymouth"
+        sudo plymouth quit 2>/dev/null
+    fi
+
+    if [[ -n "$current_theme" ]]; then
+        sudo plymouth-set-default-theme "$current_theme" 2>/dev/null
+    fi
+
+    clear
+    print_success "Preview completado"
+}
+
+# ==================== INTERACTIVO ====================
+
+# Modo interactivo con validación mejorada
+interactive_install() {
+    echo "======================================"
+    echo "  Instalador interactivo de temas"
+    echo "======================================"
+    echo
+
+    find_all_themes
+
+    if [[ ${#AVAILABLE_THEMES[@]} -eq 0 ]]; then
+        print_warning "No se encontraron temas"
+        return
+    fi
+
+    declare -a theme_list
+    declare -a theme_keys_list
+    local i=1
+
+    for theme_key in $(printf '%s\n' "${!AVAILABLE_THEMES[@]}" | sort); do
+        local path="${AVAILABLE_THEMES[$theme_key]}"
+
+        # VALIDAR que el tema tenga .plymouth ANTES de añadir a la lista
+        local plymouth_file=$(find -L "$path" -maxdepth 1 -name "*.plymouth" -type f 2>/dev/null | head -1)
+        if [[ -z "$plymouth_file" ]]; then
+            # Skip temas sin .plymouth
+            continue
+        fi
+
+        local theme_name=$(basename "$plymouth_file" .plymouth)
+
+        if is_in_registry "$theme_name"; then
+            status="${GREEN}✓${NC}"
+        else
+            status=" "
+        fi
+
+        theme_list[$i]="$status [$i] $theme_key"
+        theme_keys_list[$i]="$theme_key"
+        ((i++))
+    done
+
+    # Mostrar lista
+    for idx in "${!theme_list[@]}"; do
+        echo -e "${theme_list[$idx]}"
+    done
+
+    echo
+    echo -e "Leyenda: ${GREEN}✓${NC} instalado"
+    echo
+    echo "Opciones:"
+    echo "  - Números separados por espacios (ej: 1 3 5)"
+    echo "  - 'all' para instalar todos"
+    echo "  - 'q' para salir"
+    echo
+    read -p "Selección: " -r selection
+
+    if [[ "$selection" == "q" ]]; then
+        exit 0
+    fi
+
+    if [[ "$selection" == "all" ]]; then
+        install_themes "${theme_keys_list[@]}"
+        return
+    fi
+
+    declare -a selected_themes
+    for num in $selection; do
+        if [[ "$num" =~ ^[0-9]+$ ]] && [[ -n "${theme_keys_list[$num]}" ]]; then
+            selected_themes+=("${theme_keys_list[$num]}")
+        else
+            print_warning "Número inválido: $num"
+        fi
+    done
+
+    if [[ ${#selected_themes[@]} -gt 0 ]]; then
+        echo
+        install_themes "${selected_themes[@]}"
+    else
+        print_warning "No se seleccionó ningún tema válido"
+    fi
+}
+
+# ==================== AYUDA ====================
+
+show_help() {
+    cat << EOF
+Uso: $(basename "$0") [OPCIÓN] [TEMAS...]
+
+Gestor de temas de Plymouth - instalación y gestión
+
+GESTIÓN:
+  --list, -l              Listar temas disponibles
+  --installed, -i         Listar temas instalados
+  --install TEMA...       Instalar tema(s)
+  --interactive, -I       Modo interactivo
+  --uninstall, -u TEMA    Desinstalar tema(s)
+  --clean, -c            Eliminar TODOS los temas del script
+  --rebuild-registry      Reconstruir registro desde temas instalados
+  --preview, -p TEMA [S]  Preview de tema (segundos)
+
+EJEMPLOS:
+  $(basename "$0") --list
+  $(basename "$0") angular cachyos
+  $(basename "$0") --interactive
+  $(basename "$0") --uninstall onepiece
+  $(basename "$0") --rebuild-registry
+  $(basename "$0") --clean
+
+WORKFLOW:
+  1. Listar: plymouth-themes --list
+  2. Instalar: plymouth-themes angular
+  3. Activar: sudo plymouth-set-default-theme -R angular
+  4. Reiniciar para ver
+
+REGISTRO:
+  Los temas instalados se registran en:
+  $REGISTRY_FILE
+
+  Si tienes temas instalados antes de usar este script:
+  plymouth-themes --rebuild-registry
+
+EOF
+}
+
+# ==================== MAIN ====================
+
+main() {
+    case "$1" in
+        --list|-l)
+            check_base
+            list_available
+            ;;
+        --installed|-i)
+            list_installed
+            ;;
+        --install)
+            shift
+            check_base
+            install_themes "$@"
+            ;;
+        --preview|-p)
+            shift
+            preview_theme "${1:-$(plymouth-set-default-theme 2>/dev/null)}" "$2"
+            ;;
+        --interactive|-I)
+            check_base
+            interactive_install
+            ;;
+        --uninstall|-u)
+            shift
+            uninstall_themes "$@"
+            ;;
+        --clean|-c)
+            clean_all
+            ;;
+        --rebuild-registry)
+            check_base
+            rebuild_registry
+            ;;
+        --help|-h|"")
+            show_help
+            ;;
+        *)
+            check_base
+            install_themes "$@"
+            ;;
+    esac
+}
+
+main "$@"

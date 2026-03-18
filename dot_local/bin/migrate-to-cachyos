@@ -1,0 +1,262 @@
+#!/bin/bash
+# ~/.local/bin/migrate-to-cachyos
+
+# Colores
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+# Variables
+DRY_RUN=false
+EXCLUDE_PKGS=()
+SPECIFIC_PKGS=()
+
+# Repos oficiales de Arch a revisar
+ARCH_REPOS=("core" "extra" "multilib" "community")
+
+# Repos de CachyOS (en orden de prioridad)
+CACHYOS_REPOS=("cachyos-v3" "cachyos-v4" "cachyos-extra-v3" "cachyos-core-v3" "cachyos")
+
+# Paquetes críticos que NO migrar automáticamente
+CRITICAL_PKGS=("base" "base-devel" "linux" "linux-headers" "systemd" "pacman")
+
+# Función de ayuda
+show_help() {
+    cat << EOF
+${CYAN}Uso:${NC} migrate-to-cachyos [OPCIONES] [PAQUETES...]
+
+${YELLOW}Descripción:${NC}
+  Migra paquetes de repositorios oficiales de Arch a CachyOS optimizados.
+  Prioridad: cachyos-v3/v4 > cachyos-extra-v3 > cachyos-core-v3 > cachyos
+
+${YELLOW}Opciones:${NC}
+  -n, --dry-run              Simular migración sin realizar cambios
+  -e, --exclude PKG[,PKG...] Excluir paquetes de la migración
+  -a, --all                  Incluir paquetes críticos (NO recomendado)
+  -h, --help                 Mostrar esta ayuda
+
+${YELLOW}Ejemplos:${NC}
+  migrate-to-cachyos                    # Migrar todos los paquetes disponibles
+  migrate-to-cachyos firefox           # Migrar solo Firefox
+  migrate-to-cachyos -n                 # Ver qué se migraría (dry-run)
+  migrate-to-cachyos -e hyprland        # Migrar todos excepto hyprland
+
+${GREEN}Nota:${NC} Por defecto NO migra paquetes críticos del sistema (base, linux, etc.)
+      Usa --all para incluirlos (bajo tu propio riesgo)
+EOF
+    exit 0
+}
+
+# Función para verificar si es crítico
+is_critical() {
+    local pkg="$1"
+    for critical in "${CRITICAL_PKGS[@]}"; do
+        if [[ "$pkg" == "$critical" ]] || [[ "$pkg" == "$critical-"* ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Función para verificar si está excluido
+is_excluded() {
+    local pkg="$1"
+    for excluded in "${EXCLUDE_PKGS[@]}"; do
+        if [[ "$pkg" == "$excluded" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Función para verificar si está en repo de Arch
+is_arch_repo() {
+    local repo="$1"
+    for arch_repo in "${ARCH_REPOS[@]}"; do
+        if [[ "$repo" == "$arch_repo" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# Función para buscar en repos de CachyOS
+find_in_cachyos() {
+    local pkg="$1"
+    
+    for cachyos_repo in "${CACHYOS_REPOS[@]}"; do
+        if pacman -Sl "$cachyos_repo" 2>/dev/null | grep -q "^$cachyos_repo $pkg "; then
+            echo "$cachyos_repo"
+            return 0
+        fi
+    done
+    
+    return 1
+}
+
+# Parsear argumentos
+INCLUDE_CRITICAL=false
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -e|--exclude)
+            IFS=',' read -ra EXCLUDE_PKGS <<< "$2"
+            shift 2
+            ;;
+        -a|--all)
+            INCLUDE_CRITICAL=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        -*)
+            echo -e "${RED}Error: Opción desconocida '$1'${NC}"
+            echo "Usa --help para ver las opciones disponibles"
+            exit 1
+            ;;
+        *)
+            SPECIFIC_PKGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Banner
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${CYAN}================================================================${NC}"
+    echo -e "${CYAN}    ${YELLOW}SIMULACIÓN: MIGRACIÓN ARCH → CACHYOS (DRY-RUN)${NC}"
+    echo -e "${CYAN}================================================================${NC}\n"
+else
+    echo -e "${CYAN}================================================================${NC}"
+    echo -e "${CYAN}        ${YELLOW}MIGRACIÓN ARCH → CACHYOS OPTIMIZADO${NC}"
+    echo -e "${CYAN}================================================================${NC}\n"
+fi
+
+# Arrays para almacenar resultados
+declare -a migrables_pkg=()
+declare -a migrables_current_repo=()
+declare -a migrables_cachyos_repo=()
+declare -a excluded_list=()
+declare -a critical_list=()
+
+# Obtener lista de paquetes a revisar
+if [ ${#SPECIFIC_PKGS[@]} -gt 0 ]; then
+    echo -e "${BLUE}🔍 Revisando paquetes específicos...${NC}\n"
+    PKGS_TO_CHECK=("${SPECIFIC_PKGS[@]}")
+else
+    echo -e "${BLUE}🔍 Buscando paquetes de repos oficiales de Arch...${NC}\n"
+    mapfile -t PKGS_TO_CHECK < <(pacman -Qen | awk '{print $1}')
+fi
+
+# Revisar cada paquete
+for pkg in "${PKGS_TO_CHECK[@]}"; do
+    if is_excluded "$pkg"; then
+        excluded_list+=("$pkg")
+        printf "${MAGENTA}⊘${NC} %-30s ${YELLOW}[excluido]${NC}\n" "$pkg"
+        continue
+    fi
+    
+    current_repo=$(pacman -Sp --print-format '%r' "$pkg" 2>/dev/null | head -1)
+    
+    if ! is_arch_repo "$current_repo"; then
+        continue
+    fi
+    
+    if is_critical "$pkg" && [ "$INCLUDE_CRITICAL" = false ]; then
+        critical_list+=("$pkg")
+        printf "${RED}⚠${NC}  %-30s ${YELLOW}[$current_repo]${NC} → ${RED}[crítico - omitido]${NC}\n" "$pkg"
+        continue
+    fi
+    
+    cachyos_repo=$(find_in_cachyos "$pkg")
+    
+    if [ -n "$cachyos_repo" ]; then
+        migrables_pkg+=("$pkg")
+        migrables_current_repo+=("$current_repo")
+        migrables_cachyos_repo+=("$cachyos_repo")
+        printf "${GREEN}✓${NC} %-30s ${YELLOW}[$current_repo]${NC} → ${BLUE}[$cachyos_repo]${NC}\n" "$pkg"
+    else
+        printf "${RED}✗${NC} %-30s ${YELLOW}[$current_repo]${NC} → ${RED}no en cachyos${NC}\n" "$pkg"
+    fi
+done
+
+# Resumen
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                       ${YELLOW}RESUMEN${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Paquetes migrables: ${GREEN}${#migrables_pkg[@]}${NC}"
+if [ ${#excluded_list[@]} -gt 0 ]; then
+    echo -e "${CYAN}Paquetes excluidos: ${MAGENTA}${#excluded_list[@]}${NC}"
+fi
+if [ ${#critical_list[@]} -gt 0 ]; then
+    echo -e "${CYAN}Paquetes críticos:  ${RED}${#critical_list[@]}${NC} (omitidos, usa --all)"
+fi
+echo -e "${CYAN}================================================================${NC}\n"
+
+# Si no hay nada que migrar
+if [ ${#migrables_pkg[@]} -eq 0 ]; then
+    echo -e "${GREEN}✓ No hay paquetes migrables a CachyOS.${NC}"
+    if [ ${#critical_list[@]} -gt 0 ]; then
+        echo -e "${YELLOW}💡 Hay ${#critical_list[@]} paquetes críticos omitidos. Usa --all para incluirlos.${NC}"
+    fi
+    exit 0
+fi
+
+# Si es dry-run, terminar aquí
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${YELLOW}ℹ️  Modo simulación: no se realizaron cambios${NC}"
+    echo -e "${YELLOW}💡 Ejecuta sin -n | --dry-run para realizar la migración${NC}"
+    exit 0
+fi
+
+# Preguntar si migrar
+echo -e "${YELLOW}¿Deseas migrar estos paquetes a CachyOS? [s/N]${NC}"
+read -r respuesta
+
+if [[ ! "$respuesta" =~ ^[sS]$ ]]; then
+    echo -e "${RED}❌ Migración cancelada${NC}"
+    exit 0
+fi
+
+# Migrar paquetes
+echo -e "\n${BLUE}🚀 Iniciando migración...${NC}\n"
+
+SUCCESS_COUNT=0
+FAILED_COUNT=0
+
+for i in "${!migrables_pkg[@]}"; do
+    pkg="${migrables_pkg[$i]}"
+    current_repo="${migrables_current_repo[$i]}"
+    cachyos_repo="${migrables_cachyos_repo[$i]}"
+    
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+    echo -e "📦 Migrando: ${GREEN}$pkg${NC} ${YELLOW}[$current_repo]${NC} → ${BLUE}[$cachyos_repo]${NC}"
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+    
+    echo -e "${YELLOW}Reinstalando desde $cachyos_repo...${NC}"
+    if sudo pacman -S --noconfirm "$cachyos_repo/$pkg" 2>/dev/null; then
+        echo -e "${GREEN}✓ Migrado a $cachyos_repo${NC}\n"
+        SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    else
+        echo -e "${RED}✗ Error al migrar${NC}\n"
+        FAILED_COUNT=$((FAILED_COUNT + 1))
+    fi
+done
+
+# Resumen final
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                   ${GREEN}MIGRACIÓN COMPLETADA${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Exitosos:  ${GREEN}$SUCCESS_COUNT${NC}"
+echo -e "${CYAN}Fallidos:  ${RED}$FAILED_COUNT${NC}"
+echo -e "${CYAN}================================================================${NC}\n"
+
+echo -e "${YELLOW}💡 Tip: Ejecuta 'list-packages' para verificar los cambios${NC}"
