@@ -14,6 +14,7 @@ dot_profile
 dot_bashrc
 dot_bash_profile
 dot_bash_logout
+dot_config/zsh/**
 {{ end -}}
 
 
