@@ -12,4 +12,11 @@ $src = "$config\zed"
 $dst = "$env:APPDATA\Zed"
 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
 cmd /c mklink /J "$dst" "$src"
+
+# yazi: AppData/Roaming/yazi/config -> ~/.config/yazi  (junction)
+$src = "$config\yazi"
+$dst = "$env:APPDATA\yazi\config"
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\yazi" | Out-Null
+if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
+cmd /c mklink /J "$dst" "$src"
 {{ end -}}
