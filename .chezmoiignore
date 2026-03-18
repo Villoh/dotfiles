@@ -8,6 +8,7 @@ dot_glzr/
 
 # Reference only — not applied to home
 packages/**
+program_files/**
 
 # Never track nested git repos or runtime/cache data
 **/.git/**
