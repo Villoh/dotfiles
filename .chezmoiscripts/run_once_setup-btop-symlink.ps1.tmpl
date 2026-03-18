@@ -1,0 +1,11 @@
+{{ if eq .chezmoi.os "windows" -}}
+$persist = "$env:USERPROFILE\scoop\persist\btop\btop.conf"
+$config  = "$env:USERPROFILE\.config\btop\btop.conf"
+
+# Remove existing file or symlink
+if (Test-Path $persist) { Remove-Item $persist -Force }
+
+# Create symlink: scoop/persist/btop/btop.conf -> ~/.config/btop/btop.conf
+cmd /c mklink "$persist" "$config"
+Write-Host "btop symlink created: $persist -> $config"
+{{ end -}}
