@@ -1,0 +1,11 @@
+[mgr]
+prepend_keymap = [
+  { on = "M", run = "plugin mount" },
+  { on = "<F9>", run = "plugin mediainfo -- toggle-metadata", desc = "Toggle media preview metadata" },
+  { on = ["g", "c"], run = "plugin vcs-files", desc = "Show Git file changes" },
+  # { on = ["g", "o"], run = "plugin duckdb -open", desc = "open with duckdb" },
+  # { on = ["g", "u"], run = "plugin duckdb -ui", desc = "open with duckdb ui" },
+  # { on = ["H"], run = "plugin duckdb -1", desc = "Scroll one column to the left" },
+  # { on = ["L"], run = "plugin duckdb +1", desc = "Scroll one column to the right" },
+  { on = "P", run = "plugin mux next", desc = "Cycle through mux previewers" },
+]
