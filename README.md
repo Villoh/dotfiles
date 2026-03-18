@@ -39,6 +39,46 @@
 - **Secrets scanning:** gitleaks via pre-commit hook
 - **Submodules:** sddm and plymouth themes (run `git submodule update --init --recursive` after cloning)
 
+### Windows
+
+| Category | Tool |
+|----------|------|
+| Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) |
+| Status Bar | [YASB](https://github.com/amnweb/yasb) |
+| Shell | PowerShell 7 |
+| Prompt | [Oh My Posh](https://ohmyposh.dev/) |
+| Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) |
+| Editor | [Zed](https://zed.dev/) |
+| File Manager | [yazi](https://yazi-rs.github.io/) |
+| App Launcher | [Flow Launcher](https://www.flowlauncher.com/) |
+| Clipboard | [Ditto](https://ditto-cp.sourceforge.io/) |
+| Context Menu | [Nilesoft Shell](https://nilesoft.org/) |
+| Hotkeys | [AutoHotkey](https://www.autohotkey.com/) |
+| Desktop Widgets | [Rainmeter](https://www.rainmeter.net/) |
+| Customization | [Windhawk](https://windhawk.net/) |
+| Resource Monitor | [btop](https://github.com/aristocratos/btop) |
+
+### Linux
+
+| Category | Tool |
+|----------|------|
+| Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) |
+| Status Bar | [Waybar](https://github.com/Alexays/Waybar) |
+| Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) |
+| OSD Overlays | [SwayOSD](https://github.com/ErikReider/SwayOSD) |
+| Shell | zsh |
+| Prompt | [Starship](https://starship.rs/) |
+| Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/) · [Ghostty](https://ghostty.org/) |
+| Multiplexer | [tmux](https://github.com/tmux/tmux) |
+| Editor | [Zed](https://zed.dev/) |
+| File Manager | [yazi](https://yazi-rs.github.io/) |
+| Clipboard | [cliphist](https://github.com/sentriz/cliphist) |
+| Discord | [Vesktop](https://github.com/Vencord/Vesktop) |
+| Email | [aerc](https://aerc-mail.org/) |
+| Chat | [nchat](https://github.com/d99kris/nchat) |
+| YouTube | [FreeTube](https://freetubeapp.io/) |
+| Resource Monitor | [btop](https://github.com/aristocratos/btop) |
+
 ## Fresh install
 
 ### Windows
