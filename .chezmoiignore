@@ -8,6 +8,12 @@ dot_glzr/
 
 {{ if eq .chezmoi.os "windows" -}}
 # Linux-only paths — ignore on Windows
+dot_zshenv
+dot_zprofile
+dot_profile
+dot_bashrc
+dot_bash_profile
+dot_bash_logout
 {{ end -}}
 
 
