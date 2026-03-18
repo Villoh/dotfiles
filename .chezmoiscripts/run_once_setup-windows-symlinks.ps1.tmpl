@@ -19,4 +19,11 @@ $dst = "$env:APPDATA\yazi\config"
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\yazi" | Out-Null
 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
 cmd /c mklink /J "$dst" "$src"
+
+# vencord: AppData/Roaming/Vencord/settings -> ~/.config/vesktop/settings  (junction)
+$src = "$config\vesktop\settings"
+$dst = "$env:APPDATA\Vencord\settings"
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\Vencord" | Out-Null
+if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
+cmd /c mklink /J "$dst" "$src"
 {{ end -}}
