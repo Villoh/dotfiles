@@ -1,0 +1,10 @@
+title = "Dotfiles gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+paths = [
+    '''.*Vencord.*''',
+    '''.*vesktop.*''',
+]
