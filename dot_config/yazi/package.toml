@@ -1,34 +1,34 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:mount"
 rev = "b224ddf"
-hash = "91937a4a9b779eabc6983e258befdfe9"
+hash = "5f7ad59184c71b4151689738570eec01"
 
 [[plugin.deps]]
 use = "boydaihungst/mediainfo"
 rev = "8ab04b2"
-hash = "bdd196f71aa3e6aa02d1b1d6cad22424"
+hash = "d8b0f62b582f65f53b54fe87fe9ba1f6"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:vcs-files"
 rev = "b224ddf"
-hash = "f6e6a829c6dc6c900a75bebe422a5c33"
+hash = "bf27af00d3b131451db55426ff38ba52"
 
 [[plugin.deps]]
 use = "AnirudhG07/rich-preview"
 rev = "7d616ad"
-hash = "d64feec9761392cbc250d199ab4b8a3a"
+hash = "4b15d186d555d318134160f843193ee9"
 
 [[plugin.deps]]
 use = "peterfication/mux"
 rev = "e76edd5"
-hash = "8e49c6f9b24993239c4d03a1aaabce80"
+hash = "d77f78c57afcfbb1964418e3735700b5"
 
 [[plugin.deps]]
 use = "wylie102/duckdb"
 rev = "3f8c863"
-hash = "87b9233a74325e95011670ed20bbd0d4"
+hash = "5112de4ea9ce83c9b6aa748b3fad665d"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
 rev = "4c57537"
-hash = "8eabb4e88096f10905a6df62cfaadbf4"
+hash = "eb541426744368b99b827494111ca44d"
