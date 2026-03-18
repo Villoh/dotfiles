@@ -1,7 +1,7 @@
 <div align="center">
   <img src=".github/assets/catppuccin-logo.png" width="100"/>
   <h1>dotfiles — <a href="https://catppuccin.com">catppuccin</a> edition</h1>
-  <p>Personal dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / Hyprland), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
+  <p>Personal dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
   <p>
     <img src="https://img.shields.io/badge/Windows-AtlasOS-89b4fa?style=flat-square&logo=windows11&logoColor=1e1e2e"/>
     <img src="https://img.shields.io/badge/Linux-CachyOS-a6e3a1?style=flat-square&logo=linux&logoColor=1e1e2e"/>
