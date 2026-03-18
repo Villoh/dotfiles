@@ -1,13 +1,20 @@
 <div align="center">
   <img src=".github/assets/catppuccin-logo.png" width="100"/>
-  <h1>dotfiles — catppuccin edition</h1>
+  <h1>dotfiles — <a href="https://catppuccin.com">catppuccin</a> edition</h1>
   <p>Personal dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / Hyprland), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
-  <a href="#preview"><kbd> <br> Preview <br> </kbd></a>&ensp;&ensp;
-  <a href="#fresh-install"><kbd> <br> Install <br> </kbd></a>&ensp;&ensp;
-  <a href="#extra-optional-setup-windows"><kbd> <br> Extras <br> </kbd></a>&ensp;&ensp;
-  <a href="#overview"><kbd> <br> Features <br> </kbd></a>&ensp;&ensp;
-  <a href="#credits"><kbd> <br> Credits <br> </kbd></a>&ensp;&ensp;
-  <a href="#author"><kbd> <br> Author <br> </kbd></a>&ensp;&ensp;
+  <p>
+    <img src="https://img.shields.io/badge/Windows-AtlasOS-89b4fa?style=flat-square&logo=windows11&logoColor=1e1e2e"/>
+    <img src="https://img.shields.io/badge/Linux-CachyOS-a6e3a1?style=flat-square&logo=linux&logoColor=1e1e2e"/>
+    <img src="https://img.shields.io/badge/chezmoi-managed-cba6f7?style=flat-square&logoColor=1e1e2e"/>
+    <img src="https://img.shields.io/badge/theme-Catppuccin_Mocha-f5c2e7?style=flat-square&logoColor=1e1e2e"/>
+    <img src="https://img.shields.io/badge/license-MIT-fab387?style=flat-square&logoColor=1e1e2e"/>
+  </p>
+  <a href="#preview"><kbd>Preview</kbd></a>&ensp;&ensp;
+  <a href="#fresh-install"><kbd>Install</kbd></a>&ensp;&ensp;
+  <a href="#extra-optional-setup-windows"><kbd>Extras</kbd></a>&ensp;&ensp;
+  <a href="#overview"><kbd>Features</kbd></a>&ensp;&ensp;
+  <a href="#credits"><kbd>Credits</kbd></a>&ensp;&ensp;
+  <a href="#author"><kbd>Author</kbd></a>&ensp;&ensp;
 </div>
 
 ---
