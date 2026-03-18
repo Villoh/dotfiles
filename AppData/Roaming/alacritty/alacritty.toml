@@ -1,0 +1,112 @@
+# =============================================================================
+# Alacritty - Windows Configuration
+# =============================================================================
+# Path: %APPDATA%\alacritty\alacritty.toml
+# Docs: https://alacritty.org/config-alacritty.html
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# IMPORTS - Catppuccin theme
+# Download with:
+#   Invoke-WebRequest -Uri "https://raw.githubusercontent.com/catppuccin/alacritty/main/catppuccin-mocha.toml" -OutFile "$env:APPDATA\alacritty\catppuccin-mocha.toml"
+# Flavours: catppuccin-latte | catppuccin-frappe | catppuccin-macchiato | catppuccin-mocha
+# -----------------------------------------------------------------------------
+general.import = [
+  "~\\AppData\\Roaming\\alacritty\\catppuccin-mocha.toml"
+]
+
+# -----------------------------------------------------------------------------
+# SHELL - PowerShell 7+
+# Install: winget install Microsoft.PowerShell
+# -----------------------------------------------------------------------------
+[terminal.shell]
+program = "pwsh"
+args    = ["--login"]
+
+# -----------------------------------------------------------------------------
+# WINDOW
+# -----------------------------------------------------------------------------
+[window]
+decorations   = "none"                          # No title bar (close with Alt+F4, move with Alt+F7)
+padding       = { x = 12, y = 12 }             # Inner padding in pixels
+dimensions    = { columns = 120, lines = 35 }  # Initial size
+opacity       = 0.95                            # 0.0 = transparent, 1.0 = solid
+blur          = true                            # Background blur (requires compositor support)
+title         = "Alacritty"
+dynamic_title = true                            # Allow apps to change the title
+#startup_mode          = "Windowed"
+
+# -----------------------------------------------------------------------------
+# FONT - Nerd Font required for oh-my-posh icons
+# Install: winget install -e --id DEVCOM.JetBrainsMonoNerdFont
+# -----------------------------------------------------------------------------
+[font]
+normal  = { family = "CaskaydiaCove Nerd Font", style = "Regular" }
+bold    = { family = "CaskaydiaCove Nerd Font", style = "Bold" }
+italic  = { family = "CaskaydiaCove Nerd Font", style = "Italic" }
+size    = 12.0
+offset       = { x = 0, y = 0 }
+glyph_offset = { x = 0, y = 0 }
+builtin_box_drawing = true
+
+# -----------------------------------------------------------------------------
+# CURSOR
+# -----------------------------------------------------------------------------
+[cursor]
+style            = { shape = "Beam", blinking = "On" }
+blink_interval   = 500   # ms between blinks
+unfocused_hollow = true  # Hollow cursor when window loses focus
+
+# -----------------------------------------------------------------------------
+# SCROLLING
+# -----------------------------------------------------------------------------
+[scrolling]
+history    = 10000  # Scrollback buffer lines
+multiplier = 3      # Mouse wheel scroll speed
+
+# -----------------------------------------------------------------------------
+# SELECTION
+# -----------------------------------------------------------------------------
+[selection]
+save_to_clipboard = false  # Auto-copy selection to clipboard (Linux-style)
+
+# -----------------------------------------------------------------------------
+# KEYBOARD BINDINGS
+# -----------------------------------------------------------------------------
+[keyboard]
+bindings = [
+
+  # --- Clipboard ---
+  { key = "C", mods = "Control|Shift", action = "Copy" },
+  { key = "V", mods = "Control|Shift", action = "Paste" },
+
+  # --- Word editing ---
+  { key = "Back",   mods = "Control", chars = "\u0017" },        # Ctrl+Backspace → delete previous word
+  { key = "Back",   mods = "Alt",     chars = "\u001b\u007f" },  # Alt+Backspace  → delete previous word
+  { key = "Delete", mods = "Control", chars = "\u001b[3;5~" },   # Ctrl+Delete    → delete next word
+
+  # --- Word navigation ---
+  { key = "Left",  mods = "Control", chars = "\u001b[1;5D" },    # Ctrl+←    → word back
+  { key = "Right", mods = "Control", chars = "\u001b[1;5C" },    # Ctrl+→    → word forward
+
+  # --- Line navigation ---
+  { key = "Home", mods = "None", chars = "\u001b[H" },           # Home → start of line
+  { key = "End",  mods = "None", chars = "\u001b[F" },           # End  → end of line
+
+  # --- Scrolling ---
+  { key = "PageUp",   mods = "Shift", action = "ScrollPageUp" },
+  { key = "PageDown", mods = "Shift", action = "ScrollPageDown" },
+  { key = "Home",     mods = "Shift", action = "ScrollToTop" },
+  { key = "End",      mods = "Shift", action = "ScrollToBottom" },
+
+  # --- Font size ---
+  { key = "Plus",  mods = "Control", action = "IncreaseFontSize" },
+  { key = "Minus", mods = "Control", action = "DecreaseFontSize" },
+  { key = "Key0",  mods = "Control", action = "ResetFontSize" },
+
+  # --- Windows / Tabs ---
+  # Note: Alacritty has no native splits. Use tmux or zellij for that.
+  { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },  # New window
+  { key = "T", mods = "Control|Shift", action = "CreateNewWindow" },  # New window (tab-like)
+  { key = "W", mods = "Control|Shift", action = "Quit" },             # Close window
+]
