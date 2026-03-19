@@ -34,54 +34,56 @@
 ## Overview
 
 - **Manager:** chezmoi with `mode = "symlink"` — every managed file is a symlink to the chezmoi source, so edits take effect immediately without re-adding
-- **Encryption:** GPG (`~/.config/git/local`, `gnupg/sshcontrol`)
 - **Secrets scanning:** gitleaks via pre-commit hook
 - **Submodules:** sddm and plymouth themes (run `git submodule update --init --recursive` after cloning)
 
 ### Windows
 
-| Category | Tool |
-|----------|------|
-| Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) |
-| Status Bar | [YASB](https://github.com/amnweb/yasb) |
-| Shell | PowerShell 7 |
-| Prompt | [Oh My Posh](https://ohmyposh.dev/) |
-| Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) |
-| Editor | [Zed](https://zed.dev/) |
-| File Manager | [yazi](https://yazi-rs.github.io/) |
-| App Launcher | [Flow Launcher](https://www.flowlauncher.com/) |
-| Clipboard | [Ditto](https://ditto-cp.sourceforge.io/) |
-| Context Menu | [Nilesoft Shell](https://nilesoft.org/) |
-| Hotkeys | [AutoHotkey](https://www.autohotkey.com/) |
-| Desktop Widgets | [Rainmeter](https://www.rainmeter.net/) |
-| Customization | [Windhawk](https://windhawk.net/) |
-| Resource Monitor | [btop](https://github.com/aristocratos/btop) |
+| Category | Tool | Config |
+|----------|------|--------|
+| Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) | [⚙️](dot_glzr/) |
+| Status Bar | [YASB](https://github.com/amnweb/yasb) | [⚙️](dot_config/yasb/) |
+| Shell | PowerShell 7 | [⚙️](Documents/PowerShell/) |
+| Prompt | [Oh My Posh](https://ohmyposh.dev/) | [⚙️](dot_config/ohmyposh/) |
+| Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) | [⚙️](dot_config/wezterm/) · [⚙️](AppData/Roaming/alacritty/) · [⚙️](AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/) |
+| Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
+| File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
+| App Launcher | [Flow Launcher](https://www.flowlauncher.com/) | [⚙️](AppData/Roaming/FlowLauncher/) |
+| Clipboard | [Ditto](https://ditto-cp.sourceforge.io/) | [⚙️](program_files/ditto/) |
+| Context Menu | [Nilesoft Shell](https://nilesoft.org/) | [⚙️](program_files/nilesoft/) |
+| Hotkeys | [AutoHotkey](https://www.autohotkey.com/) | [⚙️](Documents/AutoHotkey/) |
+| Desktop Widgets | [Rainmeter](https://www.rainmeter.net/) | [⚙️](Documents/Rainmeter/) |
+| Customization | [Windhawk](https://windhawk.net/) | [⚙️](packages/windows/) |
+| Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
 
 ### Linux
 
-| Category | Tool |
-|----------|------|
-| Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) |
-| Status Bar | [Waybar](https://github.com/Alexays/Waybar) |
-| Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) |
-| OSD Overlays | [SwayOSD](https://github.com/ErikReider/SwayOSD) |
-| Shell | zsh |
-| Prompt | [Starship](https://starship.rs/) |
-| Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/) · [Ghostty](https://ghostty.org/) |
-| Multiplexer | [tmux](https://github.com/tmux/tmux) |
-| Editor | [Zed](https://zed.dev/) |
-| File Manager | [yazi](https://yazi-rs.github.io/) |
-| Clipboard | [cliphist](https://github.com/sentriz/cliphist) |
-| Discord | [Vesktop](https://github.com/Vencord/Vesktop) |
-| Email | [aerc](https://aerc-mail.org/) |
-| Chat | [nchat](https://github.com/d99kris/nchat) |
-| YouTube | [FreeTube](https://freetubeapp.io/) |
-| Resource Monitor | [btop](https://github.com/aristocratos/btop) |
+> My Linux setup is built on top of [HyDE](https://github.com/HyDE-Project/HyDE). If you're interested in a full Hyprland desktop setup, check it out first.
+
+| Category | Tool | Config |
+|----------|------|--------|
+| Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) | [⚙️](dot_config/hypr/) |
+| Status Bar | [Waybar](https://github.com/Alexays/Waybar) | [⚙️](dot_config/waybar/) |
+| Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) | [⚙️](dot_config/swaync/) |
+| OSD Overlays | [SwayOSD](https://github.com/ErikReider/SwayOSD) | [⚙️](dot_config/swayosd/) |
+| Shell | zsh | [⚙️](dot_config/zsh/) |
+| Prompt | [Starship](https://starship.rs/) | [⚙️](dot_config/fastfetch/) |
+| Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/) · [Ghostty](https://ghostty.org/) | [⚙️](dot_config/kitty/) · [⚙️](dot_config/ghostty/) |
+| Multiplexer | [tmux](https://github.com/tmux/tmux) | [⚙️](dot_config/tmux/) |
+| Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
+| File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
+| Clipboard | [cliphist](https://github.com/sentriz/cliphist) | [⚙️](dot_config/cliphist/) |
+| Discord | [Vesktop](https://github.com/Vencord/Vesktop) | [⚙️](dot_config/vesktop/) |
+| Email | [aerc](https://aerc-mail.org/) | [⚙️](dot_config/aerc/) |
+| Chat | [nchat](https://github.com/d99kris/nchat) | [⚙️](dot_config/nchat/) |
+| YouTube | [FreeTube](https://freetubeapp.io/) | [⚙️](dot_config/FreeTube/) |
+| Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
 
 ## Fresh install
 
 ### Prerequisites
 
+- **Linux only** — this setup builds on top of [HyDE](https://github.com/HyDE-Project/HyDE). Install it first if you want the full Hyprland desktop.
 - **Windows only** — enable Developer Mode for symlinks without elevation:
   `Settings → System → For developers → Developer Mode`
 - **GPG** — import your key:
