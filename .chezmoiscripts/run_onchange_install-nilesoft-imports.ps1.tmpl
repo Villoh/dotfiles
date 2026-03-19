@@ -1,3 +1,4 @@
+{{ if eq .chezmoi.os "windows" -}}
 # run_onchange_ triggers when this script's content changes.
 # Hashes are computed automatically for all .nss files in the source folder.
 {{ range (glob "program_files/nilesoft/imports/*.nss") -}}
@@ -16,3 +17,4 @@ Get-ChildItem '$src\*.nss' | ForEach-Object {
 
 Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
 Remove-Item $tmpScript -ErrorAction SilentlyContinue
+{{ end -}}

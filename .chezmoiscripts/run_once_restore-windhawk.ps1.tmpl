@@ -1,3 +1,4 @@
+{{ if eq .chezmoi.os "windows" -}}
 $regFile = "{{ .chezmoi.sourceDir }}\packages\windows\windhawk-settings.reg"
 
 if (Test-Path $regFile) {
@@ -10,3 +11,4 @@ if (Test-Path $regFile) {
 } else {
     Write-Warning "Windhawk settings file not found: $regFile"
 }
+{{ end -}}
