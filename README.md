@@ -196,4 +196,11 @@ chezmoi update
 
 # Check status
 chezmoi status
+
+# Run a run_once script manually (renders the template and executes it)
+chezmoi execute-template < $(chezmoi source-path)/.chezmoiscripts/run_once_setup-windows-symlinks.ps1.tmpl | powershell -File -
+chezmoi execute-template < $(chezmoi source-path)/.chezmoiscripts/run_once_install-packages.ps1 | bash
+
+# Force re-run all run_once scripts on next apply (clears chezmoi state)
+chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 ```
