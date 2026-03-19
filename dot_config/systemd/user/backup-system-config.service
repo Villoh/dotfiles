@@ -1,0 +1,16 @@
+[Unit]
+Description=Backup system configuration (Claude + Packages)
+After=default.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=%h/.local/bin/extract-claude-config
+ExecStart=%h/.local/bin/backup-packages
+ExecStop=%h/.local/bin/extract-claude-config
+ExecStop=%h/.local/bin/backup-packages
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target
