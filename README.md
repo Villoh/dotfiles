@@ -44,7 +44,7 @@
 | Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) | [⚙️](dot_glzr/) |
 | Status Bar | [YASB](https://github.com/amnweb/yasb) | [⚙️](dot_config/yasb/) |
 | Shell | PowerShell 7 | [⚙️](Documents/PowerShell/) |
-| Prompt | [Oh My Posh](https://ohmyposh.dev/) | [⚙️](dot_config/ohmyposh/) |
+| Prompt | [Starship](https://starship.rs/) · [Oh My Posh](https://ohmyposh.dev/) | [⚙️](dot_config/starship.toml) · [⚙️](dot_config/ohmyposh/) |
 | Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) | [⚙️](dot_config/wezterm/) · [⚙️](AppData/Roaming/alacritty/) · [⚙️](AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/) |
 | Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
 | File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
