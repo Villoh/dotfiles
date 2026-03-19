@@ -91,6 +91,17 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     $summary.skip++
 }
 
+# ── bin (via scoop) ───────────────────────────────────────────────────────────
+if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
+    TryInstall "bin" {
+        scoop install bin
+        $env:PATH = "$env:USERPROFILE\scoop\shims;$env:PATH"
+    }
+} else {
+    LogSkip "bin already installed"
+    $summary.skip++
+}
+
 # ── winget ────────────────────────────────────────────────────────────────────
 if (Test-Path "$pkgDir\winget-packages.json") {
     LogSection "winget"
