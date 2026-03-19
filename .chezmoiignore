@@ -30,6 +30,7 @@ dot_config/swaync/**
 dot_config/FreeTube/**
 dot_config/openvpn/**
 dot_config/ghostty/**
+dot_config/ohmyposh/**
 dot_local/**
 {{ end -}}
 
