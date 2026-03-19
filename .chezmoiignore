@@ -14,11 +14,11 @@ scoop/
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshenv
 .zprofile
-.profile
-.bashrc
+.config/zsh/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_bash) }}.bashrc
 .bash_profile
 .bash_logout
-.config/zsh/**{{ end }}
+.profile{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_hyprland) }}.config/hypr/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_waybar) }}.config/waybar/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_swaync) }}.config/swaync/**{{ end }}
