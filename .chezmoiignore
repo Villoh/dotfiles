@@ -38,6 +38,8 @@ dot_local/**
 packages/**
 program_files/**
 other_config/**
+docs/**
+CLAUDE.md
 dot_config/stylus/**
 
 # Never track nested git repos or runtime/cache data
