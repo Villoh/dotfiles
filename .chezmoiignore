@@ -1,7 +1,7 @@
 # ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
-{{ if or (ne .chezmoi.os "windows") (not .enable_glazewm) }}dot_glzr/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_yasb) }}dot_config/yasb/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_wezterm) }}dot_config/wezterm/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_glazewm) }}.glzr/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_yasb) }}.config/yasb/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_wezterm) }}.config/wezterm/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_alacritty) }}AppData/Roaming/alacritty/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_flow_launcher) }}AppData/Roaming/FlowLauncher/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
@@ -12,44 +12,42 @@ scoop/
 {{ end }}
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
-{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}dot_zshenv
-dot_zprofile
-dot_profile
-dot_bashrc
-dot_bash_profile
-dot_bash_logout
-dot_config/zsh/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_hyprland) }}dot_config/hypr/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_waybar) }}dot_config/waybar/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_swaync) }}dot_config/swaync/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_swayosd) }}dot_config/swayosd/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_kitty) }}dot_config/kitty/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_ghostty) }}dot_config/ghostty/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}dot_config/tmux/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}dot_config/aerc/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}dot_config/nchat/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}dot_config/FreeTube/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}dot_config/cliphist/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}dot_config/vesktop/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_openvpn) }}dot_config/openvpn/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_systemd) }}dot_config/systemd
-dot_config/systemd/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}dot_config/autostart/**
-dot_config/mimeapps.list
-dot_local/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshenv
+.zprofile
+.profile
+.bashrc
+.bash_profile
+.bash_logout
+.config/zsh/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_hyprland) }}.config/hypr/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_waybar) }}.config/waybar/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_swaync) }}.config/swaync/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_swayosd) }}.config/swayosd/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_kitty) }}.config/kitty/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_ghostty) }}.config/ghostty/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.config/tmux/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}.config/nchat/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}.config/cliphist/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}.config/vesktop/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_systemd) }}.config/systemd/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/autostart/**
+.config/mimeapps.list
+.local/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
-{{ if not .enable_zed }}dot_config/zed/**{{ end }}
-{{ if not .enable_yazi }}dot_config/yazi/**{{ end }}
-{{ if not .enable_btop }}dot_config/btop/**{{ end }}
-{{ if not .enable_fastfetch }}dot_config/fastfetch/**{{ end }}
-{{ if not .enable_cava }}dot_config/cava/**{{ end }}
-{{ if not .enable_gh_dash }}dot_config/gh-dash/**{{ end }}
-{{ if not .enable_micro }}dot_config/micro/**{{ end }}
-{{ if not .enable_opencode }}dot_config/opencode/**{{ end }}
-{{ if not .enable_starship }}dot_config/starship.toml{{ end }}
-{{ if not .enable_ohmyposh }}dot_config/ohmyposh/**{{ end }}
-{{ if not .enable_bun }}dot_config/dot_bunfig.toml{{ end }}
+{{ if not .enable_zed }}.config/zed/**{{ end }}
+{{ if not .enable_yazi }}.config/yazi/**{{ end }}
+{{ if not .enable_btop }}.config/btop/**{{ end }}
+{{ if not .enable_fastfetch }}.config/fastfetch/**{{ end }}
+{{ if not .enable_cava }}.config/cava/**{{ end }}
+{{ if not .enable_gh_dash }}.config/gh-dash/**{{ end }}
+{{ if not .enable_micro }}.config/micro/**{{ end }}
+{{ if not .enable_opencode }}.config/opencode/**{{ end }}
+{{ if not .enable_starship }}.config/starship.toml{{ end }}
+{{ if not .enable_ohmyposh }}.config/ohmyposh/**{{ end }}
+{{ if not .enable_bun }}.config/.bunfig.toml{{ end }}
 
 # ── Reference only — never deployed to home ────────────────────────────────────
 packages/**
@@ -57,9 +55,9 @@ program_files/**
 other_config/**
 docs/**
 CLAUDE.md
-dot_config/stylus/**
-dot_config/yazi/plugins/**
-dot_config/yazi/flavors/**
+.config/stylus/**
+.config/yazi/plugins/**
+.config/yazi/flavors/**
 
 # ── Runtime / cache — never tracked ───────────────────────────────────────────
 **/.git/**
@@ -70,9 +68,8 @@ dot_config/yazi/flavors/**
 **/log/**
 **/*.log
 AppData/Roaming/warp/**/previews/**
-dot_config/micro/backups/**
-dot_config/micro/buffers/**
-AppData/Roaming/warp/Warp/data/themes/dot_git/**
+.config/micro/backups/**
+.config/micro/buffers/**
 AppData/Roaming/FlowLauncher/Cache/**
 AppData/Roaming/FlowLauncher/Settings/Cache/**
 AppData/Roaming/FlowLauncher/Settings/Plugins/**
