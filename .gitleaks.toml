@@ -7,4 +7,5 @@ useDefault = true
 paths = [
     '''.*Vencord.*''',
     '''.*vesktop.*''',
+    '''.*WindowsTerminal.*settings\.json''',
 ]
