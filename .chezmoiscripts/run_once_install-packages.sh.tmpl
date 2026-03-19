@@ -1,0 +1,57 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/bin/bash
+set -euo pipefail
+
+PKG_DIR="{{ .chezmoi.sourceDir }}/packages/linux"
+
+# ── pacman / AUR (via paru) ────────────────────────────────────────────────────
+if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
+    echo "Installing pacman/AUR packages..."
+    grep -v '^\s*$' "$PKG_DIR/pacman_filtered.txt" | paru -S --needed --noconfirm -
+fi
+
+# ── flatpak ───────────────────────────────────────────────────────────────────
+if [ -f "$PKG_DIR/flatpak.txt" ]; then
+    echo "Installing flatpak apps..."
+    while IFS= read -r app; do
+        [[ -z "$app" ]] && continue
+        flatpak install -y --noninteractive "$app" || echo "Warning: failed to install flatpak $app"
+    done < "$PKG_DIR/flatpak.txt"
+fi
+
+# ── uv tools ──────────────────────────────────────────────────────────────────
+if [ -f "$PKG_DIR/uv-tools.txt" ]; then
+    echo "Installing uv tools..."
+    while IFS= read -r tool; do
+        [[ -z "$tool" || "$tool" == "-" ]] && continue
+        uv tool install "$tool" || echo "Warning: failed to install uv tool $tool"
+    done < "$PKG_DIR/uv-tools.txt"
+fi
+
+# ── bun global packages ───────────────────────────────────────────────────────
+if [ -f "$PKG_DIR/bun-global.txt" ]; then
+    echo "Installing bun global packages..."
+    while IFS= read -r pkg; do
+        [[ -z "$pkg" ]] && continue
+        bun add -g "$pkg" || echo "Warning: failed to install bun package $pkg"
+    done < "$PKG_DIR/bun-global.txt"
+fi
+
+# ── npm global packages ───────────────────────────────────────────────────────
+if [ -f "$PKG_DIR/npm-global.txt" ]; then
+    echo "Installing npm global packages..."
+    while IFS= read -r pkg; do
+        [[ -z "$pkg" ]] && continue
+        npm install -g "$pkg" || echo "Warning: failed to install npm package $pkg"
+    done < "$PKG_DIR/npm-global.txt"
+fi
+
+# ── bin (GitHub release binaries) ─────────────────────────────────────────────
+if [ -f "$PKG_DIR/bin-packages.txt" ]; then
+    echo "Installing bin packages..."
+    while IFS= read -r url; do
+        [[ -z "$url" ]] && continue
+        bin install "$url" || echo "Warning: failed to install bin package $url"
+    done < "$PKG_DIR/bin-packages.txt"
+fi
+{{ end -}}
