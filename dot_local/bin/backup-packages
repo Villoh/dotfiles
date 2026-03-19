@@ -72,6 +72,18 @@ else
     NPM_COUNT=0
 fi
 # ============================================================================
+# Backup bin packages (GitHub release binaries)
+# ============================================================================
+if command -v bin >/dev/null 2>&1; then
+    echo -e "${GREEN}📦 bin packages:${NC}"
+    bin list 2>/dev/null | grep -E 'https?://' | awk -F'  +' '{print $3}' > "${BACKUP_DIR}/bin-packages.txt" || echo "" > "${BACKUP_DIR}/bin-packages.txt"
+    BIN_COUNT=$(wc -l < "${BACKUP_DIR}/bin-packages.txt")
+    echo -e "  ${YELLOW}→ ${BIN_COUNT} packages saved to bin-packages.txt${NC}\n"
+else
+    echo -e "${YELLOW}⚠️  bin not installed, skipping${NC}\n"
+    BIN_COUNT=0
+fi
+# ============================================================================
 # Backup Brew packages
 # ============================================================================
 if command -v brew >/dev/null 2>&1; then
@@ -88,4 +100,4 @@ fi
 # ============================================================================
 echo -e "${GREEN}✅ Backup completed!${NC}"
 echo -e "${BLUE}📁 Location: ${BACKUP_DIR}${NC}"
-echo -e "${BLUE}📊 Total: ${PACMAN_COUNT} pacman + ${AUR_COUNT} AUR + ${FLATPAK_COUNT} flatpak + ${UV_COUNT} uv + ${BUN_COUNT} bun + ${NPM_COUNT} npm + ${BREW_COUNT} brew${NC}"
+echo -e "${BLUE}📊 Total: ${PACMAN_COUNT} pacman + ${AUR_COUNT} AUR + ${FLATPAK_COUNT} flatpak + ${UV_COUNT} uv + ${BUN_COUNT} bun + ${NPM_COUNT} npm + ${BIN_COUNT} bin + ${BREW_COUNT} brew${NC}"
