@@ -32,7 +32,8 @@ dot_config/zsh/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}dot_config/cliphist/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}dot_config/vesktop/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_openvpn) }}dot_config/openvpn/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_systemd) }}dot_config/systemd/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_systemd) }}dot_config/systemd
+dot_config/systemd/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}dot_config/autostart/**
 dot_config/mimeapps.list
 dot_local/**{{ end }}
