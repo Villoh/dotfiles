@@ -13,7 +13,6 @@
   <a href="#extra-optional-setup-windows"><kbd>&nbsp;<br>&nbsp;Extras&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="#overview"><kbd>&nbsp;<br>&nbsp;Features&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="#credits"><kbd>&nbsp;<br>&nbsp;Credits&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
-  <a href="#author"><kbd>&nbsp;<br>&nbsp;Author&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
 </div>
 
 ---
