@@ -14,3 +14,47 @@ mode = "symlink"
 
 [data]
     isWindows = {{ $isWindows }}
+
+    # ── Cross-platform modules ─────────────────────────────────────────────
+    enable_zed        = {{ promptBool "Enable Zed editor" true }}
+    enable_yazi       = {{ promptBool "Enable Yazi file manager" true }}
+    enable_btop       = {{ promptBool "Enable btop" true }}
+    enable_fastfetch  = {{ promptBool "Enable Fastfetch" true }}
+    enable_cava       = {{ promptBool "Enable Cava audio visualizer" true }}
+    enable_gh_dash    = {{ promptBool "Enable gh-dash" true }}
+    enable_micro      = {{ promptBool "Enable Micro editor" true }}
+    enable_opencode   = {{ promptBool "Enable OpenCode" true }}
+    enable_starship   = {{ promptBool "Enable Starship prompt" true }}
+    enable_ohmyposh   = {{ promptBool "Enable Oh My Posh" true }}
+    enable_bun        = {{ promptBool "Enable Bun config" true }}
+
+    # ── Linux-only modules ─────────────────────────────────────────────────
+    enable_zsh        = {{ promptBool "Enable Zsh config" true }}
+    enable_hyprland   = {{ promptBool "Enable Hyprland" true }}
+    enable_waybar     = {{ promptBool "Enable Waybar" true }}
+    enable_swaync     = {{ promptBool "Enable SwayNC" true }}
+    enable_swayosd    = {{ promptBool "Enable SwayOSD" true }}
+    enable_kitty      = {{ promptBool "Enable Kitty terminal" true }}
+    enable_ghostty    = {{ promptBool "Enable Ghostty terminal" true }}
+    enable_tmux       = {{ promptBool "Enable tmux" true }}
+    enable_aerc       = {{ promptBool "Enable aerc email client" true }}
+    enable_nchat      = {{ promptBool "Enable nchat" true }}
+    enable_freetube   = {{ promptBool "Enable FreeTube" true }}
+    enable_cliphist   = {{ promptBool "Enable cliphist" true }}
+    enable_vesktop    = {{ promptBool "Enable Vesktop/Vencord" true }}
+    enable_openvpn    = {{ promptBool "Enable OpenVPN" true }}
+    enable_systemd    = {{ promptBool "Enable systemd user services" true }}
+
+    # ── Windows-only modules ───────────────────────────────────────────────
+    enable_glazewm          = {{ promptBool "Enable GlazeWM" true }}
+    enable_yasb             = {{ promptBool "Enable YASB status bar" true }}
+    enable_wezterm          = {{ promptBool "Enable WezTerm" true }}
+    enable_alacritty        = {{ promptBool "Enable Alacritty" true }}
+    enable_flow_launcher    = {{ promptBool "Enable Flow Launcher" true }}
+    enable_ditto            = {{ promptBool "Enable Ditto clipboard" true }}
+    enable_nilesoft         = {{ promptBool "Enable Nilesoft Shell" true }}
+    enable_autohotkey       = {{ promptBool "Enable AutoHotkey" true }}
+    enable_rainmeter        = {{ promptBool "Enable Rainmeter" true }}
+    enable_warp             = {{ promptBool "Enable Warp terminal" true }}
+    enable_windhawk         = {{ promptBool "Enable Windhawk" true }}
+    enable_windows_terminal = {{ promptBool "Enable Windows Terminal" true }}
