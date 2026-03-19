@@ -1,57 +1,102 @@
 {{ if ne .chezmoi.os "windows" -}}
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
 
 PKG_DIR="{{ .chezmoi.sourceDir }}/packages/linux"
+LOG_FILE="/tmp/chezmoi-install-$(date +%Y%m%d-%H%M%S).log"
+
+# ── Logging helpers ────────────────────────────────────────────────────────────
+log()     { local msg="[$(date +%H:%M:%S)] $*"; echo "$msg" | tee -a "$LOG_FILE"; }
+log_ok()  { log "  ✅ $*"; }
+log_skip(){ log "  ⚠️  $*"; }
+log_fail(){ log "  ❌ $*"; }
+log_section() { log; log "── $* ──"; }
+
+ok=0; skip=0; fail=0
+
+try_install() {
+    local name="$1"; shift
+    if "$@" >> "$LOG_FILE" 2>&1; then
+        log_ok "$name"
+        (( ok++ )) || true
+    else
+        log_fail "$name"
+        (( fail++ )) || true
+    fi
+}
+
+log "Chezmoi install started — log: $LOG_FILE"
 
 # ── pacman / AUR (via paru) ────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
-    echo "Installing pacman/AUR packages..."
-    grep -v '^\s*$' "$PKG_DIR/pacman_filtered.txt" | paru -S --needed --noconfirm -
+    log_section "pacman / AUR"
+    while IFS= read -r pkg; do
+        [[ -z "$pkg" ]] && continue
+        if pacman -Qi "$pkg" &>/dev/null; then
+            log_skip "$pkg already installed"
+            (( skip++ )) || true
+        else
+            try_install "paru: $pkg" paru -S --needed --noconfirm "$pkg"
+        fi
+    done < <(grep -v '^\s*$' "$PKG_DIR/pacman_filtered.txt")
 fi
 
 # ── flatpak ───────────────────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/flatpak.txt" ]; then
-    echo "Installing flatpak apps..."
+    log_section "flatpak"
     while IFS= read -r app; do
         [[ -z "$app" ]] && continue
-        flatpak install -y --noninteractive "$app" || echo "Warning: failed to install flatpak $app"
+        if flatpak list --app | grep -q "$app"; then
+            log_skip "$app already installed"
+            (( skip++ )) || true
+        else
+            try_install "flatpak: $app" flatpak install -y --noninteractive "$app"
+        fi
     done < "$PKG_DIR/flatpak.txt"
 fi
 
 # ── uv tools ──────────────────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/uv-tools.txt" ]; then
-    echo "Installing uv tools..."
+    log_section "uv"
     while IFS= read -r tool; do
         [[ -z "$tool" || "$tool" == "-" ]] && continue
-        uv tool install "$tool" || echo "Warning: failed to install uv tool $tool"
+        try_install "uv: $tool" uv tool install "$tool"
     done < "$PKG_DIR/uv-tools.txt"
 fi
 
 # ── bun global packages ───────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/bun-global.txt" ]; then
-    echo "Installing bun global packages..."
+    log_section "bun"
     while IFS= read -r pkg; do
         [[ -z "$pkg" ]] && continue
-        bun add -g "$pkg" || echo "Warning: failed to install bun package $pkg"
+        try_install "bun: $pkg" bun add -g "$pkg"
     done < "$PKG_DIR/bun-global.txt"
 fi
 
 # ── npm global packages ───────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/npm-global.txt" ]; then
-    echo "Installing npm global packages..."
+    log_section "npm"
     while IFS= read -r pkg; do
         [[ -z "$pkg" ]] && continue
-        npm install -g "$pkg" || echo "Warning: failed to install npm package $pkg"
+        try_install "npm: $pkg" npm install -g "$pkg"
     done < "$PKG_DIR/npm-global.txt"
 fi
 
 # ── bin (GitHub release binaries) ─────────────────────────────────────────────
 if [ -f "$PKG_DIR/bin-packages.txt" ]; then
-    echo "Installing bin packages..."
+    log_section "bin"
     while IFS= read -r url; do
         [[ -z "$url" ]] && continue
-        bin install "$url" || echo "Warning: failed to install bin package $url"
+        try_install "bin: $url" bin install "$url"
     done < "$PKG_DIR/bin-packages.txt"
 fi
+
+# ── Summary ───────────────────────────────────────────────────────────────────
+log
+log "══════════════════════════════════════"
+log "  ✅ OK:      $ok"
+log "  ⚠️  Skipped: $skip"
+log "  ❌ Failed:  $fail"
+log "  📄 Log:     $LOG_FILE"
+log "══════════════════════════════════════"
 {{ end -}}
