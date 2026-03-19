@@ -81,11 +81,7 @@
 
 ## Fresh install
 
-```bash
-chezmoi init --apply github.com/Villoh/dotfiles
-```
-
-For prerequisites, module selection, script order, and post-install steps see **[INSTALL.md](INSTALL.md)**.
+See the full installation guide: **[INSTALL.md](INSTALL.md)**
 
 ## Extra Optional Setup (Windows)
 
