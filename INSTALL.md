@@ -7,24 +7,13 @@
 1. **Developer Mode** — required for symlinks without elevation:
    `Settings → System → For developers → Developer Mode`
 
-2. **Scoop** — install before running chezmoi (used for CLI tools, fonts, btop):
-   ```powershell
-   Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-   irm get.scoop.sh | iex
-   ```
-
-3. **Chocolatey** — install before running chezmoi (used for packages not in winget/scoop):
-   ```powershell
-   Set-ExecutionPolicy Bypass -Scope Process -Force
-   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-   ```
-
-4. **GPG** — required for encrypted files. Install via scoop, then import your key:
+2. **GPG** — required for encrypted files. Install via scoop, then import your key:
    ```powershell
    scoop install gpg
    gpg --import your-key.asc
    ```
+
+> Scoop and Chocolatey are bootstrapped automatically by the install script if not present.
 
 ### Linux
 
@@ -59,7 +48,7 @@ Then run scripts in this order (Windows only):
 
 | # | Script | What it does |
 |---|--------|--------------|
-| 1 | `run_once_install-packages` | winget, scoop, chocolatey, npm, bun, uv, PowerShell modules |
+| 1 | `run_once_install-packages` | Bootstrap scoop + choco, then winget, npm, bun, uv, PS modules |
 | 2 | `run_once_restore-windhawk` | Import Windhawk settings from registry |
 | 3 | `run_once_setup-windows-symlinks` | Create junctions for zed, yazi, vencord, btop |
 | 4 | `run_onchange_install-ditto-themes` | Copy Ditto XML themes to `Program Files` |
