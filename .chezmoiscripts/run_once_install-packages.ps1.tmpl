@@ -1,6 +1,21 @@
 {{ if eq .chezmoi.os "windows" -}}
 $pkgDir = "{{ .chezmoi.sourceDir }}\packages\windows"
 
+# ── scoop (bootstrap) ─────────────────────────────────────────────────────────
+if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    Write-Host "Installing Scoop..."
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    irm get.scoop.sh | iex
+}
+
+# ── chocolatey (bootstrap) ────────────────────────────────────────────────────
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    Write-Host "Installing Chocolatey..."
+    Set-ExecutionPolicy Bypass -Scope Process -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+}
+
 # ── winget ────────────────────────────────────────────────────────────────────
 if (Test-Path "$pkgDir\winget-packages.json") {
     Write-Host "Installing winget packages..."
