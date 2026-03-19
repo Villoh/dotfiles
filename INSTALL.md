@@ -44,6 +44,9 @@ During `init --apply`, chezmoi will:
 3. Generate `~/.config/chezmoi/chezmoi.toml`
 4. Create symlinks for all managed files
 
+> [!TIP]
+> Before running, review the package lists in [`packages/windows/`](packages/windows/) (Windows) or [`packages/linux/`](packages/linux/) (Linux) and remove anything you don't want installed. For Windows, you can also add package IDs to [`packages/windows/winget-exclude.txt`](packages/windows/winget-exclude.txt) to skip specific winget packages permanently.
+
 Then run scripts in this order (Windows only):
 
 | # | Script | What it does |
