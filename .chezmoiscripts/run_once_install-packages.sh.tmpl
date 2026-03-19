@@ -80,6 +80,14 @@ else
     (( skip++ )) || true
 fi
 
+# bin (via AUR)
+if ! command -v bin &>/dev/null; then
+    try_install "bin" "$AUR_HELPER" -S --needed --noconfirm bin-bin
+else
+    log_skip "bin already installed"
+    (( skip++ )) || true
+fi
+
 # ── pacman / AUR (via paru) ────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
     log_section "pacman / AUR"
