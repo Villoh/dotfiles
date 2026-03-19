@@ -58,6 +58,39 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     $summary.skip++
 }
 
+# ── node / npm (via winget) ───────────────────────────────────────────────────
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    TryInstall "Node.js" {
+        winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements -e
+        $env:PATH = "$env:ProgramFiles\nodejs;$env:PATH"
+    }
+} else {
+    LogSkip "Node.js already installed"
+    $summary.skip++
+}
+
+# ── bun (via winget) ──────────────────────────────────────────────────────────
+if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
+    TryInstall "Bun" {
+        winget install --id Oven-sh.Bun --accept-package-agreements --accept-source-agreements -e
+        $env:PATH = "$env:USERPROFILE\.bun\bin;$env:PATH"
+    }
+} else {
+    LogSkip "Bun already installed"
+    $summary.skip++
+}
+
+# ── uv (via winget) ───────────────────────────────────────────────────────────
+if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+    TryInstall "uv" {
+        winget install --id astral-sh.uv --accept-package-agreements --accept-source-agreements -e
+        $env:PATH = "$env:USERPROFILE\.local\bin;$env:PATH"
+    }
+} else {
+    LogSkip "uv already installed"
+    $summary.skip++
+}
+
 # ── winget ────────────────────────────────────────────────────────────────────
 if (Test-Path "$pkgDir\winget-packages.json") {
     LogSection "winget"
