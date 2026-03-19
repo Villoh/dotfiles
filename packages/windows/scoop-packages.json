@@ -1,128 +1,142 @@
 {
     "apps": [
         {
-            "Info": "",
-            "Updated": "2026-03-03T17:08:06.3089616+01:00",
-            "Source": "main",
             "Name": "7zip",
-            "Version": "26.00"
+            "Version": "26.00",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-03T17:08:06.3089616+01:00"
         },
         {
-            "Info": "",
-            "Updated": "2026-03-10T22:27:24.4028897+01:00",
-            "Source": "extras",
             "Name": "alacritty",
-            "Version": "0.16.1"
+            "Version": "0.16.1",
+            "Source": "extras",
+            "Info": "",
+            "Updated": "2026-03-10T22:27:24.4028897+01:00"
         },
         {
-            "Info": "",
-            "Updated": "2026-03-01T21:20:39.7653436+01:00",
-            "Source": "extras",
             "Name": "bin",
-            "Version": "0.24.2"
+            "Version": "0.24.2",
+            "Source": "extras",
+            "Info": "",
+            "Updated": "2026-03-01T21:20:39.7653436+01:00"
         },
         {
-            "Info": "",
-            "Updated": "2026-03-08T16:35:43.7401406+01:00",
-            "Source": "main",
             "Name": "btop",
-            "Version": "1.0.5"
+            "Version": "1.0.5",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-08T16:35:43.7401406+01:00"
         },
         {
-            "Info": "",
-            "Updated": "2026-03-13T23:19:38.2824161+01:00",
-            "Source": "nerd-fonts",
             "Name": "CascadiaCode-NF",
-            "Version": "3.4.0"
+            "Version": "3.4.0",
+            "Source": "nerd-fonts",
+            "Info": "",
+            "Updated": "2026-03-13T23:19:38.2824161+01:00"
         },
         {
+            "Name": "git-filter-repo",
+            "Version": "2.47.0",
+            "Source": "main",
             "Info": "",
-            "Updated": "2026-03-13T23:20:25.8857466+01:00",
-            "Source": "nerd-fonts",
+            "Updated": "2026-03-18T11:43:58.8915491+01:00"
+        },
+        {
             "Name": "Hack-NF",
-            "Version": "3.4.0"
+            "Version": "3.4.0",
+            "Source": "nerd-fonts",
+            "Info": "",
+            "Updated": "2026-03-13T23:20:25.8857466+01:00"
         },
         {
-            "Info": "",
-            "Updated": "2026-03-11T20:19:40.7629728+01:00",
-            "Source": "extras",
             "Name": "handy",
-            "Version": "0.7.10"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-16T21:26:34.3405673+01:00",
-            "Source": "main",
-            "Name": "imagemagick",
-            "Version": "7.1.2-17"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-09T19:20:58.7786007+01:00",
-            "Source": "main",
-            "Name": "innounp",
-            "Version": "2.67.4"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-13T23:19:35.3179112+01:00",
-            "Source": "nerd-fonts",
-            "Name": "JetBrainsMono-NF",
-            "Version": "3.4.0"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-14T13:14:09.3538754+01:00",
-            "Source": "nerd-fonts",
-            "Name": "JetBrainsMono-NF-Propo",
-            "Version": "3.4.0"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-11T12:05:37.2113657+01:00",
-            "Source": "main",
-            "Name": "less",
-            "Version": "692"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-13T23:22:00.6084918+01:00",
-            "Source": "nerd-fonts",
-            "Name": "Lilex-NF",
-            "Version": "3.4.0"
-        },
-        {
-            "Info": "",
-            "Updated": "2026-03-03T17:08:10.8968211+01:00",
+            "Version": "0.7.10",
             "Source": "extras",
-            "Name": "mpv",
-            "Version": "0.41.0"
+            "Info": "",
+            "Updated": "2026-03-11T20:19:40.7629728+01:00"
         },
         {
-            "Info": "",
-            "Updated": "2026-03-15T16:56:26.5884374+01:00",
+            "Name": "imagemagick",
+            "Version": "7.1.2-17",
             "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-16T21:26:34.3405673+01:00"
+        },
+        {
+            "Name": "innounp",
+            "Version": "2.67.4",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-09T19:20:58.7786007+01:00"
+        },
+        {
+            "Name": "JetBrainsMono-NF",
+            "Version": "3.4.0",
+            "Source": "nerd-fonts",
+            "Info": "",
+            "Updated": "2026-03-13T23:19:35.3179112+01:00"
+        },
+        {
+            "Name": "JetBrainsMono-NF-Propo",
+            "Version": "3.4.0",
+            "Source": "nerd-fonts",
+            "Info": "",
+            "Updated": "2026-03-14T13:14:09.3538754+01:00"
+        },
+        {
+            "Name": "less",
+            "Version": "692",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-11T12:05:37.2113657+01:00"
+        },
+        {
+            "Name": "Lilex-NF",
+            "Version": "3.4.0",
+            "Source": "nerd-fonts",
+            "Info": "",
+            "Updated": "2026-03-13T23:22:00.6084918+01:00"
+        },
+        {
+            "Name": "mpv",
+            "Version": "0.41.0",
+            "Source": "extras",
+            "Info": "",
+            "Updated": "2026-03-03T17:08:10.8968211+01:00"
+        },
+        {
+            "Name": "starship",
+            "Version": "1.24.2",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-18T00:23:22.6030936+01:00"
+        },
+        {
             "Name": "zip",
-            "Version": "3.0"
+            "Version": "3.0",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-15T16:56:26.5884374+01:00"
         }
     ],
     "buckets": [
         {
             "Name": "main",
             "Source": "https://github.com/ScoopInstaller/Main.git",
-            "Updated": "2026-03-16T17:41:48+01:00",
-            "Manifests": 1464
+            "Updated": "2026-03-18T21:32:18+01:00",
+            "Manifests": 1467
         },
         {
             "Name": "extras",
             "Source": "https://github.com/ScoopInstaller/Extras",
-            "Updated": "2026-03-16T19:20:15+01:00",
-            "Manifests": 2278
+            "Updated": "2026-03-18T21:33:39+01:00",
+            "Manifests": 2279
         },
         {
             "Name": "nerd-fonts",
             "Source": "https://github.com/matthewjberger/scoop-nerd-fonts",
-            "Updated": "2026-03-03T11:49:16+01:00",
+            "Updated": "2026-03-18T18:09:39+01:00",
             "Manifests": 367
         }
     ]
