@@ -55,6 +55,7 @@ program_files/**
 other_config/**
 docs/**
 CLAUDE.md
+INSTALL.md
 
 # ── Runtime / cache — never tracked ───────────────────────────────────────────
 **/.git/**
