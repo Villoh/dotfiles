@@ -1,41 +1,56 @@
-{{ if ne .chezmoi.os "windows" -}}
-# Windows-only paths — ignore on Linux/macOS
-AppData/
+# ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
+{{ if or (ne .chezmoi.os "windows") (not .enable_glazewm) }}dot_glzr/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_yasb) }}dot_config/yasb/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_wezterm) }}dot_config/wezterm/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_alacritty) }}AppData/Roaming/alacritty/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_flow_launcher) }}AppData/Roaming/FlowLauncher/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
+{{ if ne .chezmoi.os "windows" }}AppData/
 Documents/
 scoop/
-dot_glzr/
-{{ end -}}
+{{ end }}
 
-{{ if eq .chezmoi.os "windows" -}}
-# Linux-only paths — ignore on Windows
-dot_zshenv
+# ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
+{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}dot_zshenv
 dot_zprofile
 dot_profile
 dot_bashrc
 dot_bash_profile
 dot_bash_logout
-dot_config/zsh/**
-dot_config/kitty/**
-dot_config/tmux/**
-dot_config/swayosd/**
-dot_config/cliphist/**
-dot_config/autostart/**
+dot_config/zsh/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_hyprland) }}dot_config/hypr/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_waybar) }}dot_config/waybar/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_swaync) }}dot_config/swaync/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_swayosd) }}dot_config/swayosd/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_kitty) }}dot_config/kitty/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_ghostty) }}dot_config/ghostty/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}dot_config/tmux/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}dot_config/aerc/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}dot_config/nchat/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}dot_config/FreeTube/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}dot_config/cliphist/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}dot_config/vesktop/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_openvpn) }}dot_config/openvpn/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_systemd) }}dot_config/systemd/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}dot_config/autostart/**
 dot_config/mimeapps.list
-dot_config/nchat/**
-dot_config/aerc/**
-dot_config/vesktop/**
-dot_config/hypr/**
-dot_config/waybar/**
-dot_config/swaync/**
-dot_config/FreeTube/**
-dot_config/openvpn/**
-dot_config/ghostty/**
-dot_config/systemd/**
-dot_local/**
-{{ end -}}
+dot_local/**{{ end }}
 
+# ── Cross-platform modules (ignored if disabled) ───────────────────────────────
+{{ if not .enable_zed }}dot_config/zed/**{{ end }}
+{{ if not .enable_yazi }}dot_config/yazi/**{{ end }}
+{{ if not .enable_btop }}dot_config/btop/**{{ end }}
+{{ if not .enable_fastfetch }}dot_config/fastfetch/**{{ end }}
+{{ if not .enable_cava }}dot_config/cava/**{{ end }}
+{{ if not .enable_gh_dash }}dot_config/gh-dash/**{{ end }}
+{{ if not .enable_micro }}dot_config/micro/**{{ end }}
+{{ if not .enable_opencode }}dot_config/opencode/**{{ end }}
+{{ if not .enable_starship }}dot_config/starship.toml{{ end }}
+{{ if not .enable_ohmyposh }}dot_config/ohmyposh/**{{ end }}
+{{ if not .enable_bun }}dot_config/dot_bunfig.toml{{ end }}
 
-# Reference only — not applied to home
+# ── Reference only — never deployed to home ────────────────────────────────────
 packages/**
 program_files/**
 other_config/**
@@ -45,7 +60,7 @@ dot_config/stylus/**
 dot_config/yazi/plugins/**
 dot_config/yazi/flavors/**
 
-# Never track nested git repos or runtime/cache data
+# ── Runtime / cache — never tracked ───────────────────────────────────────────
 **/.git/**
 **/Cache/**
 **/cache/**
@@ -69,5 +84,4 @@ AppData/Roaming/FlowLauncher/Settings/UserSelectedRecord.json.bak
 AppData/Roaming/FlowLauncher/Settings/Settings.json.bak
 AppData/Roaming/Vencord/**
 AppData/Roaming/spicetify/**
-
 AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/*.tmp
