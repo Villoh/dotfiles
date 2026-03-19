@@ -1,0 +1,35 @@
+# Winget packages to exclude from backup
+# Add any PackageIdentifier here, one per line
+# Lines starting with # are ignored
+
+# ── VC++ / .NET runtimes (installed as dependencies) ──────────────────────────
+Microsoft.VCRedist.2005.x86
+Microsoft.VCRedist.2010.x86
+Microsoft.VCRedist.2010.x64
+Microsoft.VCRedist.2012.x86
+Microsoft.VCRedist.2012.x64
+Microsoft.VCRedist.2015+.x86
+Microsoft.VCRedist.2015+.x64
+Microsoft.DotNet.DesktopRuntime.8
+Microsoft.DotNet.DesktopRuntime.9
+Microsoft.DotNet.DesktopRuntime.10
+Microsoft.DotNet.Framework.DeveloperPack.4.6
+
+# ── Windows framework dependencies ────────────────────────────────────────────
+Microsoft.AppInstaller
+Microsoft.UI.Xaml.2.8
+Microsoft.VCLibs.14
+Microsoft.VCLibs.Desktop.14
+Microsoft.WindowsAppRuntime.1.7
+Microsoft.WindowsAppRuntime.1.8
+
+# ── Driver / hardware components ──────────────────────────────────────────────
+Nvidia.PhysX
+ViGEm.ViGEmBus
+WinFsp.WinFsp
+
+# ── Installed with other tools ────────────────────────────────────────────────
+Python.Launcher
+MartinStorsjo.LLVM-MinGW.UCRT
+EclipseAdoptium.Temurin.21.JDK
+EclipseAdoptium.Temurin.25.JDK
