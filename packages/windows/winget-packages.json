@@ -1,305 +1,230 @@
 {
-	"$schema" : "https://aka.ms/winget-packages.schema.2.0.json",
-	"CreationDate" : "2026-03-17T23:31:02.044-00:00",
-	"Sources" : 
-	[
-		{
-			"Packages" : 
-			[
-				{
-					"PackageIdentifier" : "ObinsKit.ObinsKit"
-				},
-				{
-					"PackageIdentifier" : "FilenCloud.FilenSync"
-				},
-				{
-					"PackageIdentifier" : "Ditto.Ditto"
-				},
-				{
-					"PackageIdentifier" : "KRTirtho.Flemozi"
-				},
-				{
-					"PackageIdentifier" : "GnuPG.GnuPG"
-				},
-				{
-					"PackageIdentifier" : "ONLYOFFICE.DesktopEditors"
-				},
-				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.21.JDK"
-				},
-				{
-					"PackageIdentifier" : "OpenVPNTechnologies.OpenVPN"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2010.x64"
-				},
-				{
-					"PackageIdentifier" : "Nilesoft.Shell"
-				},
-				{
-					"PackageIdentifier" : "glzr-io.glazewm"
-				},
-				{
-					"PackageIdentifier" : "GitHub.cli"
-				},
-				{
-					"PackageIdentifier" : "EclipseAdoptium.Temurin.25.JDK"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.PowerShell"
-				},
-				{
-					"PackageIdentifier" : "AmN.yasb"
-				},
-				{
-					"PackageIdentifier" : "karlstav.cava"
-				},
-				{
-					"PackageIdentifier" : "ViGEm.ViGEmBus"
-				},
-				{
-					"PackageIdentifier" : "EpicGames.EpicGamesLauncher"
-				},
-				{
-					"PackageIdentifier" : "Nvidia.PhysX"
-				},
-				{
-					"PackageIdentifier" : "wez.wezterm"
-				},
-				{
-					"PackageIdentifier" : "namazso.SecureUXTheme"
-				},
-				{
-					"PackageIdentifier" : "Nickvision.Parabolic"
-				},
-				{
-					"PackageIdentifier" : "AppFlowy.AppFlowy"
-				},
-				{
-					"PackageIdentifier" : "Brave.Brave"
-				},
-				{
-					"PackageIdentifier" : "OBSProject.OBSStudio"
-				},
-				{
-					"PackageIdentifier" : "Rainmeter.Rainmeter"
-				},
-				{
-					"PackageIdentifier" : "RockstarGames.Launcher"
-				},
-				{
-					"PackageIdentifier" : "Valve.Steam"
-				},
-				{
-					"PackageIdentifier" : "IDRIX.VeraCrypt"
-				},
-				{
-					"PackageIdentifier" : "RamenSoftware.Windhawk"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x86"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x86"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.8"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2005.x86"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.10"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2015+.x64"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.Framework.DeveloperPack.4.6"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.DotNet.DesktopRuntime.9"
-				},
-				{
-					"PackageIdentifier" : "o2sh.onefetch"
-				},
-				{
-					"PackageIdentifier" : "WinFsp.WinFsp"
-				},
-				{
-					"PackageIdentifier" : "Python.Launcher"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2010.x86"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCRedist.2012.x64"
-				},
-				{
-					"PackageIdentifier" : "JohannesMillan.superProductivity"
-				},
-				{
-					"PackageIdentifier" : "HydraLauncher.Hydra"
-				},
-				{
-					"PackageIdentifier" : "AltSnap.AltSnap"
-				},
-				{
-					"PackageIdentifier" : "Anthropic.ClaudeCode"
-				},
-				{
-					"PackageIdentifier" : "AutoHotkey.AutoHotkey"
-				},
-				{
-					"PackageIdentifier" : "Bitwarden.CLI"
-				},
-				{
-					"PackageIdentifier" : "DenoLand.Deno"
-				},
-				{
-					"PackageIdentifier" : "Fastfetch-cli.Fastfetch"
-				},
-				{
-					"PackageIdentifier" : "Flow-Launcher.Flow-Launcher"
-				},
-				{
-					"PackageIdentifier" : "GNU.Nano"
-				},
-				{
-					"PackageIdentifier" : "JernejSimoncic.Wget"
-				},
-				{
-					"PackageIdentifier" : "JesseDuffield.Lazydocker"
-				},
-				{
-					"PackageIdentifier" : "JesseDuffield.lazygit"
-				},
-				{
-					"PackageIdentifier" : "Logitech.OnboardMemoryManager"
-				},
-				{
-					"PackageIdentifier" : "Logseq.Logseq"
-				},
-				{
-					"PackageIdentifier" : "MartinStorsjo.LLVM-MinGW.UCRT"
-				},
-				{
-					"PackageIdentifier" : "KDE.Okular"
-				},
-				{
-					"PackageIdentifier" : "SST.OpenCodeDesktop"
-				},
-				{
-					"PackageIdentifier" : "Oven-sh.Bun"
-				},
-				{
-					"PackageIdentifier" : "Rclone.Rclone"
-				},
-				{
-					"PackageIdentifier" : "Rustlang.Rustup"
-				},
-				{
-					"PackageIdentifier" : "SST.opencode"
-				},
-				{
-					"PackageIdentifier" : "Schniz.fnm"
-				},
-				{
-					"PackageIdentifier" : "Spicetify.Spicetify"
-				},
-				{
-					"PackageIdentifier" : "Spotify.Spotify"
-				},
-				{
-					"PackageIdentifier" : "ajeetdsouza.zoxide"
-				},
-				{
-					"PackageIdentifier" : "arndawg.zellij-windows"
-				},
-				{
-					"PackageIdentifier" : "astral-sh.uv"
-				},
-				{
-					"PackageIdentifier" : "junegunn.fzf"
-				},
-				{
-					"PackageIdentifier" : "Proton.ProtonMail"
-				},
-				{
-					"PackageIdentifier" : "sxyazi.yazi"
-				},
-				{
-					"PackageIdentifier" : "twpayne.chezmoi"
-				},
-				{
-					"PackageIdentifier" : "Warp.Warp"
-				},
-				{
-					"PackageIdentifier" : "yorukot.superfile"
-				},
-				{
-					"PackageIdentifier" : "yt-dlp.FFmpeg"
-				},
-				{
-					"PackageIdentifier" : "yt-dlp.yt-dlp"
-				},
-				{
-					"PackageIdentifier" : "zyedidia.micro"
-				},
-				{
-					"PackageIdentifier" : "ZedIndustries.Zed"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.PowerToys"
-				},
-				{
-					"PackageIdentifier" : "Python.Python.3.14"
-				},
-				{
-					"PackageIdentifier" : "M2Team.NanaZip"
-				},
-				{
-					"PackageIdentifier" : "FilesCommunity.Files"
-				},
-				{
-					"PackageIdentifier" : "MicaForEveryone.MicaForEveryone"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.AppInstaller"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.UI.Xaml.2.8"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCLibs.Desktop.14"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.VCLibs.14"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.WindowsAppRuntime.1.7"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.WindowsAppRuntime.1.8"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.WindowsTerminal"
-				},
-				{
-					"PackageIdentifier" : "Microsoft.WSL"
-				},
-				{
-					"PackageIdentifier" : "JanDeDobbeleer.OhMyPosh"
-				}
-			],
-			"SourceDetails" : 
-			{
-				"Argument" : "https://cdn.winget.microsoft.com/cache",
-				"Identifier" : "Microsoft.Winget.Source_8wekyb3d8bbwe",
-				"Name" : "winget",
-				"Type" : "Microsoft.PreIndexed.Package"
-			}
-		}
-	],
-	"WinGetVersion" : "1.12.460"
+  "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+  "CreationDate": "2026-03-20T00:05:14.294+01:00",
+  "Sources": [
+    {
+      "Packages": [
+        {
+          "PackageIdentifier": "ObinsKit.ObinsKit"
+        },
+        {
+          "PackageIdentifier": "FilenCloud.FilenSync"
+        },
+        {
+          "PackageIdentifier": "Ditto.Ditto"
+        },
+        {
+          "PackageIdentifier": "KRTirtho.Flemozi"
+        },
+        {
+          "PackageIdentifier": "GnuPG.GnuPG"
+        },
+        {
+          "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
+        },
+        {
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+        },
+        {
+          "PackageIdentifier": "Nilesoft.Shell"
+        },
+        {
+          "PackageIdentifier": "glzr-io.glazewm"
+        },
+        {
+          "PackageIdentifier": "GitHub.cli"
+        },
+        {
+          "PackageIdentifier": "Microsoft.PowerShell"
+        },
+        {
+          "PackageIdentifier": "AmN.yasb"
+        },
+        {
+          "PackageIdentifier": "karlstav.cava"
+        },
+        {
+          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
+        },
+        {
+          "PackageIdentifier": "wez.wezterm"
+        },
+        {
+          "PackageIdentifier": "namazso.SecureUXTheme"
+        },
+        {
+          "PackageIdentifier": "Nickvision.Parabolic"
+        },
+        {
+          "PackageIdentifier": "AppFlowy.AppFlowy"
+        },
+        {
+          "PackageIdentifier": "Brave.Brave"
+        },
+        {
+          "PackageIdentifier": "OBSProject.OBSStudio"
+        },
+        {
+          "PackageIdentifier": "Rainmeter.Rainmeter"
+        },
+        {
+          "PackageIdentifier": "RockstarGames.Launcher"
+        },
+        {
+          "PackageIdentifier": "Valve.Steam"
+        },
+        {
+          "PackageIdentifier": "IDRIX.VeraCrypt"
+        },
+        {
+          "PackageIdentifier": "RamenSoftware.Windhawk"
+        },
+        {
+          "PackageIdentifier": "o2sh.onefetch"
+        },
+        {
+          "PackageIdentifier": "JohannesMillan.superProductivity"
+        },
+        {
+          "PackageIdentifier": "HydraLauncher.Hydra"
+        },
+        {
+          "PackageIdentifier": "AltSnap.AltSnap"
+        },
+        {
+          "PackageIdentifier": "Anthropic.ClaudeCode"
+        },
+        {
+          "PackageIdentifier": "AutoHotkey.AutoHotkey"
+        },
+        {
+          "PackageIdentifier": "Bitwarden.CLI"
+        },
+        {
+          "PackageIdentifier": "DenoLand.Deno"
+        },
+        {
+          "PackageIdentifier": "Fastfetch-cli.Fastfetch"
+        },
+        {
+          "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
+        },
+        {
+          "PackageIdentifier": "GNU.Nano"
+        },
+        {
+          "PackageIdentifier": "JernejSimoncic.Wget"
+        },
+        {
+          "PackageIdentifier": "JesseDuffield.Lazydocker"
+        },
+        {
+          "PackageIdentifier": "JesseDuffield.lazygit"
+        },
+        {
+          "PackageIdentifier": "Logitech.OnboardMemoryManager"
+        },
+        {
+          "PackageIdentifier": "Logseq.Logseq"
+        },
+        {
+          "PackageIdentifier": "KDE.Okular"
+        },
+        {
+          "PackageIdentifier": "SST.OpenCodeDesktop"
+        },
+        {
+          "PackageIdentifier": "Oven-sh.Bun"
+        },
+        {
+          "PackageIdentifier": "Rclone.Rclone"
+        },
+        {
+          "PackageIdentifier": "Rustlang.Rustup"
+        },
+        {
+          "PackageIdentifier": "SST.opencode"
+        },
+        {
+          "PackageIdentifier": "Schniz.fnm"
+        },
+        {
+          "PackageIdentifier": "Spicetify.Spicetify"
+        },
+        {
+          "PackageIdentifier": "Spotify.Spotify"
+        },
+        {
+          "PackageIdentifier": "ajeetdsouza.zoxide"
+        },
+        {
+          "PackageIdentifier": "arndawg.zellij-windows"
+        },
+        {
+          "PackageIdentifier": "astral-sh.uv"
+        },
+        {
+          "PackageIdentifier": "junegunn.fzf"
+        },
+        {
+          "PackageIdentifier": "Proton.ProtonMail"
+        },
+        {
+          "PackageIdentifier": "sxyazi.yazi"
+        },
+        {
+          "PackageIdentifier": "twpayne.chezmoi"
+        },
+        {
+          "PackageIdentifier": "Warp.Warp"
+        },
+        {
+          "PackageIdentifier": "yorukot.superfile"
+        },
+        {
+          "PackageIdentifier": "yt-dlp.FFmpeg"
+        },
+        {
+          "PackageIdentifier": "yt-dlp.yt-dlp"
+        },
+        {
+          "PackageIdentifier": "zyedidia.micro"
+        },
+        {
+          "PackageIdentifier": "ZedIndustries.Zed"
+        },
+        {
+          "PackageIdentifier": "Microsoft.PowerToys"
+        },
+        {
+          "PackageIdentifier": "Python.Python.3.14"
+        },
+        {
+          "PackageIdentifier": "M2Team.NanaZip"
+        },
+        {
+          "PackageIdentifier": "FilesCommunity.Files"
+        },
+        {
+          "PackageIdentifier": "MicaForEveryone.MicaForEveryone"
+        },
+        {
+          "PackageIdentifier": "Microsoft.WindowsTerminal"
+        },
+        {
+          "PackageIdentifier": "Microsoft.WSL"
+        },
+        {
+          "PackageIdentifier": "JanDeDobbeleer.OhMyPosh"
+        }
+      ],
+      "SourceDetails": {
+        "Argument": "https://cdn.winget.microsoft.com/cache",
+        "Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
+        "Name": "winget",
+        "Type": "Microsoft.PreIndexed.Package"
+      }
+    }
+  ],
+  "WinGetVersion": "1.12.460"
 }
