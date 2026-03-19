@@ -201,6 +201,16 @@ if (Test-Path "$pkgDir\bin-packages.txt") {
     }
 }
 
+# ── GlazeWM — disable Win key shortcuts ──────────────────────────────────────
+LogSection "GlazeWM — disable Win keys for GlazeWM"
+TryInstall "Disable Win keys (User scope)" {
+    $winKeys = "$env:USERPROFILE\Documents\PowerShell\Functions\win-keys.ps1"
+    if (-not (Test-Path $winKeys)) { throw "win-keys.ps1 not found at $winKeys" }
+    . $winKeys
+    Disable-WinKeys -Scope User *>> $logFile
+}
+Log "  WIN key shortcuts disabled — GlazeWM can now use WIN as modifier" "Green"
+
 # ── Summary ───────────────────────────────────────────────────────────────────
 Log "`n══════════════════════════════════════" "Cyan"
 Log "  ✅ OK:      $($summary.ok)"   "Green"
