@@ -27,6 +27,59 @@ try_install() {
 
 log "Chezmoi install started — log: $LOG_FILE"
 
+# ── Bootstrap ─────────────────────────────────────────────────────────────────
+log_section "Bootstrap"
+
+# paru (AUR helper) — build from AUR if neither paru nor yay present
+if ! command -v paru &>/dev/null && ! command -v yay &>/dev/null; then
+    try_install "paru" bash -c '
+        sudo pacman -S --needed --noconfirm base-devel git
+        git clone https://aur.archlinux.org/paru-bin.git /tmp/paru-bin
+        cd /tmp/paru-bin && makepkg -si --noconfirm
+        rm -rf /tmp/paru-bin
+    '
+else
+    log_skip "AUR helper already installed ($(command -v paru &>/dev/null && echo paru || echo yay))"
+    (( skip++ )) || true
+fi
+
+# Use paru or yay, whichever is available
+AUR_HELPER=$(command -v paru 2>/dev/null || command -v yay 2>/dev/null || echo "")
+
+# flatpak
+if ! command -v flatpak &>/dev/null; then
+    try_install "flatpak" sudo pacman -S --needed --noconfirm flatpak
+else
+    log_skip "flatpak already installed"
+    (( skip++ )) || true
+fi
+
+# node / npm
+if ! command -v node &>/dev/null; then
+    try_install "node" sudo pacman -S --needed --noconfirm nodejs npm
+else
+    log_skip "node already installed"
+    (( skip++ )) || true
+fi
+
+# bun
+if ! command -v bun &>/dev/null; then
+    try_install "bun" bash -c 'curl -fsSL https://bun.sh/install | bash'
+    export PATH="$HOME/.bun/bin:$PATH"
+else
+    log_skip "bun already installed"
+    (( skip++ )) || true
+fi
+
+# uv
+if ! command -v uv &>/dev/null; then
+    try_install "uv" bash -c 'curl -LsSf https://astral.sh/uv/install.sh | sh'
+    export PATH="$HOME/.local/bin:$PATH"
+else
+    log_skip "uv already installed"
+    (( skip++ )) || true
+fi
+
 # ── pacman / AUR (via paru) ────────────────────────────────────────────────────
 if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
     log_section "pacman / AUR"
@@ -36,7 +89,7 @@ if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
             log_skip "$pkg already installed"
             (( skip++ )) || true
         else
-            try_install "paru: $pkg" paru -S --needed --noconfirm "$pkg"
+            try_install "$AUR_HELPER: $pkg" "$AUR_HELPER" -S --needed --noconfirm "$pkg"
         fi
     done < <(grep -v '^\s*$' "$PKG_DIR/pacman_filtered.txt")
 fi
