@@ -80,31 +80,23 @@
 
 ## Fresh install
 
-### Windows
+### Prerequisites
 
-#### Prerequisites
+- **Windows only** — enable Developer Mode for symlinks without elevation:
+  `Settings → System → For developers → Developer Mode`
+- **GPG** — import your key:
+  ```bash
+  gpg --import your-key.asc
+  ```
 
-1. **Developer Mode** — required for symlinks without elevation:
-   `Settings → System → For developers → Developer Mode`
+### Apply
 
-2. **GPG** — install [GnuPG for Windows](https://www.gnupg.org/download/) and import your key:
-   ```powershell
-   gpg --import your-key.asc
-   ```
-
-3. **chezmoi** — install via winget:
-   ```powershell
-   winget install twpayne.chezmoi
-   ```
-
-#### Apply
-
-```powershell
+```bash
 chezmoi init --apply github.com/Villoh/dotfiles
 ```
 
 > **Without GPG key**, skip encrypted files:
-> ```powershell
+> ```bash
 > chezmoi init github.com/Villoh/dotfiles
 > chezmoi apply --exclude=encrypted
 > ```
@@ -113,46 +105,13 @@ This will:
 1. Clone the repo to `~/.local/share/chezmoi`
 2. Generate `~/.config/chezmoi/chezmoi.toml` from the template
 3. Create symlinks for all managed files
-4. Run `run_once_` scripts: install packages, restore Windhawk, create Windows junctions
+4. Run `run_once_` scripts: install packages and create platform-specific links
 
-### Linux
+### Post-install (Linux)
 
-#### Prerequisites
-
-1. **GPG** — import your key:
-   ```bash
-   gpg --import your-key.asc
-   ```
-
-2. **chezmoi** — install via pacman or the install script:
-   ```bash
-   sudo pacman -S chezmoi
-   ```
-
-#### Apply
-
+Init submodules (sddm/plymouth themes):
 ```bash
-chezmoi init --apply github.com/Villoh/dotfiles
-```
-
-> **Without GPG key:**
-> ```bash
-> chezmoi init github.com/Villoh/dotfiles
-> chezmoi apply --exclude=encrypted
-> ```
-
-#### Post-install
-
-Install submodules (sddm/plymouth themes):
-```bash
-cd ~/.local/share/chezmoi
-git submodule update --init --recursive
-```
-
-Set up gitleaks pre-commit hook:
-```bash
-uv tool install pre-commit
-pre-commit install
+cd ~/.local/share/chezmoi && git submodule update --init --recursive
 ```
 
 ## Windows junctions
