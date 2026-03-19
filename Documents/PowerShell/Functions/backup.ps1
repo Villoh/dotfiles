@@ -16,9 +16,29 @@ Set-Alias -Name backup         -Value Invoke-AllBackup
 Set-Alias -Name backup-pkgs    -Value Invoke-AllBackup
 
 function Invoke-WingetBackup {
-    $file = "$PackagesDir\winget-packages.json"
-    winget export -o $file --accept-source-agreements
-    Write-Host "winget backup OK" -ForegroundColor Green
+    $file        = "$PackagesDir\winget-packages.json"
+    $excludeFile = "$PackagesDir\winget-exclude.txt"
+    $tmp         = "$env:TEMP\winget-export-raw.json"
+
+    winget export -o $tmp --source winget --accept-source-agreements
+
+    $data = Get-Content $tmp | ConvertFrom-Json
+
+    if (Test-Path $excludeFile) {
+        $excluded = Get-Content $excludeFile | Where-Object { $_.Trim() -and -not $_.StartsWith('#') }
+        foreach ($source in $data.Sources) {
+            $source.Packages = $source.Packages | Where-Object {
+                $_.PackageIdentifier -notin $excluded
+            }
+        }
+        Write-Host "  (excluded $($excluded.Count) packages from winget-exclude.txt)" -ForegroundColor DarkGray
+    }
+
+    $data | ConvertTo-Json -Depth 10 | Set-Content $file -Encoding UTF8
+    Remove-Item $tmp -ErrorAction SilentlyContinue
+
+    $count = ($data.Sources | ForEach-Object { $_.Packages.Count } | Measure-Object -Sum).Sum
+    Write-Host "winget backup OK ($count packages)" -ForegroundColor Green
 }
 Set-Alias -Name backup-winget  -Value Invoke-WingetBackup
 
