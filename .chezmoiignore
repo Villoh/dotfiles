@@ -55,9 +55,6 @@ program_files/**
 other_config/**
 docs/**
 CLAUDE.md
-.config/stylus/**
-.config/yazi/plugins/**
-.config/yazi/flavors/**
 
 # ── Runtime / cache — never tracked ───────────────────────────────────────────
 **/.git/**
