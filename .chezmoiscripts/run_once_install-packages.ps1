@@ -58,6 +58,14 @@ if (Test-Path "$pkgDir\uv-tools.txt") {
     }
 }
 
+# ── PowerShell modules ────────────────────────────────────────────────────────
+Write-Host "Installing PowerShell modules..."
+@("Terminal-Icons") | ForEach-Object {
+    if (-not (Get-Module -ListAvailable -Name $_)) {
+        Install-Module $_ -Scope CurrentUser -Force -SkipPublisherCheck
+    }
+}
+
 # ── bin (GitHub release binaries) ─────────────────────────────────────────────
 if (Test-Path "$pkgDir\bin-packages.txt") {
     $binPkgs = Get-Content "$pkgDir\bin-packages.txt" | Where-Object { $_.Trim() -ne "" }
