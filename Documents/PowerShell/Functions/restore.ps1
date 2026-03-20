@@ -15,7 +15,7 @@ Set-Alias -Name restore        -Value Invoke-AllRestore
 Set-Alias -Name restore-pkgs   -Value Invoke-AllRestore
 
 function Invoke-WingetRestore {
-    $file = "$PackagesDir\winget-packages.json"
+    $file = "$PackagesDir\winget\packages.json"
     if (Test-Path $file) {
         winget import -i $file --accept-package-agreements --accept-source-agreements --ignore-unavailable
         Write-Host "winget restore OK" -ForegroundColor Green
@@ -24,7 +24,7 @@ function Invoke-WingetRestore {
 Set-Alias -Name restore-winget -Value Invoke-WingetRestore
 
 function Invoke-ScoopRestore {
-    $file = "$PackagesDir\scoop-packages.json"
+    $file = "$PackagesDir\scoop\packages.json"
     if (Test-Path $file) {
         $data = Get-Content $file | ConvertFrom-Json
         $data.buckets | ForEach-Object {
@@ -41,7 +41,7 @@ function Invoke-ScoopRestore {
 Set-Alias -Name restore-scoop  -Value Invoke-ScoopRestore
 
 function Invoke-ChocoRestore {
-    $file = "$PackagesDir\chocolatey-packages.config"
+    $file = "$PackagesDir\chocolatey\packages.config"
     if (Test-Path $file) {
         choco install $file -y
         Write-Host "choco restore OK" -ForegroundColor Green
@@ -50,7 +50,7 @@ function Invoke-ChocoRestore {
 Set-Alias -Name restore-choco  -Value Invoke-ChocoRestore
 
 function Invoke-NodeRestore {
-    $file = "$PackagesDir\npm-packages.json"
+    $file = "$PackagesDir\node\npm-packages.json"
     if (Test-Path $file) {
         $data = Get-Content $file | ConvertFrom-Json
         if ($data.dependencies) {
@@ -67,7 +67,7 @@ function Invoke-NodeRestore {
 Set-Alias -Name restore-node   -Value Invoke-NodeRestore
 
 function Invoke-BunRestore {
-    $file = "$PackagesDir\bun-packages.txt"
+    $file = "$PackagesDir\node\bun-packages.txt"
     if (Test-Path $file) {
         Get-Content $file | Where-Object { $_ } | ForEach-Object {
             $pkg = ($_ -split '@')[0]

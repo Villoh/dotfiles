@@ -172,21 +172,21 @@ if (Get-Command rustup -ErrorAction SilentlyContinue) {
 LogSection "Package selection"
 
 # Build list of available managers
-$elevatedPkgs = @(if (Test-Path "$pkgDir\winget-elevated.txt") {
-    Get-Content "$pkgDir\winget-elevated.txt" | Where-Object { $_.Trim() -ne "" }
+$elevatedPkgs = @(if (Test-Path "$pkgDir\winget\elevated.txt") {
+    Get-Content "$pkgDir\winget\elevated.txt" | Where-Object { $_.Trim() -ne "" }
 })
 
 $candidates = [System.Collections.Generic.List[string]]::new()
-if (Test-Path "$pkgDir\winget-packages.json")       { $candidates.Add("winget") }
+if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget") }
 if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated") }
-if (Test-Path "$pkgDir\scoop-packages.json")        { $candidates.Add("scoop") }
-if (Test-Path "$pkgDir\chocolatey-packages.config") { $candidates.Add("chocolatey") }
-if (Test-Path "$pkgDir\npm-packages.json")          { $candidates.Add("npm") }
-if (Test-Path "$pkgDir\bun-packages.txt")           { $candidates.Add("bun") }
+if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop") }
+if (Test-Path "$pkgDir\chocolatey\packages.config") { $candidates.Add("chocolatey") }
+if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm") }
+if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun") }
 if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv") }
 if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin") }
-if (Test-Path "$pkgDir\cargo-packages.txt")         { $candidates.Add("cargo") }
-if (Test-Path "$pkgDir\cargo-git-packages.txt")    { $candidates.Add("cargo-git") }
+if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo") }
+if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git") }
 $candidates.Add("powershell-modules")
 
 $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
@@ -203,7 +203,7 @@ if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
 # -- winget --------------------------------------------------------------------
 if ($selectedManagers -contains "winget") {
     LogSection "winget"
-    $wingetJson = Get-Content "$pkgDir\winget-packages.json" | ConvertFrom-Json
+    $wingetJson = Get-Content "$pkgDir\winget\packages.json" | ConvertFrom-Json
     $allWingetIds = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
         Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
 
@@ -247,7 +247,7 @@ Read-Host "`nPress Enter to close"
 # -- scoop ---------------------------------------------------------------------
 if ($selectedManagers -contains "scoop") {
     LogSection "scoop"
-    $scoop = Get-Content "$pkgDir\scoop-packages.json" | ConvertFrom-Json
+    $scoop = Get-Content "$pkgDir\scoop\packages.json" | ConvertFrom-Json
 
     # Always add all buckets (apps may depend on them regardless of selection)
     $scoopBuckets = scoop bucket list | Select-Object -ExpandProperty Name 2>$null
@@ -286,7 +286,7 @@ if ($selectedManagers -contains "scoop") {
 # -- chocolatey ----------------------------------------------------------------
 if ($selectedManagers -contains "chocolatey") {
     LogSection "chocolatey"
-    $chocoXml = [xml](Get-Content "$pkgDir\chocolatey-packages.config")
+    $chocoXml = [xml](Get-Content "$pkgDir\chocolatey\packages.config")
     $allChocoPkgs = @($chocoXml.packages.package | Select-Object -ExpandProperty id | Sort-Object)
     $selectedChocoPkgs = Select-WithFzf $allChocoPkgs "chocolatey>"
     if ($selectedChocoPkgs) {
@@ -305,7 +305,7 @@ Read-Host "`nPress Enter to close"
 
 # -- npm -----------------------------------------------------------------------
 if ($selectedManagers -contains "npm") {
-    $npm = Get-Content "$pkgDir\npm-packages.json" | ConvertFrom-Json
+    $npm = Get-Content "$pkgDir\node\npm-packages.json" | ConvertFrom-Json
     if ($npm.dependencies) {
         LogSection "npm"
         $allNpmPkgs = @($npm.dependencies.PSObject.Properties |
@@ -319,7 +319,7 @@ if ($selectedManagers -contains "npm") {
 
 # -- bun -----------------------------------------------------------------------
 if ($selectedManagers -contains "bun") {
-    $bunPkgs = @(Get-Content "$pkgDir\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    $bunPkgs = @(Get-Content "$pkgDir\node\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
     if ($bunPkgs) {
         LogSection "bun"
         $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>"
@@ -426,7 +426,7 @@ if ($selectedManagers -contains "bin") {
 
 # -- cargo (crates.io) --------------------------------------------------------
 if ($selectedManagers -contains "cargo") {
-    $cargoPkgs = @(Get-Content "$pkgDir\cargo-packages.txt" |
+    $cargoPkgs = @(Get-Content "$pkgDir\cargo\packages.txt" |
         Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
     if ($cargoPkgs) {
         LogSection "cargo"
@@ -449,7 +449,7 @@ if ($selectedManagers -contains "cargo") {
 
 # -- cargo (git) ---------------------------------------------------------------
 if ($selectedManagers -contains "cargo-git") {
-    $cargoGitPkgs = @(Get-Content "$pkgDir\cargo-git-packages.txt" |
+    $cargoGitPkgs = @(Get-Content "$pkgDir\cargo\git-packages.txt" |
         Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
     if ($cargoGitPkgs) {
         LogSection "cargo (git)"
@@ -479,6 +479,59 @@ if ($selectedManagers -contains "cargo-git") {
                     }
                 }
             }
+        }
+    }
+}
+
+# == JUNCTIONS / SYMLINKS ======================================================
+LogSection "Junctions"
+$source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+
+$junctions = @(
+    @{ Src = "$source\dot_config\btop\btop.conf"; Dst = "$env:USERPROFILE\scoop\persist\btop\btop.conf"; Type = "file" },
+    @{ Src = "$source\dot_config\btop\themes";    Dst = "$env:USERPROFILE\scoop\persist\btop\themes";    Type = "junction" },
+    @{ Src = "$source\dot_config\zed";            Dst = "$env:APPDATA\Zed";                              Type = "junction" },
+    @{ Src = "$source\dot_config\yazi";           Dst = "$env:APPDATA\yazi\config";                      Type = "junction" },
+    @{ Src = "$source\dot_config\vesktop\settings"; Dst = "$env:APPDATA\Vencord\settings";               Type = "junction" },
+    @{ Src = "$source\dot_config\vesktop\settings"; Dst = "$env:APPDATA\vesktop\settings";               Type = "junction" }
+)
+
+foreach ($j in $junctions) {
+    $parent = Split-Path $j.Dst
+    if ($parent -and -not (Test-Path $parent)) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
+    if (Test-Path $j.Dst) { Remove-Item $j.Dst -Recurse -Force }
+    if ($j.Type -eq "file") {
+        TryInstall "symlink: $($j.Dst)" { cmd /c mklink "$($j.Dst)" "$($j.Src)" | Out-Null }
+    } else {
+        TryInstall "junction: $($j.Dst)" { cmd /c mklink /J "$($j.Dst)" "$($j.Src)" | Out-Null }
+    }
+}
+
+# == STARTUP REGISTRY ENTRIES ==================================================
+if (Test-Path "$pkgDir\system\startup-entries.json") {
+    LogSection "Startup entries"
+    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    $startupEntries = Get-Content "$pkgDir\system\startup-entries.json" | ConvertFrom-Json
+
+    foreach ($entry in $startupEntries) {
+        # Expand %ENV_VAR% placeholders
+        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+
+        # Glob support for versioned paths (e.g. app-*)
+        if ($entry.glob) {
+            $expanded = Get-ChildItem (Split-Path $expanded) -Filter (Split-Path $expanded -Leaf) -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+
+        if (-not $expanded -or -not (Test-Path $expanded)) {
+            LogSkip "startup: $($entry.name) (exe not found)"
+            $summary.skip++
+            continue
+        }
+
+        $value = if ($entry.args) { "`"$expanded`" $($entry.args)" } else { "`"$expanded`"" }
+        TryInstall "startup: $($entry.name)" {
+            Set-ItemProperty -Path $regPath -Name $entry.name -Value $value -Type String
         }
     }
 }
