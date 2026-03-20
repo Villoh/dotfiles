@@ -1,0 +1,421 @@
+{{ if eq .chezmoi.os "windows" -}}
+$pkgDir = "{{ .chezmoi.sourceDir }}\packages\windows"
+$logFile = "$env:TEMP\chezmoi-install-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+# -- Logging helpers -----------------------------------------------------------
+function Log {
+    param([string]$msg, [string]$color = "White")
+    $ts = "[$(Get-Date -Format 'HH:mm:ss')]"
+    $line = "$ts $msg"
+    Write-Host $line -ForegroundColor $color
+    Add-Content -Path $logFile -Value $line
+}
+
+function LogOk      { param([string]$msg) Log "  [OK]   $msg" "Green"  }
+function LogSkip    { param([string]$msg) Log "  [SKIP] $msg" "Yellow" }
+function LogFail    { param([string]$msg) Log "  [FAIL] $msg" "Red"    }
+function LogSection { param([string]$msg) Log "`n-- $msg --" "Cyan" }
+
+$summary = @{ ok = 0; skip = 0; fail = 0 }
+
+function TryInstall {
+    param([string]$name, [scriptblock]$block)
+    try {
+        & $block
+        LogOk $name
+        $summary.ok++
+    } catch {
+        LogFail "$name - $($_.Exception.Message)"
+        $summary.fail++
+    }
+}
+
+# -- fzf selection helper ------------------------------------------------------
+# Returns @() if fzf not available, ESC pressed, or no items.
+function Select-WithFzf {
+    param(
+        [string[]]$Items,
+        [string]$Prompt,
+        [string]$Header = "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip"
+    )
+    if (-not $Items -or $Items.Count -eq 0) { return @() }
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
+        Log "  [WARN] fzf not found - installing all $($Items.Count) items" "Yellow"
+        return $Items
+    }
+    $selected = $Items | fzf --multi --prompt="  $Prompt " --header="$Header" `
+        --layout=reverse --border --bind='ctrl-a:select-all'
+    if ($LASTEXITCODE -ne 0) { return @() }
+    return @($selected)
+}
+
+Log "Chezmoi install started - log: $logFile" "Cyan"
+
+# == BOOTSTRAP (always runs, no selection) =====================================
+LogSection "Bootstrap"
+
+# -- scoop ---------------------------------------------------------------------
+if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    TryInstall "Scoop" {
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+        irm get.scoop.sh | iex
+    }
+} else {
+    LogSkip "Scoop already installed"
+    $summary.skip++
+}
+
+# -- fzf (needed for package selection below) ----------------------------------
+if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
+    TryInstall "fzf" { scoop install fzf }
+} else {
+    LogSkip "fzf already installed"
+    $summary.skip++
+}
+
+# -- Developer Mode (required for chezmoi symlinks on Windows) -----------------
+$devModeKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
+$devModeVal = (Get-ItemProperty -Path $devModeKey -ErrorAction SilentlyContinue).AllowDevelopmentWithoutDevLicense
+if ($devModeVal -eq 1) {
+    LogSkip "Developer Mode already enabled"
+    $summary.skip++
+} else {
+    TryInstall "Developer Mode (elevated)" {
+        $cmd = 'Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Type DWord -Force; Write-Host "Developer Mode enabled." -ForegroundColor Green; Read-Host "`nPress Enter to close"'
+        Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-Command", $cmd -Wait
+    }
+}
+
+# -- chocolatey ----------------------------------------------------------------
+if (-not (Get-Command choco -ErrorAction SilentlyContinue) -and -not (Test-Path "C:\ProgramData\chocolatey\bin\choco.exe")) {
+    TryInstall "Chocolatey (elevated)" {
+        $chocoScript = "$env:TEMP\choco-install.ps1"
+        @'
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+Read-Host "`nPress Enter to close"
+'@ | Set-Content $chocoScript
+        Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $chocoScript -Wait
+        Remove-Item $chocoScript -ErrorAction SilentlyContinue
+        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+        if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw "choco not found after install" }
+    }
+} else {
+    LogSkip "Chocolatey already installed"
+    $summary.skip++
+}
+
+# -- node / npm ----------------------------------------------------------------
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+    TryInstall "Node.js" {
+        winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements -e
+    }
+} else {
+    LogSkip "Node.js already installed"
+    $summary.skip++
+}
+
+# -- bun -----------------------------------------------------------------------
+if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
+    TryInstall "Bun" {
+        winget install --id Oven-sh.Bun --accept-package-agreements --accept-source-agreements -e
+    }
+} else {
+    LogSkip "Bun already installed"
+    $summary.skip++
+}
+
+# -- uv ------------------------------------------------------------------------
+if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+    TryInstall "uv" {
+        winget install --id astral-sh.uv --accept-package-agreements --accept-source-agreements -e
+    }
+} else {
+    LogSkip "uv already installed"
+    $summary.skip++
+}
+
+# -- bin (scoop) ---------------------------------------------------------------
+if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
+    TryInstall "bin" { scoop install bin }
+} else {
+    LogSkip "bin already installed"
+    $summary.skip++
+}
+
+# -- Refresh PATH from registry ------------------------------------------------
+$env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+            [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+
+# == PACKAGE SELECTION =========================================================
+LogSection "Package selection"
+
+# Build list of available managers
+$elevatedPkgs = @(if (Test-Path "$pkgDir\winget-elevated.txt") {
+    Get-Content "$pkgDir\winget-elevated.txt" | Where-Object { $_.Trim() -ne "" }
+})
+
+$candidates = [System.Collections.Generic.List[string]]::new()
+if (Test-Path "$pkgDir\winget-packages.json")       { $candidates.Add("winget") }
+if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated") }
+if (Test-Path "$pkgDir\scoop-packages.json")        { $candidates.Add("scoop") }
+if (Test-Path "$pkgDir\chocolatey-packages.config") { $candidates.Add("chocolatey") }
+if (Test-Path "$pkgDir\npm-packages.json")          { $candidates.Add("npm") }
+if (Test-Path "$pkgDir\bun-packages.txt")           { $candidates.Add("bun") }
+if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv") }
+if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin") }
+$candidates.Add("powershell-modules")
+
+$selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
+    "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all package installs"
+
+if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
+    Log "No managers selected - skipping all package installs" "Yellow"
+} else {
+    Log "  Selected: $($selectedManagers -join ', ')" "Cyan"
+}
+
+# == PACKAGE INSTALLS ==========================================================
+
+# -- winget --------------------------------------------------------------------
+if ($selectedManagers -contains "winget") {
+    LogSection "winget"
+    $wingetJson = Get-Content "$pkgDir\winget-packages.json" | ConvertFrom-Json
+    $allWingetIds = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
+        Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
+
+    $selectedIds = Select-WithFzf $allWingetIds "winget>"
+    foreach ($id in $selectedIds) {
+        $installed = winget list --id $id --accept-source-agreements 2>$null | Select-String $id
+        if ($installed) {
+            LogSkip "winget: $id already installed"
+            $summary.skip++
+        } else {
+            TryInstall "winget: $id" {
+                winget install --id $id --accept-package-agreements --accept-source-agreements -e
+            }
+        }
+    }
+}
+
+# -- winget (elevated) ---------------------------------------------------------
+if ($selectedManagers -contains "winget-elevated") {
+    LogSection "winget (elevated)"
+    $selectedElevated = Select-WithFzf $elevatedPkgs "winget-elevated>"
+    foreach ($pkg in $selectedElevated) {
+        $installed = winget list --id $pkg --accept-source-agreements 2>$null | Select-String $pkg
+        if ($installed) {
+            LogSkip "winget: $pkg already installed"
+            $summary.skip++
+        } else {
+            TryInstall "winget: $pkg (elevated)" {
+                $tmpScript = "$env:TEMP\winget-elevated-$pkg.ps1"
+@"
+winget install --id $pkg --accept-package-agreements --accept-source-agreements -e
+Read-Host "`nPress Enter to close"
+"@ | Set-Content $tmpScript
+                Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+                Remove-Item $tmpScript -ErrorAction SilentlyContinue
+            }
+        }
+    }
+}
+
+# -- scoop ---------------------------------------------------------------------
+if ($selectedManagers -contains "scoop") {
+    LogSection "scoop"
+    $scoop = Get-Content "$pkgDir\scoop-packages.json" | ConvertFrom-Json
+
+    # Always add all buckets (apps may depend on them regardless of selection)
+    $scoopBuckets = scoop bucket list | Select-Object -ExpandProperty Name 2>$null
+    foreach ($bucket in $scoop.buckets) {
+        if ($scoopBuckets -contains $bucket.Name) {
+            LogSkip "bucket: $($bucket.Name) already added"
+            $summary.skip++
+        } else {
+            TryInstall "bucket: $($bucket.Name)" {
+                scoop bucket add $bucket.Name $bucket.Source
+            }
+        }
+    }
+
+    $allScoopNames = @($scoop.apps | Select-Object -ExpandProperty Name | Sort-Object)
+    $selectedNames = Select-WithFzf $allScoopNames "scoop>"
+    $scoopInstalled = scoop list 2>$null | Select-Object -ExpandProperty Name
+    foreach ($name in $selectedNames) {
+        $app = $scoop.apps | Where-Object { $_.Name -eq $name }
+        if ($scoopInstalled -contains $name) {
+            LogSkip "scoop: $name already installed"
+            $summary.skip++
+        } else {
+            TryInstall "scoop: $name" {
+                scoop install "$($app.Source)/$($app.Name)"
+            }
+        }
+    }
+}
+
+# -- chocolatey ----------------------------------------------------------------
+if ($selectedManagers -contains "chocolatey") {
+    LogSection "chocolatey"
+    $chocoXml = [xml](Get-Content "$pkgDir\chocolatey-packages.config")
+    $allChocoPkgs = @($chocoXml.packages.package | Select-Object -ExpandProperty id | Sort-Object)
+    $selectedChocoPkgs = Select-WithFzf $allChocoPkgs "chocolatey>"
+    if ($selectedChocoPkgs) {
+        $pkgList = $selectedChocoPkgs -join ' '
+        TryInstall "choco: $($selectedChocoPkgs -join ', ') (elevated)" {
+            $chocoInstallScript = "$env:TEMP\choco-pkgs.ps1"
+@"
+choco install $pkgList -y
+Read-Host "`nPress Enter to close"
+"@ | Set-Content $chocoInstallScript
+            Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $chocoInstallScript -Wait
+            Remove-Item $chocoInstallScript -ErrorAction SilentlyContinue
+        }
+    }
+}
+
+# -- npm -----------------------------------------------------------------------
+if ($selectedManagers -contains "npm") {
+    $npm = Get-Content "$pkgDir\npm-packages.json" | ConvertFrom-Json
+    if ($npm.dependencies) {
+        LogSection "npm"
+        $allNpmPkgs = @($npm.dependencies.PSObject.Properties |
+            ForEach-Object { "$($_.Name)@$($_.Value)" } | Sort-Object)
+        $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>"
+        foreach ($pkg in $selectedNpmPkgs) {
+            TryInstall "npm: $pkg" { npm install -g $pkg }
+        }
+    }
+}
+
+# -- bun -----------------------------------------------------------------------
+if ($selectedManagers -contains "bun") {
+    $bunPkgs = @(Get-Content "$pkgDir\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    if ($bunPkgs) {
+        LogSection "bun"
+        $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>"
+        $bunInstalled = bun pm ls -g 2>$null
+        foreach ($pkg in $selectedBunPkgs) {
+            $pkgName = ($pkg -split '@')[0]
+            if ($bunInstalled -match [regex]::Escape($pkgName)) {
+                LogSkip "bun: $pkg already installed"
+                $summary.skip++
+            } else {
+                TryInstall "bun: $pkg" { bun add -g $pkg }
+            }
+        }
+    }
+}
+
+# -- uv tools ------------------------------------------------------------------
+if ($selectedManagers -contains "uv") {
+    $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    if ($uvTools) {
+        LogSection "uv"
+        $selectedUvTools = Select-WithFzf $uvTools "uv>"
+        $uvInstalled = uv tool list 2>$null
+        foreach ($tool in $selectedUvTools) {
+            if ($uvInstalled -match [regex]::Escape($tool)) {
+                LogSkip "uv: $tool already installed"
+                $summary.skip++
+            } else {
+                TryInstall "uv: $tool" { uv tool install $tool }
+            }
+        }
+    }
+}
+
+# -- PowerShell modules --------------------------------------------------------
+if ($selectedManagers -contains "powershell-modules") {
+    LogSection "PowerShell modules"
+    $allPsModules = @("Terminal-Icons")
+    $selectedPsModules = Select-WithFzf $allPsModules "powershell-modules>"
+    foreach ($mod in $selectedPsModules) {
+        if (Get-Module -ListAvailable -Name $mod) {
+            LogSkip "$mod already installed"
+            $summary.skip++
+        } else {
+            TryInstall "PSModule: $mod" {
+                Install-Module $mod -Scope CurrentUser -Force -SkipPublisherCheck
+            }
+        }
+    }
+}
+
+# -- bin (GitHub release binaries) ---------------------------------------------
+if ($selectedManagers -contains "bin") {
+    $binPkgs = @(Get-Content "$pkgDir\bin-packages.txt" | Where-Object { $_.Trim() -ne "" })
+    if ($binPkgs) {
+        LogSection "bin"
+
+        # Setup ~/.bin dir and PATH
+        $binDir = "$env:USERPROFILE\.bin"
+        New-Item -ItemType Directory -Force -Path $binDir | Out-Null
+        $userPath = [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+        if ($userPath -notmatch [regex]::Escape($binDir)) {
+            [System.Environment]::SetEnvironmentVariable('PATH', "$userPath;$binDir", 'User')
+        }
+
+        # Ensure bin config has correct default_path
+        $binConfigDir = "$env:USERPROFILE\.config\bin"
+        $binConfigFile = "$binConfigDir\config.json"
+        New-Item -ItemType Directory -Force -Path $binConfigDir | Out-Null
+        if (Test-Path $binConfigFile) {
+            $binCfg = Get-Content $binConfigFile -Raw | ConvertFrom-Json
+            $binCfg | Add-Member -MemberType NoteProperty -Name default_path -Value "$binDir/" -Force
+            $binCfg | ConvertTo-Json -Depth 5 | Set-Content $binConfigFile
+        } else {
+            [pscustomobject]@{ default_path = "$binDir/" } | ConvertTo-Json | Set-Content $binConfigFile
+        }
+
+        # Build label→url map for nicer fzf display (e.g. "Atlas-OS/atlas-toolbox")
+        $binItems = $binPkgs | ForEach-Object {
+            [PSCustomObject]@{
+                Label = ($_ -replace 'https://github.com/', '' -replace '/releases/.*', '')
+                Url   = $_
+            }
+        }
+        $selectedLabels = Select-WithFzf ($binItems.Label | Sort-Object) "bin>"
+        $selectedUrls = $binItems |
+            Where-Object { $selectedLabels -contains $_.Label } |
+            Select-Object -ExpandProperty Url
+
+        $binInstalled = (bin list 2>$null) -join "`n"
+        Push-Location $binDir
+        foreach ($url in $selectedUrls) {
+            $baseUrl = ($url -split '/releases/')[0]
+            if ($binInstalled -match [regex]::Escape($baseUrl)) {
+                LogSkip "bin: $url already installed"
+                $summary.skip++
+            } else {
+                TryInstall "bin: $url" { bin install $url }
+            }
+        }
+        Pop-Location
+    }
+}
+
+# -- GlazeWM - disable Win key shortcuts ---------------------------------------
+LogSection "GlazeWM - disable Win keys for GlazeWM"
+TryInstall "Disable Win keys (User scope)" {
+    $winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
+    if (-not (Test-Path $winKeys)) { throw "win-keys.ps1 not found at $winKeys" }
+    . $winKeys
+    Disable-WinKeys -Scope User *>> $logFile
+}
+Log "  WIN key shortcuts disabled - GlazeWM can now use WIN as modifier" "Green"
+
+# -- Summary -------------------------------------------------------------------
+Log "`n======================================" "Cyan"
+Log "  [OK]   OK:      $($summary.ok)"   "Green"
+Log "  [SKIP] Skipped: $($summary.skip)" "Yellow"
+Log "  [FAIL] Failed:  $($summary.fail)"  $(if ($summary.fail -gt 0) { "Red" } else { "White" })
+Log "  [LOG]  Log:     $logFile"          "Cyan"
+Log "`n======================================" "Cyan"
+
+try { Read-Host "`nPress Enter to exit" } catch { Start-Sleep -Seconds 3 }
+{{ end -}}

@@ -4,15 +4,27 @@
 {{ range (glob "program_files/ditto/Themes/*.xml") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end }}
-$src = "{{ .chezmoi.sourceDir }}/program_files/ditto/Themes"
+$src = ("{{ .chezmoi.sourceDir }}/program_files/ditto/Themes").Replace('/', '\')
 $dst = "C:\Program Files\Ditto\Themes"
+$dstParent = "C:\Program Files\Ditto"
 
 $tmpScript = "$env:TEMP\ditto-install.ps1"
 
 @"
-Get-ChildItem '$src\*.xml' | ForEach-Object {
-    Copy-Item `$_.FullName -Destination "$dst\`$(`$_.Name)" -Force
+`$src = "$src"
+`$dst = "$dst"
+`$dstParent = "$dstParent"
+if (-not (Test-Path `$dstParent)) {
+    Write-Warning "Ditto not found at '`$dstParent' - is it installed?"
+} else {
+    New-Item -ItemType Directory -Force -Path `$dst | Out-Null
+    Get-ChildItem "`$src\*.xml" | ForEach-Object {
+        Copy-Item `$_.FullName -Destination "`$dst\`$(`$_.Name)" -Force
+        Write-Host "  Copied: `$(`$_.Name)"
+    }
+    Write-Host "Ditto themes installed."
 }
+Read-Host "`nPress Enter to close"
 "@ | Set-Content $tmpScript
 
 Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
