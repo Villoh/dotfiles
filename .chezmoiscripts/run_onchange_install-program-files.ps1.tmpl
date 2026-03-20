@@ -47,7 +47,7 @@ foreach (`$r in `$rcopies) {
         Write-Warning "`$(`$r.App): destination '`$(`$r.Dst)' not found - skipping."
         continue
     }
-    Copy-Item -Path "`$(`$r.Src)\*" -Destination `$r.Dst -Recurse -Force
+    Copy-Item -Path "`$(`$r.Src)\*" -Destination `$r.Dst -Recurse -Force -ErrorAction SilentlyContinue
     Write-Host "`$(`$r.App) installed." -ForegroundColor Green
 }
 

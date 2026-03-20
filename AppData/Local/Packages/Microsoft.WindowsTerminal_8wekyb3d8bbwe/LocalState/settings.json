@@ -23,18 +23,6 @@
             "keys": "ctrl+shift+c"
         },
         {
-            "id": "Terminal.SplitPaneDown",
-            "keys": "ctrl+shift+d"
-        },
-        {
-            "id": "Terminal.PrevTab",
-            "keys": "ctrl+shift+tab"
-        },
-        {
-            "id": "Terminal.NextTab",
-            "keys": "ctrl+tab"
-        },
-        {
             "id": "Terminal.ResizePaneLeft",
             "keys": "ctrl+alt+shift+left"
         },
@@ -43,20 +31,32 @@
             "keys": "ctrl+shift+v"
         },
         {
-            "id": "Terminal.ClosePane",
-            "keys": "ctrl+shift+w"
+            "id": "Terminal.NextTab",
+            "keys": "ctrl+tab"
+        },
+        {
+            "id": "Terminal.SplitPaneDown",
+            "keys": "ctrl+shift+d"
+        },
+        {
+            "id": "Terminal.PrevTab",
+            "keys": "ctrl+shift+tab"
         },
         {
             "id": "User.closeTab.0",
             "keys": "ctrl+shift+q"
         },
         {
-            "id": "Terminal.TogglePaneZoom",
-            "keys": "ctrl+shift+z"
+            "id": "Terminal.ClosePane",
+            "keys": "ctrl+shift+w"
         },
         {
             "id": "Terminal.FindText",
             "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "Terminal.TogglePaneZoom",
+            "keys": "ctrl+shift+z"
         },
         {
             "id": "Terminal.OpenNewTab",
@@ -99,12 +99,12 @@
             "keys": "ctrl+alt+shift+down"
         },
         {
-            "id": "Terminal.DecreaseFontSize",
-            "keys": "ctrl+minus"
-        },
-        {
             "id": "Terminal.IncreaseFontSize",
             "keys": "ctrl+plus"
+        },
+        {
+            "id": "Terminal.DecreaseFontSize",
+            "keys": "ctrl+minus"
         },
         {
             "id": "Terminal.ResetFontSize",
@@ -182,6 +182,12 @@
             },
             {
                 "guid": "{44602280-1d41-5b83-9a81-8cd0ed48090a}",
+                "hidden": false,
+                "name": "archlinux",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{03e9cf80-3f76-55ab-8112-8a42fa101640}",
                 "hidden": false,
                 "name": "archlinux",
                 "source": "Microsoft.WSL"
