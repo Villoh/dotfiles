@@ -28,7 +28,7 @@ function Disable-WinKeys {
     )
 
     Write-Host "Disabling Windows key shortcuts [$Scope]..." -ForegroundColor Yellow
-    _Set-WinKeysValue -Value 1 -Scope $Scope
+    if (-not (_Set-WinKeysValue -Value 1 -Scope $Scope)) { return }
     _Restart-Explorer
     Write-Host "Done. WIN key is now free for GlazeWM." -ForegroundColor Green
     Write-Host "Run Enable-WinKeys to restore defaults." -ForegroundColor DarkGray
@@ -52,7 +52,7 @@ function Enable-WinKeys {
     )
 
     Write-Host "Restoring Windows key shortcuts [$Scope]..." -ForegroundColor Yellow
-    _Set-WinKeysValue -Value 0 -Scope $Scope
+    if (-not (_Set-WinKeysValue -Value 0 -Scope $Scope)) { return }
     _Restart-Explorer
     Write-Host "Done. Windows key shortcuts restored." -ForegroundColor Green
 }
@@ -133,18 +133,29 @@ function _Set-WinKeysValue {
         [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
         [Security.Principal.WindowsBuiltInRole]::Administrator)
 
-    $script = "if (-not (Test-Path '$path')) { New-Item -Path '$path' -Force | Out-Null }; " +
-              "Set-ItemProperty -Path '$path' -Name '$_WinKeysRegistryKey' -Value $Value -Type DWord"
-
     if ($Scope -eq "System" -and -not $isAdmin) {
-        Start-Process powershell `
-            -Verb RunAs `
-            -WindowStyle Hidden `
-            -ArgumentList "-NoProfile -Command $script" `
-            -Wait
+        $cmd = "if (-not (Test-Path '$path')) { New-Item -Path '$path' -Force | Out-Null }; " +
+               "Set-ItemProperty -Path '$path' -Name '$_WinKeysRegistryKey' -Value $Value -Type DWord"
+        try {
+            Start-Process powershell `
+                -Verb RunAs `
+                -WindowStyle Hidden `
+                -ArgumentList "-NoProfile -Command $cmd" `
+                -Wait -ErrorAction Stop
+        } catch {
+            Write-Warning "Elevation cancelled or failed. Registry not updated."
+            return $false
+        }
     } else {
-        Invoke-Expression $script
+        try {
+            if (-not (Test-Path $path)) { New-Item -Path $path -Force -ErrorAction Stop | Out-Null }
+            Set-ItemProperty -Path $path -Name $_WinKeysRegistryKey -Value $Value -Type DWord -ErrorAction Stop
+        } catch {
+            Write-Warning "Failed to update registry: $($_.Exception.Message)"
+            return $false
+        }
     }
+    return $true
 }
 
 <#

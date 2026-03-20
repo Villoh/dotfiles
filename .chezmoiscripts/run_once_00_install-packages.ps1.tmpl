@@ -536,13 +536,13 @@ if (Test-Path "$pkgDir\system\startup-entries.json") {
     }
 }
 
-# -- GlazeWM - disable Win key shortcuts ---------------------------------------
+# -- GlazeWM - disable Win key shortcuts (elevated) ---------------------------
 LogSection "GlazeWM - disable Win keys for GlazeWM"
-TryInstall "Disable Win keys (User scope)" {
+TryInstall "Disable Win keys (elevated)" {
     $winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
     if (-not (Test-Path $winKeys)) { throw "win-keys.ps1 not found at $winKeys" }
     . $winKeys
-    Disable-WinKeys -Scope User *>> $logFile
+    Disable-WinKeys -Scope System
 }
 Log "  WIN key shortcuts disabled - GlazeWM can now use WIN as modifier" "Green"
 

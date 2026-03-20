@@ -18,7 +18,6 @@
   },
   {
     "name": "Flow.Launcher",
-    "path": "%LOCALAPPDATA%\\FlowLauncher\\app-*\\Flow.Launcher.exe",
-    "glob": true
+    "path": "%LOCALAPPDATA%\\FlowLauncher\\Flow.Launcher.exe"
   }
 ]
