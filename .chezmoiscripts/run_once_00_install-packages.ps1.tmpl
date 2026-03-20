@@ -485,13 +485,19 @@ if ($selectedManagers -contains "cargo-git") {
 
 # -- GlazeWM - disable Win key shortcuts (elevated) ---------------------------
 LogSection "GlazeWM - disable Win keys for GlazeWM"
-TryInstall "Disable Win keys (elevated)" {
-    $winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
-    if (-not (Test-Path $winKeys)) { throw "win-keys.ps1 not found at $winKeys" }
-    . $winKeys
-    Disable-WinKeys -Scope System
+$noWinKeysPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+$noWinKeysVal  = (Get-ItemProperty -Path $noWinKeysPath -Name NoWinKeys -ErrorAction SilentlyContinue).NoWinKeys
+if ($noWinKeysVal -eq 1) {
+    LogSkip "Win keys already disabled"
+    $summary.skip++
+} else {
+    TryInstall "Disable Win keys (elevated)" {
+        $winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
+        if (-not (Test-Path $winKeys)) { throw "win-keys.ps1 not found at $winKeys" }
+        . $winKeys
+        Disable-WinKeys -Scope System
+    }
 }
-Log "  WIN key shortcuts disabled - GlazeWM can now use WIN as modifier" "Green"
 
 # -- Summary -------------------------------------------------------------------
 Log "`n======================================" "Cyan"
