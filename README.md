@@ -123,8 +123,8 @@ Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/Power
 | `upgrade` | Update all package managers and tools |
 | `backup` | Backup dotfiles and settings |
 | `restore` | Restore dotfiles and settings |
-| `reset-chezmoi-script <name>` | Clear chezmoi state for a script so it re-runs on next `chezmoi apply` |
-| `reset-all-chezmoi-scripts` | Clear state for all scripts so every `run_once_` and `run_onchange_` re-runs |
+| `reset-run-once-scripts` | Clear `scriptState` so all `run_once_` scripts re-run on next apply |
+| `reset-run-onchange-script [name]` | Clear `entryState` for one or all `run_onchange_` scripts |
 
 ## Daily workflow
 
@@ -150,14 +150,18 @@ Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages
 # Linux (bash):
 chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_install-packages.sh.tmpl" | bash
 
-# Re-run a specific script on next apply
-reset-chezmoi-script windows-setup      # re-run run_onchange_windows-setup
-reset-chezmoi-script 00_install-packages  # re-run the full install script
-chezmoi apply
+# chezmoi script state buckets:
+#   scriptState → run_once_     (keyed by content hash, cannot target individually)
+#   entryState  → run_onchange_ (keyed by destination path)
 
-# Re-run ALL scripts on next apply
-reset-all-chezmoi-scripts
-chezmoi apply
+# Re-run all run_once_ scripts on next apply
+reset-run-once-scripts && chezmoi apply
+
+# Re-run a specific run_onchange_ script on next apply
+reset-run-onchange-script windows-setup && chezmoi apply
+
+# Re-run all run_onchange_ scripts on next apply
+reset-run-onchange-script && chezmoi apply
 
 # See all tracked script states
 chezmoi state dump --format=json | ConvertFrom-Json |
