@@ -116,7 +116,7 @@ Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/Power
 | Command | Description |
 |---------|-------------|
 | `restore-windhawk` | Import Windhawk settings from registry — close Windhawk first |
-| `setup-wsl-arch` | Install Arch Linux in WSL and set up packages from `wsl-packages.txt` |
+| `setup-wsl-arch` | Install Arch Linux in WSL, configure locale, install packages from `wsl-*-packages.txt` |
 | `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
 | `enable-devmode` | Enable Windows Developer Mode (required for chezmoi symlinks) |
 | `disable-devmode` | Disable Windows Developer Mode |

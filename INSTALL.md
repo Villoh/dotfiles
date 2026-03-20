@@ -52,11 +52,6 @@ Then run scripts in this order (Windows only):
 | 3 | `run_onchange_install-ditto-themes` | Copy Ditto XML themes to `Program Files` |
 | 4 | `run_onchange_install-nilesoft-imports` | Copy Nilesoft `.nss` imports to `Program Files` |
 
-> **Windhawk** — settings import is a manual step. Windhawk launches automatically on install, so first install your desired mods, then close Windhawk completely, then run:
-> ```powershell
-> Restore-Windhawk
-> ```
-
 ---
 
 ## Post-install
@@ -79,6 +74,38 @@ The symlinks script creates these junctions pointing directly to the chezmoi sou
 | `%APPDATA%\Vencord\settings` | `dot_config/vesktop/settings` |
 | `~/scoop/persist/btop/btop.conf` | `dot_config/btop/btop.conf` |
 | `~/scoop/persist/btop/themes` | `dot_config/btop/themes` |
+
+---
+
+## Manual steps (Windows)
+
+Some steps require manual intervention and are exposed as PowerShell functions available in any session after install.
+
+### Windhawk
+
+Windhawk launches automatically on install. First install your desired mods inside the app, then close it completely and run:
+
+```powershell
+restore-windhawk
+```
+
+### GPG as SSH agent
+
+Only needed if you want to use your GPG authentication subkey for SSH:
+
+```powershell
+setup-gpg-ssh
+```
+
+### Arch Linux in WSL
+
+Installs Arch in WSL, configures locale, and installs packages from `wsl-pacman-packages.txt` and `wsl-aur-packages.txt`:
+
+```powershell
+setup-wsl-arch
+```
+
+> Requires WSL installed (included in winget packages). First run will open an interactive terminal for Arch first-time setup (username/password).
 
 ---
 
