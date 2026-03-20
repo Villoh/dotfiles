@@ -27,8 +27,14 @@ sudo pacman -S git chezmoi
 
 ## Install
 
+**With GPG key** (full install):
 ```bash
 chezmoi init --apply github.com/Villoh/dotfiles
+```
+
+**Without GPG key** (skips encrypted files like `sshcontrol`):
+```bash
+chezmoi init --apply --exclude=encrypted github.com/Villoh/dotfiles
 ```
 
 During `init --apply`, chezmoi will:
@@ -42,10 +48,14 @@ Then run scripts in this order (Windows only):
 | # | Script | What it does |
 |---|--------|--------------|
 | 1 | `run_once_00_install-packages` | Enable Developer Mode, bootstrap scoop + choco, then winget, scoop, npm, bun, uv, bin |
-| 2 | `run_once_10_restore-windhawk` | Import Windhawk settings from registry |
-| 3 | `run_once_20_setup-windows-symlinks` | Create junctions for zed, yazi, vencord, btop |
-| 4 | `run_onchange_install-ditto-themes` | Copy Ditto XML themes to `Program Files` |
-| 5 | `run_onchange_install-nilesoft-imports` | Copy Nilesoft `.nss` imports to `Program Files` |
+| 2 | `run_once_10_setup-windows-symlinks` | Create junctions for zed, yazi, vencord, btop |
+| 3 | `run_onchange_install-ditto-themes` | Copy Ditto XML themes to `Program Files` |
+| 4 | `run_onchange_install-nilesoft-imports` | Copy Nilesoft `.nss` imports to `Program Files` |
+
+> **Windhawk** — settings import is a manual step. Windhawk launches automatically on install, so first install your desired mods, then close Windhawk completely, then run:
+> ```powershell
+> Restore-Windhawk
+> ```
 
 ---
 
