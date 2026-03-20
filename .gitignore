@@ -22,3 +22,6 @@ dot_config/micro/buffers/
 # Yazi plugins/flavors — managed via ya pack install
 dot_config/yazi/plugins/
 dot_config/yazi/flavors/
+
+# openvpn profiles
+other_config/openvpn/

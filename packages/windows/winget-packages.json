@@ -41,6 +41,9 @@
           "PackageIdentifier": "karlstav.cava"
         },
         {
+          "PackageIdentifier": "Vencord.Vesktop"
+        },
+        {
           "PackageIdentifier": "EpicGames.EpicGamesLauncher"
         },
         {
@@ -87,6 +90,9 @@
         },
         {
           "PackageIdentifier": "AltSnap.AltSnap"
+        },
+        {
+          "PackageIdentifier": "Anthropic.Claude"
         },
         {
           "PackageIdentifier": "Anthropic.ClaudeCode"
@@ -220,6 +226,19 @@
         "Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
         "Name": "winget",
         "Type": "Microsoft.PreIndexed.Package"
+      }
+    },
+    {
+      "Packages": [
+        {
+          "PackageIdentifier": "9NKSQGP7F2NH"
+        }
+      ],
+      "SourceDetails": {
+        "Argument": "https://storeedgefd.dsx.mp.microsoft.com/v9.0",
+        "Identifier": "StoreEdgeFD",
+        "Name": "msstore",
+        "Type": "Microsoft.Rest"
       }
     }
   ],
