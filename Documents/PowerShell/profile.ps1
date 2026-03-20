@@ -24,6 +24,7 @@ Import-Module -Name Terminal-Icons
 . "$HOME\Documents\PowerShell\Functions\chezmoi.ps1"
 . "$HOME\Documents\PowerShell\Functions\devmode.ps1"
 . "$HOME\Documents\PowerShell\Functions\gpg-ssh-setup.ps1"
+. "$HOME\Documents\PowerShell\Functions\windhawk.ps1"
 
 # Force Fastfetch to use YOUR config every time (bypass path confusion)
 if (Get-Command fastfetch -ErrorAction SilentlyContinue) {

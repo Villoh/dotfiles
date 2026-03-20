@@ -109,6 +109,20 @@ Windows setup inspired by and borrowed from:
 - [ChrisTitusTech/powershell-profile](https://github.com/ChrisTitusTech/powershell-profile)
 - [SleepyCatHey/Ultimate-Win11-Setup](https://github.com/SleepyCatHey/Ultimate-Win11-Setup)
 
+## PowerShell functions
+
+Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/PowerShell/Functions/) on every shell session:
+
+| Command | Description |
+|---------|-------------|
+| `restore-windhawk` | Import Windhawk settings from registry — close Windhawk first |
+| `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
+| `enable-devmode` | Enable Windows Developer Mode (required for chezmoi symlinks) |
+| `disable-devmode` | Disable Windows Developer Mode |
+| `upgrade` | Update all package managers and tools |
+| `backup` | Backup dotfiles and settings |
+| `restore` | Restore dotfiles and settings |
+
 ## Daily workflow
 
 ```bash
