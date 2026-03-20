@@ -4,15 +4,27 @@
 {{ range (glob "program_files/nilesoft/imports/*.nss") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end }}
-$src = "{{ .chezmoi.sourceDir }}/program_files/nilesoft/imports"
+$src = ("{{ .chezmoi.sourceDir }}/program_files/nilesoft/imports").Replace('/', '\')
 $dst = "C:\Program Files\Nilesoft Shell\imports"
+$dstParent = "C:\Program Files\Nilesoft Shell"
 
 $tmpScript = "$env:TEMP\nilesoft-install.ps1"
 
 @"
-Get-ChildItem '$src\*.nss' | ForEach-Object {
-    Copy-Item `$_.FullName -Destination "$dst\`$(`$_.Name)" -Force
+`$src = "$src"
+`$dst = "$dst"
+`$dstParent = "$dstParent"
+if (-not (Test-Path `$dstParent)) {
+    Write-Warning "Nilesoft Shell not found at '`$dstParent' - is it installed?"
+} else {
+    New-Item -ItemType Directory -Force -Path `$dst | Out-Null
+    Get-ChildItem "`$src\*.nss" | ForEach-Object {
+        Copy-Item `$_.FullName -Destination "`$dst\`$(`$_.Name)" -Force
+        Write-Host "  Copied: `$(`$_.Name)"
+    }
+    Write-Host "Nilesoft imports installed."
 }
+Read-Host "`nPress Enter to close"
 "@ | Set-Content $tmpScript
 
 Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $tmpScript -Wait

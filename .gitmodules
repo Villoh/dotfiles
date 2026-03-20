@@ -1,18 +1,18 @@
 [submodule "other_config/plymouth/themes/adi1090x-themes"]
 	path = other_config/plymouth/themes/adi1090x-themes
-	url = git@github.com:adi1090x/plymouth-themes.git
+	url = https://github.com/adi1090x/plymouth-themes.git
 [submodule "other_config/plymouth/themes/cachyos"]
 	path = other_config/plymouth/themes/cachyos
-	url = git@github.com:CachyOS/cachyos-plymouth-theme.git
+	url = https://github.com/CachyOS/cachyos-plymouth-theme.git
 [submodule "other_config/plymouth/themes/onepiece"]
 	path = other_config/plymouth/themes/onepiece
-	url = git@github.com:Anxhul10/onePiece-plymouth.git
+	url = https://github.com/Anxhul10/onePiece-plymouth.git
 [submodule "other_config/plymouth/themes/vortex-ubuntu"]
 	path = other_config/plymouth/themes/vortex-ubuntu
-	url = git@github.com:emanuele-scarsella/vortex-ubuntu-plymouth-theme.git
+	url = https://github.com/emanuele-scarsella/vortex-ubuntu-plymouth-theme.git
 [submodule "other_config/sddm/themes/sddm-astronaut-theme"]
 	path = other_config/sddm/themes/sddm-astronaut-theme
-	url = git@github.com:Keyitdev/sddm-astronaut-theme.git
+	url = https://github.com/Keyitdev/sddm-astronaut-theme.git
 [submodule "dot_config/hypr/hyprlock/catppuccin"]
 	path = dot_config/hypr/hyprlock/catppuccin
 	url = https://github.com/catppuccin/hyprlock.git
