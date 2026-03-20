@@ -1,0 +1,77 @@
+{{ if eq .chezmoi.os "windows" -}}
+# run_onchange_ triggers when these files change:
+# junctions.json       {{ include "packages/windows/system/junctions.json" | sha256sum }}
+# startup-entries.json {{ include "packages/windows/system/startup-entries.json" | sha256sum }}
+
+$pkgDir  = ("{{ .chezmoi.sourceDir }}\packages\windows").Replace('/', '\')
+$source  = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$logFile = "$env:TEMP\chezmoi-links-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$ok = 0; $skip = 0; $fail = 0
+
+function Log        { param([string]$msg, [string]$color = "White") $ts = "[$(Get-Date -Format 'HH:mm:ss')]"; $line = "$ts $msg"; Write-Host $line -ForegroundColor $color; Add-Content -Path $logFile -Value $line }
+function LogOk      { param([string]$msg) Log "  [OK]   $msg" "Green";  $script:ok++   }
+function LogSkip    { param([string]$msg) Log "  [SKIP] $msg" "Yellow"; $script:skip++ }
+function LogFail    { param([string]$msg) Log "  [FAIL] $msg" "Red";    $script:fail++ }
+function LogSection { param([string]$msg) Log "`n-- $msg --" "Cyan" }
+function TryInstall {
+    param([string]$name, [scriptblock]$block)
+    try   { & $block; LogOk $name }
+    catch { LogFail "$name - $($_.Exception.Message)" }
+}
+
+# == JUNCTIONS / SYMLINKS ======================================================
+LogSection "Junctions"
+
+if (Test-Path "$pkgDir\system\junctions.json") {
+    $junctions = Get-Content "$pkgDir\system\junctions.json" | ConvertFrom-Json
+} else {
+    LogFail "junctions.json not found - skipping"
+    $junctions = @()
+}
+
+foreach ($j in $junctions) {
+    $src    = "$source\$($j.src)"
+    $dst    = [System.Environment]::ExpandEnvironmentVariables($j.dst)
+    $parent = Split-Path $dst
+    if ($parent -and -not (Test-Path $parent)) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
+    if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
+    if ($j.type -eq "file") {
+        TryInstall "symlink: $dst" { cmd /c mklink "$dst" "$src" | Out-Null }
+    } else {
+        TryInstall "junction: $dst" { cmd /c mklink /J "$dst" "$src" | Out-Null }
+    }
+}
+
+# == STARTUP REGISTRY ENTRIES ==================================================
+LogSection "Startup entries"
+
+if (Test-Path "$pkgDir\system\startup-entries.json") {
+    $regPath       = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    $startupEntries = Get-Content "$pkgDir\system\startup-entries.json" | ConvertFrom-Json
+
+    foreach ($entry in $startupEntries) {
+        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+
+        if ($entry.glob) {
+            $expanded = Get-ChildItem (Split-Path $expanded) -Filter (Split-Path $expanded -Leaf) -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+
+        if (-not $expanded -or -not (Test-Path $expanded)) {
+            LogSkip "startup: $($entry.name) (exe not found)"
+            continue
+        }
+
+        $value = if ($entry.args) { "`"$expanded`" $($entry.args)" } else { "`"$expanded`"" }
+        TryInstall "startup: $($entry.name)" {
+            Set-ItemProperty -Path $regPath -Name $entry.name -Value $value -Type String
+        }
+    }
+} else {
+    LogSkip "startup-entries.json not found"
+}
+
+# -- Summary -------------------------------------------------------------------
+Log "`n-- summary: $ok OK  $skip skipped  $fail failed --" "Cyan"
+Log "  Log: $logFile" "Cyan"
+{{ end -}}
