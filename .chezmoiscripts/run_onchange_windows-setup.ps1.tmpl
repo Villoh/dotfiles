@@ -1,0 +1,158 @@
+{{ if eq .chezmoi.os "windows" -}}
+# run_onchange_ triggers when any of these change:
+# junctions.json       {{ include "packages/windows/system/junctions.json" | sha256sum }}
+# startup-entries.json {{ include "packages/windows/system/startup-entries.json" | sha256sum }}
+{{ range (glob "program_files/ditto/Themes/*.xml") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ range (glob "program_files/nilesoft/imports/*.nss") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ range (glob "program_files/windows/resources/themes/**") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ range (glob "program_files/windows/cursors/**") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end }}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$pkgDir     = "$chezmoisrc\packages\windows"
+$logFile    = "$env:TEMP\chezmoi-setup-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$tmpScript  = "$env:TEMP\chezmoi-setup.ps1"
+
+@"
+`$chezmoisrc = "$chezmoisrc"
+`$pkgDir     = "$pkgDir"
+`$logFile    = "$logFile"
+`$ok = 0; `$skip = 0; `$fail = 0
+
+function Log    { param([string]`$pfx, [string]`$msg) Add-Content -Path "`$logFile" -Value "[`$(Get-Date -Format 'HH:mm:ss')] [`$pfx] `$msg" }
+function LogOk  { param([string]`$msg) Log "OK"   `$msg; `$script:ok++   }
+function LogSkip{ param([string]`$msg) Log "SKIP" `$msg; `$script:skip++ }
+function LogFail{ param([string]`$msg) Log "FAIL" `$msg; `$script:fail++ }
+function LogSec { param([string]`$msg) Log "--"   "-- `$msg --"           }
+function TryRun {
+    param([string]`$name, [scriptblock]`$block)
+    try   { & `$block; LogOk `$name }
+    catch { LogFail "`$name - `$(`$_.Exception.Message)" }
+}
+
+# == JUNCTIONS / SYMLINKS ======================================================
+LogSec "Junctions"
+
+if (Test-Path "`$pkgDir\system\junctions.json") {
+    `$junctions = Get-Content "`$pkgDir\system\junctions.json" | ConvertFrom-Json
+} else {
+    LogFail "junctions.json not found - skipping"
+    `$junctions = @()
+}
+
+foreach (`$j in `$junctions) {
+    `$src    = "`$chezmoisrc\`$(`$j.src)"
+    `$dst    = [System.Environment]::ExpandEnvironmentVariables(`$j.dst)
+    `$parent = Split-Path `$dst
+    if (`$parent -and -not (Test-Path `$parent)) { New-Item -ItemType Directory -Force -Path `$parent | Out-Null }
+    if (Test-Path `$dst) { Remove-Item `$dst -Recurse -Force }
+    if (`$j.type -eq "file") {
+        TryRun "symlink: `$dst" { cmd /c mklink "`$dst" "`$src" | Out-Null }
+    } else {
+        TryRun "junction: `$dst" { cmd /c mklink /J "`$dst" "`$src" | Out-Null }
+    }
+}
+
+# == STARTUP REGISTRY ENTRIES ==================================================
+LogSec "Startup entries"
+
+if (Test-Path "`$pkgDir\system\startup-entries.json") {
+    `$regPath       = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    `$startupEntries = Get-Content "`$pkgDir\system\startup-entries.json" | ConvertFrom-Json
+
+    foreach (`$entry in `$startupEntries) {
+        `$expanded = [System.Environment]::ExpandEnvironmentVariables(`$entry.path)
+
+        if (`$entry.glob) {
+            `$expanded = Get-ChildItem (Split-Path `$expanded) -Filter (Split-Path `$expanded -Leaf) -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+
+        if (-not `$expanded -or -not (Test-Path `$expanded)) {
+            LogSkip "startup: `$(`$entry.name) (exe not found)"
+            continue
+        }
+
+        `$value = if (`$entry.args) { "\"`$expanded\`" `$(`$entry.args)" } else { "\"`$expanded\`"" }
+        TryRun "startup: `$(`$entry.name)" {
+            Set-ItemProperty -Path `$regPath -Name `$entry.name -Value `$value -Type String
+        }
+    }
+} else {
+    LogSkip "startup-entries.json not found"
+}
+
+# == PROGRAM FILES =============================================================
+LogSec "Program files"
+
+`$copies = @(
+    @{ Src = "`$chezmoisrc\program_files\ditto\Themes";     Dst = "C:\Program Files\Ditto\Themes";          App = "Ditto";          Ext = "*.xml" },
+    @{ Src = "`$chezmoisrc\program_files\nilesoft\imports"; Dst = "C:\Program Files\Nilesoft Shell\imports"; App = "Nilesoft Shell"; Ext = "*.nss" }
+)
+
+foreach (`$c in `$copies) {
+    if (-not (Test-Path (Split-Path `$c.Dst))) {
+        LogSkip "`$(`$c.App) - not installed at '`$(Split-Path `$c.Dst)'"
+        continue
+    }
+    New-Item -ItemType Directory -Force -Path `$c.Dst | Out-Null
+    `$files = Get-ChildItem "`$(`$c.Src)\`$(`$c.Ext)" -ErrorAction SilentlyContinue
+    `$files | ForEach-Object { Copy-Item `$_.FullName -Destination "`$(`$c.Dst)\`$(`$_.Name)" -Force }
+    LogOk "`$(`$c.App) - `$(`$files.Count) file(s) installed"
+}
+
+`$rcopies = @(
+    @{ Src = "`$chezmoisrc\program_files\windows\resources\themes"; Dst = "C:\Windows\Resources\Themes"; App = "Windows themes" }
+)
+
+foreach (`$r in `$rcopies) {
+    if (-not (Test-Path `$r.Dst)) {
+        LogSkip "`$(`$r.App) - destination '`$(`$r.Dst)' not found"
+        continue
+    }
+    `$copyErrors = @()
+    Copy-Item -Path "`$(`$r.Src)\*" -Destination `$r.Dst -Recurse -Force -ErrorAction SilentlyContinue -ErrorVariable copyErrors
+    if (`$copyErrors.Count -gt 0) {
+        LogOk "`$(`$r.App) - installed (`$(`$copyErrors.Count) file(s) skipped - in use)"
+    } else {
+        LogOk "`$(`$r.App) - installed"
+    }
+}
+
+# == CURSOR SCHEMES ============================================================
+LogSec "Cursor schemes"
+
+Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "install.inf" | ForEach-Object {
+    TryRun "cursor: `$(`$_.Directory.Name)" {
+        rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "`$(`$_.FullName)"
+    }
+}
+
+Log "--" "-- summary: `$ok OK  `$skip skipped  `$fail failed --"
+"@ | Set-Content $tmpScript
+
+Write-Host "[windows-setup] Requesting elevation..." -ForegroundColor Cyan
+Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+# -- Stream log back to current terminal with colors ---------------------------
+Write-Host ""
+if (Test-Path $logFile) {
+    foreach ($line in Get-Content $logFile) {
+        if     ($line -match '\[OK\]')   { Write-Host $line -ForegroundColor Green  }
+        elseif ($line -match '\[SKIP\]') { Write-Host $line -ForegroundColor Yellow }
+        elseif ($line -match '\[FAIL\]') { Write-Host $line -ForegroundColor Red    }
+        elseif ($line -match '\[--\]')   { Write-Host $line -ForegroundColor Cyan   }
+        else                             { Write-Host $line -ForegroundColor Gray   }
+    }
+    Remove-Item $logFile
+} else {
+    Write-Warning "windows-setup: no output received (UAC cancelled or script failed)"
+}
+Remove-Item $tmpScript -ErrorAction SilentlyContinue
+{{ end -}}
