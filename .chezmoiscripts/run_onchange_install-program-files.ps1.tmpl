@@ -9,6 +9,9 @@
 {{ end -}}
 {{ range (glob "program_files/windows/resources/themes/**") -}}
 # {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ range (glob "program_files/windows/cursors/**") -}}
+# {{ . }} {{ include . | sha256sum }}
 {{ end }}
 $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $tmpScript  = "$env:TEMP\install-program-files.ps1"
@@ -34,6 +37,7 @@ foreach (`$c in `$copies) {
 }
 
 # -- Recursive copies ----------------------------------------------------------
+# -- Recursive copies ----------------------------------------------------------
 `$rcopies = @(
     @{ Src = "$chezmoisrc\program_files\windows\resources\themes"; Dst = "C:\Windows\Resources\Themes"; App = "Windows themes" }
 )
@@ -45,6 +49,13 @@ foreach (`$r in `$rcopies) {
     }
     Copy-Item -Path "`$(`$r.Src)\*" -Destination `$r.Dst -Recurse -Force
     Write-Host "`$(`$r.App) installed." -ForegroundColor Green
+}
+
+# -- Cursor schemes (via .inf installer) ---------------------------------------
+Get-ChildItem "$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "install.inf" | ForEach-Object {
+    Write-Host "Installing cursor scheme: `$(`$_.Directory.Name)..." -ForegroundColor Cyan
+    rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "`$(`$_.FullName)"
+    Write-Host "  [OK] `$(`$_.Directory.Name)" -ForegroundColor Green
 }
 
 Read-Host "\`nPress Enter to close"
