@@ -483,59 +483,6 @@ if ($selectedManagers -contains "cargo-git") {
     }
 }
 
-# == JUNCTIONS / SYMLINKS ======================================================
-LogSection "Junctions"
-$source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
-
-if (Test-Path "$pkgDir\system\junctions.json") {
-    $junctions = Get-Content "$pkgDir\system\junctions.json" | ConvertFrom-Json
-} else {
-    LogFail "junctions.json not found - skipping"
-    $junctions = @()
-}
-
-foreach ($j in $junctions) {
-    $src = "$source\$($j.src)"
-    $dst = [System.Environment]::ExpandEnvironmentVariables($j.dst)
-    $parent = Split-Path $dst
-    if ($parent -and -not (Test-Path $parent)) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
-    if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
-    if ($j.type -eq "file") {
-        TryInstall "symlink: $dst" { cmd /c mklink "$dst" "$src" | Out-Null }
-    } else {
-        TryInstall "junction: $dst" { cmd /c mklink /J "$dst" "$src" | Out-Null }
-    }
-}
-
-# == STARTUP REGISTRY ENTRIES ==================================================
-if (Test-Path "$pkgDir\system\startup-entries.json") {
-    LogSection "Startup entries"
-    $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-    $startupEntries = Get-Content "$pkgDir\system\startup-entries.json" | ConvertFrom-Json
-
-    foreach ($entry in $startupEntries) {
-        # Expand %ENV_VAR% placeholders
-        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
-
-        # Glob support for versioned paths (e.g. app-*)
-        if ($entry.glob) {
-            $expanded = Get-ChildItem (Split-Path $expanded) -Filter (Split-Path $expanded -Leaf) -ErrorAction SilentlyContinue |
-                Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
-        }
-
-        if (-not $expanded -or -not (Test-Path $expanded)) {
-            LogSkip "startup: $($entry.name) (exe not found)"
-            $summary.skip++
-            continue
-        }
-
-        $value = if ($entry.args) { "`"$expanded`" $($entry.args)" } else { "`"$expanded`"" }
-        TryInstall "startup: $($entry.name)" {
-            Set-ItemProperty -Path $regPath -Name $entry.name -Value $value -Type String
-        }
-    }
-}
-
 # -- GlazeWM - disable Win key shortcuts (elevated) ---------------------------
 LogSection "GlazeWM - disable Win keys for GlazeWM"
 TryInstall "Disable Win keys (elevated)" {
