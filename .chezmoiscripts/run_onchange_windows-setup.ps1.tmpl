@@ -79,7 +79,7 @@ if (Test-Path "`$pkgDir\system\startup-entries.json") {
             continue
         }
 
-        `$value = if (`$entry.args) { "\"`$expanded\`" `$(`$entry.args)" } else { "\"`$expanded\`"" }
+        `$value = if (`$entry.args) { "``"`$expanded``" `$(`$entry.args)" } else { "``"`$expanded``"" }
         TryRun "startup: `$(`$entry.name)" {
             Set-ItemProperty -Path `$regPath -Name `$entry.name -Value `$value -Type String
         }
@@ -129,8 +129,9 @@ foreach (`$r in `$rcopies) {
 LogSec "Cursor schemes"
 
 Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "install.inf" | ForEach-Object {
-    TryRun "cursor: `$(`$_.Directory.Name)" {
-        rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "`$(`$_.FullName)"
+    `$infFile = `$_
+    TryRun "cursor: `$(`$infFile.Directory.Name)" {
+        rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "`$(`$infFile.FullName)"
     }
 }
 
