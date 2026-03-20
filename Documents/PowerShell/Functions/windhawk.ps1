@@ -12,7 +12,7 @@ function Restore-Windhawk {
         return
     }
 
-    $regFile = (Join-Path (chezmoi source-path) "packages\windows\windhawk-settings.reg")
+    $regFile = (Join-Path (chezmoi source-path) "packages\windows\system\windhawk-settings.reg")
     if (-not (Test-Path $regFile)) {
         Write-Warning "Registry file not found: $regFile"
         return

@@ -97,15 +97,15 @@ Only needed if you want to use your GPG authentication subkey for SSH:
 setup-gpg-ssh
 ```
 
-### Arch Linux in WSL
+### WSL distro setup
 
-Installs Arch in WSL, configures locale, and installs packages from `wsl-pacman-packages.txt` and `wsl-aur-packages.txt`:
+Launches an fzf picker to select a distro, installs it, and sets up packages (Arch: locale + pacman + AUR):
 
 ```powershell
-setup-wsl-arch
+setup-wsl
 ```
 
-> Requires WSL installed (included in winget packages). First run will open an interactive terminal for Arch first-time setup (username/password).
+> Requires WSL installed (included in winget packages). First run will open an interactive terminal for first-time distro setup (username/password).
 
 ---
 
