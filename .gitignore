@@ -13,7 +13,7 @@
 AppData/Roaming/FlowLauncher/Settings/Plugins/
 
 # bin tool — runtime state, managed by install script
-dot_config/bin/config.json
+other_config/bin/config.json
 
 # Micro editor state
 dot_config/micro/backups/
