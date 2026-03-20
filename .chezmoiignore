@@ -54,6 +54,7 @@ packages/**
 program_files/**
 other_config/**
 docs/**
+dev/**
 CLAUDE.md
 INSTALL.md
 
