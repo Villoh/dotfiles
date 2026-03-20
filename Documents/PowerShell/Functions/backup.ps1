@@ -16,8 +16,8 @@ Set-Alias -Name backup         -Value Invoke-AllBackup
 Set-Alias -Name backup-pkgs    -Value Invoke-AllBackup
 
 function Invoke-WingetBackup {
-    $file        = "$PackagesDir\winget-packages.json"
-    $excludeFile = "$PackagesDir\winget-exclude.txt"
+    $file        = "$PackagesDir\winget\packages.json"
+    $excludeFile = "$PackagesDir\winget\exclude.txt"
     $tmp         = "$env:TEMP\winget-export-raw.json"
 
     winget export -o $tmp --source winget --accept-source-agreements
@@ -31,7 +31,7 @@ function Invoke-WingetBackup {
                 $_.PackageIdentifier -notin $excluded
             }
         }
-        Write-Host "  (excluded $($excluded.Count) packages from winget-exclude.txt)" -ForegroundColor DarkGray
+        Write-Host "  (excluded $($excluded.Count) packages from winget/exclude.txt)" -ForegroundColor DarkGray
     }
 
     $data | ConvertTo-Json -Depth 10 | Set-Content $file -Encoding UTF8
@@ -43,28 +43,28 @@ function Invoke-WingetBackup {
 Set-Alias -Name backup-winget  -Value Invoke-WingetBackup
 
 function Invoke-ScoopBackup {
-    $file = "$PackagesDir\scoop-packages.json"
+    $file = "$PackagesDir\scoop\packages.json"
     scoop export > $file
     Write-Host "scoop backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-scoop   -Value Invoke-ScoopBackup
 
 function Invoke-ChocoBackup {
-    $file = "$PackagesDir\chocolatey-packages.config"
+    $file = "$PackagesDir\chocolatey\packages.config"
     choco export $file
     Write-Host "choco backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-choco   -Value Invoke-ChocoBackup
 
 function Invoke-NodeBackup {
-    $file = "$PackagesDir\npm-packages.json"
+    $file = "$PackagesDir\node\npm-packages.json"
     npm list -g --depth=0 --json > $file
     Write-Host "npm backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-node    -Value Invoke-NodeBackup
 
 function Invoke-BunBackup {
-    $file = "$PackagesDir\bun-packages.txt"
+    $file = "$PackagesDir\node\bun-packages.txt"
     bun pm ls -g | Select-Object -Skip 1 | ForEach-Object {
         $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', ''
     } | Where-Object { $_ } | Out-File $file -Encoding UTF8
@@ -93,7 +93,7 @@ function Invoke-BinBackup {
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
-    $file = "$PackagesDir\windhawk-settings.reg"
+    $file = "$PackagesDir\system\windhawk-settings.reg"
     $mods = Get-ChildItem "HKLM:\SOFTWARE\Windhawk\Engine\Mods" |
         Where-Object { $_.PSChildName -ne "SymbolCache" }
 
