@@ -45,35 +45,10 @@ During `init --apply`, chezmoi will:
 
 Then run scripts in this order (Windows only):
 
-| # | Script | What it does |
-|---|--------|--------------|
-| 1 | `run_once_00_install-packages` | Enable Developer Mode, bootstrap scoop + choco, then winget, scoop, npm, bun, uv, bin |
-| 2 | `run_once_10_setup-windows-symlinks` | Create junctions for zed, yazi, vencord, btop |
-| 3 | `run_onchange_install-ditto-themes` | Copy Ditto XML themes to `Program Files` |
-| 4 | `run_onchange_install-nilesoft-imports` | Copy Nilesoft `.nss` imports to `Program Files` |
-
----
-
-## Post-install
-
-### Linux
-
-Init submodules (sddm/plymouth themes):
-```bash
-cd ~/.local/share/chezmoi && git submodule update --init --recursive
-```
-
-### Windows
-
-The symlinks script creates these junctions pointing directly to the chezmoi source:
-
-| Junction | → Chezmoi source |
-|----------|-----------------|
-| `%APPDATA%\Zed` | `dot_config/zed` |
-| `%APPDATA%\yazi\config` | `dot_config/yazi` |
-| `%APPDATA%\Vencord\settings` | `dot_config/vesktop/settings` |
-| `~/scoop/persist/btop/btop.conf` | `dot_config/btop/btop.conf` |
-| `~/scoop/persist/btop/themes` | `dot_config/btop/themes` |
+| Script | What it does |
+|--------|--------------|
+| `run_once_00_install-packages` | Developer Mode, Scoop, winget, npm, cargo, uv packages, win-keys |
+| `run_onchange_windows-setup` | Junctions, startup registry entries, program files, cursor schemes |
 
 ---
 
@@ -111,15 +86,26 @@ setup-wsl
 
 ## Re-running scripts
 
-Force re-run all `run_once_` scripts on next apply:
-```bash
-chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
+chezmoi tracks script state in two buckets:
+- `scriptState` — `run_once_` scripts, keyed by content hash
+- `entryState` — `run_onchange_` scripts, keyed by destination path
+
+```powershell
+# Re-run all run_once_ scripts on next apply
+reset-run-once-scripts && chezmoi apply
+
+# Re-run a specific run_onchange_ script on next apply
+reset-run-onchange-script windows-setup && chezmoi apply
+
+# Re-run all run_onchange_ scripts on next apply
+reset-run-onchange-script && chezmoi apply
 ```
 
-Run a specific script manually (renders the template first):
+Run a script manually without resetting state (renders the template first):
 ```powershell
 # Windows
-Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages.ps1.tmpl" | chezmoi execute-template | powershell -NoProfile -Command -
+Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages.ps1.tmpl" |
+    chezmoi execute-template | powershell -NoProfile -Command -
 
 # Linux
 chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/my-script.sh.tmpl" | bash
