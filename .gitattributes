@@ -1,3 +1,5 @@
+program_files/windows/resources/themes/**/*.msstyles filter=lfs diff=lfs merge=lfs -text
+program_files/windows/resources/themes/**/*.theme filter=lfs diff=lfs merge=lfs -text
 .github/assets/*.png !text !filter !merge !diff
 .github/assets/*.jpg !text !filter !merge !diff
 program_files/windhawk/**/*.dll filter=lfs diff=lfs merge=lfs -text
