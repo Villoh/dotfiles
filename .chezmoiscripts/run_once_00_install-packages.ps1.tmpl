@@ -487,23 +487,23 @@ if ($selectedManagers -contains "cargo-git") {
 LogSection "Junctions"
 $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 
-$junctions = @(
-    @{ Src = "$source\dot_config\btop\btop.conf"; Dst = "$env:USERPROFILE\scoop\persist\btop\btop.conf"; Type = "file" },
-    @{ Src = "$source\dot_config\btop\themes";    Dst = "$env:USERPROFILE\scoop\persist\btop\themes";    Type = "junction" },
-    @{ Src = "$source\dot_config\zed";            Dst = "$env:APPDATA\Zed";                              Type = "junction" },
-    @{ Src = "$source\dot_config\yazi";           Dst = "$env:APPDATA\yazi\config";                      Type = "junction" },
-    @{ Src = "$source\dot_config\vesktop\settings"; Dst = "$env:APPDATA\Vencord\settings";               Type = "junction" },
-    @{ Src = "$source\dot_config\vesktop\settings"; Dst = "$env:APPDATA\vesktop\settings";               Type = "junction" }
-)
+if (Test-Path "$pkgDir\system\junctions.json") {
+    $junctions = Get-Content "$pkgDir\system\junctions.json" | ConvertFrom-Json
+} else {
+    LogFail "junctions.json not found - skipping"
+    $junctions = @()
+}
 
 foreach ($j in $junctions) {
-    $parent = Split-Path $j.Dst
+    $src = "$source\$($j.src)"
+    $dst = [System.Environment]::ExpandEnvironmentVariables($j.dst)
+    $parent = Split-Path $dst
     if ($parent -and -not (Test-Path $parent)) { New-Item -ItemType Directory -Force -Path $parent | Out-Null }
-    if (Test-Path $j.Dst) { Remove-Item $j.Dst -Recurse -Force }
-    if ($j.Type -eq "file") {
-        TryInstall "symlink: $($j.Dst)" { cmd /c mklink "$($j.Dst)" "$($j.Src)" | Out-Null }
+    if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
+    if ($j.type -eq "file") {
+        TryInstall "symlink: $dst" { cmd /c mklink "$dst" "$src" | Out-Null }
     } else {
-        TryInstall "junction: $($j.Dst)" { cmd /c mklink /J "$($j.Dst)" "$($j.Src)" | Out-Null }
+        TryInstall "junction: $dst" { cmd /c mklink /J "$dst" "$src" | Out-Null }
     }
 }
 
