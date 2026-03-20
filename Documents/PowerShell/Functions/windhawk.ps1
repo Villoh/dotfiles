@@ -1,4 +1,4 @@
-function Restore-Windhawk {
+function Invoke-WindhawkRestore {
     <#
     .SYNOPSIS
         Imports Windhawk settings from the chezmoi source registry file.
@@ -8,7 +8,7 @@ function Restore-Windhawk {
     #>
     $windhawk = Get-Process -Name "Windhawk*" -ErrorAction SilentlyContinue
     if ($windhawk) {
-        Write-Warning "Windhawk is running. Close it first, then run Restore-Windhawk again."
+        Write-Warning "Windhawk is running. Close it first, then run restore-windhawk again."
         return
     }
 
@@ -18,8 +18,28 @@ function Restore-Windhawk {
         return
     }
 
-    $cmd = "reg import `"$regFile`"; Write-Host 'Windhawk settings imported.' -ForegroundColor Green; Read-Host '`nPress Enter to close'"
-    Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-Command", $cmd -Wait
+    $logFile   = "$env:TEMP\windhawk-restore.log"
+    $tmpScript = "$env:TEMP\windhawk-restore.ps1"
+
+    @"
+reg import "$regFile" 2>`$null
+if (`$LASTEXITCODE -eq 0) {
+    Set-Content -Path "$logFile" -Value "Windhawk settings imported successfully."
+} else {
+    Set-Content -Path "$logFile" -Value "ERROR: reg import failed (exit code `$LASTEXITCODE)"
+}
+"@ | Set-Content $tmpScript
+
+    Write-Host "[windhawk] Requesting elevation..." -ForegroundColor Cyan
+    Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+    if (Test-Path $logFile) {
+        Get-Content $logFile | ForEach-Object { Write-Host $_ -ForegroundColor Green }
+        Remove-Item $logFile
+    } else {
+        Write-Warning "No output received (UAC cancelled or import failed)"
+    }
+    Remove-Item $tmpScript -ErrorAction SilentlyContinue
 }
 
-Set-Alias -Name restore-windhawk -Value Restore-Windhawk
+Set-Alias -Name restore-windhawk -Value Invoke-WindhawkRestore
