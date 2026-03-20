@@ -1,8 +1,10 @@
 # Installation Guide
 
 > [!WARNING]
-> Before running, review the package lists in [`packages/windows/`](packages/windows/) (Windows) or [`packages/linux/`](packages/linux/) (Linux) and remove anything you don't want installed.
 > **This installation is not 100% tested and is still under construction. Use at your own risk.**
+
+> [!NOTE]
+> Package selection is interactive — the install script uses [fzf](https://github.com/junegunn/fzf) to let you pick exactly which packages to install. You can also review and edit the lists beforehand in [`packages/windows/`](packages/windows/) (Windows) or [`packages/linux/`](packages/linux/) (Linux).
 
 ## Prerequisites
 
@@ -80,7 +82,7 @@ Launches an fzf picker to select a distro, installs it, and sets up packages (Ar
 setup-wsl
 ```
 
-> Requires WSL installed (included in winget packages). First run will open an interactive terminal for first-time distro setup (username/password).
+> Requires WSL installed (included in winget packages). Uses fzf to pick the distro — locale, user creation, and packages are configured automatically.
 
 ---
 
