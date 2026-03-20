@@ -32,4 +32,11 @@ $dst = "$env:APPDATA\Vencord\settings"
 New-Item -ItemType Directory -Force -Path "$env:APPDATA\Vencord" | Out-Null
 if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
 cmd /c mklink /J "$dst" "$src"
+
+# vencord: AppData/Roaming/vesktop/settings -> chezmoi source vesktop/settings  (junction)
+$src = "$source\dot_config\vesktop\settings"
+$dst = "$env:APPDATA\vesktop\settings"
+New-Item -ItemType Directory -Force -Path "$env:APPDATA\vesktop" | Out-Null
+if (Test-Path $dst) { Remove-Item $dst -Recurse -Force }
+cmd /c mklink /J "$dst" "$src"
 {{ end -}}
