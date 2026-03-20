@@ -1,0 +1,5 @@
+# cargo install --git packages
+# Format: <git-url> [extra cargo install flags...]
+# One entry per line. Lines starting with # are ignored.
+
+https://github.com/Dutch-Raptor/GAT-GWM.git --features=no_console

@@ -92,6 +92,13 @@
             "Updated": "2026-03-11T12:05:37.2113657+01:00"
         },
         {
+            "Name": "mingw",
+            "Version": "15.2.0-rt_v13-rev1",
+            "Source": "main",
+            "Info": "",
+            "Updated": "2026-03-20T00:00:00.0000000+01:00"
+        },
+        {
             "Name": "Lilex-NF",
             "Version": "3.4.0",
             "Source": "nerd-fonts",
