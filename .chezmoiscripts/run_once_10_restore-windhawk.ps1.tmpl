@@ -1,0 +1,19 @@
+{{ if eq .chezmoi.os "windows" -}}
+$regFile = ("{{ .chezmoi.sourceDir }}/packages/windows/windhawk-settings.reg").Replace('/', '\')
+
+if (Test-Path $regFile) {
+    Write-Host "Importing Windhawk settings..."
+    $result = Start-Process -FilePath "reg.exe" `
+        -ArgumentList "import `"$regFile`"" `
+        -Verb RunAs `
+        -Wait `
+        -PassThru
+    if ($result.ExitCode -eq 0) {
+        Write-Host "Windhawk settings imported successfully."
+    } else {
+        Write-Warning "reg.exe exited with code $($result.ExitCode)"
+    }
+} else {
+    Write-Warning "Windhawk settings file not found: $regFile"
+}
+{{ end -}}

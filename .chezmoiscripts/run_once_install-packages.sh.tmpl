@@ -5,12 +5,12 @@ set -uo pipefail
 PKG_DIR="{{ .chezmoi.sourceDir }}/packages/linux"
 LOG_FILE="/tmp/chezmoi-install-$(date +%Y%m%d-%H%M%S).log"
 
-# ── Logging helpers ────────────────────────────────────────────────────────────
-log()     { local msg="[$(date +%H:%M:%S)] $*"; echo "$msg" | tee -a "$LOG_FILE"; }
-log_ok()  { log "  ✅ $*"; }
-log_skip(){ log "  ⚠️  $*"; }
-log_fail(){ log "  ❌ $*"; }
-log_section() { log; log "── $* ──"; }
+# -- Logging helpers -----------------------------------------------------------
+log()         { local msg="[$(date +%H:%M:%S)] $*"; echo "$msg" | tee -a "$LOG_FILE"; }
+log_ok()      { log "  [OK]   $*"; }
+log_skip()    { log "  [SKIP] $*"; }
+log_fail()    { log "  [FAIL] $*"; }
+log_section() { log; log "-- $* --"; }
 
 ok=0; skip=0; fail=0
 
@@ -25,12 +25,12 @@ try_install() {
     fi
 }
 
-log "Chezmoi install started — log: $LOG_FILE"
+log "Chezmoi install started -- log: $LOG_FILE"
 
-# ── Bootstrap ─────────────────────────────────────────────────────────────────
+# -- Bootstrap -----------------------------------------------------------------
 log_section "Bootstrap"
 
-# paru (AUR helper) — build from AUR if neither paru nor yay present
+# paru (AUR helper)
 if ! command -v paru &>/dev/null && ! command -v yay &>/dev/null; then
     try_install "paru" bash -c '
         sudo pacman -S --needed --noconfirm base-devel git
@@ -43,7 +43,6 @@ else
     (( skip++ )) || true
 fi
 
-# Use paru or yay, whichever is available
 AUR_HELPER=$(command -v paru 2>/dev/null || command -v yay 2>/dev/null || echo "")
 
 # flatpak
@@ -88,7 +87,7 @@ else
     (( skip++ )) || true
 fi
 
-# ── pacman / AUR (via paru) ────────────────────────────────────────────────────
+# -- pacman / AUR --------------------------------------------------------------
 if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
     log_section "pacman / AUR"
     while IFS= read -r pkg; do
@@ -102,7 +101,7 @@ if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
     done < <(grep -v '^\s*$' "$PKG_DIR/pacman_filtered.txt")
 fi
 
-# ── flatpak ───────────────────────────────────────────────────────────────────
+# -- flatpak -------------------------------------------------------------------
 if [ -f "$PKG_DIR/flatpak.txt" ]; then
     log_section "flatpak"
     while IFS= read -r app; do
@@ -116,48 +115,94 @@ if [ -f "$PKG_DIR/flatpak.txt" ]; then
     done < "$PKG_DIR/flatpak.txt"
 fi
 
-# ── uv tools ──────────────────────────────────────────────────────────────────
-if [ -f "$PKG_DIR/uv-tools.txt" ]; then
-    log_section "uv"
-    while IFS= read -r tool; do
-        [[ -z "$tool" || "$tool" == "-" ]] && continue
-        try_install "uv: $tool" uv tool install "$tool"
-    done < "$PKG_DIR/uv-tools.txt"
-fi
-
-# ── bun global packages ───────────────────────────────────────────────────────
-if [ -f "$PKG_DIR/bun-global.txt" ]; then
-    log_section "bun"
-    while IFS= read -r pkg; do
-        [[ -z "$pkg" ]] && continue
-        try_install "bun: $pkg" bun add -g "$pkg"
-    done < "$PKG_DIR/bun-global.txt"
-fi
-
-# ── npm global packages ───────────────────────────────────────────────────────
+# -- npm -----------------------------------------------------------------------
 if [ -f "$PKG_DIR/npm-global.txt" ]; then
     log_section "npm"
+    npm_installed=$(npm list -g --depth=0 2>/dev/null)
     while IFS= read -r pkg; do
         [[ -z "$pkg" ]] && continue
-        try_install "npm: $pkg" npm install -g "$pkg"
+        pkg_name="${pkg%@*}"
+        if echo "$npm_installed" | grep -q "$pkg_name"; then
+            log_skip "npm: $pkg already installed"
+            (( skip++ )) || true
+        else
+            try_install "npm: $pkg" npm install -g "$pkg"
+        fi
     done < "$PKG_DIR/npm-global.txt"
 fi
 
-# ── bin (GitHub release binaries) ─────────────────────────────────────────────
-if [ -f "$PKG_DIR/bin-packages.txt" ]; then
-    log_section "bin"
-    while IFS= read -r url; do
-        [[ -z "$url" ]] && continue
-        try_install "bin: $url" bin install "$url"
-    done < "$PKG_DIR/bin-packages.txt"
+# -- bun -----------------------------------------------------------------------
+if [ -f "$PKG_DIR/bun-global.txt" ]; then
+    log_section "bun"
+    bun_installed=$(bun pm ls -g 2>/dev/null)
+    while IFS= read -r pkg; do
+        [[ -z "$pkg" ]] && continue
+        pkg_name="${pkg%@*}"
+        if echo "$bun_installed" | grep -q "$pkg_name"; then
+            log_skip "bun: $pkg already installed"
+            (( skip++ )) || true
+        else
+            try_install "bun: $pkg" bun add -g "$pkg"
+        fi
+    done < "$PKG_DIR/bun-global.txt"
 fi
 
-# ── Summary ───────────────────────────────────────────────────────────────────
+# -- uv tools ------------------------------------------------------------------
+if [ -f "$PKG_DIR/uv-tools.txt" ]; then
+    log_section "uv"
+    uv_installed=$(uv tool list 2>/dev/null)
+    while IFS= read -r tool; do
+        [[ -z "$tool" || "$tool" == "-" ]] && continue
+        if echo "$uv_installed" | grep -q "$tool"; then
+            log_skip "uv: $tool already installed"
+            (( skip++ )) || true
+        else
+            try_install "uv: $tool" uv tool install "$tool"
+        fi
+    done < "$PKG_DIR/uv-tools.txt"
+fi
+
+# -- bin (GitHub release binaries) --------------------------------------------
+if [ -f "$PKG_DIR/bin-packages.txt" ]; then
+    log_section "bin"
+    bin_dir="$HOME/.bin"
+    mkdir -p "$bin_dir"
+    # Ensure bin config has correct default_path
+    bin_config_dir="$HOME/.config/bin"
+    bin_config="$bin_config_dir/config.json"
+    mkdir -p "$bin_config_dir"
+    if [ -f "$bin_config" ]; then
+        # Update default_path if wrong
+        python3 -c "
+import json, sys
+with open('$bin_config') as f: c = json.load(f)
+c['default_path'] = '$bin_dir/'
+with open('$bin_config', 'w') as f: json.dump(c, f, indent=4)
+" 2>/dev/null || true
+    else
+        echo "{\"default_path\": \"$bin_dir/\"}" > "$bin_config"
+    fi
+    bin_installed=$(bin list 2>/dev/null)
+    pushd "$bin_dir" > /dev/null
+    while IFS= read -r url; do
+        [[ -z "$url" ]] && continue
+        base_url="${url%%/releases/*}"
+        if echo "$bin_installed" | grep -qF "$base_url"; then
+            log_skip "bin: $url already installed"
+            (( skip++ )) || true
+        else
+            try_install "bin: $url" bin install "$url"
+        fi
+    done < "$PKG_DIR/bin-packages.txt"
+    popd > /dev/null
+fi
+
+# -- Summary -------------------------------------------------------------------
 log
-log "══════════════════════════════════════"
-log "  ✅ OK:      $ok"
-log "  ⚠️  Skipped: $skip"
-log "  ❌ Failed:  $fail"
-log "  📄 Log:     $LOG_FILE"
-log "══════════════════════════════════════"
+log "======================================"
+log "  [OK]   OK:      $ok"
+log "  [SKIP] Skipped: $skip"
+log "  [FAIL] Failed:  $fail"
+log "  [LOG]  Log:     $LOG_FILE"
+log "======================================"
 {{ end -}}

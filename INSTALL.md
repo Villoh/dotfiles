@@ -1,31 +1,27 @@
 # Installation Guide
 
-> [!TIP]
-> Before running, review the package lists in [`packages/windows/`](packages/windows/) (Windows) or [`packages/linux/`](packages/linux/) (Linux) and remove anything you don't want installed. For Windows, you can also add package IDs to [`packages/windows/winget-exclude.txt`](packages/windows/winget-exclude.txt) to skip specific winget packages permanently.
+> [!WARNING]
+> Before running, review the package lists in [`packages/windows/`](packages/windows/) (Windows) or [`packages/linux/`](packages/linux/) (Linux) and remove anything you don't want installed.
+> **This installation is not 100% tested and is still under construction. Use at your own risk.**
 
 ## Prerequisites
 
 ### Windows
 
-1. **Developer Mode** — required for symlinks without elevation:
-   `Settings → System → For developers → Developer Mode`
+Install **Git** and **chezmoi** via winget:
 
-2. **GPG** — required for encrypted files. Install via scoop, then import your key:
-   ```powershell
-   scoop install gpg
-   gpg --import your-key.asc
-   ```
-
-> Scoop and Chocolatey are bootstrapped automatically by the install script if not present.
+```powershell
+winget install -e --id Git.Git
+winget install -e --id twpayne.chezmoi
+```
 
 ### Linux
 
-1. **HyDE** — this setup builds on top of [HyDE](https://github.com/HyDE-Project/HyDE). Install it first for the full Hyprland desktop.
+Install **Git** and **chezmoi** via pacman:
 
-2. **GPG** — import your key:
-   ```bash
-   gpg --import your-key.asc
-   ```
+```bash
+sudo pacman -S git chezmoi
+```
 
 ---
 
@@ -34,12 +30,6 @@
 ```bash
 chezmoi init --apply github.com/Villoh/dotfiles
 ```
-
-> **Without GPG key** — skip encrypted files:
-> ```bash
-> chezmoi init github.com/Villoh/dotfiles
-> chezmoi apply --exclude=encrypted
-> ```
 
 During `init --apply`, chezmoi will:
 1. Clone the repo to `~/.local/share/chezmoi`
@@ -51,9 +41,9 @@ Then run scripts in this order (Windows only):
 
 | # | Script | What it does |
 |---|--------|--------------|
-| 1 | `run_once_install-packages` | Bootstrap scoop + choco, then winget, npm, bun, uv, PS modules |
-| 2 | `run_once_restore-windhawk` | Import Windhawk settings from registry |
-| 3 | `run_once_setup-windows-symlinks` | Create junctions for zed, yazi, vencord, btop |
+| 1 | `run_once_00_install-packages` | Enable Developer Mode, bootstrap scoop + choco, then winget, scoop, npm, bun, uv, bin |
+| 2 | `run_once_10_restore-windhawk` | Import Windhawk settings from registry |
+| 3 | `run_once_20_setup-windows-symlinks` | Create junctions for zed, yazi, vencord, btop |
 | 4 | `run_onchange_install-ditto-themes` | Copy Ditto XML themes to `Program Files` |
 | 5 | `run_onchange_install-nilesoft-imports` | Copy Nilesoft `.nss` imports to `Program Files` |
 
@@ -90,10 +80,10 @@ chezmoi state delete-bucket --bucket=scriptState && chezmoi apply
 ```
 
 Run a specific script manually (renders the template first):
-```bash
+```powershell
 # Windows
-chezmoi execute-template < $(chezmoi source-path)/.chezmoiscripts/run_once_install-packages.ps1.tmpl | pwsh -File -
+Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages.ps1.tmpl" | chezmoi execute-template | powershell -NoProfile -Command -
 
 # Linux
-chezmoi execute-template < $(chezmoi source-path)/.chezmoiscripts/my-script.sh.tmpl | bash
+chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/my-script.sh.tmpl" | bash
 ```
