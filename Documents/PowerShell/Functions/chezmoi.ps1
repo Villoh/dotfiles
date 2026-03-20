@@ -43,3 +43,26 @@ function Reset-ChezmoiScript {
     Write-Host "  Run 'chezmoi apply' to re-execute." -ForegroundColor DarkGray
 }
 Set-Alias -Name reset-chezmoi-script -Value Reset-ChezmoiScript
+
+<#
+.SYNOPSIS
+    Clears chezmoi state for ALL scripts so every run_once_ and run_onchange_
+    re-runs on next apply.
+.EXAMPLE
+    Reset-AllChezmoiScripts
+    chezmoi apply
+#>
+function Reset-AllChezmoiScripts {
+    $state   = chezmoi state dump --format=json | ConvertFrom-Json
+    $scripts = $state.entryState.PSObject.Properties.Name |
+               Where-Object { $_ -like "*/.chezmoiscripts/*" }
+
+    if (-not $scripts) { Write-Warning "No script state entries found."; return }
+
+    foreach ($key in $scripts) {
+        chezmoi state delete --bucket=entryState --key=$key
+        Write-Host "  [OK] Reset: $key" -ForegroundColor Green
+    }
+    Write-Host "  Run 'chezmoi apply' to re-execute all scripts." -ForegroundColor DarkGray
+}
+Set-Alias -Name reset-all-chezmoi-scripts -Value Reset-AllChezmoiScripts

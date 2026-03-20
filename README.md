@@ -124,6 +124,7 @@ Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/Power
 | `backup` | Backup dotfiles and settings |
 | `restore` | Restore dotfiles and settings |
 | `reset-chezmoi-script <name>` | Clear chezmoi state for a script so it re-runs on next `chezmoi apply` |
+| `reset-all-chezmoi-scripts` | Clear state for all scripts so every `run_once_` and `run_onchange_` re-runs |
 
 ## Daily workflow
 
@@ -149,10 +150,13 @@ Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages
 # Linux (bash):
 chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_install-packages.sh.tmpl" | bash
 
-# Re-run a specific run_once_ or run_onchange_ script on next apply
-# chezmoi tracks script state in the entryState bucket (not scriptState)
-reset-chezmoi-script windows-setup   # re-run run_onchange_windows-setup
+# Re-run a specific script on next apply
+reset-chezmoi-script windows-setup      # re-run run_onchange_windows-setup
 reset-chezmoi-script 00_install-packages  # re-run the full install script
+chezmoi apply
+
+# Re-run ALL scripts on next apply
+reset-all-chezmoi-scripts
 chezmoi apply
 
 # See all tracked script states
