@@ -1,7 +1,7 @@
 {{ if eq .chezmoi.os "windows" -}}
 # run_onchange_ triggers when any of these change:
 # junctions.json       {{ include "packages/windows/system/junctions.json" | sha256sum }}
-# startup-entries.json {{ include "packages/windows/system/startup-entries.json" | sha256sum }}
+# startup.json {{ include "packages/windows/system/startup.json" | sha256sum }}
 {{ range (glob "program_files/ditto/Themes/*.xml") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end -}}
@@ -62,9 +62,9 @@ foreach (`$j in `$junctions) {
 # == STARTUP REGISTRY ENTRIES ==================================================
 LogSec "Startup entries"
 
-if (Test-Path "`$pkgDir\system\startup-entries.json") {
+if (Test-Path "`$pkgDir\system\startup.json") {
     `$regPath       = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-    `$startupEntries = Get-Content "`$pkgDir\system\startup-entries.json" | ConvertFrom-Json
+    `$startupEntries = Get-Content "`$pkgDir\system\startup.json" | ConvertFrom-Json
 
     foreach (`$entry in `$startupEntries) {
         `$expanded = [System.Environment]::ExpandEnvironmentVariables(`$entry.path)
@@ -85,7 +85,7 @@ if (Test-Path "`$pkgDir\system\startup-entries.json") {
         }
     }
 } else {
-    LogSkip "startup-entries.json not found"
+    LogSkip "startup.json not found"
 }
 
 # == PROGRAM FILES =============================================================
