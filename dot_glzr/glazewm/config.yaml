@@ -236,153 +236,153 @@ binding_modes:
   - name: "pause"
     keybindings:
       - commands: ["wm-disable-binding-mode --name pause"]
-        bindings: ["lwin+shift+p"]
+        bindings: ["lcmd+shift+p"]
 
 keybindings:
   # ---------------------------------------------------------------------------
   # Foco — WIN+flechas / WIN+hjkl
   # ---------------------------------------------------------------------------
   - commands: ["focus --direction left"]
-    bindings: ["lwin+left", "lwin+h"]
+    bindings: ["lcmd+left", "lcmd+h"]
   - commands: ["focus --direction right"]
-    bindings: ["lwin+right", "lwin+l"]
+    bindings: ["lcmd+right", "lcmd+l"]
   - commands: ["focus --direction up"]
-    bindings: ["lwin+up", "lwin+k"]
+    bindings: ["lcmd+up", "lcmd+k"]
   - commands: ["focus --direction down"]
-    bindings: ["lwin+down", "lwin+j"]
+    bindings: ["lcmd+down", "lcmd+j"]
 
   # ---------------------------------------------------------------------------
   # Mover ventana — WIN+SHIFT+flechas / WIN+SHIFT+hjkl
   # ---------------------------------------------------------------------------
   - commands: ["move --direction left"]
-    bindings: ["lwin+shift+left", "lwin+shift+h"]
+    bindings: ["lcmd+shift+left", "lcmd+shift+h"]
   - commands: ["move --direction right"]
-    bindings: ["lwin+shift+right", "lwin+shift+l"]
+    bindings: ["lcmd+shift+right", "lcmd+shift+l"]
   - commands: ["move --direction up"]
-    bindings: ["lwin+shift+up", "lwin+shift+k"]
+    bindings: ["lcmd+shift+up", "lcmd+shift+k"]
   - commands: ["move --direction down"]
-    bindings: ["lwin+shift+down", "lwin+shift+j"]
+    bindings: ["lcmd+shift+down", "lcmd+shift+j"]
 
   # ---------------------------------------------------------------------------
   # WM — general
   # ---------------------------------------------------------------------------
   - commands: ["wm-enable-binding-mode --name resize"]
-    bindings: ["lwin+r"]
+    bindings: ["lcmd+r"]
   - commands: ["wm-enable-binding-mode --name pause"]
-    bindings: ["lwin+shift+p"]
+    bindings: ["lcmd+shift+p"]
   - commands: ["toggle-tiling-direction"]
-    bindings: ["lwin+t"]
+    bindings: ["lcmd+t"]
   - commands: ["wm-cycle-focus"]
-    bindings: ["lwin+ctrl+tab"]
+    bindings: ["lcmd+ctrl+tab"]
   - commands: ["toggle-floating --centered"]
-    bindings: ["lwin+shift+space"]
+    bindings: ["lcmd+shift+space"]
   - commands: ["toggle-fullscreen"]
-    bindings: ["lwin+f"]
+    bindings: ["lcmd+f"]
   - commands: ["toggle-minimized"]
-    bindings: ["lwin+m"]
+    bindings: ["lcmd+m"]
   - commands: ["close"]
-    bindings: ["lwin+q"]
+    bindings: ["lcmd+q"]
   - commands: ["wm-exit"]
-    bindings: ["lwin+ctrl+shift+e"]
+    bindings: ["lcmd+ctrl+shift+e"]
   - commands: ["wm-reload-config"]
-    bindings: ["lwin+shift+r"]
+    bindings: ["lcmd+shift+r"]
   - commands: ["wm-redraw"]
-    bindings: ["lwin+ctrl+shift+w"]
+    bindings: ["lcmd+ctrl+shift+w"]
   - commands: ["focus --recent-workspace"]
-    bindings: ["lwin+shift+tab"]
+    bindings: ["lcmd+shift+tab"]
 
   # ---------------------------------------------------------------------------
   # Workspaces — WIN+1..9 / WIN+SHIFT+1..9
   # ---------------------------------------------------------------------------
   - commands: ["focus --workspace 1"]
-    bindings: ["lwin+1"]
+    bindings: ["lcmd+1"]
   - commands: ["focus --workspace 2"]
-    bindings: ["lwin+2"]
+    bindings: ["lcmd+2"]
   - commands: ["focus --workspace 3"]
-    bindings: ["lwin+3"]
+    bindings: ["lcmd+3"]
   - commands: ["focus --workspace 4"]
-    bindings: ["lwin+4"]
+    bindings: ["lcmd+4"]
   - commands: ["focus --workspace 5"]
-    bindings: ["lwin+5"]
+    bindings: ["lcmd+5"]
   - commands: ["focus --workspace 6"]
-    bindings: ["lwin+6"]
+    bindings: ["lcmd+6"]
   - commands: ["focus --workspace 7"]
-    bindings: ["lwin+7"]
+    bindings: ["lcmd+7"]
   - commands: ["focus --workspace 8"]
-    bindings: ["lwin+8"]
+    bindings: ["lcmd+8"]
   - commands: ["focus --workspace 9"]
-    bindings: ["lwin+9"]
+    bindings: ["lcmd+9"]
 
   - commands: ["move --workspace 1"]
-    bindings: ["lwin+shift+1"]
+    bindings: ["lcmd+shift+1"]
   - commands: ["move --workspace 2"]
-    bindings: ["lwin+shift+2"]
+    bindings: ["lcmd+shift+2"]
   - commands: ["move --workspace 3"]
-    bindings: ["lwin+shift+3"]
+    bindings: ["lcmd+shift+3"]
   - commands: ["move --workspace 4"]
-    bindings: ["lwin+shift+4"]
+    bindings: ["lcmd+shift+4"]
   - commands: ["move --workspace 5"]
-    bindings: ["lwin+shift+5"]
+    bindings: ["lcmd+shift+5"]
   - commands: ["move --workspace 6"]
-    bindings: ["lwin+shift+6"]
+    bindings: ["lcmd+shift+6"]
   - commands: ["move --workspace 7"]
-    bindings: ["lwin+shift+7"]
+    bindings: ["lcmd+shift+7"]
   - commands: ["move --workspace 8"]
-    bindings: ["lwin+shift+8"]
+    bindings: ["lcmd+shift+8"]
   - commands: ["move --workspace 9"]
-    bindings: ["lwin+shift+9"]
+    bindings: ["lcmd+shift+9"]
 
   # Navegación relativa — WIN+CTRL+flechas
   - commands: ["focus --next-workspace"]
-    bindings: ["lwin+ctrl+right"]
+    bindings: ["lcmd+ctrl+right"]
   - commands: ["focus --prev-workspace"]
-    bindings: ["lwin+ctrl+left"]
+    bindings: ["lcmd+ctrl+left"]
 
   # ---------------------------------------------------------------------------
   # Apps — WIN+SHIFT+letra
   # ---------------------------------------------------------------------------
   - commands: ["shell-exec alacritty"]
-    bindings: ["lwin+enter", "lwin+shift+t"]
+    bindings: ["lcmd+enter", "lcmd+shift+t"]
   - commands: ["shell-exec brave"]
-    bindings: ["lwin+shift+b"]
+    bindings: ["lcmd+shift+b"]
   - commands: ["shell-exec explorer.exe %USERPROFILE%"]
-    bindings: ["lwin+shift+e"]
+    bindings: ["lcmd+shift+e"]
   - commands: ["shell-exec zed"]
-    bindings: ["lwin+shift+c"]
+    bindings: ["lcmd+shift+c"]
   - commands: ["shell-exec %APPDATA%\\Spotify\\Spotify.exe"]
-    bindings: ["lwin+shift+s"]
+    bindings: ["lcmd+shift+s"]
   - commands: ["shell-exec %LOCALAPPDATA%\\Discord\\Update.exe --processStart Discord.exe"]
-    bindings: ["lwin+shift+d"]
+    bindings: ["lcmd+shift+d"]
   - commands: ["shell-exec explorer shell:AppsFolder\\5319275A.WhatsAppDesktop_cv1g1gvanyjgm!App"]
-    bindings: ["lwin+shift+w"]
+    bindings: ["lcmd+shift+w"]
 
   # ---------------------------------------------------------------------------
   # Shortcuts de Windows restaurados (deshabilitados por NoWinKeys)
   # ---------------------------------------------------------------------------
   # - commands: ["shell-exec ms-settings:clipboard"]
-  #   bindings: ["lwin+v"] # Already managed by Ditto
+  #   bindings: ["lcmd+v"] # Already managed by Ditto
   - commands: ["shell-exec explorer ms-screenclip:"]
-    bindings: ["lwin+shift+z"]
+    bindings: ["lcmd+shift+z"]
   - commands: ["shell-exec rundll32.exe user32.dll,LockWorkStation"]
-    bindings: ["lwin+l"]
+    bindings: ["lcmd+l"]
 
   # ---------------------------------------------------------------------------
   # YASB
   # ---------------------------------------------------------------------------
   - commands: ["shell-exec powershell -Command \"Stop-Process -Name yasb -ErrorAction SilentlyContinue; Start-Process yasb\""]
-    bindings: ["lwin+shift+q"]
+    bindings: ["lcmd+shift+q"]
 
   # ---------------------------------------------------------------------------
   # Audio — NirCmd (descarga: https://www.nirsoft.net/utils/nircmd.html)
   # Coloca nircmd.exe en C:\Windows\System32 o añádelo al PATH
   # ---------------------------------------------------------------------------
   # - commands: ["shell-exec nircmd.exe changesysvolume 5000"]
-  #   bindings: ["lwin+shift+up"]
+  #   bindings: ["lcmd+shift+up"]
   # - commands: ["shell-exec nircmd.exe changesysvolume -5000"]
-  #   bindings: ["lwin+shift+down"]
+  #   bindings: ["lcmd+shift+down"]
   # - commands: ["shell-exec nircmd.exe mutesysvolume 2"]
-  #   bindings: ["lwin+shift+m"]
+  #   bindings: ["lcmd+shift+m"]
   # - commands: ["shell-exec nircmd.exe mutemicinput 2"]
-  #   bindings: ["lwin+shift+i"]
+  #   bindings: ["lcmd+shift+i"]
   # - commands: ["shell-exec nircmd.exe mutemute 2"]
-  #   bindings: ["lwin+shift+m"]
+  #   bindings: ["lcmd+shift+m"]

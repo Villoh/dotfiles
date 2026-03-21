@@ -8,6 +8,9 @@
           "PackageIdentifier": "ObinsKit.ObinsKit"
         },
         {
+          "PackageIdentifier": "qBittorrent.qBittorrent"
+        },
+        {
           "PackageIdentifier": "FilenCloud.FilenSync"
         },
         {

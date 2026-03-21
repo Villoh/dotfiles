@@ -1,4 +1,4 @@
-{{ if eq .chezmoi.os "windows" -}}
+{{ if ne .chezmoi.os "windows" -}}
 $source  = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $logFile = "$env:TEMP\chezmoi-user-config-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
 $ok = 0; $skip = 0
