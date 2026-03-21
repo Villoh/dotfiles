@@ -83,17 +83,6 @@
 
 See the full installation guide: **[INSTALL.md](INSTALL.md)**
 
-## Extra Optional Setup (Windows)
-
-<details>
-<summary>Catppuccin themes by Niivu</summary>
-
-| Theme | Preview |
-|-------|---------|
-| [Catppuccin Cursors](https://www.deviantart.com/niivu/art/Catppuccin-Cursors-921387705) | <img src=".github/assets/catppuccin-cursors.jpg" width="400"/> |
-| [Catppuccin for Windows 11](https://www.deviantart.com/niivu/art/Catppuccin-for-Windows-11-1076249390) — [Install guide](https://www.deviantart.com/niivu/art/How-to-install-Windows-10-or-11-Themes-708835586) | <img src=".github/assets/catppuccin-win11.jpg" width="400"/> |
-
-</details>
 
 ## Wallpapers
 
@@ -108,6 +97,11 @@ Windows setup inspired by and borrowed from:
 - [ashish0kumar/windots](https://github.com/ashish0kumar/windots)
 - [ChrisTitusTech/powershell-profile](https://github.com/ChrisTitusTech/powershell-profile)
 - [SleepyCatHey/Ultimate-Win11-Setup](https://github.com/SleepyCatHey/Ultimate-Win11-Setup)
+
+Themes and cursors:
+
+- [Catppuccin Cursors](https://www.deviantart.com/niivu/art/Catppuccin-Cursors-921387705) by niivu
+- [Catppuccin for Windows 11](https://www.deviantart.com/niivu/art/Catppuccin-for-Windows-11-1076249390) by niivu
 
 ## PowerShell functions
 
