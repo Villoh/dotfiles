@@ -59,14 +59,15 @@ foreach (`$j in `$junctions) {
     }
 }
 
-# == STARTUP REGISTRY ENTRIES ==================================================
+# == STARTUP ENTRIES ===========================================================
 LogSec "Startup entries"
 
 if (Test-Path "`$pkgDir\system\startup.json") {
-    `$regPath       = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
-    `$startupEntries = Get-Content "`$pkgDir\system\startup.json" | ConvertFrom-Json
+    `$startup = Get-Content "`$pkgDir\system\startup.json" | ConvertFrom-Json
 
-    foreach (`$entry in `$startupEntries) {
+    # -- HKCU\Run registry entries ----------------------------------------------
+    `$runPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    foreach (`$entry in `$startup.registry) {
         `$expanded = [System.Environment]::ExpandEnvironmentVariables(`$entry.path)
 
         if (`$entry.glob) {
@@ -75,13 +76,49 @@ if (Test-Path "`$pkgDir\system\startup.json") {
         }
 
         if (-not `$expanded -or -not (Test-Path `$expanded)) {
-            LogSkip "startup: `$(`$entry.name) (exe not found)"
+            LogSkip "registry: `$(`$entry.name) (exe not found)"
             continue
         }
 
         `$value = if (`$entry.args) { "``"`$expanded``" `$(`$entry.args)" } else { "``"`$expanded``"" }
-        TryRun "startup: `$(`$entry.name)" {
-            Set-ItemProperty -Path `$regPath -Name `$entry.name -Value `$value -Type String
+        TryRun "registry: `$(`$entry.name)" {
+            Set-ItemProperty -Path `$runPath -Name `$entry.name -Value `$value -Type String
+        }
+    }
+
+    # -- Startup folder shortcuts -----------------------------------------------
+    `$startupFolder = [System.Environment]::GetFolderPath("Startup")
+    foreach (`$entry in `$startup.folder) {
+        `$expanded = [System.Environment]::ExpandEnvironmentVariables(`$entry.path)
+
+        if (-not (Test-Path `$expanded)) {
+            LogSkip "folder: `$(`$entry.name) (exe not found)"
+            continue
+        }
+
+        `$lnk = "`$startupFolder\`$(`$entry.name).lnk"
+        TryRun "folder: `$(`$entry.name)" {
+            `$shell   = New-Object -ComObject WScript.Shell
+            `$shortcut = `$shell.CreateShortcut(`$lnk)
+            `$shortcut.TargetPath = `$expanded
+            if (`$entry.args) { `$shortcut.Arguments = `$entry.args }
+            `$shortcut.Save()
+        }
+    }
+
+    # -- MSIX packaged startup tasks --------------------------------------------
+    `$msixBase = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData"
+    foreach (`$entry in `$startup.msix) {
+        `$pkg = Get-AppxPackage -Name "*`$(`$entry.package)*" -ErrorAction SilentlyContinue
+        if (-not `$pkg) { LogSkip "msix: `$(`$entry.name) (package not installed)"; continue }
+
+        `$taskKey = Get-ChildItem "`$msixBase\`$(`$pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
+            Where-Object { `$_.GetValue("State") -ne `$null } | Select-Object -First 1
+
+        if (-not `$taskKey) { LogSkip "msix: `$(`$entry.name) (startup task key not found)"; continue }
+
+        TryRun "msix: `$(`$entry.name)" {
+            Set-ItemProperty -Path `$taskKey.PSPath -Name State -Value 2 -Type DWord
         }
     }
 } else {
