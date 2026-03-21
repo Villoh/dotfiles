@@ -103,6 +103,10 @@ Themes and cursors:
 - [Catppuccin Cursors](https://www.deviantart.com/niivu/art/Catppuccin-Cursors-921387705) by niivu
 - [Catppuccin for Windows 11](https://www.deviantart.com/niivu/art/Catppuccin-for-Windows-11-1076249390) by niivu
 
+YASB themes:
+
+- Comfyppuccin Reimagined by [AlmiWasFound](https://github.com/AlmiWasFound)
+
 ## PowerShell functions
 
 Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/PowerShell/Functions/) on every shell session:
