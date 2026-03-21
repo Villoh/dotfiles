@@ -148,6 +148,8 @@ foreach (`$c in `$copies) {
     @{ Src = "`$chezmoisrc\program_files\windows\resources\themes"; Dst = "C:\Windows\Resources\Themes"; App = "Windows themes" }
 )
 
+`$secureUxInstalled = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" -ErrorAction SilentlyContinue | Where-Object { `$_.DisplayName -like "*SecureUxTheme*" }
+
 foreach (`$r in `$rcopies) {
     if (-not (Test-Path `$r.Dst)) {
         LogSkip "`$(`$r.App) - destination '`$(`$r.Dst)' not found"
@@ -159,6 +161,9 @@ foreach (`$r in `$rcopies) {
         LogOk "`$(`$r.App) - installed (`$(`$copyErrors.Count) file(s) skipped - in use)"
     } else {
         LogOk "`$(`$r.App) - installed"
+    }
+    if (-not `$secureUxInstalled) {
+        LogSkip "`$(`$r.App) - SecureUxTheme not installed, themes copied but won't apply"
     }
 }
 
