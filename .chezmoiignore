@@ -6,6 +6,7 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_flow_launcher) }}AppData/Roaming/FlowLauncher/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_mica) }}AppData/Local/Packages/MicaForEveryone.MicaForEveryone2_eydvrrwaqjtyw/**{{ end }}
 {{ if ne .chezmoi.os "windows" }}AppData/
 Documents/
 scoop/

@@ -483,19 +483,32 @@ if ($selectedManagers -contains "cargo-git") {
     }
 }
 
-# -- GlazeWM - disable Win key shortcuts (elevated) ---------------------------
+# -- GlazeWM - disable Win key shortcuts -------------------------------------
 LogSection "GlazeWM - disable Win keys for GlazeWM"
-$noWinKeysPath = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-$noWinKeysVal  = (Get-ItemProperty -Path $noWinKeysPath -Name NoWinKeys -ErrorAction SilentlyContinue).NoWinKeys
-if ($noWinKeysVal -eq 1) {
-    LogSkip "Win keys already disabled"
+$winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
+if (-not (Test-Path $winKeys)) {
+    LogSkip "win-keys.ps1 not found, skipping"
     $summary.skip++
 } else {
-    TryInstall "Disable Win keys (elevated)" {
-        $winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
-        if (-not (Test-Path $winKeys)) { throw "win-keys.ps1 not found at $winKeys" }
-        . $winKeys
-        Disable-WinKeys -Scope System
+    . $winKeys
+    $systemVal = _Get-WinKeysValue -Scope System
+    $userVal   = _Get-WinKeysValue -Scope User
+    # Effective state: HKLM present → HKLM wins; HKLM absent → HKCU applies
+    $effectivelyDisabled = ($null -ne $systemVal -and $systemVal -eq 1) -or
+                           ($null -eq $systemVal -and $null -ne $userVal -and $userVal -eq 1)
+    if ($effectivelyDisabled) {
+        LogSkip "Win keys already disabled (effective)"
+        $summary.skip++
+    } else {
+        # Set both scopes: HKLM takes priority, HKCU as fallback if HKLM ever gets reset
+        # Skip Explorer restart — a reboot or manual reload applies the change
+        TryInstall "Disable Win keys - System (HKLM)" {
+            if (-not (_Set-WinKeysValue -Value 1 -Scope System)) { throw "Failed to set HKLM\NoWinKeys" }
+        }
+        TryInstall "Disable Win keys - User (HKCU)" {
+            if (-not (_Set-WinKeysValue -Value 1 -Scope User)) { throw "Failed to set HKCU\NoWinKeys" }
+        }
+        Log "  [INFO] Win keys disabled - reboot or restart Explorer to apply" "DarkYellow"
     }
 }
 
