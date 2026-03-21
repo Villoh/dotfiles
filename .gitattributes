@@ -2,7 +2,3 @@ program_files/windows/resources/themes/**/*.msstyles filter=lfs diff=lfs merge=l
 program_files/windows/resources/themes/**/*.theme filter=lfs diff=lfs merge=lfs -text
 program_files/windows/cursors/**/*.cur filter=lfs diff=lfs merge=lfs -text
 program_files/windows/cursors/**/*.ani filter=lfs diff=lfs merge=lfs -text
-.github/assets/*.png filter=lfs diff=lfs merge=lfs -text
-.github/assets/*.jpg filter=lfs diff=lfs merge=lfs -text
-.github/assets/*.png !text !filter !merge !diff
-.github/assets/*.jpg !text !filter !merge !diff
