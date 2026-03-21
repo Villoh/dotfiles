@@ -16,6 +16,8 @@
 [submodule "dot_config/hypr/hyprlock/catppuccin"]
 	path = dot_config/hypr/hyprlock/catppuccin
 	url = https://github.com/catppuccin/hyprlock.git
+	ignore = dirty
 [submodule "dot_config/hypr/hyprlock/vivek-hyprlock-styles"]
 	path = dot_config/hypr/hyprlock/vivek-hyprlock-styles
 	url = https://github.com/MrVivekRajan/Hyprlock-Styles.git
+	ignore = dirty
