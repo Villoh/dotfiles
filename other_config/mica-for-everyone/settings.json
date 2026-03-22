@@ -1,0 +1,37 @@
+{
+  "rules": [
+    {
+      "type": "global",
+      "priority": 0,
+      "titleBarColor": "System",
+      "backdropPreference": "None",
+      "cornerPreference": "Rounded",
+      "extendFrameIntoClientArea": false,
+      "enableBlurBehind": false,
+      "titleBarColorCode": null
+    },
+    {
+      "type": "process",
+      "processName": "explorer",
+      "priority": 1,
+      "titleBarColor": "Default",
+      "backdropPreference": "None",
+      "cornerPreference": "Rounded",
+      "extendFrameIntoClientArea": false,
+      "enableBlurBehind": false,
+      "titleBarColorCode": null
+    },
+    {
+      "type": "process",
+      "processName": "notepad",
+      "priority": 1,
+      "titleBarColor": "Default",
+      "backdropPreference": "None",
+      "cornerPreference": "Rounded",
+      "extendFrameIntoClientArea": false,
+      "enableBlurBehind": false,
+      "titleBarColorCode": null
+    }
+  ],
+  "telemetryEnabled": false
+}
