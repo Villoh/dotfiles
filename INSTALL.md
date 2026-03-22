@@ -84,6 +84,31 @@ setup-wsl
 
 > Requires WSL installed (included in winget packages). Uses fzf to pick the distro — locale, user creation, and packages are configured automatically.
 
+### Spicetify Marketplace
+
+The Marketplace config (theme + extensions) is backed up at `other_config/spicetify/spicetify-marketplace.json`.
+
+**Current setup:**
+- Theme: **Comfy** — scheme `catppuccin-mocha`
+- Extensions: Shuffle+, Bookmark, Full Screen, adblockify
+
+1. Install Spicetify and patch Spotify:
+   ```powershell
+   winget install Spicetify.Spicetify
+   spicetify backup apply
+   ```
+
+2. Install Spicetify Marketplace:
+   ```powershell
+   iwr -useb https://raw.githubusercontent.com/spicetify/marketplace/main/resources/install.ps1 | iex
+   ```
+
+3. Open Spotify → **Marketplace → Settings (gear icon) → Import backup** → load `other_config/spicetify/spicetify-marketplace.json`.
+
+Marketplace will reinstall the theme and all extensions automatically.
+
+> To update the backup: **Marketplace → Settings → Export backup** → overwrite the file → commit with `chore(spicetify): update marketplace backup`.
+
 ---
 
 ## Re-running scripts
