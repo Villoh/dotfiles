@@ -53,11 +53,11 @@
   "TimeFormat": "hh:mm tt",
   "DateFormat": "MM\u0027/\u0027dd ddd",
   "FirstLaunch": false,
-  "SettingWindowWidth": 1936,
-  "SettingWindowHeight": 1096,
+  "SettingWindowWidth": 1900,
+  "SettingWindowHeight": 1012,
   "SettingWindowTop": 58,
   "SettingWindowLeft": 10,
-  "SettingWindowState": 2,
+  "SettingWindowState": 0,
   "ShowPlaceholder": true,
   "PlaceholderText": "",
   "ShowHomePage": true,
@@ -97,7 +97,7 @@
       "Editable": true
     }
   ],
-  "CustomBrowserIndex": 0,
+  "CustomBrowserIndex": 4,
   "CustomBrowserList": [
     {
       "Name": "Default",
@@ -130,6 +130,14 @@
       "EnablePrivate": false,
       "OpenInTab": true,
       "Editable": false
+    },
+    {
+      "Name": "Brave",
+      "Path": "C:\\Users\\mikel\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+      "PrivateArg": null,
+      "EnablePrivate": false,
+      "OpenInTab": true,
+      "Editable": true
     }
   ],
   "EnableDialogJump": true,
@@ -156,7 +164,7 @@
   "CustomWindowTop": 0,
   "KeepMaxResults": false,
   "MaxResultsToShow": 5,
-  "ActivateTimes": 274,
+  "ActivateTimes": 290,
   "CustomPluginHotkeys": [],
   "CustomShortcuts": [],
   "DontPromptUpdateMsg": false,
