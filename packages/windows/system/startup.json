@@ -10,5 +10,7 @@
   "msix": [
     { "name": "MicaForEveryone", "package": "MicaForEveryone.MicaForEveryone2" }
   ],
-  "folder": []
+  "folder": [
+    { "name": "gpg-connect-agent", "path": "%ProgramFiles%\\GnuPG\\bin\\gpg-connect-agent.exe", "args": "/bye", "windowStyle": 7 }
+  ]
 }

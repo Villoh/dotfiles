@@ -178,7 +178,8 @@ function _Set-StartupEntryState {
                 $shell    = New-Object -ComObject WScript.Shell
                 $shortcut = $shell.CreateShortcut($lnk)
                 $shortcut.TargetPath = $expanded
-                if ($Entry.Raw.args) { $shortcut.Arguments = $Entry.Raw.args }
+                if ($Entry.Raw.args)        { $shortcut.Arguments  = $Entry.Raw.args }
+                if ($Entry.Raw.windowStyle) { $shortcut.WindowStyle = $Entry.Raw.windowStyle }
                 $shortcut.Save()
                 Write-Host "$($Entry.Name) enabled (startup folder shortcut)." -ForegroundColor Green
             } else {

@@ -101,7 +101,8 @@ if (Test-Path "`$pkgDir\system\startup.json") {
             `$shell   = New-Object -ComObject WScript.Shell
             `$shortcut = `$shell.CreateShortcut(`$lnk)
             `$shortcut.TargetPath = `$expanded
-            if (`$entry.args) { `$shortcut.Arguments = `$entry.args }
+            if (`$entry.args)        { `$shortcut.Arguments  = `$entry.args }
+            if (`$entry.windowStyle) { `$shortcut.WindowStyle = `$entry.windowStyle }
             `$shortcut.Save()
         }
     }
