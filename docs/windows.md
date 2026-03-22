@@ -1,5 +1,28 @@
 # Windows configuration
 
+## Running PowerShell commands from bash
+
+The shell in this environment is bash (Git Bash / MSYS2). PowerShell cmdlets are not available directly — use `powershell.exe -NoProfile -Command` to invoke them:
+
+```bash
+powershell.exe -NoProfile -Command "Get-ChildItem \$env:APPDATA"
+```
+
+For multi-line scripts:
+
+```bash
+powershell.exe -NoProfile -Command "
+  \$src = \"\$env:APPDATA\MyApp\config.json\";
+  Copy-Item \$src 'C:\backup\config.json'
+"
+```
+
+Prefer `curl` for simple downloads — it's available natively in bash and avoids the quoting overhead:
+
+```bash
+curl -L "https://example.com/file.zip" -o "$APPDATA/MyApp/file.zip"
+```
+
 ## AppData tracked configs
 
 | Path in repo | Deployed to | Notes |
