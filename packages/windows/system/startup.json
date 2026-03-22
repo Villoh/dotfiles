@@ -5,7 +5,8 @@
     { "name": "AltSnap",       "path": "%APPDATA%\\AltSnap\\AltSnap.exe", "args": "-hide" },
     { "name": "Ditto",         "path": "%ProgramFiles%\\Ditto\\Ditto.exe" },
     { "name": "Flow.Launcher", "path": "%LOCALAPPDATA%\\FlowLauncher\\Flow.Launcher.exe" },
-    { "name": "Rainmeter",     "path": "%ProgramFiles%\\Rainmeter\\Rainmeter.exe" }
+    { "name": "Rainmeter",     "path": "%ProgramFiles%\\Rainmeter\\Rainmeter.exe" },
+    { "name": "Handy",         "path": "%APPDATA%\\scoop\\apps\\handy\\current\\handy.exe" }
   ],
   "msix": [
     { "name": "MicaForEveryone", "package": "MicaForEveryone.MicaForEveryone2" }
