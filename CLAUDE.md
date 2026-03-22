@@ -22,6 +22,10 @@ Dual-platform dotfiles managed with [chezmoi](https://chezmoi.io):
 
 **Submodules** are used for external theme repos. Clone with `--recurse-submodules`.
 
+## Code style
+
+- All comments in code and config files must be written in English
+
 ## Key instructions
 
 - When adding a new config file, check if it needs a platform guard in `.chezmoiignore`. Repo metadata files (docs, scripts, package lists, reference configs) must also be listed there so chezmoi never deploys them to `$HOME`
