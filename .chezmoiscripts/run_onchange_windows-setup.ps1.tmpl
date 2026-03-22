@@ -52,7 +52,9 @@ foreach (`$j in `$junctions) {
     `$parent = Split-Path `$dst
     if (`$parent -and -not (Test-Path `$parent)) { New-Item -ItemType Directory -Force -Path `$parent | Out-Null }
     if (Test-Path `$dst) { Remove-Item `$dst -Recurse -Force }
-    if (`$j.type -eq "file") {
+    if (`$j.type -eq "copy") {
+        TryRun "copy: `$dst" { Copy-Item "`$src" "`$dst" -Force }
+    } elseif (`$j.type -eq "file") {
         TryRun "symlink: `$dst" { cmd /c mklink "`$dst" "`$src" | Out-Null }
     } else {
         TryRun "junction: `$dst" { cmd /c mklink /J "`$dst" "`$src" | Out-Null }
