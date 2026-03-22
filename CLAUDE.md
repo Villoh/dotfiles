@@ -40,3 +40,4 @@ Load these only when the task is relevant to them:
 | `docs/structure.md` | Exploring the repo, adding new configs, understanding what's tracked |
 | `docs/windows.md` | Any Windows-specific config, junctions, AppData, scripts |
 | `docs/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
+| `docs/commits.md` | Writing or reviewing commit messages |
