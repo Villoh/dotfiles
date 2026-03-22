@@ -71,7 +71,7 @@ widgets:
     type: "yasb.wallpapers.WallpapersWidget"
     options:
       label: "<span>\uf03e</span>"
-      image_path: "C:\\Users\\HP\\Pictures\\Wallpapers"
+      image_path: "C:\\Users\\mikel\\Pictures\\Wallpapers\\"
       change_automatically: false # Automatically change wallpaper
       update_interval: 60
       gallery:
