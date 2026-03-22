@@ -150,7 +150,7 @@ window_effects:
       enabled: true
       color: *ctp-mocha-mauve
     hide_title_bar:
-      enabled: false
+      enabled: true
     corner_style:
       enabled: true
       style: "rounded"
@@ -162,7 +162,7 @@ window_effects:
       enabled: true
       color: *ctp-mocha-surface2
     hide_title_bar:
-      enabled: false
+      enabled: true
     corner_style:
       enabled: true
       style: "rounded"
@@ -216,9 +216,13 @@ window_rules:
       - window_process: { equals: "handy" }
       - window_process: { equals: "Ditto" }
       - window_process: { equals: "flemozi" }
+      # Steam overlay — unmanaged by the WM
+      - window_process: { equals: "GameOverlayUI" }
+      # GPG passphrase prompt
+      - window_process: { equals: "pinentry" }
 
 binding_modes:
-  # Resize mode — activado con WIN+R, salir con ESC o ENTER
+  # Resize mode — activate with Win+R, exit with Esc or Enter
   - name: "resize"
     keybindings:
       - commands: ["resize --width -2%"]
@@ -290,6 +294,12 @@ keybindings:
     bindings: ["lwin+ctrl+shift+w"]
   - commands: ["focus --recent-workspace"]
     bindings: ["lwin+shift+tab"]
+
+  # ---------------------------------------------------------------------------
+  # Gaming mode — Win+Ctrl+G toggles focused_window border/corner/transparency
+  # ---------------------------------------------------------------------------
+  - commands: ["shell-exec wscript.exe //b //nologo %USERPROFILE%\\.glzr\\glazewm\\scripts\\toggle-gaming-mode.vbs"]
+    bindings: ["lwin+ctrl+g"]
 
   # ---------------------------------------------------------------------------
   # Workspaces — WIN+1..9 / WIN+SHIFT+1..9
