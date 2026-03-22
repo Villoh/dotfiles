@@ -150,7 +150,7 @@ window_effects:
       enabled: true
       color: *ctp-mocha-mauve
     hide_title_bar:
-      enabled: true
+      enabled: false
     corner_style:
       enabled: true
       style: "rounded"
@@ -162,7 +162,7 @@ window_effects:
       enabled: true
       color: *ctp-mocha-surface2
     hide_title_bar:
-      enabled: true
+      enabled: false
     corner_style:
       enabled: true
       style: "rounded"
