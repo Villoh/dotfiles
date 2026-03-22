@@ -204,10 +204,21 @@ function _Set-WinKeysValue {
 function _Restart-Explorer {
     Write-Host "Restarting Explorer..." -ForegroundColor DarkGray
 
-    Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
-    Start-Sleep -Milliseconds 1000
+    # Graceful shutdown via Shell COM (permite que las extensiones limpien)
+    try {
+        $shell = New-Object -ComObject Shell.Application
+        $shell.Windows() | ForEach-Object { $_.Quit() }
+        Start-Sleep -Milliseconds 1500
+    } catch { }
+
+    # Si sigue vivo, entonces force
+    if (Get-Process explorer -ErrorAction SilentlyContinue) {
+        Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Milliseconds 2000
+    }
+
     Start-Process explorer
-    Start-Sleep -Milliseconds 800
+    Start-Sleep -Milliseconds 1200
     Write-Host "Explorer restarted." -ForegroundColor DarkGray
 }
 

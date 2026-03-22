@@ -123,6 +123,9 @@ Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/Power
 | `restore` | Restore dotfiles and settings |
 | `reset-run-once-scripts` | Clear `scriptState` so all `run_once_` scripts re-run on next apply |
 | `reset-run-onchange-script [name]` | Clear `entryState` for one or all `run_onchange_` scripts |
+| `startup-entries` | List all startup.json entries and their current enabled/disabled state |
+| `disable-startup [name]` | Disable a startup entry (fzf picker if no name given) |
+| `enable-startup [name]` | Enable a startup entry (fzf picker if no name given) |
 
 ## Daily workflow
 
