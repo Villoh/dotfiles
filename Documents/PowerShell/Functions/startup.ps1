@@ -211,11 +211,12 @@ function _Get-MsixStartupState {
     if (-not $pkg) { return "NOT INSTALLED" }
     $key = _Get-MsixStartupKey $PackageName
     if (-not $key) { return "NO TASK KEY" }
-    return switch ($key.GetValue("State")) {
-        2       { "ENABLED" }
-        0       { "DISABLED" }
-        1       { "DISABLED (policy)" }
-        default { "UNKNOWN ($($key.GetValue('State')))" }
+    $stateVal = $key.GetValue("State")
+    switch ($stateVal) {
+        2       { return "ENABLED" }
+        0       { return "DISABLED" }
+        1       { return "DISABLED (policy)" }
+        default { return "UNKNOWN ($stateVal)" }
     }
 }
 
