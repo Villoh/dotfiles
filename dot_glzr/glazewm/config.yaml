@@ -147,15 +147,15 @@ gaps:
 window_effects:
   focused_window:
     border:
-      enabled: true
+      enabled: false
       color: *ctp-mocha-mauve
     hide_title_bar:
       enabled: false
     corner_style:
-      enabled: true
+      enabled: false
       style: "rounded"
     transparency:
-      enabled: true
+      enabled: false
       opacity: "99.6%"
   other_windows:
     border:
@@ -290,12 +290,18 @@ keybindings:
     bindings: ["lwin+ctrl+shift+e"]
   - commands: ["wm-reload-config"]
     bindings: ["lwin+shift+r"]
-  - commands: ["wm-restart"]
+  - commands: ["shell-exec wscript.exe //b //nologo %USERPROFILE%\\.glzr\\glazewm\\scripts\\restart.vbs"]
     bindings: ["lwin+shift+ctrl+r"]
   - commands: ["wm-redraw"]
     bindings: ["lwin+ctrl+shift+w"]
   - commands: ["focus --recent-workspace"]
     bindings: ["lwin+shift+tab"]
+
+  # ---------------------------------------------------------------------------
+  # App launchers
+  # ---------------------------------------------------------------------------
+  - commands: ["shell-exec %LOCALAPPDATA%\\vesktop\\vesktop.exe"]
+    bindings: ["lwin+shift+d"]
 
   # ---------------------------------------------------------------------------
   # Gaming mode — Win+Ctrl+G toggles focused_window border/corner/transparency
