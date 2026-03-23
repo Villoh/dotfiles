@@ -290,6 +290,8 @@ keybindings:
     bindings: ["lwin+ctrl+shift+e"]
   - commands: ["wm-reload-config"]
     bindings: ["lwin+shift+r"]
+  - commands: ["wm-restart"]
+    bindings: ["lwin+shift+ctrl+r"]
   - commands: ["wm-redraw"]
     bindings: ["lwin+ctrl+shift+w"]
   - commands: ["focus --recent-workspace"]
