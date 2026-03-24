@@ -4,7 +4,6 @@ $PackagesDir = "$env:USERPROFILE\.local\share\chezmoi\packages\windows"
 function Invoke-AllRestore {
     Invoke-WingetRestore
     Invoke-ScoopRestore
-    Invoke-ChocoRestore
     Invoke-NodeRestore
     Invoke-BunRestore
     Invoke-UvRestore
@@ -39,15 +38,6 @@ function Invoke-ScoopRestore {
     } else { Write-Warning "No encontrado: $file" }
 }
 Set-Alias -Name restore-scoop  -Value Invoke-ScoopRestore
-
-function Invoke-ChocoRestore {
-    $file = "$PackagesDir\chocolatey\packages.config"
-    if (Test-Path $file) {
-        choco install $file -y
-        Write-Host "choco restore OK" -ForegroundColor Green
-    } else { Write-Warning "No encontrado: $file" }
-}
-Set-Alias -Name restore-choco  -Value Invoke-ChocoRestore
 
 function Invoke-NodeRestore {
     $file = "$PackagesDir\node\npm-packages.json"

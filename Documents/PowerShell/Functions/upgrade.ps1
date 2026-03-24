@@ -3,7 +3,6 @@
 function Invoke-AllUpgrade {
     Invoke-WingetUpgrade
     Invoke-ScoopUpgrade
-    Invoke-ChocoUpgrade
     Invoke-NodeUpgrade
     Invoke-UvUpgrade
 }
@@ -44,13 +43,6 @@ function Invoke-ScoopUpgrade {
 }
 Set-Alias -Name update-scoop   -Value Invoke-ScoopUpgrade
 Set-Alias -Name upgrade-scoop  -Value Invoke-ScoopUpgrade
-
-function Invoke-ChocoUpgrade {
-    if (Get-Command choco -ErrorAction SilentlyContinue) { choco upgrade all -y }
-    else { Write-Warning "choco not found." }
-}
-Set-Alias -Name update-choco   -Value Invoke-ChocoUpgrade
-Set-Alias -Name upgrade-choco  -Value Invoke-ChocoUpgrade
 
 function Invoke-NodeUpgrade {
     if (Get-Command npm -ErrorAction SilentlyContinue) { npm update -g }
