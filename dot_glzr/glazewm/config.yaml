@@ -147,15 +147,15 @@ gaps:
 window_effects:
   focused_window:
     border:
-      enabled: false
+      enabled: true
       color: *ctp-mocha-mauve
     hide_title_bar:
       enabled: false
     corner_style:
-      enabled: false
+      enabled: true
       style: "rounded"
     transparency:
-      enabled: false
+      enabled: true
       opacity: "99.6%"
   other_windows:
     border:
