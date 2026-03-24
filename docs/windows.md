@@ -33,6 +33,7 @@ curl -L "https://example.com/file.zip" -o "$APPDATA/MyApp/file.zip"
 | `AppData/Roaming/alacritty/` | `~/AppData/Roaming/alacritty/` | Terminal config |
 | `AppData/Roaming/gnupg/` | `~/AppData/Roaming/gnupg/` | GPG config |
 | `AppData/Roaming/warp/` | `~/AppData/Roaming/warp/` | Only catppuccin_*.yml and purpulish.yaml themes tracked |
+| `AppData/Roaming/ytm-player/` | `~/AppData/Roaming/ytm-player/` | auth.json, history.db, session.json gitignored |
 | `AppData/Roaming/vesktop/settings/` | via junction (see below) | Shared with Vencord |
 | `AppData/Local/.../WindowsTerminal/settings.json` | `~/AppData/Local/...` | |
 

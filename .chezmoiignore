@@ -57,6 +57,8 @@ docs/**
 dev/**
 CLAUDE.md
 INSTALL.md
+LICENSE
+README.md
 
 # ── Runtime / cache — never tracked ───────────────────────────────────────────
 **/.git/**
@@ -81,4 +83,7 @@ AppData/Roaming/FlowLauncher/Settings/UserSelectedRecord.json.bak
 AppData/Roaming/FlowLauncher/Settings/Settings.json.bak
 AppData/Roaming/Vencord/**
 AppData/Roaming/spicetify/**
+AppData/Roaming/ytm-player/auth.json
+AppData/Roaming/ytm-player/history.db
+AppData/Roaming/ytm-player/session.json
 AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/*.tmp
