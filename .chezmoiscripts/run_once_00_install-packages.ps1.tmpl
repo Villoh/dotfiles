@@ -87,27 +87,6 @@ if ($devModeVal -eq 1) {
     }
 }
 
-# -- chocolatey ----------------------------------------------------------------
-if (-not (Get-Command choco -ErrorAction SilentlyContinue) -and -not (Test-Path "C:\ProgramData\chocolatey\bin\choco.exe")) {
-    TryInstall "Chocolatey (elevated)" {
-        $chocoScript = "$env:TEMP\choco-install.ps1"
-        @'
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-Read-Host "`nPress Enter to close"
-'@ | Set-Content $chocoScript
-        Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $chocoScript -Wait
-        Remove-Item $chocoScript -ErrorAction SilentlyContinue
-        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
-                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-        if (-not (Get-Command choco -ErrorAction SilentlyContinue)) { throw "choco not found after install" }
-    }
-} else {
-    LogSkip "Chocolatey already installed"
-    $summary.skip++
-}
-
 # -- node / npm ----------------------------------------------------------------
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
     TryInstall "Node.js" {
@@ -180,7 +159,6 @@ $candidates = [System.Collections.Generic.List[string]]::new()
 if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget") }
 if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated") }
 if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop") }
-if (Test-Path "$pkgDir\chocolatey\packages.config") { $candidates.Add("chocolatey") }
 if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm") }
 if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun") }
 if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv") }
@@ -281,26 +259,6 @@ if ($selectedManagers -contains "scoop") {
     # for subsequent steps like cargo-git compilation
     $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
                 [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-}
-
-# -- chocolatey ----------------------------------------------------------------
-if ($selectedManagers -contains "chocolatey") {
-    LogSection "chocolatey"
-    $chocoXml = [xml](Get-Content "$pkgDir\chocolatey\packages.config")
-    $allChocoPkgs = @($chocoXml.packages.package | Select-Object -ExpandProperty id | Sort-Object)
-    $selectedChocoPkgs = Select-WithFzf $allChocoPkgs "chocolatey>"
-    if ($selectedChocoPkgs) {
-        $pkgList = $selectedChocoPkgs -join ' '
-        TryInstall "choco: $($selectedChocoPkgs -join ', ') (elevated)" {
-            $chocoInstallScript = "$env:TEMP\choco-pkgs.ps1"
-@"
-choco install $pkgList -y
-Read-Host "`nPress Enter to close"
-"@ | Set-Content $chocoInstallScript
-            Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $chocoInstallScript -Wait
-            Remove-Item $chocoInstallScript -ErrorAction SilentlyContinue
-        }
-    }
 }
 
 # -- npm -----------------------------------------------------------------------

@@ -5,7 +5,6 @@ function Invoke-AllBackup {
     New-Item -ItemType Directory -Force -Path $PackagesDir | Out-Null
     Invoke-WingetBackup
     Invoke-ScoopBackup
-    Invoke-ChocoBackup
     Invoke-NodeBackup
     Invoke-BunBackup
     Invoke-UvBackup
@@ -48,13 +47,6 @@ function Invoke-ScoopBackup {
     Write-Host "scoop backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-scoop   -Value Invoke-ScoopBackup
-
-function Invoke-ChocoBackup {
-    $file = "$PackagesDir\chocolatey\packages.config"
-    choco export $file
-    Write-Host "choco backup OK" -ForegroundColor Green
-}
-Set-Alias -Name backup-choco   -Value Invoke-ChocoBackup
 
 function Invoke-NodeBackup {
     $file = "$PackagesDir\node\npm-packages.json"
