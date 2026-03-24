@@ -5,5 +5,6 @@
   { "src": "dot_config\\yazi",                 "dst": "%APPDATA%\\yazi\\config",                        "type": "junction" },
   { "src": "dot_config\\vesktop\\settings",    "dst": "%APPDATA%\\Vencord\\settings",                   "type": "junction" },
   { "src": "dot_config\\vesktop\\settings",    "dst": "%APPDATA%\\vesktop\\settings",                   "type": "junction" },
+  { "src": "dot_config\\zellij",               "dst": "%APPDATA%\\Zellij",                               "type": "junction" },
   { "src": "other_config\\mica-for-everyone\\settings.json", "dst": "%LOCALAPPDATA%\\Packages\\MicaForEveryone.MicaForEveryone2_eydvrrwaqjtyw\\LocalState\\settings.json", "type": "copy" }
 ]
