@@ -150,6 +150,9 @@ foreach (`$c in `$copies) {
     LogOk "`$(`$c.App) - `$(`$files.Count) file(s) installed"
 }
 
+# Exclude themes path from Defender to prevent false positives on unsigned .msstyles
+Add-MpPreference -ExclusionPath "C:\Windows\Resources\Themes" -ErrorAction SilentlyContinue
+
 `$rcopies = @(
     @{ Src = "`$chezmoisrc\program_files\windows\resources\themes"; Dst = "C:\Windows\Resources\Themes"; App = "Windows themes" }
 )
