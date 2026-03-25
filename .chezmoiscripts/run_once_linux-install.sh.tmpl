@@ -27,6 +27,21 @@ try_install() {
 
 log "Chezmoi install started -- log: $LOG_FILE"
 
+# -- Submodules ----------------------------------------------------------------
+log_section "Submodules"
+
+try_install "git submodules" bash -c '
+    cd "{{ .chezmoi.sourceDir }}"
+    git submodule update --init --recursive \
+        other_config/plymouth/themes/adi1090x-themes \
+        other_config/plymouth/themes/cachyos \
+        other_config/plymouth/themes/onepiece \
+        other_config/plymouth/themes/vortex-ubuntu \
+        other_config/sddm/themes/sddm-astronaut-theme \
+        dot_config/hypr/hyprlock/catppuccin \
+        dot_config/hypr/hyprlock/vivek-hyprlock-styles
+'
+
 # -- Bootstrap -----------------------------------------------------------------
 log_section "Bootstrap"
 
