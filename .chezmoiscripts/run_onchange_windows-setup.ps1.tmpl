@@ -186,6 +186,38 @@ Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "ins
     }
 }
 
+# == LOCK SCREEN (WinRT - runs in powershell.exe/PS5.1 context) ================
+# Credit: https://superuser.com/a/1343640
+LogSec "Lock screen"
+`$lockImg = Get-ChildItem "`$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+if (`$lockImg) {
+    `$newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension(`$lockImg.FullName)
+    Copy-Item `$lockImg.FullName `$newImagePath
+    Add-Type -AssemblyName System.Runtime.WindowsRuntime
+    [Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
+    `$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+        `$_.Name -eq 'AsTask' -and `$_.GetParameters().Count -eq 1 -and
+        `$_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation``1'
+    })[0]
+    function Await(`$WinRtTask, `$ResultType) {
+        `$netTask = `$asTaskGeneric.MakeGenericMethod(`$ResultType).Invoke(`$null, @(`$WinRtTask))
+        `$netTask.Wait(-1) | Out-Null; `$netTask.Result
+    }
+    function AwaitAction(`$WinRtAction) {
+        `$asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+            `$_.Name -eq 'AsTask' -and `$_.GetParameters().Count -eq 1 -and !`$_.IsGenericMethod
+        })[0]
+        `$asTask.Invoke(`$null, @(`$WinRtAction)).Wait(-1) | Out-Null
+    }
+    [Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
+    `$image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync(`$newImagePath)) ([Windows.Storage.StorageFile])
+    AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync(`$image))
+    Remove-Item `$newImagePath -ErrorAction SilentlyContinue
+    LogOk "lock screen: `$(`$lockImg.Name)"
+} else {
+    LogSkip "lock screen: main-wallpaper.* not found in Pictures\Wallpapers"
+}
+
 Log "--" "-- summary: `$ok OK  `$skip skipped  `$fail failed --"
 "@ | Set-Content $tmpScript
 
@@ -243,41 +275,7 @@ if ($wallpaper) {
     Write-Host "[windows-setup] main-wallpaper.* not found - skipping wallpaper" -ForegroundColor Yellow
 }
 
-# -- 3. Lock screen (WinRT via powershell.exe - PS5.1 required for WinRT types) -
-# Credit: https://superuser.com/a/1343640
-if ($wallpaper) {
-    $lockscreenTmp = "$env:TEMP\set-lockscreen-$(New-Guid).ps1"
-    Set-Content $lockscreenTmp @'
-param([string]$Path)
-$newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension($Path)
-Copy-Item $Path $newImagePath
-Add-Type -AssemblyName System.Runtime.WindowsRuntime
-[Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
-$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
-    $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and
-    $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1'
-})[0]
-function Await($WinRtTask, $ResultType) {
-    $netTask = $asTaskGeneric.MakeGenericMethod($ResultType).Invoke($null, @($WinRtTask))
-    $netTask.Wait(-1) | Out-Null; $netTask.Result
-}
-function AwaitAction($WinRtAction) {
-    $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
-        $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and !$_.IsGenericMethod
-    })[0]
-    $asTask.Invoke($null, @($WinRtAction)).Wait(-1) | Out-Null
-}
-[Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
-$image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($newImagePath)) ([Windows.Storage.StorageFile])
-AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync($image))
-Remove-Item $newImagePath
-'@
-    powershell.exe -NoProfile -File $lockscreenTmp -Path $wallpaper.FullName
-    Remove-Item $lockscreenTmp -ErrorAction SilentlyContinue
-    Write-Host "[windows-setup] Lock screen applied: $($wallpaper.Name)" -ForegroundColor Green
-} else {
-    Write-Host "[windows-setup] main-wallpaper.* not found - skipping lock screen" -ForegroundColor Yellow
-}
+# -- 3. Lock screen — handled in elevated block (PS5.1/WinRT) -----------------
 
 # -- 4. Accent color (Catppuccin Mocha Mauve #CBA6F7, ABGR) -------------------
 $accentPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent"
