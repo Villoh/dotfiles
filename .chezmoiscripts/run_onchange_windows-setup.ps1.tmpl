@@ -121,6 +121,18 @@ if (Test-Path "`$pkgDir\system\startup.json") {
         `$taskKey = Get-ChildItem "`$msixBase\`$(`$pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
             Where-Object { `$_.GetValue("State") -ne `$null } | Select-Object -First 1
 
+        if (-not `$taskKey) {
+            # Key only exists after first launch — start the app once to register it
+            `$appExe = Get-ChildItem "`$env:LOCALAPPDATA\Microsoft\WindowsApps" -Filter "*`$(`$entry.package)*" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (`$appExe) {
+                `$proc = Start-Process `$appExe.FullName -PassThru -WindowStyle Hidden
+                Start-Sleep -Seconds 3
+                Stop-Process -Id `$proc.Id -ErrorAction SilentlyContinue
+                `$taskKey = Get-ChildItem "`$msixBase\`$(`$pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
+                    Where-Object { `$_.GetValue("State") -ne `$null } | Select-Object -First 1
+            }
+        }
+
         if (-not `$taskKey) { LogSkip "msix: `$(`$entry.name) (startup task key not found)"; continue }
 
         TryRun "msix: `$(`$entry.name)" {
