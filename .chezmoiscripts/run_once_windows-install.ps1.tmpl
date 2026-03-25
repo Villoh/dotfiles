@@ -452,7 +452,7 @@ if ($selectedManagers -contains "cargo-git") {
             $cargoLabels = $cargoGitPkgs | ForEach-Object {
                 ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', ''
             }
-            $selectedLabels = Select-WithFzf ($cargoLabels | Sort-Object) "cargo (git)>" -AllowNew
+            $selectedLabels = Select-WithFzf ($cargoLabels | Sort-Object) "cargo (git)>"
             $cargoInstalled = cargo install --list 2>$null
             foreach ($label in $selectedLabels) {
                 $entry = $cargoGitPkgs | Where-Object {
@@ -472,7 +472,7 @@ if ($selectedManagers -contains "cargo-git") {
                 } else {
                     Log "  [....] cargo: $label" "Cyan"
 try {
-                        $null | & cargo install --git $url @extraArgs
+                        & cargo install --git $url @extraArgs
                         if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
                         LogOk "cargo: $label"
                         $summary.ok++
