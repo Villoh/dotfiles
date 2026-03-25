@@ -145,24 +145,6 @@ if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
 $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
             [System.Environment]::GetEnvironmentVariable('PATH', 'User')
 
-# -- Rust GNU toolchain (if rustup is available) -------------------------------
-if (Get-Command rustup -ErrorAction SilentlyContinue) {
-    $gnuToolchain = "stable-x86_64-pc-windows-gnu"
-    $installedToolchains = rustup toolchain list 2>$null
-    if ($installedToolchains -match [regex]::Escape($gnuToolchain)) {
-        LogSkip "Rust toolchain $gnuToolchain already configured"
-        $summary.skip++
-    } else {
-        TryInstall "Rust toolchain: $gnuToolchain" {
-            rustup toolchain install $gnuToolchain
-            rustup default $gnuToolchain
-            rustup component add rust-analyzer clippy rustfmt
-        }
-    }
-} else {
-    Log "  [INFO] rustup not found - skipping Rust toolchain setup (install rustup first)" "Yellow"
-}
-
 # == PACKAGE SELECTION =========================================================
 LogSection "Package selection"
 
@@ -410,6 +392,28 @@ if ($selectedManagers -contains "bin") {
         }
         Pop-Location
     }
+}
+
+# -- Refresh PATH (picks up rustup/cargo installed during winget) --------------
+$env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+            [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+
+# -- Rust GNU toolchain --------------------------------------------------------
+if (Get-Command rustup -ErrorAction SilentlyContinue) {
+    $gnuToolchain = "stable-x86_64-pc-windows-gnu"
+    $installedToolchains = rustup toolchain list 2>$null
+    if ($installedToolchains -match [regex]::Escape($gnuToolchain)) {
+        LogSkip "Rust toolchain $gnuToolchain already configured"
+        $summary.skip++
+    } else {
+        TryInstall "Rust toolchain: $gnuToolchain" {
+            rustup toolchain install $gnuToolchain
+            rustup default $gnuToolchain
+            rustup component add rust-analyzer clippy rustfmt
+        }
+    }
+} else {
+    Log "  [INFO] rustup not found - skipping Rust toolchain setup (install rustup first)" "Yellow"
 }
 
 # -- cargo (crates.io) --------------------------------------------------------
