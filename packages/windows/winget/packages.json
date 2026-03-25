@@ -1,14 +1,11 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-03-20T00:05:14.294+01:00",
+  "CreationDate": "2026-03-25T19:58:04.179+01:00",
   "Sources": [
     {
       "Packages": [
         {
           "PackageIdentifier": "ObinsKit.ObinsKit"
-        },
-        {
-          "PackageIdentifier": "qBittorrent.qBittorrent"
         },
         {
           "PackageIdentifier": "FilenCloud.FilenSync"
@@ -20,37 +17,52 @@
           "PackageIdentifier": "KRTirtho.Flemozi"
         },
         {
+          "PackageIdentifier": "Git.Git"
+        },
+        {
           "PackageIdentifier": "GnuPG.GnuPG"
+        },
+        {
+          "PackageIdentifier": "GnuPG.Gpg4win"
         },
         {
           "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
         },
         {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
-        },
-        {
-          "PackageIdentifier": "glzr-io.glazewm"
-        },
-        {
-          "PackageIdentifier": "GitHub.cli"
+          "PackageIdentifier": "AmN.yasb"
         },
         {
           "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
-          "PackageIdentifier": "AmN.yasb"
+          "PackageIdentifier": "OpenJS.NodeJS.LTS"
+        },
+        {
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+        },
+        {
+          "PackageIdentifier": "Nilesoft.Shell"
+        },
+        {
+          "PackageIdentifier": "GitHub.cli"
         },
         {
           "PackageIdentifier": "karlstav.cava"
         },
         {
-          "PackageIdentifier": "Vencord.Vesktop"
+          "PackageIdentifier": "IDRIX.VeraCrypt"
         },
         {
-          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
+          "PackageIdentifier": "TechPowerUp.NVCleanstall"
+        },
+        {
+          "PackageIdentifier": "glzr-io.glazewm"
         },
         {
           "PackageIdentifier": "wez.wezterm"
+        },
+        {
+          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
         },
         {
           "PackageIdentifier": "namazso.SecureUXTheme"
@@ -62,7 +74,10 @@
           "PackageIdentifier": "AppFlowy.AppFlowy"
         },
         {
-          "PackageIdentifier": "Brave.Brave"
+          "PackageIdentifier": "Blizzard.BattleNet"
+        },
+        {
+          "PackageIdentifier": "Wagnardsoft.DisplayDriverUninstaller"
         },
         {
           "PackageIdentifier": "OBSProject.OBSStudio"
@@ -77,13 +92,22 @@
           "PackageIdentifier": "Valve.Steam"
         },
         {
-          "PackageIdentifier": "IDRIX.VeraCrypt"
-        },
-        {
           "PackageIdentifier": "RamenSoftware.Windhawk"
         },
         {
+          "PackageIdentifier": "qBittorrent.qBittorrent"
+        },
+        {
+          "PackageIdentifier": "Microsoft.VCRedist.2013.x64"
+        },
+        {
+          "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
+        },
+        {
           "PackageIdentifier": "o2sh.onefetch"
+        },
+        {
+          "PackageIdentifier": "Vencord.Vesktop"
         },
         {
           "PackageIdentifier": "JohannesMillan.superProductivity"
@@ -95,16 +119,19 @@
           "PackageIdentifier": "AltSnap.AltSnap"
         },
         {
-          "PackageIdentifier": "Anthropic.Claude"
+          "PackageIdentifier": "Anthropic.ClaudeCode"
         },
         {
-          "PackageIdentifier": "Anthropic.ClaudeCode"
+          "PackageIdentifier": "Anthropic.Claude"
         },
         {
           "PackageIdentifier": "AutoHotkey.AutoHotkey"
         },
         {
           "PackageIdentifier": "Bitwarden.CLI"
+        },
+        {
+          "PackageIdentifier": "Brave.Brave"
         },
         {
           "PackageIdentifier": "DenoLand.Deno"
@@ -132,6 +159,9 @@
         },
         {
           "PackageIdentifier": "Logseq.Logseq"
+        },
+        {
+          "PackageIdentifier": "AnInsomniacy.MotrixNext"
         },
         {
           "PackageIdentifier": "KDE.Okular"
@@ -164,9 +194,6 @@
           "PackageIdentifier": "ajeetdsouza.zoxide"
         },
         {
-          "PackageIdentifier": "arndawg.zellij-windows"
-        },
-        {
           "PackageIdentifier": "astral-sh.uv"
         },
         {
@@ -174,9 +201,6 @@
         },
         {
           "PackageIdentifier": "Proton.ProtonMail"
-        },
-        {
-          "PackageIdentifier": "sxyazi.yazi"
         },
         {
           "PackageIdentifier": "twpayne.chezmoi"
@@ -209,9 +233,6 @@
           "PackageIdentifier": "M2Team.NanaZip"
         },
         {
-          "PackageIdentifier": "FilesCommunity.Files"
-        },
-        {
           "PackageIdentifier": "MicaForEveryone.MicaForEveryone"
         },
         {
@@ -238,12 +259,12 @@
         }
       ],
       "SourceDetails": {
-        "Argument": "https://storeedgefd.dsx.mp.microsoft.com/v9.0",
-        "Identifier": "StoreEdgeFD",
+        "Argument": "https://storeedge.implemenation.microsoft.com/v9/manifestations/packagerepository/packageidentifier/",
+        "Identifier": "Microsoft.Winget.MSStore.Source_8wekyb3d8bbwe",
         "Name": "msstore",
         "Type": "Microsoft.Rest"
       }
     }
   ],
-  "WinGetVersion": "1.12.460"
+  "WinGetVersion": "1.28.220"
 }
