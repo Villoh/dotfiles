@@ -1,23 +1,30 @@
 [submodule "other_config/plymouth/themes/adi1090x-themes"]
 	path = other_config/plymouth/themes/adi1090x-themes
 	url = https://github.com/adi1090x/plymouth-themes.git
+	update = none
 [submodule "other_config/plymouth/themes/cachyos"]
 	path = other_config/plymouth/themes/cachyos
 	url = https://github.com/CachyOS/cachyos-plymouth-theme.git
+	update = none
 [submodule "other_config/plymouth/themes/onepiece"]
 	path = other_config/plymouth/themes/onepiece
 	url = https://github.com/Anxhul10/onePiece-plymouth.git
+	update = none
 [submodule "other_config/plymouth/themes/vortex-ubuntu"]
 	path = other_config/plymouth/themes/vortex-ubuntu
 	url = https://github.com/emanuele-scarsella/vortex-ubuntu-plymouth-theme.git
+	update = none
 [submodule "other_config/sddm/themes/sddm-astronaut-theme"]
 	path = other_config/sddm/themes/sddm-astronaut-theme
 	url = https://github.com/Keyitdev/sddm-astronaut-theme.git
+	update = none
 [submodule "dot_config/hypr/hyprlock/catppuccin"]
 	path = dot_config/hypr/hyprlock/catppuccin
 	url = https://github.com/catppuccin/hyprlock.git
 	ignore = dirty
+	update = none
 [submodule "dot_config/hypr/hyprlock/vivek-hyprlock-styles"]
 	path = dot_config/hypr/hyprlock/vivek-hyprlock-styles
 	url = https://github.com/MrVivekRajan/Hyprlock-Styles.git
 	ignore = dirty
+	update = none
