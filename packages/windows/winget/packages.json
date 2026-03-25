@@ -190,10 +190,7 @@
         {
           "PackageIdentifier": "Spotify.Spotify"
         },
-        {
-          "PackageIdentifier": "ajeetdsouza.zoxide"
-        },
-        {
+{
           "PackageIdentifier": "astral-sh.uv"
         },
         {
