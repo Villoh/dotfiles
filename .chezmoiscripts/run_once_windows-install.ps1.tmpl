@@ -516,5 +516,4 @@ Log "  [FAIL] Failed:  $($summary.fail)"  $(if ($summary.fail -gt 0) { "Red" } e
 Log "  [LOG]  Log:     $logFile"          "Cyan"
 Log "`n======================================" "Cyan"
 
-try { Read-Host "`nPress Enter to exit" } catch { Start-Sleep -Seconds 3 }
 {{ end -}}

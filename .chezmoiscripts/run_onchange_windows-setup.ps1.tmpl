@@ -303,4 +303,12 @@ Write-Host "[windows-setup] Accent color set to Catppuccin Mocha Mauve" -Foregro
 rundll32.exe user32.dll,UpdatePerUserSystemParameters ,1 ,True
 Write-Host "[windows-setup] Changes broadcast to Windows" -ForegroundColor Green
 Write-Host "[windows-setup] -- summary: done --" -ForegroundColor Cyan
+
+# -- Restart prompt ------------------------------------------------------------
+Write-Host ""
+Write-Host "  A restart is recommended to apply all changes." -ForegroundColor Yellow
+$choice = Read-Host "  Restart now? [y/N]"
+if ($choice -match '^[yY]') {
+    Restart-Computer -Force
+}
 {{ end -}}
