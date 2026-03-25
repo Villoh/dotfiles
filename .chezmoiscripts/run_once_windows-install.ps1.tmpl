@@ -119,9 +119,17 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     $summary.skip++
 }
 
-# -- bin (scoop) ---------------------------------------------------------------
+# -- scoop extras bucket (required for bin and other bootstrap tools) ----------
+if (-not (scoop bucket list | Select-Object -ExpandProperty Name | Where-Object { $_ -eq 'extras' })) {
+    TryInstall "scoop bucket extras" { scoop bucket add extras }
+} else {
+    LogSkip "scoop bucket extras already added"
+    $summary.skip++
+}
+
+# -- bin (scoop/extras) --------------------------------------------------------
 if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
-    TryInstall "bin" { scoop install bin }
+    TryInstall "bin" { scoop install extras/bin }
 } else {
     LogSkip "bin already installed"
     $summary.skip++
