@@ -470,6 +470,7 @@ if ($selectedManagers -contains "cargo-git") {
                     $summary.skip++
                 } else {
                     Log "  [....] cargo: $label" "Cyan"
+                    Log "  [DEBUG] url=[$url] extraArgs=[$($extraArgs -join '|')]" "Gray"
                     try {
                         & cargo install --git $url @extraArgs
                         LogOk "cargo: $label"
