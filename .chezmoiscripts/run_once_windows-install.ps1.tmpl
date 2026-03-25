@@ -448,19 +448,22 @@ if ($selectedManagers -contains "cargo-git") {
         if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
             Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
         } else {
-            $cargoItems = $cargoGitPkgs | ForEach-Object {
-                [PSCustomObject]@{
-                    Label = ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', ''
-                    Args  = $_
-                }
+            $cargoLabels = $cargoGitPkgs | ForEach-Object {
+                ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', ''
             }
-            $selectedLabels = Select-WithFzf ($cargoItems.Label | Sort-Object) "cargo (git)>" -AllowNew
+            $selectedLabels = Select-WithFzf ($cargoLabels | Sort-Object) "cargo (git)>" -AllowNew
             $cargoInstalled = cargo install --list 2>$null
             foreach ($label in $selectedLabels) {
-                $item = $cargoItems | Where-Object { $_.Label -eq $label }
-                $parts = $item.Args -split '\s+'
+                $entry = $cargoGitPkgs | Where-Object {
+                    (($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', '') -eq $label
+                }
+                if (-not $entry) {
+                    # Extra package typed by user: treat label as raw URL
+                    $entry = $label
+                }
+                $parts = @($entry -split '\s+')
                 $url = $parts[0]
-                $extraArgs = if ($parts.Length -gt 1) { $parts[1..($parts.Length - 1)] } else { @() }
+                $extraArgs = if ($parts.Count -gt 1) { $parts[1..($parts.Count - 1)] } else { @() }
                 $baseUrl = $url -replace '\.git$', ''
                 if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
                     LogSkip "cargo: $label already installed"
