@@ -61,6 +61,8 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
         Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
         irm get.scoop.sh | iex
     }
+    $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+                [System.Environment]::GetEnvironmentVariable('PATH', 'User')
 } else {
     LogSkip "Scoop already installed"
     $summary.skip++
