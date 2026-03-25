@@ -17,7 +17,7 @@ function Select-WithFzf {
     $selected = $Items | fzf --multi --prompt="  $Prompt " --header="$Header" `
         --layout=reverse --border --bind='ctrl-a:select-all'
     if ($LASTEXITCODE -ne 0) { return @() }
-    $selected = @($selected)
+    $selected = @($selected | Where-Object { $_ })
     if ($AllowNew) {
         $extra = Read-Host "  Add extra packages (space-separated, empty to skip)"
         if ($extra.Trim()) { $selected += $extra.Trim() -split '\s+' }
