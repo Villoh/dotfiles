@@ -237,9 +237,8 @@ if ($selectedManagers -contains "winget-elevated") {
                 $tmpScript = "$env:TEMP\winget-elevated-$pkg.ps1"
 @"
 winget install --id $pkg --accept-package-agreements --accept-source-agreements -e
-Read-Host "`nPress Enter to close"
 "@ | Set-Content $tmpScript
-                Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+                Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
                 Remove-Item $tmpScript -ErrorAction SilentlyContinue
             }
         }
