@@ -183,20 +183,6 @@ Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "ins
     }
 }
 
-# == LOCK SCREEN ===============================================================
-LogSec "Lock screen"
-`$wallpaper = Get-ChildItem "`$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
-if (`$wallpaper) {
-    `$cspPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP"
-    New-Item -Path `$cspPath -Force | Out-Null
-    Set-ItemProperty -Path `$cspPath -Name "LockScreenImagePath"   -Value `$wallpaper.FullName
-    Set-ItemProperty -Path `$cspPath -Name "LockScreenImageUrl"    -Value `$wallpaper.FullName
-    Set-ItemProperty -Path `$cspPath -Name "LockScreenImageStatus" -Value 1 -Type DWord
-    LogOk "lock screen: `$(`$wallpaper.Name)"
-} else {
-    LogSkip "lock screen: main-wallpaper.* not found in Pictures\Wallpapers"
-}
-
 Log "--" "-- summary: `$ok OK  `$skip skipped  `$fail failed --"
 "@ | Set-Content $tmpScript
 
@@ -230,6 +216,43 @@ if ($secureUxInstalled -and (Test-Path $defaultTheme)) {
     Write-Host "[windows-setup] SecureUxTheme not installed - skipping theme application" -ForegroundColor Yellow
 } else {
     Write-Host "[windows-setup] Theme file not found: $defaultTheme" -ForegroundColor Yellow
+}
+
+# -- Lock screen (user context, WinRT) -----------------------------------------
+# Credit: https://superuser.com/a/1343640
+function Set-LockscreenImage {
+    param([ValidateNotNullOrEmpty()][string]$Path)
+    if (!(Test-Path $Path)) { Write-Warning "Lock screen image not found: $Path"; return }
+    $newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension($Path)
+    Copy-Item $Path $newImagePath
+    Add-Type -AssemblyName System.Runtime.WindowsRuntime
+    [Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
+    $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+        $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and
+        $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1'
+    })[0]
+    function Await($WinRtTask, $ResultType) {
+        $netTask = $asTaskGeneric.MakeGenericMethod($ResultType).Invoke($null, @($WinRtTask))
+        $netTask.Wait(-1) | Out-Null; $netTask.Result
+    }
+    function AwaitAction($WinRtAction) {
+        $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+            $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and !$_.IsGenericMethod
+        })[0]
+        $asTask.Invoke($null, @($WinRtAction)).Wait(-1) | Out-Null
+    }
+    [Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
+    $image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($newImagePath)) ([Windows.Storage.StorageFile])
+    AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync($image))
+    Remove-Item $newImagePath
+}
+
+$wallpaper = Get-ChildItem "$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($wallpaper) {
+    Set-LockscreenImage -Path $wallpaper.FullName
+    Write-Host "[windows-setup] Lock screen applied: $($wallpaper.Name)" -ForegroundColor Green
+} else {
+    Write-Host "[windows-setup] main-wallpaper.* not found - skipping lock screen" -ForegroundColor Yellow
 }
 
 # -- Desktop wallpaper (user context) ------------------------------------------
