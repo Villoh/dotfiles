@@ -230,7 +230,7 @@ if (`$lockImg) {
     LogSkip "lock screen: main-wallpaper.* not found in Pictures\Wallpapers"
 }
 
-Log "--" "-- summary: `$ok OK  `$skip skipped  `$fail failed --"
+Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
 "@ | Set-Content $tmpScript
 
 Write-Host "[windows-setup] Requesting elevation..." -ForegroundColor Cyan
@@ -302,4 +302,5 @@ Write-Host "[windows-setup] Accent color set to Catppuccin Mocha Mauve" -Foregro
 [Win32]::SendMessageTimeout([IntPtr]0xffff, 0x001A, [UIntPtr]::Zero, "Environment", 2, 5000, [ref]$result) | Out-Null
 rundll32.exe user32.dll,UpdatePerUserSystemParameters ,1 ,True
 Write-Host "[windows-setup] Changes broadcast to Windows" -ForegroundColor Green
+Write-Host "[windows-setup] -- summary: done --" -ForegroundColor Cyan
 {{ end -}}
