@@ -18,6 +18,7 @@
 { "PackageIdentifier": "RamenSoftware.Windhawk" },
         { "PackageIdentifier": "MicaForEveryone.MicaForEveryone" },
         { "PackageIdentifier": "Rainmeter.Rainmeter" },
+        { "PackageIdentifier": "Rustlang.Rustup" },
         { "PackageIdentifier": "Fastfetch-cli.Fastfetch" }
       ],
       "SourceDetails": {
