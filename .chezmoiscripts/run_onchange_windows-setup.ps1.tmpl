@@ -201,4 +201,17 @@ if (Test-Path $logFile) {
     Write-Warning "windows-setup: no output received (UAC cancelled or script failed)"
 }
 Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+# -- Apply default theme (user context, after elevated block) ------------------
+$defaultTheme = "C:\Windows\Resources\Themes\Catppuccin - Mocha Night.theme"
+$secureUxInstalled = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" `
+    -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -like "*SecureUxTheme*" }
+if ($secureUxInstalled -and (Test-Path $defaultTheme)) {
+    Write-Host "[windows-setup] Applying Catppuccin Mocha Night theme..." -ForegroundColor Cyan
+    Start-Process $defaultTheme
+} elseif (-not $secureUxInstalled) {
+    Write-Host "[windows-setup] SecureUxTheme not installed - skipping theme application" -ForegroundColor Yellow
+} else {
+    Write-Host "[windows-setup] Theme file not found: $defaultTheme" -ForegroundColor Yellow
+}
 {{ end -}}
