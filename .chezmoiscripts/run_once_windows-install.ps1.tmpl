@@ -462,17 +462,15 @@ if ($selectedManagers -contains "cargo-git") {
                     # Extra package typed by user: treat label as raw URL
                     $entry = $label
                 }
-                $parts = @($entry -split '\s+')
-                $url = $parts[0]
-                $extraArgs = if ($parts.Count -gt 1) { $parts[1..($parts.Count - 1)] } else { @() }
+                $url = ($entry -split '\s+')[0]
                 $baseUrl = $url -replace '\.git$', ''
                 if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
                     LogSkip "cargo: $label already installed"
                     $summary.skip++
                 } else {
                     Log "  [....] cargo: $label" "Cyan"
-try {
-                        & cargo install --git $url @extraArgs
+                    try {
+                        Invoke-Expression "cargo install --git $entry"
                         if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
                         LogOk "cargo: $label"
                         $summary.ok++
