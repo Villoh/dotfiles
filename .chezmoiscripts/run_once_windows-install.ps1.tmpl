@@ -472,7 +472,7 @@ if ($selectedManagers -contains "cargo-git") {
                 } else {
                     Log "  [....] cargo: $label" "Cyan"
 try {
-                        & cargo install --git $url @extraArgs
+                        $null | & cargo install --git $url @extraArgs
                         if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
                         LogOk "cargo: $label"
                         $summary.ok++
