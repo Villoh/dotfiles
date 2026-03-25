@@ -191,7 +191,21 @@ if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
 # -- winget --------------------------------------------------------------------
 if ($selectedManagers -contains "winget") {
     LogSection "winget"
-    $wingetJson = Get-Content "$pkgDir\winget\packages.json" | ConvertFrom-Json
+
+    $wingetProfiles = @()
+    if (Test-Path "$pkgDir\winget\minimal.json")  { $wingetProfiles += "minimal" }
+    if (Test-Path "$pkgDir\winget\packages.json") { $wingetProfiles += "full" }
+
+    $profileChoice = Select-WithFzf $wingetProfiles "winget profile>" `
+        "Select package profile: minimal=dotfiles only  full=everything"
+    $wingetFile = if ($profileChoice -contains "minimal") {
+        "$pkgDir\winget\minimal.json"
+    } else {
+        "$pkgDir\winget\packages.json"
+    }
+    Log "  Profile: $(Split-Path $wingetFile -Leaf)" "Cyan"
+
+    $wingetJson = Get-Content $wingetFile | ConvertFrom-Json
     $allWingetIds = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
         Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
 

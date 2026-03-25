@@ -1,0 +1,33 @@
+{
+  "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
+  "Sources": [
+    {
+      "Packages": [
+        { "PackageIdentifier": "Git.Git" },
+        { "PackageIdentifier": "GnuPG.Gpg4win" },
+        { "PackageIdentifier": "twpayne.chezmoi" },
+        { "PackageIdentifier": "Microsoft.PowerShell" },
+        { "PackageIdentifier": "Microsoft.WindowsTerminal" },
+        { "PackageIdentifier": "Starship.Starship" },
+        { "PackageIdentifier": "Alacritty.Alacritty" },
+        { "PackageIdentifier": "ZedIndustries.Zed" },
+        { "PackageIdentifier": "glzr-io.glazewm" },
+        { "PackageIdentifier": "AmN.yasb" },
+        { "PackageIdentifier": "Flow-Launcher.Flow-Launcher" },
+        { "PackageIdentifier": "Ditto.Ditto" },
+        { "PackageIdentifier": "Nilesoft.Shell" },
+        { "PackageIdentifier": "RamenSoftware.Windhawk" },
+        { "PackageIdentifier": "MicaForEveryone.MicaForEveryone" },
+        { "PackageIdentifier": "Rainmeter.Rainmeter" },
+        { "PackageIdentifier": "Fastfetch-cli.Fastfetch" }
+      ],
+      "SourceDetails": {
+        "Argument": "https://cdn.winget.microsoft.com/cache",
+        "Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
+        "Name": "winget",
+        "Type": "Microsoft.PreIndexed.Package"
+      }
+    }
+  ],
+  "WinGetVersion": "1.28.220"
+}
