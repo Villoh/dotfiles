@@ -469,8 +469,14 @@ if ($selectedManagers -contains "cargo-git") {
                     LogSkip "cargo: $label already installed"
                     $summary.skip++
                 } else {
-                    TryInstall "cargo: $label" {
+                    Log "  [....] cargo: $label" "Cyan"
+                    try {
                         & cargo install --git $url @extraArgs
+                        LogOk "cargo: $label"
+                        $summary.ok++
+                    } catch {
+                        LogFail "cargo: $label - $($_.Exception.Message)"
+                        $summary.fail++
                     }
                 }
             }
