@@ -433,7 +433,7 @@ if ($selectedManagers -contains "cargo") {
                     LogSkip "cargo: $pkg already installed"
                     $summary.skip++
                 } else {
-                    TryInstall "cargo: $pkg" { cargo install $pkg }
+                    TryInstall "cargo: $pkg" { Invoke-Expression "cargo install $pkg" }
                 }
             }
         }
