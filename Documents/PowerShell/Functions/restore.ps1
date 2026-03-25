@@ -6,7 +6,8 @@ function Select-WithFzf {
     param(
         [string[]]$Items,
         [string]$Prompt = "Select>",
-        [string]$Header = "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip"
+        [string]$Header = "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip",
+        [switch]$AllowNew
     )
     if (-not $Items -or $Items.Count -eq 0) { return @() }
     if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
@@ -16,7 +17,12 @@ function Select-WithFzf {
     $selected = $Items | fzf --multi --prompt="  $Prompt " --header="$Header" `
         --layout=reverse --border --bind='ctrl-a:select-all'
     if ($LASTEXITCODE -ne 0) { return @() }
-    return @($selected)
+    $selected = @($selected)
+    if ($AllowNew) {
+        $extra = Read-Host "  Add extra packages (space-separated, empty to skip)"
+        if ($extra.Trim()) { $selected += $extra.Trim() -split '\s+' }
+    }
+    return $selected
 }
 
 # -- Invoke-AllRestore ---------------------------------------------------------
@@ -80,7 +86,7 @@ function Invoke-WingetRestore {
     $allIds = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
         Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
 
-    $selectedIds = Select-WithFzf $allIds "winget>"
+    $selectedIds = Select-WithFzf $allIds "winget>" -AllowNew
     foreach ($id in $selectedIds) {
         $installed = winget list --id $id --accept-source-agreements 2>$null | Select-String $id
         if ($installed) {
@@ -109,7 +115,7 @@ function Invoke-ScoopRestore {
     }
 
     $allNames = @($data.apps | Select-Object -ExpandProperty Name | Sort-Object)
-    $selectedNames = Select-WithFzf $allNames "scoop>"
+    $selectedNames = Select-WithFzf $allNames "scoop>" -AllowNew
     $installed = scoop list 2>$null | Select-Object -ExpandProperty Name
 
     foreach ($name in $selectedNames) {
@@ -134,7 +140,7 @@ function Invoke-NodeRestore {
     if (-not $data.dependencies) { Write-Host "npm: no hay paquetes" -ForegroundColor Yellow; return }
 
     $allPkgs = @($data.dependencies.PSObject.Properties.Name | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "npm>"
+    $selectedPkgs = Select-WithFzf $allPkgs "npm>" -AllowNew
     $installed = npm list -g --depth=0 2>$null
 
     foreach ($pkg in $selectedPkgs) {
@@ -155,7 +161,7 @@ function Invoke-BunRestore {
     if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
 
     $allPkgs = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "bun>"
+    $selectedPkgs = Select-WithFzf $allPkgs "bun>" -AllowNew
     $installed = bun pm ls -g 2>$null
 
     foreach ($pkg in $selectedPkgs) {
@@ -177,7 +183,7 @@ function Invoke-UvRestore {
     if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
 
     $allTools = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedTools = Select-WithFzf $allTools "uv>"
+    $selectedTools = Select-WithFzf $allTools "uv>" -AllowNew
     $installed = uv tool list 2>$null
 
     foreach ($tool in $selectedTools) {
@@ -198,7 +204,7 @@ function Invoke-BinRestore {
     if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
 
     $allPkgs = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "bin>"
+    $selectedPkgs = Select-WithFzf $allPkgs "bin>" -AllowNew
     $installed = bin list 2>$null
 
     foreach ($pkg in $selectedPkgs) {
