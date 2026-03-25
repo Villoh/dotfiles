@@ -82,8 +82,8 @@ if ($devModeVal -eq 1) {
     $summary.skip++
 } else {
     TryInstall "Developer Mode (elevated)" {
-        $cmd = 'Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Type DWord -Force; Write-Host "Developer Mode enabled." -ForegroundColor Green; Read-Host "`nPress Enter to close"'
-        Start-Process powershell.exe -Verb RunAs -ArgumentList "-NoProfile", "-Command", $cmd -Wait
+        $cmd = 'Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Value 1 -Type DWord -Force'
+        Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-Command", $cmd -Wait
     }
 }
 
