@@ -243,37 +243,37 @@ if ($wallpaper) {
     Write-Host "[windows-setup] main-wallpaper.* not found - skipping wallpaper" -ForegroundColor Yellow
 }
 
-# -- 3. Lock screen (WinRT) ----------------------------------------------------
+# -- 3. Lock screen (WinRT via powershell.exe - PS5.1 required for WinRT types) -
 # Credit: https://superuser.com/a/1343640
-function Set-LockscreenImage {
-    param([ValidateNotNullOrEmpty()][string]$Path)
-    if (!(Test-Path $Path)) { Write-Warning "Lock screen image not found: $Path"; return }
-    $newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension($Path)
-    Copy-Item $Path $newImagePath
-    Add-Type -AssemblyName System.Runtime.WindowsRuntime
-    [Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
-    $asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
-        $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and
-        $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1'
-    })[0]
-    function Await($WinRtTask, $ResultType) {
-        $netTask = $asTaskGeneric.MakeGenericMethod($ResultType).Invoke($null, @($WinRtTask))
-        $netTask.Wait(-1) | Out-Null; $netTask.Result
-    }
-    function AwaitAction($WinRtAction) {
-        $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
-            $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and !$_.IsGenericMethod
-        })[0]
-        $asTask.Invoke($null, @($WinRtAction)).Wait(-1) | Out-Null
-    }
-    [Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
-    $image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($newImagePath)) ([Windows.Storage.StorageFile])
-    AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync($image))
-    Remove-Item $newImagePath
-}
-
 if ($wallpaper) {
-    Set-LockscreenImage -Path $wallpaper.FullName
+    $lockscreenTmp = "$env:TEMP\set-lockscreen-$(New-Guid).ps1"
+    Set-Content $lockscreenTmp @'
+param([string]$Path)
+$newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension($Path)
+Copy-Item $Path $newImagePath
+Add-Type -AssemblyName System.Runtime.WindowsRuntime
+[Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
+$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+    $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and
+    $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1'
+})[0]
+function Await($WinRtTask, $ResultType) {
+    $netTask = $asTaskGeneric.MakeGenericMethod($ResultType).Invoke($null, @($WinRtTask))
+    $netTask.Wait(-1) | Out-Null; $netTask.Result
+}
+function AwaitAction($WinRtAction) {
+    $asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+        $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and !$_.IsGenericMethod
+    })[0]
+    $asTask.Invoke($null, @($WinRtAction)).Wait(-1) | Out-Null
+}
+[Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
+$image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync($newImagePath)) ([Windows.Storage.StorageFile])
+AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync($image))
+Remove-Item $newImagePath
+'@
+    powershell.exe -NoProfile -File $lockscreenTmp -Path $wallpaper.FullName
+    Remove-Item $lockscreenTmp -ErrorAction SilentlyContinue
     Write-Host "[windows-setup] Lock screen applied: $($wallpaper.Name)" -ForegroundColor Green
 } else {
     Write-Host "[windows-setup] main-wallpaper.* not found - skipping lock screen" -ForegroundColor Yellow
