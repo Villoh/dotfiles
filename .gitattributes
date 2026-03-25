@@ -2,4 +2,8 @@ program_files/windows/resources/themes/**/*.msstyles filter=lfs diff=lfs merge=l
 program_files/windows/resources/themes/**/*.theme filter=lfs diff=lfs merge=lfs -text
 program_files/windows/cursors/**/*.cur filter=lfs diff=lfs merge=lfs -text
 program_files/windows/cursors/**/*.ani filter=lfs diff=lfs merge=lfs -text
+Pictures/Wallpapers/*.jpg filter=lfs diff=lfs merge=lfs -text
+Pictures/Wallpapers/*.png filter=lfs diff=lfs merge=lfs -text
+Pictures/Wallpapers/*.jpeg filter=lfs diff=lfs merge=lfs -text
+Pictures/Wallpapers/*.webp filter=lfs diff=lfs merge=lfs -text
 program_files/windhawk/**/*.dll filter=lfs diff=lfs merge=lfs -text

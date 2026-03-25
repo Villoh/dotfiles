@@ -13,6 +13,9 @@
 {{ end -}}
 {{ range (glob "program_files/windows/cursors/**") -}}
 # {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ range (glob "Pictures/Wallpapers/main-wallpaper.*") -}}
+# {{ . }} {{ include . | sha256sum }}
 {{ end }}
 $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $pkgDir     = "$chezmoisrc\packages\windows"
@@ -180,6 +183,20 @@ Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "ins
     }
 }
 
+# == LOCK SCREEN ===============================================================
+LogSec "Lock screen"
+`$wallpaper = Get-ChildItem "`$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+if (`$wallpaper) {
+    `$cspPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\PersonalizationCSP"
+    New-Item -Path `$cspPath -Force | Out-Null
+    Set-ItemProperty -Path `$cspPath -Name "LockScreenImagePath"   -Value `$wallpaper.FullName
+    Set-ItemProperty -Path `$cspPath -Name "LockScreenImageUrl"    -Value `$wallpaper.FullName
+    Set-ItemProperty -Path `$cspPath -Name "LockScreenImageStatus" -Value 1 -Type DWord
+    LogOk "lock screen: `$(`$wallpaper.Name)"
+} else {
+    LogSkip "lock screen: main-wallpaper.* not found in Pictures\Wallpapers"
+}
+
 Log "--" "-- summary: `$ok OK  `$skip skipped  `$fail failed --"
 "@ | Set-Content $tmpScript
 
@@ -213,6 +230,23 @@ if ($secureUxInstalled -and (Test-Path $defaultTheme)) {
     Write-Host "[windows-setup] SecureUxTheme not installed - skipping theme application" -ForegroundColor Yellow
 } else {
     Write-Host "[windows-setup] Theme file not found: $defaultTheme" -ForegroundColor Yellow
+}
+
+# -- Desktop wallpaper (user context) ------------------------------------------
+$wallpaper = Get-ChildItem "$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($wallpaper) {
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public class Wallpaper {
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+}
+'@ -ErrorAction SilentlyContinue
+    [Wallpaper]::SystemParametersInfo(20, 0, $wallpaper.FullName, 3)
+    Write-Host "[windows-setup] Wallpaper applied: $($wallpaper.Name)" -ForegroundColor Green
+} else {
+    Write-Host "[windows-setup] main-wallpaper.* not found in Pictures\Wallpapers" -ForegroundColor Yellow
 }
 
 # -- Accent color (Catppuccin Mocha Mauve #CBA6F7, stored as ABGR) -------------
