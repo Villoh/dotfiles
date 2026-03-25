@@ -23,6 +23,7 @@ function TryInstall {
     param([string]$name, [scriptblock]$block)
     try {
         & $block
+        if ($LASTEXITCODE -and $LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
         LogOk $name
         $summary.ok++
     } catch {
@@ -470,9 +471,9 @@ if ($selectedManagers -contains "cargo-git") {
                     $summary.skip++
                 } else {
                     Log "  [....] cargo: $label" "Cyan"
-                    Log "  [DEBUG] url=[$url] extraArgs=[$($extraArgs -join '|')]" "Gray"
-                    try {
+try {
                         & cargo install --git $url @extraArgs
+                        if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
                         LogOk "cargo: $label"
                         $summary.ok++
                     } catch {
