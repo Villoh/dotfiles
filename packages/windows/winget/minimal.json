@@ -20,7 +20,8 @@
         { "PackageIdentifier": "Rainmeter.Rainmeter" },
         { "PackageIdentifier": "Rustlang.Rustup" },
         { "PackageIdentifier": "Fastfetch-cli.Fastfetch" },
-        { "PackageIdentifier": "namazso.SecureUXTheme" }
+        { "PackageIdentifier": "namazso.SecureUXTheme" },
+        { "PackageIdentifier": "AltSnap.AltSnap" }
       ],
       "SourceDetails": {
         "Argument": "https://cdn.winget.microsoft.com/cache",
