@@ -38,8 +38,7 @@ function Select-WithFzf {
     param(
         [string[]]$Items,
         [string]$Prompt,
-        [string]$Header = "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip",
-        [switch]$AllowNew
+        [string]$Header = "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip"
     )
     if (-not $Items -or $Items.Count -eq 0) { return @() }
     if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
@@ -50,10 +49,6 @@ function Select-WithFzf {
         --layout=reverse --border --bind='ctrl-a:select-all'
     if ($LASTEXITCODE -ne 0) { return @() }
     $selected = @($selected | Where-Object { $_ })
-    if ($AllowNew) {
-        $extra = Read-Host "  Add extra packages (space-separated, empty to skip)"
-        if ($extra.Trim()) { $selected += $extra.Trim() -split '\s+' }
-    }
     return $selected
 }
 
@@ -199,7 +194,7 @@ if ($selectedManagers -contains "winget") {
     $allWingetIds = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
         Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
 
-    $selectedIds = Select-WithFzf $allWingetIds "winget>" -AllowNew
+    $selectedIds = Select-WithFzf $allWingetIds "winget>"
     foreach ($id in $selectedIds) {
         $installed = winget list --id $id --accept-source-agreements 2>$null | Select-String $id
         if ($installed) {
@@ -216,7 +211,7 @@ if ($selectedManagers -contains "winget") {
 # -- winget (elevated) ---------------------------------------------------------
 if ($selectedManagers -contains "winget-elevated") {
     LogSection "winget (elevated)"
-    $selectedElevated = Select-WithFzf $elevatedPkgs "winget-elevated>" -AllowNew
+    $selectedElevated = Select-WithFzf $elevatedPkgs "winget-elevated>"
     foreach ($pkg in $selectedElevated) {
         $installed = winget list --id $pkg --accept-source-agreements 2>$null | Select-String $pkg
         if ($installed) {
@@ -254,7 +249,7 @@ if ($selectedManagers -contains "scoop") {
     }
 
     $allScoopNames = @($scoop.apps | Select-Object -ExpandProperty Name | Sort-Object)
-    $selectedNames = Select-WithFzf $allScoopNames "scoop>" -AllowNew
+    $selectedNames = Select-WithFzf $allScoopNames "scoop>"
     $scoopInstalled = scoop list 2>$null | Select-Object -ExpandProperty Name
     foreach ($name in $selectedNames) {
         $app = $scoop.apps | Where-Object { $_.Name -eq $name }
@@ -281,7 +276,7 @@ if ($selectedManagers -contains "npm") {
         LogSection "npm"
         $allNpmPkgs = @($npm.dependencies.PSObject.Properties |
             ForEach-Object { "$($_.Name)@$($_.Value)" } | Sort-Object)
-        $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>" -AllowNew
+        $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>"
         foreach ($pkg in $selectedNpmPkgs) {
             TryInstall "npm: $pkg" { npm install -g $pkg }
         }
@@ -293,7 +288,7 @@ if ($selectedManagers -contains "bun") {
     $bunPkgs = @(Get-Content "$pkgDir\node\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
     if ($bunPkgs) {
         LogSection "bun"
-        $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>" -AllowNew
+        $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>"
         $bunInstalled = bun pm ls -g 2>$null
         foreach ($pkg in $selectedBunPkgs) {
             $pkgName = ($pkg -split '@')[0]
@@ -312,7 +307,7 @@ if ($selectedManagers -contains "uv") {
     $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
     if ($uvTools) {
         LogSection "uv"
-        $selectedUvTools = Select-WithFzf $uvTools "uv>" -AllowNew
+        $selectedUvTools = Select-WithFzf $uvTools "uv>"
         $uvInstalled = uv tool list 2>$null
         foreach ($tool in $selectedUvTools) {
             if ($uvInstalled -match [regex]::Escape($tool)) {
@@ -329,7 +324,7 @@ if ($selectedManagers -contains "uv") {
 if ($selectedManagers -contains "powershell-modules") {
     LogSection "PowerShell modules"
     $allPsModules = @("Terminal-Icons")
-    $selectedPsModules = Select-WithFzf $allPsModules "powershell-modules>" -AllowNew
+    $selectedPsModules = Select-WithFzf $allPsModules "powershell-modules>"
     foreach ($mod in $selectedPsModules) {
         if (Get-Module -ListAvailable -Name $mod) {
             LogSkip "$mod already installed"
@@ -375,7 +370,7 @@ if ($selectedManagers -contains "bin") {
                 Url   = $_
             }
         }
-        $selectedLabels = Select-WithFzf ($binItems.Label | Sort-Object) "bin>" -AllowNew
+        $selectedLabels = Select-WithFzf ($binItems.Label | Sort-Object) "bin>"
         $selectedUrls = $binItems |
             Where-Object { $selectedLabels -contains $_.Label } |
             Select-Object -ExpandProperty Url
@@ -426,7 +421,7 @@ if ($selectedManagers -contains "cargo") {
         if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
             Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
         } else {
-            $selectedCargoPkgs = Select-WithFzf ($cargoPkgs | Sort-Object) "cargo>" -AllowNew
+            $selectedCargoPkgs = Select-WithFzf ($cargoPkgs | Sort-Object) "cargo>"
             $cargoInstalled = cargo install --list 2>$null
             foreach ($pkg in $selectedCargoPkgs) {
                 if ($cargoInstalled -match "^$([regex]::Escape($pkg))\s") {
