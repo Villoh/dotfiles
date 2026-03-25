@@ -35,6 +35,7 @@ scoop/
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**
 .config/mimeapps.list
 .local/**{{ end }}
+{{ if ne .chezmoi.os "windows" }}Pictures/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
 {{ if not .enable_zed }}.config/zed/**{{ end }}
