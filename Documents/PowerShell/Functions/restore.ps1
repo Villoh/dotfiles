@@ -33,6 +33,7 @@ function Invoke-AllRestore {
     if (Test-Path "$pkgDir\winget\packages.json" -or Test-Path "$pkgDir\winget\minimal.json") {
         $candidates.Add("winget")
     }
+    if (Test-Path "$pkgDir\winget\elevated.json") { $candidates.Add("winget-elevated") }
     if (Test-Path "$pkgDir\scoop\packages.json")    { $candidates.Add("scoop") }
     if (Test-Path "$pkgDir\node\npm-packages.json") { $candidates.Add("npm") }
     if (Test-Path "$pkgDir\node\bun-packages.txt")  { $candidates.Add("bun") }
@@ -47,8 +48,9 @@ function Invoke-AllRestore {
         return
     }
 
-    if ($selectedManagers -contains "winget")  { Invoke-WingetRestore }
-    if ($selectedManagers -contains "scoop")   { Invoke-ScoopRestore }
+    if ($selectedManagers -contains "winget")          { Invoke-WingetRestore }
+    if ($selectedManagers -contains "winget-elevated") { Invoke-WingetElevatedRestore }
+    if ($selectedManagers -contains "scoop")           { Invoke-ScoopRestore }
     if ($selectedManagers -contains "npm")     { Invoke-NodeRestore }
     if ($selectedManagers -contains "bun")     { Invoke-BunRestore }
     if ($selectedManagers -contains "uv")      { Invoke-UvRestore }
@@ -99,6 +101,32 @@ function Invoke-WingetRestore {
     Write-Host "winget restore OK" -ForegroundColor Green
 }
 Set-Alias -Name restore-winget -Value Invoke-WingetRestore
+
+# -- winget (elevated) ---------------------------------------------------------
+function Invoke-WingetElevatedRestore {
+    $file = "$PackagesDir\winget\elevated.json"
+    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
+
+    $allIds = @((Get-Content $file | ConvertFrom-Json).Sources |
+        ForEach-Object { $_.Packages } | Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
+
+    $selectedIds = Select-WithFzf $allIds "winget-elevated>" -AllowNew
+    foreach ($id in $selectedIds) {
+        $installed = winget list --id $id --accept-source-agreements 2>$null | Select-String $id
+        if ($installed) {
+            Write-Host "  [SKIP] $id already installed" -ForegroundColor DarkGray
+        } else {
+            Write-Host "  [....] $id (elevated)" -ForegroundColor Cyan
+            $tmpScript = "$env:TEMP\winget-elevated-$id.ps1"
+            "winget install --id $id --accept-package-agreements --accept-source-agreements -e" |
+                Set-Content $tmpScript
+            Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+            Remove-Item $tmpScript -ErrorAction SilentlyContinue
+        }
+    }
+    Write-Host "winget-elevated restore OK" -ForegroundColor Green
+}
+Set-Alias -Name restore-winget-elevated -Value Invoke-WingetElevatedRestore
 
 # -- scoop ---------------------------------------------------------------------
 function Invoke-ScoopRestore {

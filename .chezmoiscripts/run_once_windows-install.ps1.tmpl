@@ -167,8 +167,9 @@ if (Get-Command rustup -ErrorAction SilentlyContinue) {
 LogSection "Package selection"
 
 # Build list of available managers
-$elevatedPkgs = @(if (Test-Path "$pkgDir\winget\elevated.txt") {
-    Get-Content "$pkgDir\winget\elevated.txt" | Where-Object { $_.Trim() -ne "" }
+$elevatedPkgs = @(if (Test-Path "$pkgDir\winget\elevated.json") {
+    (Get-Content "$pkgDir\winget\elevated.json" | ConvertFrom-Json).Sources |
+        ForEach-Object { $_.Packages } | Select-Object -ExpandProperty PackageIdentifier
 })
 
 $candidates = [System.Collections.Generic.List[string]]::new()

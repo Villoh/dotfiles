@@ -15,8 +15,7 @@
         { "PackageIdentifier": "AmN.yasb" },
         { "PackageIdentifier": "Flow-Launcher.Flow-Launcher" },
         { "PackageIdentifier": "Ditto.Ditto" },
-        { "PackageIdentifier": "Nilesoft.Shell" },
-        { "PackageIdentifier": "RamenSoftware.Windhawk" },
+{ "PackageIdentifier": "RamenSoftware.Windhawk" },
         { "PackageIdentifier": "MicaForEveryone.MicaForEveryone" },
         { "PackageIdentifier": "Rainmeter.Rainmeter" },
         { "PackageIdentifier": "Fastfetch-cli.Fastfetch" }
