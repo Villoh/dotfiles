@@ -232,13 +232,20 @@ if ($selectedManagers -contains "winget-elevated") {
             LogSkip "winget: $pkg already installed"
             $summary.skip++
         } else {
-            TryInstall "winget: $pkg (elevated)" {
-                $tmpScript = "$env:TEMP\winget-elevated-$pkg.ps1"
+            $tmpScript = "$env:TEMP\winget-elevated-$pkg.ps1"
 @"
 winget install --id $pkg --accept-package-agreements --accept-source-agreements -e
 "@ | Set-Content $tmpScript
-                Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
-                Remove-Item $tmpScript -ErrorAction SilentlyContinue
+            Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+            Remove-Item $tmpScript -ErrorAction SilentlyContinue
+            # Start-Process does not propagate exit codes — verify install result directly
+            $nowInstalled = winget list --id $pkg --accept-source-agreements 2>$null | Select-String $pkg
+            if ($nowInstalled) {
+                LogOk "winget: $pkg (elevated)"
+                $summary.ok++
+            } else {
+                LogFail "winget: $pkg (elevated) - not found after install attempt"
+                $summary.fail++
             }
         }
     }
