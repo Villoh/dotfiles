@@ -1,0 +1,8 @@
+{{ if eq .chezmoi.os "windows" -}}
+Write-Host ""
+Write-Host "  !! A restart is recommended to apply all changes." -ForegroundColor Yellow
+$choice = Read-Host "  Restart now? [y/N]"
+if ($choice -match '^[yY]') {
+    Restart-Computer -Force
+}
+{{ end -}}

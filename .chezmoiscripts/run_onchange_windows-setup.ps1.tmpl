@@ -299,15 +299,4 @@ if ($wallpaper) {
 
 Write-Host "[windows-setup] -- summary: done --" -ForegroundColor Cyan
 
-# -- Restart prompt (only after first install) ---------------------------------
-$restartKey = "HKCU:\Software\Villoh"
-if ((Get-ItemProperty -Path $restartKey -Name "RestartNeeded" -ErrorAction SilentlyContinue).RestartNeeded -eq 1) {
-    Remove-ItemProperty -Path $restartKey -Name "RestartNeeded" -ErrorAction SilentlyContinue
-    Write-Host ""
-    Write-Host "  A restart is recommended to apply all changes." -ForegroundColor Yellow
-    $choice = Read-Host "  Restart now? [y/N]"
-    if ($choice -match '^[yY]') {
-        Restart-Computer -Force
-    }
-}
 {{ end -}}
