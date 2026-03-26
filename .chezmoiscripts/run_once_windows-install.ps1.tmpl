@@ -192,11 +192,11 @@ if ($selectedManagers -contains "winget") {
     LogSection "winget"
 
     $wingetProfiles = @()
-    if (Test-Path "$pkgDir\winget\minimal.json")  { $wingetProfiles += "minimal  ·  necessary packages to replicate the setup (recommended)" }
-    if (Test-Path "$pkgDir\winget\packages.json") { $wingetProfiles += "full     ·  personal complete setup" }
+    if (Test-Path "$pkgDir\winget\minimal.json")  { $wingetProfiles += "minimal  |  necessary packages to replicate the setup (recommended)" }
+    if (Test-Path "$pkgDir\winget\packages.json") { $wingetProfiles += "full     |  personal complete setup" }
 
     $profileChoice = Select-OneFzf $wingetProfiles "winget profile>"
-    $profileKey = if ($profileChoice) { ($profileChoice -split '\s+·\s+')[0].Trim() } else { "full" }
+    $profileKey = if ($profileChoice) { ($profileChoice -split '\s+|\s+')[0].Trim() } else { "full" }
     $wingetFile = if ($profileKey -eq "minimal") {
         "$pkgDir\winget\minimal.json"
     } else {
