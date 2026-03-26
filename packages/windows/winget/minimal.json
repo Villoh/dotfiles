@@ -21,7 +21,8 @@
         { "PackageIdentifier": "Rustlang.Rustup" },
         { "PackageIdentifier": "Fastfetch-cli.Fastfetch" },
         { "PackageIdentifier": "namazso.SecureUXTheme" },
-        { "PackageIdentifier": "AltSnap.AltSnap" }
+        { "PackageIdentifier": "AltSnap.AltSnap" },
+        { "PackageIdentifier": "KRTirtho.Flemozi" }
       ],
       "SourceDetails": {
         "Argument": "https://cdn.winget.microsoft.com/cache",
