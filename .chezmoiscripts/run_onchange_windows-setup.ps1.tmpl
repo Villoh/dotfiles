@@ -263,6 +263,9 @@ public class Win32 {
 '@ -ErrorAction SilentlyContinue
 
 $wallpaper = Get-ChildItem "$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+if (-not $wallpaper) {
+    $wallpaper = Get-ChildItem "$chezmoisrc\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+}
 
 # -- 1. Theme ------------------------------------------------------------------
 $defaultTheme = "C:\Windows\Resources\Themes\Catppuccin - Mocha Night.theme"
