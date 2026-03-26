@@ -1,7 +1,8 @@
 # restore.ps1
 $PackagesDir = "$env:USERPROFILE\.local\share\chezmoi\packages\windows"
 
-# -- fzf selection helper ------------------------------------------------------
+# -- fzf selection helpers -----------------------------------------------------
+# Multi-select: TAB=toggle (no cursor move)  CTRL-A=all  ENTER=confirm  ESC=skip
 function Select-WithFzf {
     param(
         [string[]]$Items,
@@ -14,9 +15,23 @@ function Select-WithFzf {
         return $Items
     }
     $selected = $Items | fzf --multi --prompt="  $Prompt " --header="$Header" `
-        --layout=reverse --border --bind='ctrl-a:select-all'
+        --layout=reverse --border --bind='ctrl-a:select-all' --bind='tab:toggle'
     if ($LASTEXITCODE -ne 0) { return @() }
-    $selected = @($selected | Where-Object { $_ })
+    return @($selected | Where-Object { $_ })
+}
+
+# Single-select: ENTER=confirm  ESC=skip
+function Select-OneFzf {
+    param(
+        [string[]]$Items,
+        [string]$Prompt = "Select>",
+        [string]$Header = "ENTER=confirm  ESC=skip"
+    )
+    if (-not $Items -or $Items.Count -eq 0) { return $null }
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) { return $Items[0] }
+    $selected = $Items | fzf --prompt="  $Prompt " --header="$Header" `
+        --layout=reverse --border
+    if ($LASTEXITCODE -ne 0) { return $null }
     return $selected
 }
 
