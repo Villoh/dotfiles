@@ -268,31 +268,34 @@ $wallpaper = Get-ChildItem "$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.
 $defaultTheme = "C:\Windows\Resources\Themes\Catppuccin - Mocha Night.theme"
 $secureUxInstalled = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" `
     -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -like "*SecureUxTheme*" }
+$themeApplied = $false
 if ($secureUxInstalled -and (Test-Path $defaultTheme)) {
     Write-Host "[windows-setup] Applying Catppuccin Mocha Night theme..." -ForegroundColor Cyan
     Start-Process $defaultTheme
+    $themeApplied = $true
 } elseif (-not $secureUxInstalled) {
     Write-Host "[windows-setup] SecureUxTheme not installed - skipping theme" -ForegroundColor Yellow
 } else {
     Write-Host "[windows-setup] Theme file not found: $defaultTheme" -ForegroundColor Yellow
 }
 
-# -- 2. Wallpaper --------------------------------------------------------------
+# -- 2. Accent color (Catppuccin Mocha Mauve #CBA6F7, ABGR) -------------------
+$accentPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent"
+Set-ItemProperty -Path $accentPath -Name "AccentColor"     -Value 0xFFF7A6CB -Type DWord
+Set-ItemProperty -Path $accentPath -Name "AccentColorMenu" -Value 0xFFF7A6CB -Type DWord
+Set-ItemProperty -Path $accentPath -Name "StartColorMenu"  -Value 0xFFF7A6CB -Type DWord
+Write-Host "[windows-setup] Accent color set to Catppuccin Mocha Mauve" -ForegroundColor Green
+
+# -- 3. Lock screen — handled in elevated block (PS5.1/WinRT) -----------------
+
+# -- 4. Wallpaper — applied last so it overrides the theme's default wallpaper -
+if ($themeApplied) { Start-Sleep -Seconds 3 }
 if ($wallpaper) {
     [Win32]::SystemParametersInfo(20, 0, $wallpaper.FullName, 3) | Out-Null
     Write-Host "[windows-setup] Wallpaper applied: $($wallpaper.Name)" -ForegroundColor Green
 } else {
     Write-Host "[windows-setup] main-wallpaper.* not found - skipping wallpaper" -ForegroundColor Yellow
 }
-
-# -- 3. Lock screen — handled in elevated block (PS5.1/WinRT) -----------------
-
-# -- 4. Accent color (Catppuccin Mocha Mauve #CBA6F7, ABGR) -------------------
-$accentPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent"
-Set-ItemProperty -Path $accentPath -Name "AccentColor"     -Value 0xFFF7A6CB -Type DWord
-Set-ItemProperty -Path $accentPath -Name "AccentColorMenu" -Value 0xFFF7A6CB -Type DWord
-Set-ItemProperty -Path $accentPath -Name "StartColorMenu"  -Value 0xFFF7A6CB -Type DWord
-Write-Host "[windows-setup] Accent color set to Catppuccin Mocha Mauve" -ForegroundColor Green
 
 Write-Host "[windows-setup] -- summary: done --" -ForegroundColor Cyan
 
