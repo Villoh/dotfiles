@@ -304,11 +304,15 @@ rundll32.exe user32.dll,UpdatePerUserSystemParameters ,1 ,True
 Write-Host "[windows-setup] Changes broadcast to Windows" -ForegroundColor Green
 Write-Host "[windows-setup] -- summary: done --" -ForegroundColor Cyan
 
-# -- Restart prompt ------------------------------------------------------------
-Write-Host ""
-Write-Host "  A restart is recommended to apply all changes." -ForegroundColor Yellow
-$choice = Read-Host "  Restart now? [y/N]"
-if ($choice -match '^[yY]') {
-    Restart-Computer -Force
+# -- Restart prompt (only after first install) ---------------------------------
+$restartKey = "HKCU:\Software\Villoh"
+if ((Get-ItemProperty -Path $restartKey -Name "RestartNeeded" -ErrorAction SilentlyContinue).RestartNeeded -eq 1) {
+    Remove-ItemProperty -Path $restartKey -Name "RestartNeeded" -ErrorAction SilentlyContinue
+    Write-Host ""
+    Write-Host "  A restart is recommended to apply all changes." -ForegroundColor Yellow
+    $choice = Read-Host "  Restart now? [y/N]"
+    if ($choice -match '^[yY]') {
+        Restart-Computer -Force
+    }
 }
 {{ end -}}
