@@ -33,12 +33,12 @@ function TryInstall {
 }
 
 # -- fzf selection helpers -----------------------------------------------------
-# Multi-select: TAB=toggle (no cursor move)  CTRL-A=all  ENTER=confirm  ESC=skip
+# Multi-select: TAB=toggle (no cursor move)  CTRL-A=toggle-all  ENTER=confirm  ESC=skip
 function Select-WithFzf {
     param(
         [string[]]$Items,
         [string]$Prompt,
-        [string]$Header = "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip"
+        [string]$Header = "TAB=toggle  CTRL-A=toggle-all  ENTER=confirm  ESC=skip"
     )
     if (-not $Items -or $Items.Count -eq 0) { return @() }
     if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
@@ -46,7 +46,7 @@ function Select-WithFzf {
         return $Items
     }
     $selected = $Items | fzf --multi --prompt="  $Prompt " --header="$Header" `
-        --layout=reverse --border --bind='ctrl-a:select-all' --bind='tab:toggle'
+        --layout=reverse --border --bind='ctrl-a:toggle-all' --bind='tab:toggle'
     if ($LASTEXITCODE -ne 0) { return @() }
     return @($selected | Where-Object { $_ })
 }
