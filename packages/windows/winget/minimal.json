@@ -4,8 +4,7 @@
     {
       "Packages": [
         { "PackageIdentifier": "Git.Git" },
-        { "PackageIdentifier": "GnuPG.Gpg4win" },
-        { "PackageIdentifier": "twpayne.chezmoi" },
+{ "PackageIdentifier": "twpayne.chezmoi" },
         { "PackageIdentifier": "Microsoft.PowerShell" },
         { "PackageIdentifier": "Microsoft.WindowsTerminal" },
         { "PackageIdentifier": "Starship.Starship" },
