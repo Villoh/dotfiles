@@ -529,6 +529,32 @@ if (-not (Test-Path $winKeys)) {
     }
 }
 
+# -- Windhawk -----------------------------------------------------------------
+$windhawkReg = "$pkgDir\system\windhawk-settings.reg"
+$windhawkExe = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" `
+    -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -like "*Windhawk*" }
+if (-not (Test-Path $windhawkReg)) {
+    Log "  [INFO] windhawk-settings.reg not found - skipping" "Yellow"
+} elseif (-not $windhawkExe) {
+    Log "  [INFO] Windhawk not installed - skipping registry import" "Yellow"
+} else {
+    LogSection "Windhawk"
+    Stop-Process -Name "Windhawk*" -Force -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 2
+    $windhawkLog    = "$env:TEMP\windhawk-import.log"
+    $windhawkScript = "$env:TEMP\windhawk-import.ps1"
+    @"
+reg import "$windhawkReg"
+if (`$LASTEXITCODE -eq 0) { "OK" | Set-Content "$windhawkLog" }
+else { "FAIL:exit `$LASTEXITCODE" | Set-Content "$windhawkLog" }
+"@ | Set-Content $windhawkScript
+    Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $windhawkScript -Wait
+    Remove-Item $windhawkScript -ErrorAction SilentlyContinue
+    $result = if (Test-Path $windhawkLog) { Get-Content $windhawkLog; Remove-Item $windhawkLog } else { "FAIL:no output" }
+    if ($result -eq "OK") { LogOk "Windhawk settings imported"; $summary.ok++ }
+    else { LogFail "Windhawk import - $result"; $summary.fail++ }
+}
+
 # -- Summary -------------------------------------------------------------------
 Log "`n======================================" "Cyan"
 Log "  [OK]   OK:      $($summary.ok)"   "Green"
