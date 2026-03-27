@@ -98,20 +98,24 @@ function Invoke-BinBackup {
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
-    $file = "$PackagesDir\system\windhawk-settings.reg"
-    $mods = Get-ChildItem "HKLM:\SOFTWARE\Windhawk\Engine\Mods" |
-        Where-Object { $_.PSChildName -ne "SymbolCache" }
-
+    $file    = "$PackagesDir\system\windhawk-settings.reg"
+    $tmpScript = "$env:TEMP\windhawk-backup.ps1"
     Save-ExistingBackup $file
-    "Windows Registry Editor Version 5.00" | Out-File $file -Encoding Unicode
-    foreach ($mod in $mods) {
-        $settingsPath = "$($mod.PSPath)\Settings"
-        if (Test-Path $settingsPath) {
-            reg export ($settingsPath -replace 'Microsoft.PowerShell.Core\\Registry::', '') ($file + ".tmp") /y | Out-Null
-            Get-Content ($file + ".tmp") | Select-Object -Skip 1 | Add-Content $file
-            Remove-Item ($file + ".tmp")
-        }
-    }
+    @"
+`$outputFile = "$file"
+`$mods = Get-ChildItem "HKLM:\SOFTWARE\Windhawk\Engine\Mods" -ErrorAction SilentlyContinue |
+    Where-Object { `$_.PSChildName -ne "SymbolCache" }
+"Windows Registry Editor Version 5.00" | Out-File `$outputFile -Encoding Unicode
+foreach (`$mod in `$mods) {
+    `$regPath = `$mod.PSPath -replace 'Microsoft.PowerShell.Core\\Registry::', ''
+    `$tmp = "`$env:TEMP\wh-mod.reg"
+    reg export `$regPath `$tmp /y | Out-Null
+    Get-Content `$tmp | Select-Object -Skip 1 | Add-Content `$outputFile
+    Remove-Item `$tmp -ErrorAction SilentlyContinue
+}
+"@ | Set-Content $tmpScript
+    Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+    Remove-Item $tmpScript -ErrorAction SilentlyContinue
     Write-Host "windhawk backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-windhawk -Value Invoke-WindhawkBackup
