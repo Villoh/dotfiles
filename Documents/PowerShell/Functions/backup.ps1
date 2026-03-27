@@ -98,11 +98,13 @@ function Invoke-BinBackup {
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
-    $file    = "$PackagesDir\system\windhawk-settings.reg"
+    $regFile   = "$PackagesDir\system\windhawk-settings.reg"
+    $dllDst    = "$PackagesDir\..\..\..\program_files\windhawk"
     $tmpScript = "$env:TEMP\windhawk-backup.ps1"
-    Save-ExistingBackup $file
+    Save-ExistingBackup $regFile
     @"
-`$outputFile = "$file"
+`$outputFile = "$regFile"
+`$dllDst     = "$dllDst"
 `$mods = Get-ChildItem "HKLM:\SOFTWARE\Windhawk\Engine\Mods" -ErrorAction SilentlyContinue |
     Where-Object { `$_.PSChildName -ne "SymbolCache" }
 "Windows Registry Editor Version 5.00" | Out-File `$outputFile -Encoding Unicode
@@ -110,11 +112,12 @@ foreach (`$mod in `$mods) {
     `$regPath = `$mod.PSPath -replace 'Microsoft.PowerShell.Core\\Registry::', ''
     `$tmp = "`$env:TEMP\wh-mod.reg"
     reg export `$regPath `$tmp /y | Out-Null
-    Get-Content `$tmp | Select-Object -Skip 1 |
-        Where-Object { `$_ -notmatch '"LibraryFileName"' -and `$_ -notmatch '"SettingsChangeTime"' } |
-        Add-Content `$outputFile
+    Get-Content `$tmp | Select-Object -Skip 1 | Add-Content `$outputFile
     Remove-Item `$tmp -ErrorAction SilentlyContinue
 }
+New-Item -ItemType Directory -Force -Path "`$dllDst\32", "`$dllDst\64" | Out-Null
+Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\32\*.dll" "`$dllDst\32\" -Force
+Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\64\*.dll" "`$dllDst\64\" -Force
 "@ | Set-Content $tmpScript
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
