@@ -110,7 +110,9 @@ foreach (`$mod in `$mods) {
     `$regPath = `$mod.PSPath -replace 'Microsoft.PowerShell.Core\\Registry::', ''
     `$tmp = "`$env:TEMP\wh-mod.reg"
     reg export `$regPath `$tmp /y | Out-Null
-    Get-Content `$tmp | Select-Object -Skip 1 | Add-Content `$outputFile
+    Get-Content `$tmp | Select-Object -Skip 1 |
+        Where-Object { `$_ -notmatch '"LibraryFileName"' -and `$_ -notmatch '"SettingsChangeTime"' } |
+        Add-Content `$outputFile
     Remove-Item `$tmp -ErrorAction SilentlyContinue
 }
 "@ | Set-Content $tmpScript
