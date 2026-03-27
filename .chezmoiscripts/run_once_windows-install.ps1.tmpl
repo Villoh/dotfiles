@@ -518,24 +518,21 @@ if (-not (Test-Path $winKeys)) {
         $summary.skip++
     } else {
         # Set both scopes: HKLM takes priority, HKCU as fallback if HKLM ever gets reset
-        # Skip Explorer restart — a reboot or manual reload applies the change
         TryInstall "Disable Win keys - System (HKLM)" {
             if (-not (_Set-WinKeysValue -Value 1 -Scope System)) { throw "Failed to set HKLM\NoWinKeys" }
         }
         TryInstall "Disable Win keys - User (HKCU)" {
             if (-not (_Set-WinKeysValue -Value 1 -Scope User)) { throw "Failed to set HKCU\NoWinKeys" }
         }
-        Log "  [INFO] Win keys disabled - reboot or restart Explorer to apply" "DarkYellow"
+        Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
     }
 }
 
 # -- Windhawk -----------------------------------------------------------------
 $windhawkReg = "$pkgDir\system\windhawk-settings.reg"
-$windhawkExe = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" `
-    -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -like "*Windhawk*" }
 if (-not (Test-Path $windhawkReg)) {
     Log "  [INFO] windhawk-settings.reg not found - skipping" "Yellow"
-} elseif (-not $windhawkExe) {
+} elseif (-not (Test-Path "HKLM:\SOFTWARE\Windhawk")) {
     Log "  [INFO] Windhawk not installed - skipping registry import" "Yellow"
 } else {
     LogSection "Windhawk"
