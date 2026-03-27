@@ -105,52 +105,6 @@ if ($devModeVal -eq 1) {
     }
 }
 
-# -- node / npm ----------------------------------------------------------------
-if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-    TryInstall "Node.js" {
-        winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements -e
-    }
-} else {
-    LogSkip "Node.js already installed"
-    $summary.skip++
-}
-
-# -- bun -----------------------------------------------------------------------
-if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
-    TryInstall "Bun" {
-        winget install --id Oven-sh.Bun --accept-package-agreements --accept-source-agreements -e
-    }
-} else {
-    LogSkip "Bun already installed"
-    $summary.skip++
-}
-
-# -- uv ------------------------------------------------------------------------
-if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
-    TryInstall "uv" {
-        winget install --id astral-sh.uv --accept-package-agreements --accept-source-agreements -e
-    }
-} else {
-    LogSkip "uv already installed"
-    $summary.skip++
-}
-
-# -- scoop extras bucket (required for bin and other bootstrap tools) ----------
-if (-not (scoop bucket list | Select-Object -ExpandProperty Name | Where-Object { $_ -eq 'extras' })) {
-    TryInstall "scoop bucket extras" { scoop bucket add extras }
-} else {
-    LogSkip "scoop bucket extras already added"
-    $summary.skip++
-}
-
-# -- bin (scoop/extras) --------------------------------------------------------
-if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
-    TryInstall "bin" { scoop install extras/bin }
-} else {
-    LogSkip "bin already installed"
-    $summary.skip++
-}
-
 # -- Refresh PATH from registry ------------------------------------------------
 $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
             [System.Environment]::GetEnvironmentVariable('PATH', 'User')
@@ -165,19 +119,22 @@ $elevatedPkgs = @(if (Test-Path "$pkgDir\winget\elevated.json") {
 })
 
 $candidates = [System.Collections.Generic.List[string]]::new()
-if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget") }
-if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated") }
-if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop") }
-if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm") }
-if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun") }
-if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv") }
-if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin") }
-if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo") }
-if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git") }
-$candidates.Add("powershell-modules")
+if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget          [required - base app installs]") }
+if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated [required - apps needing admin]") }
+if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop           [required - CLI tools and extras]") }
+if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm             [personal - Node.js global tools]") }
+if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun             [personal - Bun global tools]") }
+if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv              [personal - Python tools]") }
+if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin             [personal - GitHub release binaries]") }
+if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo           [personal - Rust crates]") }
+if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git       [personal - Rust crates from git]") }
+$candidates.Add(                                       "powershell-modules [personal - PS module installs]")
 
 $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
     "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all package installs"
+
+# Strip display labels (e.g. "winget [required ...]" -> "winget")
+$selectedManagers = @($selectedManagers | ForEach-Object { ($_ -split '\s+')[0] })
 
 if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
     Log "No managers selected - skipping all package installs" "Yellow"
@@ -292,9 +249,19 @@ if ($selectedManagers -contains "scoop") {
 
 # -- npm -----------------------------------------------------------------------
 if ($selectedManagers -contains "npm") {
+    LogSection "npm"
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+        TryInstall "Node.js" {
+            winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements -e
+        }
+        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+    } else {
+        LogSkip "Node.js already installed"
+        $summary.skip++
+    }
     $npm = Get-Content "$pkgDir\node\npm-packages.json" | ConvertFrom-Json
     if ($npm.dependencies) {
-        LogSection "npm"
         $allNpmPkgs = @($npm.dependencies.PSObject.Properties |
             ForEach-Object { "$($_.Name)@$($_.Value)" } | Sort-Object)
         $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>"
@@ -306,9 +273,19 @@ if ($selectedManagers -contains "npm") {
 
 # -- bun -----------------------------------------------------------------------
 if ($selectedManagers -contains "bun") {
+    LogSection "bun"
+    if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
+        TryInstall "Bun" {
+            winget install --id Oven-sh.Bun --accept-package-agreements --accept-source-agreements -e
+        }
+        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+    } else {
+        LogSkip "Bun already installed"
+        $summary.skip++
+    }
     $bunPkgs = @(Get-Content "$pkgDir\node\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
     if ($bunPkgs) {
-        LogSection "bun"
         $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>"
         $bunInstalled = bun pm ls -g 2>$null
         foreach ($pkg in $selectedBunPkgs) {
@@ -325,9 +302,19 @@ if ($selectedManagers -contains "bun") {
 
 # -- uv tools ------------------------------------------------------------------
 if ($selectedManagers -contains "uv") {
+    LogSection "uv"
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+        TryInstall "uv" {
+            winget install --id astral-sh.uv --accept-package-agreements --accept-source-agreements -e
+        }
+        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+    } else {
+        LogSkip "uv already installed"
+        $summary.skip++
+    }
     $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
     if ($uvTools) {
-        LogSection "uv"
         $selectedUvTools = Select-WithFzf $uvTools "uv>"
         $uvInstalled = uv tool list 2>$null
         foreach ($tool in $selectedUvTools) {
@@ -360,10 +347,26 @@ if ($selectedManagers -contains "powershell-modules") {
 
 # -- bin (GitHub release binaries) ---------------------------------------------
 if ($selectedManagers -contains "bin") {
+    LogSection "bin"
+
+    # Ensure scoop extras bucket is available (bin is in extras)
+    if (-not (scoop bucket list | Select-Object -ExpandProperty Name | Where-Object { $_ -eq 'extras' })) {
+        TryInstall "scoop bucket extras" { scoop bucket add extras }
+    } else {
+        LogSkip "scoop bucket extras already added"
+        $summary.skip++
+    }
+    if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
+        TryInstall "bin" { scoop install extras/bin }
+        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+    } else {
+        LogSkip "bin already installed"
+        $summary.skip++
+    }
+
     $binPkgs = @(Get-Content "$pkgDir\bin-packages.txt" | Where-Object { $_.Trim() -ne "" })
     if ($binPkgs) {
-        LogSection "bin"
-
         # Setup ~/.bin dir and PATH
         $binDir = "$env:USERPROFILE\.bin"
         New-Item -ItemType Directory -Force -Path $binDir | Out-Null
