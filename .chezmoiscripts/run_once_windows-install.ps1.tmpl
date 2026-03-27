@@ -543,23 +543,29 @@ if (-not (Test-Path "$windhawkDir\settings.reg")) {
     Start-Sleep -Seconds 2
     $windhawkLog    = "$env:TEMP\windhawk-import.log"
     $windhawkScript = "$env:TEMP\windhawk-import.ps1"
+    $windhawkProfile = "$windhawkDir\userprofile.json"
     @"
 reg import "$windhawkDir\settings.reg"
-if (`$LASTEXITCODE -eq 0) { "OK" | Set-Content "$windhawkLog" }
-else { "FAIL:exit `$LASTEXITCODE" | Set-Content "$windhawkLog" }
+if (`$LASTEXITCODE -ne 0) { "FAIL:exit `$LASTEXITCODE" | Set-Content "$windhawkLog"; exit }
+`$lines = @("reg:OK")
+if (Test-Path "$windhawkProfile") {
+    try {
+        Copy-Item "$windhawkProfile" "C:\ProgramData\Windhawk\userprofile.json" -Force
+        `$lines += "profile:OK"
+    } catch {
+        `$lines += "profile:FAIL:`$(`$_.Exception.Message)"
+    }
+}
+`$lines | Set-Content "$windhawkLog"
 "@ | Set-Content $windhawkScript
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $windhawkScript -Wait
     Remove-Item $windhawkScript -ErrorAction SilentlyContinue
-    $result = if (Test-Path $windhawkLog) { Get-Content $windhawkLog; Remove-Item $windhawkLog } else { "FAIL:no output" }
-    if ($result -eq "OK") { LogOk "Windhawk settings imported"; $summary.ok++ }
-    else { LogFail "Windhawk import - $result"; $summary.fail++ }
-    # Restore userprofile.json so Windhawk doesn't show false update notices
-    $windhawkProfile = "$windhawkDir\userprofile.json"
-    if (Test-Path $windhawkProfile) {
-        TryInstall "Windhawk userprofile.json" {
-            Copy-Item $windhawkProfile "C:\ProgramData\Windhawk\userprofile.json" -Force
-        }
-    }
+    $results = if (Test-Path $windhawkLog) { Get-Content $windhawkLog; Remove-Item $windhawkLog } else { @("FAIL:no output") }
+    if ($results -contains "reg:OK") { LogOk "Windhawk settings imported"; $summary.ok++ }
+    else { LogFail "Windhawk import - $($results[0])"; $summary.fail++ }
+    $profileResult = $results | Where-Object { $_ -like "profile:*" }
+    if ($profileResult -eq "profile:OK") { LogOk "Windhawk userprofile.json restored"; $summary.ok++ }
+    elseif ($profileResult) { LogFail "Windhawk userprofile.json - $($profileResult -replace 'profile:FAIL:')"; $summary.fail++ }
 }
 
 # -- Summary -------------------------------------------------------------------
