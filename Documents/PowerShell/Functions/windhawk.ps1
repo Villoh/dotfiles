@@ -13,8 +13,8 @@ function Invoke-WindhawkRestore {
     }
 
     $sourceDir  = chezmoi source-path
-    $regFile    = Join-Path $sourceDir "packages\windows\system\windhawk-settings.reg"
-    $profileSrc = Join-Path $sourceDir "packages\windows\system\windhawk-userprofile.json"
+    $regFile    = Join-Path $sourceDir "packages\windows\system\windhawk\settings.reg"
+    $profileSrc = Join-Path $sourceDir "packages\windows\system\windhawk\userprofile.json"
     $profileDst = "C:\ProgramData\Windhawk\userprofile.json"
 
     if (-not (Test-Path $regFile)) {
