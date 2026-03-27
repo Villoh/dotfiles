@@ -119,22 +119,22 @@ $elevatedPkgs = @(if (Test-Path "$pkgDir\winget\elevated.json") {
 })
 
 $candidates = [System.Collections.Generic.List[string]]::new()
-if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget          [required - base app installs]") }
-if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated [required - apps needing admin]") }
-if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop           [required - CLI tools and extras]") }
-if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm             [personal - Node.js global tools]") }
-if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun             [personal - Bun global tools]") }
-if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv              [personal - Python tools]") }
-if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin             [personal - GitHub release binaries]") }
-if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo           [personal - Rust crates]") }
-if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git       [personal - Rust crates from git]") }
-$candidates.Add(                                       "powershell-modules [personal - PS module installs]")
+if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget           | required  |  base app installs") }
+if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated  | required  |  apps needing admin") }
+if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop            | required  |  CLI tools and extras") }
+if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm              | personal  |  Node.js global tools") }
+if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun              | personal  |  Bun global tools") }
+if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv               | personal  |  Python tools") }
+if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin              | personal  |  GitHub release binaries") }
+if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo            | personal  |  Rust crates") }
+if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git        | personal  |  Rust crates from git") }
+$candidates.Add(                                       "powershell-modules | required  |  Terminal-Icons and other PS modules")
 
 $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
     "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all package installs"
 
-# Strip display labels (e.g. "winget [required ...]" -> "winget")
-$selectedManagers = @($selectedManagers | ForEach-Object { ($_ -split '\s+')[0] })
+# Strip display labels (e.g. "winget | required | ..." -> "winget")
+$selectedManagers = @($selectedManagers | ForEach-Object { ($_ -split '\s*\|')[0].Trim() })
 
 if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
     Log "No managers selected - skipping all package installs" "Yellow"
