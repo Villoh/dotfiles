@@ -45,12 +45,23 @@ During `init --apply`, chezmoi will:
 3. Generate `~/.config/chezmoi/chezmoi.toml`
 4. Create symlinks for all managed files
 
-Then run scripts in this order (Windows only):
+chezmoi runs scripts automatically in this order:
+
+**Phase 1 — after files (run_once / run_onchange, alphabetical):**
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_00_install-packages` | Developer Mode, Scoop, winget, npm, cargo, uv packages, win-keys |
-| `run_onchange_windows-setup` | Junctions, startup registry entries, program files, cursor schemes |
+| `run_once_windows-install` *(Windows)* | Bootstrap (Scoop, fzf, Dev Mode, Node, Bun, uv, bin) + interactive package install (winget, scoop, npm, bun, uv, PowerShell modules, bin, cargo) + GlazeWM win-keys |
+| `run_onchange_windows-setup` *(Windows)* | Junctions, startup registry entries, program files (Ditto/Nilesoft/themes/cursors), accent color, theme |
+| `run_once_linux-install` *(Linux)* | Git submodules, bootstrap (paru, flatpak, Node, Bun, uv, bin) + packages (pacman/AUR, flatpak, npm, bun, uv, bin) |
+
+> `run_once_` sorts before `run_onchange_` alphabetically, so install always runs before setup.
+
+**Phase 2 — after everything (run_after, alphabetical):**
+
+| Script | What it does |
+|--------|--------------|
+| `run_onchange_after_windows-wallpaper` *(Windows)* | Desktop wallpaper + lock screen (runs after symlinks are guaranteed to exist) |
 
 ---
 
@@ -123,6 +134,7 @@ reset-run-once-scripts && chezmoi apply
 
 # Re-run a specific run_onchange_ script on next apply
 reset-run-onchange-script windows-setup && chezmoi apply
+reset-run-onchange-script windows-wallpaper && chezmoi apply
 
 # Re-run all run_onchange_ scripts on next apply
 reset-run-onchange-script && chezmoi apply
@@ -131,9 +143,9 @@ reset-run-onchange-script && chezmoi apply
 Run a script manually without resetting state (renders the template first):
 ```powershell
 # Windows
-Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages.ps1.tmpl" |
+Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_windows-install.ps1.tmpl" |
     chezmoi execute-template | powershell -NoProfile -Command -
 
 # Linux
-chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/my-script.sh.tmpl" | bash
+chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_linux-install.sh.tmpl" | bash
 ```
