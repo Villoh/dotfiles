@@ -532,9 +532,9 @@ if (-not (Test-Path $winKeys)) {
 }
 
 # -- Windhawk -----------------------------------------------------------------
-$windhawkReg = "$pkgDir\system\windhawk-settings.reg"
-if (-not (Test-Path $windhawkReg)) {
-    Log "  [INFO] windhawk-settings.reg not found - skipping" "Yellow"
+$windhawkDir = "$pkgDir\system\windhawk"
+if (-not (Test-Path "$windhawkDir\settings.reg")) {
+    Log "  [INFO] windhawk\settings.reg not found - skipping" "Yellow"
 } elseif (-not (Test-Path "HKLM:\SOFTWARE\Windhawk")) {
     Log "  [INFO] Windhawk not installed - skipping registry import" "Yellow"
 } else {
@@ -544,7 +544,7 @@ if (-not (Test-Path $windhawkReg)) {
     $windhawkLog    = "$env:TEMP\windhawk-import.log"
     $windhawkScript = "$env:TEMP\windhawk-import.ps1"
     @"
-reg import "$windhawkReg"
+reg import "$windhawkDir\settings.reg"
 if (`$LASTEXITCODE -eq 0) { "OK" | Set-Content "$windhawkLog" }
 else { "FAIL:exit `$LASTEXITCODE" | Set-Content "$windhawkLog" }
 "@ | Set-Content $windhawkScript
@@ -553,6 +553,13 @@ else { "FAIL:exit `$LASTEXITCODE" | Set-Content "$windhawkLog" }
     $result = if (Test-Path $windhawkLog) { Get-Content $windhawkLog; Remove-Item $windhawkLog } else { "FAIL:no output" }
     if ($result -eq "OK") { LogOk "Windhawk settings imported"; $summary.ok++ }
     else { LogFail "Windhawk import - $result"; $summary.fail++ }
+    # Restore userprofile.json so Windhawk doesn't show false update notices
+    $windhawkProfile = "$windhawkDir\userprofile.json"
+    if (Test-Path $windhawkProfile) {
+        TryInstall "Windhawk userprofile.json" {
+            Copy-Item $windhawkProfile "C:\ProgramData\Windhawk\userprofile.json" -Force
+        }
+    }
 }
 
 # -- Summary -------------------------------------------------------------------

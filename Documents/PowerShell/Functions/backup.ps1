@@ -98,11 +98,12 @@ function Invoke-BinBackup {
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
-    $regFile     = "$PackagesDir\system\windhawk-settings.reg"
+    $regFile     = "$PackagesDir\system\windhawk\settings.reg"
     $profileSrc  = "C:\ProgramData\Windhawk\userprofile.json"
-    $profileDst  = "$PackagesDir\system\windhawk-userprofile.json"
+    $profileDst  = "$PackagesDir\system\windhawk\userprofile.json"
     $dllDst      = "$PackagesDir\..\..\..\program_files\windhawk"
     $tmpScript   = "$env:TEMP\windhawk-backup.ps1"
+    New-Item -ItemType Directory -Force -Path (Split-Path $regFile) | Out-Null
     Save-ExistingBackup $regFile
     @"
 `$outputFile = "$regFile"
