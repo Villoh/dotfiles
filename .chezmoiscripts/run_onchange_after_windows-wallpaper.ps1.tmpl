@@ -1,0 +1,59 @@
+{{ if eq .chezmoi.os "windows" -}}
+# run_onchange_after_ triggers when wallpaper changes:
+{{ range (glob "Pictures/Wallpapers/main-wallpaper.*") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end }}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+
+$wallpaper = Get-ChildItem "$env:USERPROFILE\Pictures\Wallpapers\main-wallpaper.*" -ErrorAction SilentlyContinue | Select-Object -First 1
+
+if (-not $wallpaper) {
+    Write-Host "[wallpaper] main-wallpaper.* not found - skipping" -ForegroundColor Yellow
+    exit 0
+}
+
+# -- Lock screen (WinRT requires PS5.1 / powershell.exe) ----------------------
+$lockScript = "$env:TEMP\chezmoi-lockscreen.ps1"
+@"
+# Credit: https://superuser.com/a/1343640
+`$lockImg = "$($wallpaper.FullName)"
+`$newImagePath = [System.IO.Path]::GetTempPath() + (New-Guid).Guid + [System.IO.Path]::GetExtension(`$lockImg)
+Copy-Item `$lockImg `$newImagePath
+Add-Type -AssemblyName System.Runtime.WindowsRuntime
+[Windows.System.UserProfile.LockScreen, Windows.System.UserProfile, ContentType = WindowsRuntime] | Out-Null
+`$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+    `$_.Name -eq 'AsTask' -and `$_.GetParameters().Count -eq 1 -and
+    `$_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation``1'
+})[0]
+function Await(`$WinRtTask, `$ResultType) {
+    `$netTask = `$asTaskGeneric.MakeGenericMethod(`$ResultType).Invoke(`$null, @(`$WinRtTask))
+    `$netTask.Wait(-1) | Out-Null; `$netTask.Result
+}
+function AwaitAction(`$WinRtAction) {
+    `$asTask = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object {
+        `$_.Name -eq 'AsTask' -and `$_.GetParameters().Count -eq 1 -and !`$_.IsGenericMethod
+    })[0]
+    `$asTask.Invoke(`$null, @(`$WinRtAction)).Wait(-1) | Out-Null
+}
+[Windows.Storage.StorageFile, Windows.Storage, ContentType = WindowsRuntime] | Out-Null
+`$image = Await ([Windows.Storage.StorageFile]::GetFileFromPathAsync(`$newImagePath)) ([Windows.Storage.StorageFile])
+AwaitAction ([Windows.System.UserProfile.LockScreen]::SetImageFileAsync(`$image))
+Remove-Item `$newImagePath -ErrorAction SilentlyContinue
+"@ | Set-Content $lockScript
+Start-Process powershell.exe -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $lockScript -Wait
+Remove-Item $lockScript -ErrorAction SilentlyContinue
+Write-Host "[wallpaper] Lock screen set: $($wallpaper.Name)" -ForegroundColor Green
+
+# -- Desktop wallpaper ---------------------------------------------------------
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public class Win32Wallpaper {
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+}
+'@ -ErrorAction SilentlyContinue
+[Win32Wallpaper]::SystemParametersInfo(20, 0, $wallpaper.FullName, 3) | Out-Null
+Write-Host "[wallpaper] Desktop wallpaper applied: $($wallpaper.Name)" -ForegroundColor Green
+
+{{ end -}}
