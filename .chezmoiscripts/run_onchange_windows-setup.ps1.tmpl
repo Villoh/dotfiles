@@ -14,6 +14,9 @@
 {{ range (glob "program_files/windows/cursors/**") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end -}}
+{{ range (glob "program_files/windhawk/**") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
 {{ range (glob "Pictures/Wallpapers/main-wallpaper.*") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end }}
@@ -150,6 +153,23 @@ LogSec "Program files"
     @{ Src = "`$chezmoisrc\program_files\ditto\Themes";     Dst = "C:\Program Files\Ditto\Themes";          App = "Ditto";          Ext = "*.xml" },
     @{ Src = "`$chezmoisrc\program_files\nilesoft\imports"; Dst = "C:\Program Files\Nilesoft Shell\imports"; App = "Nilesoft Shell"; Ext = "*.nss" }
 )
+
+# == WINDHAWK MODS =============================================================
+LogSec "Windhawk mods"
+if (Test-Path "HKLM:\SOFTWARE\Windhawk") {
+    foreach (`$arch in @("32", "64")) {
+        `$src = "`$chezmoisrc\program_files\windhawk\`$arch"
+        `$dst = "C:\ProgramData\Windhawk\Engine\Mods\`$arch"
+        if (Test-Path `$src) {
+            New-Item -ItemType Directory -Force -Path `$dst | Out-Null
+            `$dlls = Get-ChildItem "`$src\*.dll" -ErrorAction SilentlyContinue
+            `$dlls | ForEach-Object { Copy-Item `$_.FullName -Destination "`$dst\`$(`$_.Name)" -Force }
+            LogOk "Windhawk mods (`$arch-bit) - `$(`$dlls.Count) DLL(s) installed"
+        }
+    }
+} else {
+    LogSkip "Windhawk - not installed"
+}
 
 foreach (`$c in `$copies) {
     if (-not (Test-Path (Split-Path `$c.Dst))) {
