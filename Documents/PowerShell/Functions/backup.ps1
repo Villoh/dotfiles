@@ -98,9 +98,11 @@ function Invoke-BinBackup {
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
-    $regFile   = "$PackagesDir\system\windhawk-settings.reg"
-    $dllDst    = "$PackagesDir\..\..\..\program_files\windhawk"
-    $tmpScript = "$env:TEMP\windhawk-backup.ps1"
+    $regFile     = "$PackagesDir\system\windhawk-settings.reg"
+    $profileSrc  = "C:\ProgramData\Windhawk\userprofile.json"
+    $profileDst  = "$PackagesDir\system\windhawk-userprofile.json"
+    $dllDst      = "$PackagesDir\..\..\..\program_files\windhawk"
+    $tmpScript   = "$env:TEMP\windhawk-backup.ps1"
     Save-ExistingBackup $regFile
     @"
 `$outputFile = "$regFile"
@@ -121,6 +123,13 @@ Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\64\*.dll" "`$dllDst\64\" -Force
 "@ | Set-Content $tmpScript
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
-    Write-Host "windhawk backup OK" -ForegroundColor Green
+    # userprofile.json is readable without elevation
+    if (Test-Path $profileSrc) {
+        Save-ExistingBackup $profileDst
+        Copy-Item $profileSrc $profileDst -Force
+        Write-Host "windhawk backup OK (userprofile.json included)" -ForegroundColor Green
+    } else {
+        Write-Host "windhawk backup OK (userprofile.json not found - skipped)" -ForegroundColor Yellow
+    }
 }
 Set-Alias -Name backup-windhawk -Value Invoke-WindhawkBackup

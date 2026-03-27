@@ -12,7 +12,11 @@ function Invoke-WindhawkRestore {
         return
     }
 
-    $regFile = (Join-Path (chezmoi source-path) "packages\windows\system\windhawk-settings.reg")
+    $sourceDir  = chezmoi source-path
+    $regFile    = Join-Path $sourceDir "packages\windows\system\windhawk-settings.reg"
+    $profileSrc = Join-Path $sourceDir "packages\windows\system\windhawk-userprofile.json"
+    $profileDst = "C:\ProgramData\Windhawk\userprofile.json"
+
     if (-not (Test-Path $regFile)) {
         Write-Warning "Registry file not found: $regFile"
         return
@@ -24,7 +28,7 @@ function Invoke-WindhawkRestore {
     @"
 reg import "$regFile" 2>`$null
 if (`$LASTEXITCODE -eq 0) {
-    Set-Content -Path "$logFile" -Value "Windhawk settings imported successfully."
+    Set-Content -Path "$logFile" -Value "OK"
 } else {
     Set-Content -Path "$logFile" -Value "ERROR: reg import failed (exit code `$LASTEXITCODE)"
 }
@@ -34,12 +38,25 @@ if (`$LASTEXITCODE -eq 0) {
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
 
     if (Test-Path $logFile) {
-        Get-Content $logFile | ForEach-Object { Write-Host $_ -ForegroundColor Green }
+        $result = Get-Content $logFile
         Remove-Item $logFile
+        if ($result -eq "OK") {
+            Write-Host "[windhawk] Registry imported successfully." -ForegroundColor Green
+        } else {
+            Write-Host "[windhawk] $result" -ForegroundColor Red
+        }
     } else {
         Write-Warning "No output received (UAC cancelled or import failed)"
     }
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+    # Restore userprofile.json (controls update status display in Windhawk UI)
+    if (Test-Path $profileSrc) {
+        Copy-Item $profileSrc $profileDst -Force
+        Write-Host "[windhawk] userprofile.json restored." -ForegroundColor Green
+    } else {
+        Write-Host "[windhawk] userprofile.json not found in backup - skipping." -ForegroundColor Yellow
+    }
 }
 
 Set-Alias -Name restore-windhawk -Value Invoke-WindhawkRestore
