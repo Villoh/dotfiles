@@ -1,0 +1,46 @@
+{
+  "app": {
+    "latestVersion": "1.7.3",
+    "version": "1.7.3"
+  },
+  "id": "{997B130D-57DF-483D-83BD-3B1119A9EE25}",
+  "mods": {
+    "icon-resource-redirect": {
+      "latestVersion": "1.2.4",
+      "version": "1.2.4"
+    },
+    "taskbar-icon-size": {
+      "latestVersion": "1.3.6",
+      "version": "1.3.6"
+    },
+    "taskbar-labels": {
+      "latestVersion": "1.4.2",
+      "version": "1.4.2"
+    },
+    "taskbar-notification-icon-spacing": {
+      "latestVersion": "1.3",
+      "version": "1.3"
+    },
+    "taskbar-tray-system-icon-tweaks": {
+      "latestVersion": "1.2.3",
+      "version": "1.2.3"
+    },
+    "taskbar-volume-control": {
+      "latestVersion": "1.3",
+      "version": "1.3"
+    },
+    "windows-11-notification-center-styler": {
+      "latestVersion": "1.4",
+      "version": "1.4"
+    },
+    "windows-11-start-menu-styler": {
+      "latestVersion": "1.4.1",
+      "version": "1.4.1"
+    },
+    "windows-11-taskbar-styler": {
+      "latestVersion": "1.5.2",
+      "version": "1.5.2"
+    }
+  },
+  "os": "10.0.26200"
+}
