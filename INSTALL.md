@@ -47,7 +47,7 @@ During `init --apply`, chezmoi will:
 
 chezmoi runs scripts automatically in this order:
 
-**Phase 1 — after files (run_once / run_onchange, alphabetical):**
+**Phase 1 — before files (run_once / run_onchange, alphabetical):**
 
 | Script | What it does |
 |--------|--------------|
@@ -57,11 +57,13 @@ chezmoi runs scripts automatically in this order:
 
 > `run_once_` sorts before `run_onchange_` alphabetically, so install always runs before setup.
 
-**Phase 2 — after everything (run_after, alphabetical):**
+**Phase 2 — chezmoi applies all files and symlinks**
+
+**Phase 3 — after files (run_after, alphabetical):**
 
 | Script | What it does |
 |--------|--------------|
-| `run_onchange_after_windows-wallpaper` *(Windows)* | Desktop wallpaper + lock screen (runs after symlinks are guaranteed to exist) |
+| `run_onchange_after_windows-wallpaper` *(Windows)* | Desktop wallpaper + lock screen (requires `~/Pictures/Wallpapers/` symlink to exist) |
 
 ---
 
