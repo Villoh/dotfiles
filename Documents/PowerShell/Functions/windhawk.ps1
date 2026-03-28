@@ -12,10 +12,11 @@ function Invoke-WindhawkRestore {
         return
     }
 
-    $sourceDir  = chezmoi source-path
-    $regFile    = Join-Path $sourceDir "packages\windows\system\windhawk\settings.reg"
-    $profileSrc = Join-Path $sourceDir "packages\windows\system\windhawk\userprofile.json"
-    $profileDst = "C:\ProgramData\Windhawk\userprofile.json"
+    $sourceDir     = chezmoi source-path
+    $regFile       = Join-Path $sourceDir "packages\windows\system\windhawk\settings.reg"
+    $pfDir         = Join-Path $sourceDir "program_files\windhawk"
+    $profileDst    = "C:\ProgramData\Windhawk\userprofile.json"
+    $modsSrcDst    = "C:\ProgramData\Windhawk\ModsSource"
 
     if (-not (Test-Path $regFile)) {
         Write-Warning "Registry file not found: $regFile"
@@ -50,13 +51,11 @@ if (`$LASTEXITCODE -eq 0) {
     }
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
 
-    # Restore userprofile.json (controls update status display in Windhawk UI)
-    if (Test-Path $profileSrc) {
-        Copy-Item $profileSrc $profileDst -Force
-        Write-Host "[windhawk] userprofile.json restored." -ForegroundColor Green
-    } else {
-        Write-Host "[windhawk] userprofile.json not found in backup - skipping." -ForegroundColor Yellow
-    }
+    # Restore userprofile.json and ModsSource (needed so Windhawk reads correct installed versions)
+    Copy-Item "$pfDir\userprofile.json" $profileDst -Force -ErrorAction SilentlyContinue
+    New-Item -ItemType Directory -Force -Path $modsSrcDst | Out-Null
+    Copy-Item "$pfDir\ModsSource\*.wh.cpp" "$modsSrcDst\" -Force -ErrorAction SilentlyContinue
+    Write-Host "[windhawk] userprofile.json and ModsSource restored." -ForegroundColor Green
 }
 
 Set-Alias -Name restore-windhawk -Value Invoke-WindhawkRestore
