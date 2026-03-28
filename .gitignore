@@ -1,6 +1,7 @@
 # State / runtime — not config
 **/*.tmp
 **/*.log
+**/*.bak
 **/Cache/
 **/cache/
 **/Logs/
@@ -25,3 +26,6 @@ dot_config/yazi/flavors/
 
 # openvpn profiles
 other_config/openvpn/
+
+# PowerShell runtime state
+Documents/PowerShell/LastExecutionTime.txt
