@@ -56,6 +56,20 @@ if (`$LASTEXITCODE -eq 0) {
     New-Item -ItemType Directory -Force -Path $modsSrcDst | Out-Null
     Copy-Item "$pfDir\ModsSource\*.wh.cpp" "$modsSrcDst\" -Force -ErrorAction SilentlyContinue
     Write-Host "[windhawk] userprofile.json and ModsSource restored." -ForegroundColor Green
+
+    # Init cycle — start Windhawk so the engine injects mods into running processes,
+    # then stop cleanly so the next user launch finds everything already initialized
+    $whExe = (Get-ItemProperty "HKLM:\SOFTWARE\Windhawk" -ErrorAction SilentlyContinue).InstallPath
+    if (-not $whExe) { $whExe = "C:\Program Files\Windhawk" }
+    $whExe = Join-Path $whExe "Windhawk.exe"
+    if (Test-Path $whExe) {
+        Write-Host "[windhawk] Running init cycle..." -ForegroundColor Cyan
+        Start-Process $whExe -WindowStyle Hidden
+        Start-Sleep -Seconds 10
+        Stop-Process -Name "Windhawk*" -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 2
+        Write-Host "[windhawk] Init cycle complete." -ForegroundColor Green
+    }
 }
 
 Set-Alias -Name restore-windhawk -Value Invoke-WindhawkRestore

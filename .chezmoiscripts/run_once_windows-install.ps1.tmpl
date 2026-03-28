@@ -15,7 +15,7 @@ function Log {
 function LogOk      { param([string]$msg) Log "  [OK]   $msg" "Green"  }
 function LogSkip    { param([string]$msg) Log "  [SKIP] $msg" "Yellow" }
 function LogFail    { param([string]$msg) Log "  [FAIL] $msg" "Red"    }
-function LogSection { param([string]$msg) Log "`n-- $msg --" "Cyan" }
+function LogSection { param([string]$msg) Write-Host ""; Add-Content -Path $logFile -Value ""; Log "-- $msg --" "Cyan" }
 
 $summary = @{ ok = 0; skip = 0; fail = 0 }
 
@@ -532,11 +532,12 @@ if (-not (Test-Path $winKeys)) {
 }
 
 # -- Summary -------------------------------------------------------------------
-Log "`n======================================" "Cyan"
+Write-Host ""; Add-Content -Path $logFile -Value ""
+Log "======================================" "Cyan"
 Log "  [OK]   OK:      $($summary.ok)"   "Green"
 Log "  [SKIP] Skipped: $($summary.skip)" "Yellow"
 Log "  [FAIL] Failed:  $($summary.fail)"  $(if ($summary.fail -gt 0) { "Red" } else { "White" })
 Log "  [LOG]  Log:     $logFile"          "Cyan"
-Log "`n======================================" "Cyan"
+Log "======================================" "Cyan"
 
 {{ end -}}

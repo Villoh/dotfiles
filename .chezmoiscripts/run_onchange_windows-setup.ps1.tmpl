@@ -205,6 +205,21 @@ if (Test-Path "HKLM:\SOFTWARE\Windhawk") {
             LogSkip "Windhawk DLLs `$arch-bit - source not found"
         }
     }
+
+    # Init cycle — start Windhawk so the engine injects mods into running processes,
+    # then stop cleanly so the next user launch finds everything already initialized
+    `$whExe = (Get-ItemProperty "HKLM:\SOFTWARE\Windhawk" -ErrorAction SilentlyContinue).InstallPath
+    if (-not `$whExe) { `$whExe = "C:\Program Files\Windhawk" }
+    `$whExe = Join-Path `$whExe "Windhawk.exe"
+    if (Test-Path `$whExe) {
+        Start-Process `$whExe -WindowStyle Hidden
+        Start-Sleep -Seconds 10
+        Stop-Process -Name "Windhawk*" -ErrorAction SilentlyContinue
+        Start-Sleep -Seconds 2
+        LogOk "Windhawk init cycle complete"
+    } else {
+        LogSkip "Windhawk.exe not found - skipping init cycle"
+    }
 } else {
     LogSkip "Windhawk - not installed"
 }
