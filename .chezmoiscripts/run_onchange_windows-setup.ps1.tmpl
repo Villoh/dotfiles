@@ -206,6 +206,19 @@ if (Test-Path "HKLM:\SOFTWARE\Windhawk") {
         }
     }
 
+    # Init cycle — runs elevated so we can kill Windhawk (which auto-elevates)
+    `$whInstall = (Get-ItemProperty "HKLM:\SOFTWARE\Windhawk" -ErrorAction SilentlyContinue).InstallPath
+    if (-not `$whInstall) { `$whInstall = "C:\Program Files\Windhawk" }
+    `$whExe = Join-Path `$whInstall "Windhawk.exe"
+    if (Test-Path `$whExe) {
+        Start-Process `$whExe -WindowStyle Hidden
+        Start-Sleep -Seconds 10
+        taskkill /f /t /im windhawk.exe 2>`$null | Out-Null
+        Start-Sleep -Seconds 2
+        LogOk "Windhawk init cycle complete"
+    } else {
+        LogSkip "Windhawk.exe not found - skipping init cycle"
+    }
 } else {
     LogSkip "Windhawk - not installed"
 }
@@ -278,21 +291,6 @@ if (Test-Path $logFile) {
     Write-Warning "windows-setup: no output received (UAC cancelled or script failed)"
 }
 Remove-Item $tmpScript -ErrorAction SilentlyContinue
-
-# -- Windhawk init cycle (non-elevated: Windhawk runs as the current user) -----
-if (Test-Path "HKLM:\SOFTWARE\Windhawk") {
-    $whInstall = (Get-ItemProperty "HKLM:\SOFTWARE\Windhawk" -ErrorAction SilentlyContinue).InstallPath
-    if (-not $whInstall) { $whInstall = "C:\Program Files\Windhawk" }
-    $whExe = Join-Path $whInstall "Windhawk.exe"
-    if (Test-Path $whExe) {
-        Write-Host "[windows-setup] Windhawk init cycle..." -ForegroundColor Cyan
-        Start-Process $whExe -WindowStyle Hidden
-        Start-Sleep -Seconds 10
-        Stop-Process -Name "Windhawk*" -Force -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 2
-        Write-Host "[windows-setup] Windhawk init cycle complete." -ForegroundColor Green
-    }
-}
 
 # Shared types for personalization
 Add-Type -TypeDefinition @'
