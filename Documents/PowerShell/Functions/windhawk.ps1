@@ -66,7 +66,7 @@ if (`$LASTEXITCODE -eq 0) {
         Write-Host "[windhawk] Running init cycle..." -ForegroundColor Cyan
         Start-Process $whExe -WindowStyle Hidden
         Start-Sleep -Seconds 10
-        Stop-Process -Name "Windhawk*" -Force -ErrorAction SilentlyContinue
+        taskkill /f /t /im windhawk.exe 2>$null | Out-Null
         Start-Sleep -Seconds 2
         Write-Host "[windhawk] Init cycle complete." -ForegroundColor Green
     }
