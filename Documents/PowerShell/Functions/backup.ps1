@@ -98,14 +98,18 @@ function Invoke-BinBackup {
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
-    $regFile     = "$PackagesDir\system\windhawk\settings.reg"
-    $pfDir       = "$PackagesDir\..\..\..\program_files\windhawk"
+    $sourceDir   = chezmoi source-path
+    $regFile     = "$sourceDir\packages\windows\system\windhawk\settings.reg"
+    $pfDir       = "$sourceDir\program_files\windhawk"
     $tmpScript   = "$env:TEMP\windhawk-backup.ps1"
+    $logFile     = "$env:TEMP\windhawk-backup.log"
     New-Item -ItemType Directory -Force -Path (Split-Path $regFile) | Out-Null
     Save-ExistingBackup $regFile
     @"
 `$outputFile = "$regFile"
 `$pfDir      = "$pfDir"
+`$logFile    = "$logFile"
+`$lines      = @()
 `$mods = Get-ChildItem "HKLM:\SOFTWARE\Windhawk\Engine\Mods" -ErrorAction SilentlyContinue |
     Where-Object { `$_.PSChildName -ne "SymbolCache" }
 "Windows Registry Editor Version 5.00" | Out-File `$outputFile -Encoding Unicode
@@ -116,16 +120,39 @@ foreach (`$mod in `$mods) {
     Get-Content `$tmp | Select-Object -Skip 1 | Add-Content `$outputFile
     Remove-Item `$tmp -ErrorAction SilentlyContinue
 }
+`$lines += "reg:OK (`$(`$mods.Count) mods)"
 New-Item -ItemType Directory -Force -Path "`$pfDir\32", "`$pfDir\64" | Out-Null
-Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\32\*.dll" "`$pfDir\32\" -Force
-Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\64\*.dll" "`$pfDir\64\" -Force
+`$dlls32 = Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\32\*.dll" "`$pfDir\32\" -Force -PassThru -ErrorAction SilentlyContinue
+`$dlls64 = Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\64\*.dll" "`$pfDir\64\" -Force -PassThru -ErrorAction SilentlyContinue
+`$lines += "dlls:OK (32-bit: `$(`$dlls32.Count)  64-bit: `$(`$dlls64.Count))"
+`$lines | Set-Content `$logFile
 "@ | Set-Content $tmpScript
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+    if (Test-Path $logFile) {
+        Get-Content $logFile | ForEach-Object { Write-Host "  [OK] $_" -ForegroundColor Green }
+        Remove-Item $logFile
+    } else {
+        Write-Warning "windhawk backup: no output from elevated script (UAC cancelled or failed)"
+        return
+    }
+
     # userprofile.json and ModsSource are readable without elevation
-    Copy-Item "C:\ProgramData\Windhawk\userprofile.json" "$pfDir\userprofile.json" -Force -ErrorAction SilentlyContinue
-    New-Item -ItemType Directory -Force -Path "$pfDir\ModsSource" | Out-Null
-    Copy-Item "C:\ProgramData\Windhawk\ModsSource\*.wh.cpp" "$pfDir\ModsSource\" -Force -ErrorAction SilentlyContinue
+    if (Test-Path "C:\ProgramData\Windhawk\userprofile.json") {
+        Copy-Item "C:\ProgramData\Windhawk\userprofile.json" "$pfDir\userprofile.json" -Force
+        Write-Host "  [OK] userprofile.json" -ForegroundColor Green
+    } else {
+        Write-Warning "windhawk backup: userprofile.json not found"
+    }
+    $wh_cpp = Get-ChildItem "C:\ProgramData\Windhawk\ModsSource\*.wh.cpp" -ErrorAction SilentlyContinue
+    if ($wh_cpp) {
+        New-Item -ItemType Directory -Force -Path "$pfDir\ModsSource" | Out-Null
+        $wh_cpp | Copy-Item -Destination "$pfDir\ModsSource\" -Force
+        Write-Host "  [OK] ModsSource ($($wh_cpp.Count) files)" -ForegroundColor Green
+    } else {
+        Write-Warning "windhawk backup: no .wh.cpp files found in ModsSource"
+    }
     Write-Host "windhawk backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-windhawk -Value Invoke-WindhawkBackup
