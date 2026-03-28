@@ -532,8 +532,9 @@ if (-not (Test-Path $winKeys)) {
 }
 
 # -- Windhawk -----------------------------------------------------------------
-$windhawkDir = "$pkgDir\system\windhawk"
-if (-not (Test-Path "$windhawkDir\settings.reg")) {
+$windhawkRegFile = "$pkgDir\system\windhawk\settings.reg"
+$windhawkPfDir   = "$chezmoisrc\program_files\windhawk"
+if (-not (Test-Path $windhawkRegFile)) {
     Log "  [INFO] windhawk\settings.reg not found - skipping" "Yellow"
 } elseif (-not (Test-Path "HKLM:\SOFTWARE\Windhawk")) {
     Log "  [INFO] Windhawk not installed - skipping registry import" "Yellow"
@@ -543,29 +544,30 @@ if (-not (Test-Path "$windhawkDir\settings.reg")) {
     Start-Sleep -Seconds 2
     $windhawkLog    = "$env:TEMP\windhawk-import.log"
     $windhawkScript = "$env:TEMP\windhawk-import.ps1"
-    $windhawkProfile = "$windhawkDir\userprofile.json"
     @"
-reg import "$windhawkDir\settings.reg"
+reg import "$windhawkRegFile"
 if (`$LASTEXITCODE -ne 0) { "FAIL:exit `$LASTEXITCODE" | Set-Content "$windhawkLog"; exit }
 `$lines = @("reg:OK")
-if (Test-Path "$windhawkProfile") {
-    try {
-        Copy-Item "$windhawkProfile" "C:\ProgramData\Windhawk\userprofile.json" -Force
-        `$lines += "profile:OK"
-    } catch {
-        `$lines += "profile:FAIL:`$(`$_.Exception.Message)"
-    }
+# userprofile.json — prevents Windhawk UI from overwriting mod versions with ""
+if (Test-Path "$windhawkPfDir\userprofile.json") {
+    Copy-Item "$windhawkPfDir\userprofile.json" "C:\ProgramData\Windhawk\userprofile.json" -Force
+    `$lines += "profile:OK"
+}
+# ModsSource — mod headers contain version info; without them getMetadataOfInstalled() returns ""
+if (Test-Path "$windhawkPfDir\ModsSource") {
+    New-Item -ItemType Directory -Force -Path "C:\ProgramData\Windhawk\ModsSource" | Out-Null
+    Copy-Item "$windhawkPfDir\ModsSource\*.wh.cpp" "C:\ProgramData\Windhawk\ModsSource\" -Force
+    `$lines += "mods:OK"
 }
 `$lines | Set-Content "$windhawkLog"
 "@ | Set-Content $windhawkScript
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $windhawkScript -Wait
     Remove-Item $windhawkScript -ErrorAction SilentlyContinue
     $results = if (Test-Path $windhawkLog) { Get-Content $windhawkLog; Remove-Item $windhawkLog } else { @("FAIL:no output") }
-    if ($results -contains "reg:OK") { LogOk "Windhawk settings imported"; $summary.ok++ }
-    else { LogFail "Windhawk import - $($results[0])"; $summary.fail++ }
-    $profileResult = $results | Where-Object { $_ -like "profile:*" }
-    if ($profileResult -eq "profile:OK") { LogOk "Windhawk userprofile.json restored"; $summary.ok++ }
-    elseif ($profileResult) { LogFail "Windhawk userprofile.json - $($profileResult -replace 'profile:FAIL:')"; $summary.fail++ }
+    if ($results -contains "reg:OK")     { LogOk "Windhawk settings imported"; $summary.ok++ }
+    else                                  { LogFail "Windhawk import - $($results[0])"; $summary.fail++ }
+    if ($results -contains "profile:OK") { LogOk "Windhawk userprofile.json restored"; $summary.ok++ }
+    if ($results -contains "mods:OK")    { LogOk "Windhawk ModsSource restored"; $summary.ok++ }
 }
 
 # -- Summary -------------------------------------------------------------------

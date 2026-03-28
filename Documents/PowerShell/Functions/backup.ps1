@@ -99,15 +99,13 @@ Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
 function Invoke-WindhawkBackup {
     $regFile     = "$PackagesDir\system\windhawk\settings.reg"
-    $profileSrc  = "C:\ProgramData\Windhawk\userprofile.json"
-    $profileDst  = "$PackagesDir\system\windhawk\userprofile.json"
-    $dllDst      = "$PackagesDir\..\..\..\program_files\windhawk"
+    $pfDir       = "$PackagesDir\..\..\..\program_files\windhawk"
     $tmpScript   = "$env:TEMP\windhawk-backup.ps1"
     New-Item -ItemType Directory -Force -Path (Split-Path $regFile) | Out-Null
     Save-ExistingBackup $regFile
     @"
 `$outputFile = "$regFile"
-`$dllDst     = "$dllDst"
+`$pfDir      = "$pfDir"
 `$mods = Get-ChildItem "HKLM:\SOFTWARE\Windhawk\Engine\Mods" -ErrorAction SilentlyContinue |
     Where-Object { `$_.PSChildName -ne "SymbolCache" }
 "Windows Registry Editor Version 5.00" | Out-File `$outputFile -Encoding Unicode
@@ -118,19 +116,16 @@ foreach (`$mod in `$mods) {
     Get-Content `$tmp | Select-Object -Skip 1 | Add-Content `$outputFile
     Remove-Item `$tmp -ErrorAction SilentlyContinue
 }
-New-Item -ItemType Directory -Force -Path "`$dllDst\32", "`$dllDst\64" | Out-Null
-Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\32\*.dll" "`$dllDst\32\" -Force
-Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\64\*.dll" "`$dllDst\64\" -Force
+New-Item -ItemType Directory -Force -Path "`$pfDir\32", "`$pfDir\64" | Out-Null
+Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\32\*.dll" "`$pfDir\32\" -Force
+Copy-Item "C:\ProgramData\Windhawk\Engine\Mods\64\*.dll" "`$pfDir\64\" -Force
 "@ | Set-Content $tmpScript
     Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
-    # userprofile.json is readable without elevation
-    if (Test-Path $profileSrc) {
-        Save-ExistingBackup $profileDst
-        Copy-Item $profileSrc $profileDst -Force
-        Write-Host "windhawk backup OK (userprofile.json included)" -ForegroundColor Green
-    } else {
-        Write-Host "windhawk backup OK (userprofile.json not found - skipped)" -ForegroundColor Yellow
-    }
+    # userprofile.json and ModsSource are readable without elevation
+    Copy-Item "C:\ProgramData\Windhawk\userprofile.json" "$pfDir\userprofile.json" -Force -ErrorAction SilentlyContinue
+    New-Item -ItemType Directory -Force -Path "$pfDir\ModsSource" | Out-Null
+    Copy-Item "C:\ProgramData\Windhawk\ModsSource\*.wh.cpp" "$pfDir\ModsSource\" -Force -ErrorAction SilentlyContinue
+    Write-Host "windhawk backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-windhawk -Value Invoke-WindhawkBackup
