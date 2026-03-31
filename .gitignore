@@ -1,3 +1,6 @@
+# Claude Code — local session state, not config
+.claude/settings.local.json
+
 # State / runtime — not config
 **/*.tmp
 **/*.log
