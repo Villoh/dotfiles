@@ -29,12 +29,6 @@ sudo pacman -S git chezmoi
 
 ## Install
 
-**With GPG key** (full install):
-```bash
-chezmoi init --apply github.com/Villoh/dotfiles
-```
-
-**Without GPG key** (skips encrypted files like `sshcontrol`):
 ```bash
 chezmoi init --apply --exclude=encrypted github.com/Villoh/dotfiles
 ```

@@ -14,19 +14,24 @@ function Get-Theme_Override {
 # Terminal Icons
 Import-Module -Name Terminal-Icons
 
-# Functions
-. "$HOME\Documents\PowerShell\Functions\upgrade.ps1"
-. "$HOME\Documents\PowerShell\Functions\bitwarden.ps1"
-. "$HOME\Documents\PowerShell\Functions\keybinds.ps1"
-. "$HOME\Documents\PowerShell\Functions\win-keys.ps1"
-. "$HOME\Documents\PowerShell\Functions\backup.ps1"
-. "$HOME\Documents\PowerShell\Functions\restore.ps1"
-. "$HOME\Documents\PowerShell\Functions\chezmoi.ps1"
-. "$HOME\Documents\PowerShell\Functions\devmode.ps1"
-. "$HOME\Documents\PowerShell\Functions\gpg-ssh-setup.ps1"
-. "$HOME\Documents\PowerShell\Functions\windhawk.ps1"
-. "$HOME\Documents\PowerShell\Functions\wsl-arch-setup.ps1"
-. "$HOME\Documents\PowerShell\Functions\startup.ps1"
+$PSUserPath = Split-Path $PROFILE
+
+# Source Functions and Completions
+@("Functions", "Completions") | ForEach-Object {
+    Get-ChildItem "$PSUserPath\$_\*.ps1" | ForEach-Object { . $_ }
+}
+
+# Winget Completions
+Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    [Console]::InputEncoding = [Console]::OutputEncoding = $OutputEncoding = [System.Text.Utf8Encoding]::new()
+    $Local:word = $wordToComplete.Replace('"', '""')
+    $Local:ast = $commandAst.ToString().Replace('"', '""')
+    winget complete --word="$Local:word" --commandline "$Local:ast" --position $cursorPosition |
+        ForEach-Object {
+            [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
+        }
+}
 
 # Force Fastfetch to use YOUR config every time (bypass path confusion)
 if (Get-Command fastfetch -ErrorAction SilentlyContinue) {

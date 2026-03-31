@@ -168,85 +168,101 @@ config.keys = {
   -- ---------------------------------------------------------------------------
   -- Word editing
   -- ---------------------------------------------------------------------------
-  { key = "Backspace", mods = "CTRL", action = act.SendKey    { key = "w", mods = "CTRL" }  },  -- delete prev word
-  -- { key = "Backspace", mods = "ALT",  action = act.SendString "\x1b\x7f"                    },  -- delete prev word (alt) — secuencia VT, no convertible
-  { key = "Delete",    mods = "CTRL", action = act.SendString "\x1b[3;5~"                   },  -- delete next word — secuencia VT, no convertible
+  { key = "Backspace", mods = "CTRL", action = act.SendKey { key = "w", mods = "CTRL" } },  -- delete prev word
+  { key = "Delete",    mods = "CTRL", action = act.SendString "\x1b[3;5~"               },  -- delete next word
 
   -- ---------------------------------------------------------------------------
   -- Word navigation
   -- ---------------------------------------------------------------------------
-  -- { key = "LeftArrow",  mods = "ALT",  action = act.SendString "\x1b[1;3D"                  },  -- Alt+← word back
-  -- { key = "RightArrow", mods = "ALT",  action = act.SendString "\x1b[1;3C"                  },  -- Alt+→ word forward
-  { key = "LeftArrow",  mods = "CTRL", action = act.SendString "\x1b[1;5D"                  },  -- Ctrl+← word back — secuencia VT, no convertible
-  { key = "RightArrow", mods = "CTRL", action = act.SendString "\x1b[1;5C"                  },  -- Ctrl+→ word forward — secuencia VT, no convertible
+  { key = "LeftArrow",  mods = "CTRL", action = act.SendString "\x1b[1;5D" },  -- Ctrl+← word back
+  { key = "RightArrow", mods = "CTRL", action = act.SendString "\x1b[1;5C" },  -- Ctrl+→ word forward
 
   -- ---------------------------------------------------------------------------
   -- Line navigation
   -- ---------------------------------------------------------------------------
-  { key = "Home", mods = "NONE", action = act.SendString "\x1b[H"                           },  -- Start of line — secuencia VT, no convertible
-  { key = "End",  mods = "NONE", action = act.SendString "\x1b[F"                           },  -- End of line — secuencia VT, no convertible
-
+  { key = "Home", mods = "NONE", action = act.SendString "\x1b[H" },
+  { key = "End",  mods = "NONE", action = act.SendString "\x1b[F" },
 
   -- ---------------------------------------------------------------------------
   -- Scrolling
   -- ---------------------------------------------------------------------------
-  { key = "PageUp",   mods = "SHIFT", action = act.ScrollByPage(-1)         },
-  { key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1)          },
-  { key = "Home",     mods = "SHIFT", action = act.ScrollToTop              },
-  { key = "End",      mods = "SHIFT", action = act.ScrollToBottom           },
+  { key = "PageUp",   mods = "SHIFT", action = act.ScrollByPage(-1)  },
+  { key = "PageDown", mods = "SHIFT", action = act.ScrollByPage(1)   },
+  { key = "Home",     mods = "SHIFT", action = act.ScrollToTop       },
+  { key = "End",      mods = "SHIFT", action = act.ScrollToBottom    },
 
   -- ---------------------------------------------------------------------------
   -- Font size
   -- ---------------------------------------------------------------------------
-  { key = "+", mods = "CTRL", action = act.IncreaseFontSize                 },
-  { key = "-", mods = "CTRL", action = act.DecreaseFontSize                 },
-  { key = "0", mods = "CTRL", action = act.ResetFontSize                    },
+  { key = "+", mods = "CTRL", action = act.IncreaseFontSize },
+  { key = "-", mods = "CTRL", action = act.DecreaseFontSize },
+  { key = "0", mods = "CTRL", action = act.ResetFontSize    },
 
   -- ---------------------------------------------------------------------------
-  -- Tabs (native in WezTerm — no tmux needed)
+  -- Tabs
   -- ---------------------------------------------------------------------------
-  { key = "T",   mods = "CTRL|SHIFT", action = act.SpawnTab "CurrentPaneDomain"          },  -- New tab
-  { key = "Q",   mods = "CTRL|SHIFT", action = act.CloseCurrentTab { confirm = false }   },  -- Close tab
-  { key = "Tab", mods = "CTRL",       action = act.ActivateTabRelative(1)                },  -- Next tab
-  { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1)               },  -- Prev tab
+  { key = "t",   mods = "ALT",        action = act.SpawnTab "CurrentPaneDomain"        },  -- New tab
+  { key = "t",   mods = "ALT|SHIFT",  action = act.CloseCurrentTab { confirm = false } },  -- Close tab
+  { key = "q",   mods = "ALT|SHIFT",  action = act.CloseCurrentTab { confirm = false } },  -- Close tab (alt)
+  { key = ".",   mods = "ALT",        action = act.ActivateTabRelative(1)              },  -- Next tab
+  { key = ",",   mods = "ALT",        action = act.ActivateTabRelative(-1)             },  -- Prev tab
+  { key = "Tab", mods = "CTRL",       action = act.ActivateTabRelative(1)              },  -- Next tab
+  { key = "Tab", mods = "CTRL|SHIFT", action = act.ActivateTabRelative(-1)             },  -- Prev tab
+  { key = "1",   mods = "ALT",        action = act.ActivateTab(0)                      },
+  { key = "2",   mods = "ALT",        action = act.ActivateTab(1)                      },
+  { key = "3",   mods = "ALT",        action = act.ActivateTab(2)                      },
+  { key = "4",   mods = "ALT",        action = act.ActivateTab(3)                      },
+  { key = "5",   mods = "ALT",        action = act.ActivateTab(4)                      },
+  { key = "6",   mods = "ALT",        action = act.ActivateTab(5)                      },
+  { key = "7",   mods = "ALT",        action = act.ActivateTab(6)                      },
+  { key = "8",   mods = "ALT",        action = act.ActivateTab(7)                      },
+  { key = "9",   mods = "ALT",        action = act.ActivateTab(8)                      },
 
   -- ---------------------------------------------------------------------------
   -- Windows
   -- ---------------------------------------------------------------------------
-  { key = "N", mods = "CTRL|SHIFT", action = act.SpawnWindow                },  -- New window
+  { key = "N", mods = "CTRL|SHIFT", action = act.SpawnWindow },
 
   -- ---------------------------------------------------------------------------
-  -- Splits — native WezTerm feature, replaces the need for tmux
-  -- Ctrl+Shift+D → vertical split   (side by side)
-  -- Ctrl+Shift+E → horizontal split (top / bottom)
-  -- Alt+Shift+D  → auto split (matches Windows Terminal Alt+Shift+D)
+  -- Splits
+  -- Alt+d → split abajo · Alt+e → split derecha · Alt+Shift+D → auto BSP
   -- ---------------------------------------------------------------------------
-  { key = "D", mods = "CTRL|SHIFT", action = act.SplitVertical   { domain = "CurrentPaneDomain" } },
-  { key = "E", mods = "CTRL|SHIFT", action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
-  { key = "D", mods = "ALT|SHIFT",  action = act.EmitEvent "smart-split" },  -- Auto split BSP-style
+  { key = "d", mods = "ALT",       action = act.SplitVertical   { domain = "CurrentPaneDomain" } },
+  { key = "e", mods = "ALT",       action = act.SplitHorizontal { domain = "CurrentPaneDomain" } },
+  { key = "n", mods = "ALT",       action = act.EmitEvent "smart-split" },  -- BSP auto split
+  { key = "D", mods = "ALT|SHIFT", action = act.EmitEvent "smart-split" },  -- BSP auto split (alt)
 
   -- ---------------------------------------------------------------------------
-  -- Pane navigation — Ctrl+Alt+Arrow
+  -- Pane navigation — Alt+hjkl y Alt+flechas
   -- ---------------------------------------------------------------------------
-  { key = "LeftArrow",  mods = "CTRL|ALT", action = act.ActivatePaneDirection "Left"  },
-  { key = "RightArrow", mods = "CTRL|ALT", action = act.ActivatePaneDirection "Right" },
-  { key = "UpArrow",    mods = "CTRL|ALT", action = act.ActivatePaneDirection "Up"    },
-  { key = "DownArrow",  mods = "CTRL|ALT", action = act.ActivatePaneDirection "Down"  },
+  { key = "h",          mods = "ALT", action = act.ActivatePaneDirection "Left"  },
+  { key = "j",          mods = "ALT", action = act.ActivatePaneDirection "Down"  },
+  { key = "k",          mods = "ALT", action = act.ActivatePaneDirection "Up"    },
+  { key = "l",          mods = "ALT", action = act.ActivatePaneDirection "Right" },
+  { key = "LeftArrow",  mods = "ALT", action = act.ActivatePaneDirection "Left"  },
+  { key = "DownArrow",  mods = "ALT", action = act.ActivatePaneDirection "Down"  },
+  { key = "UpArrow",    mods = "ALT", action = act.ActivatePaneDirection "Up"    },
+  { key = "RightArrow", mods = "ALT", action = act.ActivatePaneDirection "Right" },
 
   -- ---------------------------------------------------------------------------
   -- Pane management
   -- ---------------------------------------------------------------------------
-  { key = "W", mods = "CTRL|SHIFT", action = act.CloseCurrentPane { confirm = false }  },  -- Cerrar pane (no el tab)
-  { key = "Z", mods = "CTRL|SHIFT", action = act.TogglePaneZoomState                  },  -- Zoom toggle del pane activo
+  { key = "x", mods = "ALT",       action = act.CloseCurrentPane { confirm = false } },  -- Close pane
+  { key = "w", mods = "ALT|SHIFT", action = act.CloseCurrentPane { confirm = false } },  -- Close pane (alt)
+  { key = "z", mods = "ALT",       action = act.TogglePaneZoomState                 },  -- Zoom pane
 
-  -- Redimensionar pane — Ctrl+Alt+Shift+Flechas
-  { key = "LeftArrow",  mods = "CTRL|ALT|SHIFT", action = act.AdjustPaneSize { "Left",  5 } },
-  { key = "RightArrow", mods = "CTRL|ALT|SHIFT", action = act.AdjustPaneSize { "Right", 5 } },
-  { key = "UpArrow",    mods = "CTRL|ALT|SHIFT", action = act.AdjustPaneSize { "Up",    5 } },
-  { key = "DownArrow",  mods = "CTRL|ALT|SHIFT", action = act.AdjustPaneSize { "Down",  5 } },
+  -- Resize — Alt+Shift+hjkl y Alt+Shift+flechas
+  { key = "h",          mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Left",  5 } },
+  { key = "j",          mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Down",  5 } },
+  { key = "k",          mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Up",    5 } },
+  { key = "l",          mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Right", 5 } },
+  { key = "LeftArrow",  mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Left",  5 } },
+  { key = "DownArrow",  mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Down",  5 } },
+  { key = "UpArrow",    mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Up",    5 } },
+  { key = "RightArrow", mods = "ALT|SHIFT", action = act.AdjustPaneSize { "Right", 5 } },
 
   -- ---------------------------------------------------------------------------
-  -- Search (bonus — replaces Windows Terminal Ctrl+Shift+F)
+  -- Search
   -- ---------------------------------------------------------------------------
   { key = "F", mods = "CTRL|SHIFT", action = act.Search { CaseSensitiveString = "" } },
 }

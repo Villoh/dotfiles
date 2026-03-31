@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(scoop search:*)",
+      "Bash(find C:Usersmikel.localsharechezmoi -iname *windows*terminal* -o -iname *terminal*settings*)",
+      "Bash(find C:Usersmikel.localsharechezmoi -type d -name *terminal* -o -type d -name *windows*)",
+      "Bash(find C:Usersmikel.localsharechezmoi -type f -path */windows*terminal* -o -path */terminal*settings*)"
+    ]
+  }
+}
