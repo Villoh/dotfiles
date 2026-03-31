@@ -50,6 +50,9 @@ scoop/
 {{ if not .enable_ohmyposh }}.config/ohmyposh/**{{ end }}
 {{ if not .enable_bun }}.config/.bunfig.toml{{ end }}
 
+# ── Claude Code — local session state, never deployed ─────────────────────────
+.claude/
+
 # ── Reference only — never deployed to home ────────────────────────────────────
 packages/**
 program_files/**
