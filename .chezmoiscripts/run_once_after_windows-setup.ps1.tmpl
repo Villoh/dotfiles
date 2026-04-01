@@ -1,0 +1,134 @@
+{{ if eq .chezmoi.os "windows" -}}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$pkgDir     = "$chezmoisrc\packages\windows"
+$ok = 0; $skip = 0; $fail = 0
+
+function LogOk   { param([string]$msg) Write-Host "  [OK]   $msg" -ForegroundColor Green;  $script:ok++   }
+function LogSkip { param([string]$msg) Write-Host "  [SKIP] $msg" -ForegroundColor Yellow; $script:skip++ }
+function LogFail { param([string]$msg) Write-Host "  [FAIL] $msg" -ForegroundColor Red;    $script:fail++ }
+function LogSec  { param([string]$msg) Write-Host ""; Write-Host "-- $msg --" -ForegroundColor Cyan }
+function TryRun  {
+    param([string]$name, [scriptblock]$block)
+    try   { & $block; LogOk $name }
+    catch { LogFail "$name - $($_.Exception.Message)" }
+}
+
+# == PERSONALIZATION ===========================================================
+LogSec "Personalization"
+
+Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
+public class Win32 {
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+}
+'@ -ErrorAction SilentlyContinue
+
+# -- Theme --------------------------------------------------------------------
+$defaultTheme      = "C:\Windows\Resources\Themes\Catppuccin - Mocha Night.theme"
+$secureUxInstalled = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" `
+    -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -like "*SecureUxTheme*" }
+if ($secureUxInstalled -and (Test-Path $defaultTheme)) {
+    TryRun "Catppuccin Mocha Night theme" { Start-Process $defaultTheme }
+} elseif (-not $secureUxInstalled) {
+    LogSkip "Theme - SecureUxTheme not installed"
+} else {
+    LogSkip "Theme - file not found: $defaultTheme"
+}
+
+# -- Accent color (#BA8AF4, Catppuccin Mocha Mauve) ---------------------------
+$accentPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent"
+
+function Set-RegValue($path, $name, $value, $type) {
+    if ($null -eq (Get-ItemProperty -Path $path -Name $name -ErrorAction SilentlyContinue)) {
+        New-ItemProperty -Path $path -Name $name -Value $value -PropertyType $type -Force | Out-Null
+    } else {
+        Set-ItemProperty -Path $path -Name $name -Value $value -Force
+    }
+}
+
+$paletteHex = 'e9,d9,fb,ff,d5,b8,f8,ff,c8,a1,f6,ff,ba,8a,f4,ff,ac,72,f2,ff,9f,5b,f0,ff,8c,3a,ed,ff,88,17,98,00'
+$palette    = [byte[]]($paletteHex.Split(',') | ForEach-Object { "0x$_" })
+
+TryRun "Accent color #BA8AF4 (Catppuccin Mocha Mauve)" {
+    Set-RegValue $accentPath "AccentColor"          '0xfff48aba' "DWORD"
+    Set-RegValue $accentPath "AccentColorMenu"      '0xfff7a6cb' "DWORD"
+    Set-RegValue $accentPath "StartColorMenu"       '0xfff272ac' "DWORD"
+    Set-RegValue $accentPath "AccentPalette"        $palette     "BINARY"
+    Set-RegValue $accentPath "MotionAccentId_v1.00" '0x000000db' "DWORD"
+    Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+}
+
+# == GLAZEWM — DISABLE WIN KEYS ===============================================
+LogSec "GlazeWM"
+
+$winKeys = "$chezmoisrc\Documents\PowerShell\Functions\win-keys.ps1"
+if (-not (Test-Path $winKeys)) {
+    LogSkip "win-keys.ps1 not found"
+} else {
+    . $winKeys
+    $systemVal = _Get-WinKeysValue -Scope System
+    $userVal   = _Get-WinKeysValue -Scope User
+    # Effective state: HKLM present → HKLM wins; HKLM absent → HKCU applies
+    $effectivelyDisabled = ($null -ne $systemVal -and $systemVal -eq 1) -or
+                           ($null -eq $systemVal -and $null -ne $userVal -and $userVal -eq 1)
+    if ($effectivelyDisabled) {
+        LogSkip "Win keys already disabled (effective)"
+    } else {
+        TryRun "Disable Win keys - System (HKLM)" {
+            if (-not (_Set-WinKeysValue -Value 1 -Scope System)) { throw "Failed to set HKLM\NoWinKeys" }
+        }
+        TryRun "Disable Win keys - User (HKCU)" {
+            if (-not (_Set-WinKeysValue -Value 1 -Scope User)) { throw "Failed to set HKCU\NoWinKeys" }
+        }
+        Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# == STARTUP ==================================================================
+LogSec "Startup"
+
+function Start-IfNotRunning {
+    param([string]$Name, [string]$Path, [string]$Args = "")
+    $expanded = [System.Environment]::ExpandEnvironmentVariables($Path)
+    if (-not (Test-Path $expanded)) {
+        LogSkip "$Name - not found"
+        return
+    }
+    $procName = [System.IO.Path]::GetFileNameWithoutExtension($expanded)
+    if (Get-Process -Name $procName -ErrorAction SilentlyContinue) {
+        LogSkip "$Name - already running"
+        return
+    }
+    if ($Args) { Start-Process $expanded -ArgumentList $Args } else { Start-Process $expanded }
+    LogOk $Name
+}
+
+if (Test-Path "$pkgDir\system\startup.json") {
+    $startup = Get-Content "$pkgDir\system\startup.json" | ConvertFrom-Json
+    foreach ($entry in $startup.registry) {
+        $argsVal = if ($entry.args) { $entry.args } else { "" }
+        Start-IfNotRunning $entry.name $entry.path $argsVal
+    }
+}
+
+# -- Windhawk -----------------------------------------------------------------
+$whInstall = (Get-ItemProperty "HKLM:\SOFTWARE\Windhawk" -ErrorAction SilentlyContinue).InstallPath
+if (-not $whInstall) { $whInstall = "C:\Program Files\Windhawk" }
+Start-IfNotRunning "Windhawk" (Join-Path $whInstall "Windhawk.exe")
+
+# -- Mica For Everyone --------------------------------------------------------
+$micaPkg = Get-AppxPackage -Name "*MicaForEveryone*" -ErrorAction SilentlyContinue
+if ($micaPkg) {
+    $micaExe = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WindowsApps" `
+        -Filter "*MicaForEveryone*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($micaExe) { Start-IfNotRunning "MicaForEveryone" $micaExe.FullName }
+} else {
+    LogSkip "MicaForEveryone - not installed"
+}
+
+Write-Host ""
+Write-Host "[windows-setup] Done: $ok OK  $skip skipped  $fail failed" -ForegroundColor Cyan
+
+{{ end -}}
