@@ -99,6 +99,7 @@ keybinds {
             }
         }
         bind "Alt Shift d"   { Detach; }
+        bind "Alt Shift r"   { SwitchToMode "RenameSession"; SessionNameInput 0; }
         bind "Ctrl q"        { Quit; }
 
         // Help
@@ -205,6 +206,12 @@ keybinds {
     renamepane {
         bind "Enter"  { SwitchToMode "Normal"; }
         bind "Esc"    { UndoRenamePane; SwitchToMode "Normal"; }
+        bind "Ctrl c" { SwitchToMode "Locked"; }
+    }
+
+    renamesession {
+        bind "Enter"  { SwitchToMode "Normal"; }
+        bind "Esc"    { SwitchToMode "Normal"; }
         bind "Ctrl c" { SwitchToMode "Locked"; }
     }
 }
