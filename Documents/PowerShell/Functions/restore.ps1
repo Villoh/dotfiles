@@ -48,7 +48,9 @@ function Invoke-AllRestore {
     if (Test-Path "$pkgDir\node\npm-packages.json") { $candidates.Add("npm") }
     if (Test-Path "$pkgDir\node\bun-packages.txt")  { $candidates.Add("bun") }
     if (Test-Path "$pkgDir\uv-tools.txt")           { $candidates.Add("uv") }
-    if (Test-Path "$pkgDir\bin-packages.txt")       { $candidates.Add("bin") }
+    if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin") }
+    if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo") }
+    if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git") }
 
     $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
         "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all"
@@ -61,10 +63,12 @@ function Invoke-AllRestore {
     if ($selectedManagers -contains "winget")          { Invoke-WingetRestore }
     if ($selectedManagers -contains "winget-elevated") { Invoke-WingetElevatedRestore }
     if ($selectedManagers -contains "scoop")           { Invoke-ScoopRestore }
-    if ($selectedManagers -contains "npm")     { Invoke-NodeRestore }
-    if ($selectedManagers -contains "bun")     { Invoke-BunRestore }
-    if ($selectedManagers -contains "uv")      { Invoke-UvRestore }
-    if ($selectedManagers -contains "bin")     { Invoke-BinRestore }
+    if ($selectedManagers -contains "npm")             { Invoke-NodeRestore }
+    if ($selectedManagers -contains "bun")             { Invoke-BunRestore }
+    if ($selectedManagers -contains "uv")              { Invoke-UvRestore }
+    if ($selectedManagers -contains "bin")             { Invoke-BinRestore }
+    if ($selectedManagers -contains "cargo")           { Invoke-CargoRestore }
+    if ($selectedManagers -contains "cargo-git")       { Invoke-CargoGitRestore }
 
     Write-Host "Restore completado" -ForegroundColor Green
 }
@@ -250,6 +254,80 @@ function Invoke-UvRestore {
     Write-Host "uv restore OK" -ForegroundColor Green
 }
 Set-Alias -Name restore-uv -Value Invoke-UvRestore
+
+# -- cargo (crates.io) ---------------------------------------------------------
+function Invoke-CargoRestore {
+    $file = "$PackagesDir\cargo\packages.txt"
+    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
+    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+        Write-Host "  [WARN] cargo not found - install rustup first" -ForegroundColor Yellow; return
+    }
+
+    $allPkgs = @(Get-Content $file | Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') } | Sort-Object)
+    $selectedPkgs = Select-WithFzf $allPkgs "cargo>"
+    $installed = cargo install --list 2>$null
+
+    foreach ($pkg in $selectedPkgs) {
+        if ($installed -match "^$([regex]::Escape($pkg))\s") {
+            Write-Host "  [SKIP] $pkg already installed" -ForegroundColor DarkGray
+        } else {
+            Write-Host "  [....] $pkg" -ForegroundColor Cyan
+            cargo install $pkg
+        }
+    }
+    Write-Host "cargo restore OK" -ForegroundColor Green
+}
+Set-Alias -Name restore-cargo -Value Invoke-CargoRestore
+
+# -- cargo (git) ---------------------------------------------------------------
+function Invoke-CargoGitRestore {
+    $pkgDir = $PackagesDir
+
+    $profiles = @()
+    if (Test-Path "$pkgDir\cargo\git-packages-minimal.txt") { $profiles += "minimal  |  essential git crates (gap-gwm for GlazeWM autotiling)" }
+    if (Test-Path "$pkgDir\cargo\git-packages.txt")         { $profiles += "full     |  all personal git crates" }
+
+    $profileChoice  = Select-OneFzf $profiles "cargo-git profile>"
+    $profileKey     = if ($profileChoice) { ($profileChoice -split '\s*\|')[0].Trim() } else { "minimal" }
+    $file = if ($profileKey -eq "minimal") {
+        "$pkgDir\cargo\git-packages-minimal.txt"
+    } else {
+        "$pkgDir\cargo\git-packages.txt"
+    }
+
+    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
+    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+        Write-Host "  [WARN] cargo not found - install rustup first" -ForegroundColor Yellow; return
+    }
+
+    Write-Host "  Profile: $(Split-Path $file -Leaf)" -ForegroundColor Cyan
+
+    $entries = @(Get-Content $file | Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
+    $labels  = $entries | ForEach-Object { ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', '' }
+
+    $selectedLabels = Select-WithFzf ($labels | Sort-Object) "cargo-git>"
+    $installed = cargo install --list 2>$null
+
+    foreach ($label in $selectedLabels) {
+        $entry   = $entries | Where-Object { (($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', '') -eq $label }
+        if (-not $entry) { $entry = $label }
+        $baseUrl = ($entry -split '\s+')[0] -replace '\.git$', ''
+        if ($installed -match [regex]::Escape($baseUrl)) {
+            Write-Host "  [SKIP] $label already installed" -ForegroundColor DarkGray
+        } else {
+            Write-Host "  [....] $label" -ForegroundColor Cyan
+            try {
+                Invoke-Expression "cargo install --git $entry"
+                if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
+                Write-Host "  [OK]   $label" -ForegroundColor Green
+            } catch {
+                Write-Host "  [FAIL] $label - $($_.Exception.Message)" -ForegroundColor Red
+            }
+        }
+    }
+    Write-Host "cargo-git restore OK" -ForegroundColor Green
+}
+Set-Alias -Name restore-cargo-git -Value Invoke-CargoGitRestore
 
 # -- bin -----------------------------------------------------------------------
 function Invoke-BinRestore {
