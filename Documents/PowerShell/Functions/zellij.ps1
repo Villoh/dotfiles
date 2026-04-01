@@ -16,12 +16,22 @@ function zj {
         zellij attach $name
     } else {
         if ($query) {
-            $dir = zoxide query $query
+            $dir = zoxide query $query 2>$null
+            if (-not $dir) { Write-Error "zoxide: no match found for '$query'"; return }
             Set-Location $dir
         }
-        zellij --session $name --layout work
+        zellij attach --create $name
     }
 }
 
-# zwork — attach to or create the persistent "villoh" work session
-function zwork { zj villoh }
+# zwork [query] — attach to or create the persistent "villoh" work session
+# If query is provided, uses zoxide to navigate there first (only affects new sessions)
+function zwork {
+    param([string]$query)
+    if ($query) {
+        $dir = zoxide query $query 2>$null
+        if (-not $dir) { Write-Error "zoxide: no match found for '$query'"; return }
+        Set-Location $dir
+    }
+    zellij attach --create villoh
+}
