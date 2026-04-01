@@ -5,6 +5,7 @@
 # Usage:
 #   migrate                      # defaults: winget -> scoop
 #   migrate -Source winget -Target scoop
+#   migrate -Source scoop  -Target winget
 
 function Invoke-Migration {
     param(
@@ -14,9 +15,10 @@ function Invoke-Migration {
 
     switch ("$Source->$Target") {
         "winget->scoop" { Invoke-WingetToScoopMigration }
+        "scoop->winget" { Invoke-ScoopToWingetMigration }
         default {
             Write-Warning "Migration '$Source -> $Target' is not supported."
-            Write-Host "  Supported: winget -> scoop" -ForegroundColor Yellow
+            Write-Host "  Supported: winget -> scoop, scoop -> winget" -ForegroundColor Yellow
         }
     }
 }
@@ -75,7 +77,8 @@ function Invoke-WingetToScoopMigration {
     foreach ($entry in $toMigrate | Where-Object { -not $_.AutoMatched }) {
         Write-Host ""
         Write-Host "  No scoop match found for: $($entry.WingetId)" -ForegroundColor Yellow
-        $answer = Read-Host "  Enter scoop name (bucket/name or just name, empty to skip)"
+        Write-Host "  Enter scoop name (bucket/name or just name, empty to skip): " -NoNewline
+        $answer = [Console]::ReadLine()
         if (-not $answer) {
             $entry.ScoopName = $null
             continue
@@ -134,7 +137,7 @@ function Invoke-WingetToScoopMigration {
 
         # 2. Uninstall from winget
         Write-Host "    [....] winget uninstall $($entry.WingetId)" -ForegroundColor Gray
-        winget uninstall --id $entry.WingetId --accept-source-agreements 2>$null
+        winget uninstall --id $entry.WingetId --accept-source-agreements --silent 2>$null
 
         # 3. Auto-detect and patch startup.json path if needed
         $startupPatch = Get-StartupPatch -ScoopName $entry.ScoopName -StartupData $startupData
@@ -170,6 +173,95 @@ function Invoke-WingetToScoopMigration {
         Write-Host ""
         Write-Host "  Config files updated." -ForegroundColor Green
         Write-Host "  Run 'backup-scoop' to refresh versions in scoop/packages.json." -ForegroundColor DarkGray
+    }
+
+    Write-Host ""
+    Write-Host "  Done — $ok migrated  $fail failed" -ForegroundColor Cyan
+}
+
+# -- scoop -> winget -----------------------------------------------------------
+
+function Invoke-ScoopToWingetMigration {
+    $pkgDir     = "$(chezmoi source-path)/packages/windows".Replace('/', '\')
+    $wingetFile = "$pkgDir\winget\packages.json"
+    $scoopFile  = "$pkgDir\scoop\packages.json"
+
+    $scoopData  = Get-Content $scoopFile  | ConvertFrom-Json
+    $wingetData = Get-Content $wingetFile | ConvertFrom-Json
+
+    $scoopNames = @($scoopData.apps | Select-Object -ExpandProperty Name | Sort-Object)
+    $wingetIds  = @($wingetData.Sources | ForEach-Object { $_.Packages } |
+                    Select-Object -ExpandProperty PackageIdentifier)
+
+    $selected = $scoopNames | fzf --multi --prompt="  migrate scoop -> winget> " `
+        --header="TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=cancel" `
+        --layout=reverse --border --bind='ctrl-a:toggle-all' --bind='tab:toggle'
+
+    if (-not $selected) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
+
+    # Ask for winget ID for each selected scoop package
+    $migrations = @()
+    foreach ($name in @($selected)) {
+        Write-Host ""
+        Write-Host "  Scoop package: $name" -ForegroundColor Cyan
+        Write-Host "  Enter winget ID (empty to skip): " -NoNewline
+        $wingetId = [Console]::ReadLine()
+        if (-not $wingetId) { continue }
+        $migrations += [pscustomobject]@{ ScoopName = $name; WingetId = $wingetId }
+    }
+
+    if (-not $migrations) { Write-Host "Nothing to migrate." -ForegroundColor Yellow; return }
+
+    $ok = 0; $fail = 0
+
+    foreach ($entry in $migrations) {
+        $alreadyInWinget = $wingetIds -contains $entry.WingetId
+
+        Write-Host ""
+        Write-Host "  [$($entry.ScoopName)  ->  $($entry.WingetId)]" -ForegroundColor Cyan
+
+        # 1. Install via winget
+        if ($alreadyInWinget) {
+            Write-Host "    [SKIP] already in winget/packages.json" -ForegroundColor DarkGray
+        } else {
+            $installed = winget list --id $entry.WingetId --accept-source-agreements 2>$null | Select-String $entry.WingetId
+            if ($installed) {
+                Write-Host "    [SKIP] winget: already installed" -ForegroundColor DarkGray
+            } else {
+                Write-Host "    [....] winget install $($entry.WingetId)" -ForegroundColor Gray
+                winget install --id $entry.WingetId --accept-package-agreements --accept-source-agreements --silent -e
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Host "    [FAIL] winget install failed — skipping" -ForegroundColor Red
+                    $fail++
+                    continue
+                }
+            }
+        }
+
+        # 2. Uninstall from scoop
+        Write-Host "    [....] scoop uninstall $($entry.ScoopName)" -ForegroundColor Gray
+        scoop uninstall $entry.ScoopName 2>$null
+
+        # 3. Remove from scoop/packages.json
+        $scoopData.apps = @($scoopData.apps | Where-Object { $_.Name -ne $entry.ScoopName })
+        Write-Host "    [OK]  removed from scoop/packages.json" -ForegroundColor Green
+
+        # 4. Add to winget/packages.json
+        if (-not $alreadyInWinget) {
+            foreach ($src in $wingetData.Sources) {
+                $src.Packages += [pscustomobject]@{ PackageIdentifier = $entry.WingetId }
+            }
+            Write-Host "    [OK]  added to winget/packages.json" -ForegroundColor Green
+        }
+
+        $ok++
+    }
+
+    if ($ok -gt 0) {
+        $wingetData | ConvertTo-Json -Depth 10 | Set-Content $wingetFile -Encoding UTF8
+        $scoopData  | ConvertTo-Json -Depth 10 | Set-Content $scoopFile  -Encoding UTF8
+        Write-Host ""
+        Write-Host "  Config files updated." -ForegroundColor Green
     }
 
     Write-Host ""
