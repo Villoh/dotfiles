@@ -211,7 +211,21 @@ winget install --id $pkg --accept-package-agreements --accept-source-agreements 
 # -- scoop ---------------------------------------------------------------------
 if ($selectedManagers -contains "scoop") {
     LogSection "scoop"
-    $scoop = Get-Content "$pkgDir\scoop\packages.json" | ConvertFrom-Json
+
+    $scoopProfiles = @()
+    if (Test-Path "$pkgDir\scoop\minimal.json")  { $scoopProfiles += "minimal  |  essential tools to bootstrap the setup" }
+    if (Test-Path "$pkgDir\scoop\packages.json") { $scoopProfiles += "full     |  personal complete setup" }
+
+    $scoopProfileChoice = Select-OneFzf $scoopProfiles "scoop profile>"
+    $scoopProfileKey = if ($scoopProfileChoice) { ($scoopProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $scoopFile = if ($scoopProfileKey -eq "minimal") {
+        "$pkgDir\scoop\minimal.json"
+    } else {
+        "$pkgDir\scoop\packages.json"
+    }
+    Log "  Profile: $(Split-Path $scoopFile -Leaf)" "Cyan"
+
+    $scoop = Get-Content $scoopFile | ConvertFrom-Json
 
     # Always add all buckets (apps may depend on them regardless of selection)
     $scoopBuckets = scoop bucket list | Select-Object -ExpandProperty Name 2>$null
@@ -252,7 +266,7 @@ if ($selectedManagers -contains "npm") {
     LogSection "npm"
     if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
         TryInstall "Node.js" {
-            winget install --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements -e
+            scoop install nodejs-lts
         }
         $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
                     [System.Environment]::GetEnvironmentVariable('PATH', 'User')
@@ -276,7 +290,7 @@ if ($selectedManagers -contains "bun") {
     LogSection "bun"
     if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
         TryInstall "Bun" {
-            winget install --id Oven-sh.Bun --accept-package-agreements --accept-source-agreements -e
+            scoop install bun
         }
         $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
                     [System.Environment]::GetEnvironmentVariable('PATH', 'User')
@@ -305,7 +319,7 @@ if ($selectedManagers -contains "uv") {
     LogSection "uv"
     if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
         TryInstall "uv" {
-            winget install --id astral-sh.uv --accept-package-agreements --accept-source-agreements -e
+            scoop install uv
         }
         $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
                     [System.Environment]::GetEnvironmentVariable('PATH', 'User')

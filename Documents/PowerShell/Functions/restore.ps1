@@ -140,8 +140,23 @@ Set-Alias -Name restore-winget-elevated -Value Invoke-WingetElevatedRestore
 
 # -- scoop ---------------------------------------------------------------------
 function Invoke-ScoopRestore {
-    $file = "$PackagesDir\scoop\packages.json"
+    $pkgDir = $PackagesDir
+
+    $scoopProfiles = @()
+    if (Test-Path "$pkgDir\scoop\minimal.json")  { $scoopProfiles += "minimal" }
+    if (Test-Path "$pkgDir\scoop\packages.json") { $scoopProfiles += "full" }
+
+    $profileChoice = Select-WithFzf $scoopProfiles "scoop profile>" `
+        "Select package profile: minimal=essential tools  full=everything"
+    $file = if ($profileChoice -contains "minimal") {
+        "$pkgDir\scoop\minimal.json"
+    } else {
+        "$pkgDir\scoop\packages.json"
+    }
+
     if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
+
+    Write-Host "  Profile: $(Split-Path $file -Leaf)" -ForegroundColor Cyan
 
     $data = Get-Content $file | ConvertFrom-Json
 
