@@ -503,34 +503,6 @@ if ($selectedManagers -contains "cargo-git") {
     }
 }
 
-# -- GlazeWM - disable Win key shortcuts -------------------------------------
-LogSection "GlazeWM - disable Win keys for GlazeWM"
-$winKeys = "{{ .chezmoi.sourceDir }}\Documents\PowerShell\Functions\win-keys.ps1"
-if (-not (Test-Path $winKeys)) {
-    LogSkip "win-keys.ps1 not found, skipping"
-    $summary.skip++
-} else {
-    . $winKeys
-    $systemVal = _Get-WinKeysValue -Scope System
-    $userVal   = _Get-WinKeysValue -Scope User
-    # Effective state: HKLM present → HKLM wins; HKLM absent → HKCU applies
-    $effectivelyDisabled = ($null -ne $systemVal -and $systemVal -eq 1) -or
-                           ($null -eq $systemVal -and $null -ne $userVal -and $userVal -eq 1)
-    if ($effectivelyDisabled) {
-        LogSkip "Win keys already disabled (effective)"
-        $summary.skip++
-    } else {
-        # Set both scopes: HKLM takes priority, HKCU as fallback if HKLM ever gets reset
-        TryInstall "Disable Win keys - System (HKLM)" {
-            if (-not (_Set-WinKeysValue -Value 1 -Scope System)) { throw "Failed to set HKLM\NoWinKeys" }
-        }
-        TryInstall "Disable Win keys - User (HKCU)" {
-            if (-not (_Set-WinKeysValue -Value 1 -Scope User)) { throw "Failed to set HKCU\NoWinKeys" }
-        }
-        Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
-    }
-}
-
 # -- Summary -------------------------------------------------------------------
 Write-Host ""; Add-Content -Path $logFile -Value ""
 Log "======================================" "Cyan"
