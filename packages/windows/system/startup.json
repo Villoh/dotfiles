@@ -1,17 +1,47 @@
 {
   "registry": [
-    { "name": "GlazeWM",      "path": "%ProgramFiles%\\glzr.io\\GlazeWM\\cli\\glazewm.exe" },
-    { "name": "YASB",          "path": "%ProgramFiles%\\YASB\\yasb.exe" },
-    { "name": "AltSnap",       "path": "%APPDATA%\\AltSnap\\AltSnap.exe", "args": "-hide" },
-    { "name": "Ditto",         "path": "%ProgramFiles%\\Ditto\\Ditto.exe" },
-    { "name": "Flow.Launcher", "path": "%LOCALAPPDATA%\\FlowLauncher\\Flow.Launcher.exe" },
-    { "name": "Rainmeter",     "path": "%ProgramFiles%\\Rainmeter\\Rainmeter.exe" },
-    { "name": "Handy",         "path": "%USERPROFILE%\\scoop\\apps\\handy\\current\\handy.exe" }
+    {
+      "name": "GlazeWM",
+      "path": "%ProgramFiles%\\glzr.io\\GlazeWM\\cli\\glazewm.exe"
+    },
+    {
+      "name": "YASB",
+      "path": "%ProgramFiles%\\YASB\\yasb.exe"
+    },
+    {
+      "name": "AltSnap",
+      "path": "%APPDATA%\\AltSnap\\AltSnap.exe",
+      "args": "-hide"
+    },
+    {
+      "name": "Ditto",
+      "path": "%ProgramFiles%\\Ditto\\Ditto.exe"
+    },
+    {
+      "name": "Flow.Launcher",
+      "path": "%LOCALAPPDATA%\\FlowLauncher\\Flow.Launcher.exe"
+    },
+    {
+      "name": "Rainmeter",
+      "path": "%ProgramFiles%\\Rainmeter\\Rainmeter.exe"
+    },
+    {
+      "name": "Handy",
+      "path": "%USERPROFILE%\\scoop\\apps\\handy\\current\\handy.exe"
+    }
   ],
   "msix": [
-    { "name": "MicaForEveryone", "package": "MicaForEveryone.MicaForEveryone2" }
+    {
+      "name": "MicaForEveryone",
+      "package": "MicaForEveryone.MicaForEveryone2"
+    }
   ],
   "folder": [
-    { "name": "gpg-connect-agent", "path": "%ProgramFiles%\\GnuPG\\bin\\gpg-connect-agent.exe", "args": "/bye", "windowStyle": 7 }
+    {
+      "name": "gpg-connect-agent",
+      "path": "%ProgramFiles%\\GnuPG\\bin\\gpg-connect-agent.exe",
+      "args": "/bye",
+      "windowStyle": 7
+    }
   ]
 }
