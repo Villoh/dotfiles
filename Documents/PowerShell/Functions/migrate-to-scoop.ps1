@@ -75,18 +75,18 @@ function Invoke-WingetToScoopMigration {
     foreach ($entry in $toMigrate | Where-Object { -not $_.AutoMatched }) {
         Write-Host ""
         Write-Host "  No scoop match found for: $($entry.WingetId)" -ForegroundColor Yellow
-        $input = Read-Host "  Enter scoop name (bucket/name or just name, empty to skip)"
-        if (-not $input) {
+        $answer = Read-Host "  Enter scoop name (bucket/name or just name, empty to skip)"
+        if (-not $answer) {
             $entry.ScoopName = $null
             continue
         }
-        if ($input -match '/') {
-            $entry.Bucket    = ($input -split '/')[0]
-            $entry.ScoopName = ($input -split '/')[1]
+        if ($answer -match '/') {
+            $entry.Bucket    = ($answer -split '/')[0]
+            $entry.ScoopName = ($answer -split '/')[1]
         } else {
-            $entry.ScoopName = $input
+            $entry.ScoopName = $answer
             # Try to find bucket from manifests
-            $entry.Bucket = if ($manifests.ContainsKey($input)) { $manifests[$input] } else { "extras" }
+            $entry.Bucket = if ($manifests.ContainsKey($answer)) { $manifests[$answer] } else { "extras" }
         }
     }
 
@@ -208,9 +208,9 @@ function Find-ScoopMatch {
     $last   = ($WingetId -split '\.')[-1]              # last segment only
 
     $candidates = @(
-        $after.ToLower() -replace '[^a-z0-9-]', '-',  # "Flow-Launcher.Flow-Launcher" -> "flow-launcher"
-        $last.ToLower()  -replace '[^a-z0-9-]', '-',  # "Git.Git" -> "git"
-        $last.ToLower()                                 # raw lowercase
+        ($after.ToLower() -replace '[^a-z0-9-]', '-'),  # "Flow-Launcher.Flow-Launcher" -> "flow-launcher"
+        ($last.ToLower()  -replace '[^a-z0-9-]', '-'),  # "Git.Git" -> "git"
+        $last.ToLower()                                   # raw lowercase
     ) | Select-Object -Unique
 
     foreach ($c in $candidates) {
