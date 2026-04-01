@@ -127,16 +127,28 @@ if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun      
 if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv                 | personal  |  Python tools") }
 if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin                | personal  |  GitHub release binaries") }
 if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo              | personal  |  Rust crates") }
-if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git          | personal  |  Rust crates from git") }
+if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git          | required  |  Rust crates from git (includes gap-gwm, GlazeWM autotiling)") }
 $candidates.Add(                                       "powershell-modules | required  |  Terminal-Icons and other PS modules")
 
-$selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
-    "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all package installs"
+# Required managers are auto-selected; personal ones go through fzf
+$requiredManagers  = @($candidates | Where-Object { $_ -match '\|\s*required\s*\|' } |
+    ForEach-Object { ($_ -split '\s*\|')[0].Trim() })
+$personalCandidates = @($candidates | Where-Object { $_ -notmatch '\|\s*required\s*\|' })
 
-# Strip display labels (e.g. "winget | required | ..." -> "winget")
-$selectedManagers = @($selectedManagers | ForEach-Object { ($_ -split '\s*\|')[0].Trim() })
+if ($requiredManagers.Count -gt 0) {
+    Log "  Required (auto-selected): $($requiredManagers -join ', ')" "Cyan"
+}
 
-if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
+$selectedOptional = @()
+if ($personalCandidates.Count -gt 0) {
+    $selectedOptional = Select-WithFzf $personalCandidates "Optional package managers>" `
+        "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip optional"
+    $selectedOptional = @($selectedOptional | ForEach-Object { ($_ -split '\s*\|')[0].Trim() })
+}
+
+$selectedManagers = $requiredManagers + $selectedOptional
+
+if ($selectedManagers.Count -eq 0) {
     Log "No managers selected - skipping all package installs" "Yellow"
 } else {
     Log "  Selected: $($selectedManagers -join ', ')" "Cyan"
@@ -475,10 +487,24 @@ if ($selectedManagers -contains "cargo") {
 
 # -- cargo (git) ---------------------------------------------------------------
 if ($selectedManagers -contains "cargo-git") {
-    $cargoGitPkgs = @(Get-Content "$pkgDir\cargo\git-packages.txt" |
+    LogSection "cargo (git)"
+
+    $cargoGitProfiles = @()
+    if (Test-Path "$pkgDir\cargo\git-packages-minimal.txt") { $cargoGitProfiles += "minimal  |  essential git crates (gap-gwm for GlazeWM autotiling)" }
+    if (Test-Path "$pkgDir\cargo\git-packages.txt")         { $cargoGitProfiles += "full     |  all personal git crates" }
+
+    $cargoGitProfileChoice = Select-OneFzf $cargoGitProfiles "cargo-git profile>"
+    $cargoGitProfileKey    = if ($cargoGitProfileChoice) { ($cargoGitProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $cargoGitFile = if ($cargoGitProfileKey -eq "minimal") {
+        "$pkgDir\cargo\git-packages-minimal.txt"
+    } else {
+        "$pkgDir\cargo\git-packages.txt"
+    }
+    Log "  Profile: $(Split-Path $cargoGitFile -Leaf)" "Cyan"
+
+    $cargoGitPkgs = @(Get-Content $cargoGitFile |
         Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
     if ($cargoGitPkgs) {
-        LogSection "cargo (git)"
         if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
             Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
         } else {

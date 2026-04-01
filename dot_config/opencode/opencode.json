@@ -9,8 +9,7 @@
       }
     ]
   ],
-  "provider": {
-  },
+  "provider": {},
   "mcp": {
     "linkedin": {
       "type": "local",
@@ -43,11 +42,14 @@
         "--figma-api-key={env:FIGMA_API_KEY}",
         "--stdio"
       ]
+    }
+  },
+  "permission": {
+    "read": {
+      "~/.config/opencode/get-shit-done/*": "allow"
     },
-    "Supabase": {
-      "type": "remote",
-      "url": "https://mcp.supabase.com/mcp",
-      "oauth": {}
+    "external_directory": {
+      "~/.config/opencode/get-shit-done/*": "allow"
     }
   }
 }

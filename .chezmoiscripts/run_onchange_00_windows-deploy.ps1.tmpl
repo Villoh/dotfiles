@@ -14,14 +14,14 @@
 {{ range (glob "program_files/windows/cursors/**") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end -}}
+{{ range (glob "Pictures/Wallpapers/main-wallpaper.*") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
 {{ range (glob "program_files/windhawk/**") -}}
 # {{ . }} {{ include . | sha256sum }}
 {{ end -}}
-{{ range (glob "packages/windows/system/windhawk/**") -}}
-# {{ . }} {{ include . | sha256sum }}
-{{ end -}}
-{{ range (glob "Pictures/Wallpapers/main-wallpaper.*") -}}
-# {{ . }} {{ include . | sha256sum }}
+{{ if stat "packages/windows/system/windhawk/settings.reg" -}}
+# windhawk/settings.reg {{ include "packages/windows/system/windhawk/settings.reg" | sha256sum }}
 {{ end }}
 $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $pkgDir     = "$chezmoisrc\packages\windows"
@@ -44,7 +44,6 @@ function TryRun {
     try   { & `$block; LogOk `$name }
     catch { LogFail "`$name - `$(`$_.Exception.Message)" }
 }
-
 # == JUNCTIONS / SYMLINKS ======================================================
 LogSec "Junctions"
 
@@ -157,57 +156,6 @@ LogSec "Program files"
     @{ Src = "`$chezmoisrc\program_files\nilesoft\imports"; Dst = "C:\Program Files\Nilesoft Shell\imports"; App = "Nilesoft Shell"; Ext = "*.nss" }
 )
 
-# == WINDHAWK ==================================================================
-LogSec "Windhawk"
-if (Test-Path "HKLM:\SOFTWARE\Windhawk") {
-    # Stop Windhawk before touching its files
-    Stop-Process -Name "Windhawk*" -Force -ErrorAction SilentlyContinue
-
-    # Registry settings
-    `$whReg = "`$pkgDir\system\windhawk\settings.reg"
-    if (Test-Path `$whReg) {
-        reg import "`$whReg" 2>`$null
-        if (`$LASTEXITCODE -eq 0) { LogOk "Windhawk registry imported" }
-        else                       { LogFail "Windhawk registry import failed (exit `$LASTEXITCODE)" }
-    } else {
-        LogSkip "Windhawk settings.reg not found"
-    }
-
-    # userprofile.json — prevents UI from overwriting mod versions with ""
-    `$whPf = "`$chezmoisrc\program_files\windhawk"
-    if (Test-Path "`$whPf\userprofile.json") {
-        New-Item -ItemType Directory -Force -Path "C:\ProgramData\Windhawk" | Out-Null
-        Copy-Item "`$whPf\userprofile.json" "C:\ProgramData\Windhawk\userprofile.json" -Force
-        LogOk "Windhawk userprofile.json restored"
-    } else {
-        LogSkip "Windhawk userprofile.json not found"
-    }
-
-    # ModsSource — version metadata read by UI to avoid spurious update notices
-    if (Test-Path "`$whPf\ModsSource") {
-        New-Item -ItemType Directory -Force -Path "C:\ProgramData\Windhawk\ModsSource" | Out-Null
-        Copy-Item "`$whPf\ModsSource\*.wh.cpp" "C:\ProgramData\Windhawk\ModsSource\" -Force
-        LogOk "Windhawk ModsSource restored"
-    } else {
-        LogSkip "Windhawk ModsSource not found"
-    }
-
-    # Compiled mod DLLs
-    foreach (`$arch in @("32", "64")) {
-        `$src = "`$whPf\`$arch"
-        `$dst = "C:\ProgramData\Windhawk\Engine\Mods\`$arch"
-        if (Test-Path `$src) {
-            New-Item -ItemType Directory -Force -Path `$dst | Out-Null
-            `$dlls = Get-ChildItem "`$src\*.dll" -ErrorAction SilentlyContinue
-            `$dlls | ForEach-Object { Copy-Item `$_.FullName -Destination "`$dst\`$(`$_.Name)" -Force }
-            LogOk "Windhawk DLLs (`$arch-bit) - `$(`$dlls.Count) installed"
-        } else {
-            LogSkip "Windhawk DLLs `$arch-bit - source not found"
-        }
-    }
-} else {
-    LogSkip "Windhawk - not installed"
-}
 
 foreach (`$c in `$copies) {
     if (-not (Test-Path (Split-Path `$c.Dst))) {
@@ -254,6 +202,53 @@ Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "ins
     TryRun "cursor: `$(`$infFile.Directory.Name)" {
         rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "`$(`$infFile.FullName)"
     }
+}
+
+# == WINDHAWK ==================================================================
+LogSec "Windhawk"
+if (Test-Path "HKLM:\SOFTWARE\Windhawk") {
+    Stop-Process -Name "Windhawk*" -Force -ErrorAction SilentlyContinue
+
+    `$whReg = "`$pkgDir\system\windhawk\settings.reg"
+    if (Test-Path `$whReg) {
+        reg import "`$whReg" 2>`$null
+        if (`$LASTEXITCODE -eq 0) { LogOk "Windhawk registry imported" }
+        else                      { LogFail "Windhawk registry import failed (exit `$LASTEXITCODE)" }
+    } else {
+        LogSkip "Windhawk settings.reg not found"
+    }
+
+    `$whPf = "`$chezmoisrc\program_files\windhawk"
+    if (Test-Path "`$whPf\userprofile.json") {
+        New-Item -ItemType Directory -Force -Path "C:\ProgramData\Windhawk" | Out-Null
+        Copy-Item "`$whPf\userprofile.json" "C:\ProgramData\Windhawk\userprofile.json" -Force
+        LogOk "Windhawk userprofile.json restored"
+    } else {
+        LogSkip "Windhawk userprofile.json not found"
+    }
+
+    if (Test-Path "`$whPf\ModsSource") {
+        New-Item -ItemType Directory -Force -Path "C:\ProgramData\Windhawk\ModsSource" | Out-Null
+        Copy-Item "`$whPf\ModsSource\*.wh.cpp" "C:\ProgramData\Windhawk\ModsSource\" -Force
+        LogOk "Windhawk ModsSource restored"
+    } else {
+        LogSkip "Windhawk ModsSource not found"
+    }
+
+    foreach (`$arch in @("32", "64")) {
+        `$src = "`$whPf\`$arch"
+        `$dst = "C:\ProgramData\Windhawk\Engine\Mods\`$arch"
+        if (Test-Path `$src) {
+            New-Item -ItemType Directory -Force -Path `$dst | Out-Null
+            `$dlls = Get-ChildItem "`$src\*.dll" -ErrorAction SilentlyContinue
+            `$dlls | ForEach-Object { Copy-Item `$_.FullName -Destination "`$dst\`$(`$_.Name)" -Force }
+            LogOk "Windhawk DLLs (`$arch-bit) - `$(`$dlls.Count) installed"
+        } else {
+            LogSkip "Windhawk DLLs `$arch-bit - source not found"
+        }
+    }
+} else {
+    LogSkip "Windhawk - not installed"
 }
 
 Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
