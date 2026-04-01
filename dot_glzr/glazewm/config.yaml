@@ -107,7 +107,7 @@ ctp-mocha-crust: &ctp-mocha-crust "#11111b"
 general:
   # startup_commands: ["shell-exec zebar"]
   # startup_commands: ["shell-exec yasb.exe"]
-  startup_commands: ['shell-exec %USERPROFILE%\.cargo\bin\gat-gwm.exe']
+  startup_commands: ['shell-exec %CARGO_HOME%\bin\gat-gwm.exe']
 
   # Commands to run just before the WM is shutdown.
   # Example: The below command kills Zebar.
