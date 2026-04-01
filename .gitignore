@@ -27,6 +27,11 @@ dot_config/micro/buffers/
 dot_config/yazi/plugins/
 dot_config/yazi/flavors/
 
+# OpenCode — runtime deps, not config
+dot_config/opencode/node_modules/
+dot_config/opencode/bun.lock
+dot_config/opencode/package.json
+
 # openvpn profiles
 other_config/openvpn/
 
