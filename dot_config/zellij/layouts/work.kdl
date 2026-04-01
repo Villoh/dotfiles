@@ -1,9 +1,86 @@
-// work
+// =============================================================================
+// Zellij - Work Layout
+// =============================================================================
+
 layout {
     default_tab_template {
-      children
-      pane size=1 borderless=true {
-        plugin location="zjstatus"
-      }
+        children
+        pane size=1 borderless=true {
+            plugin location="zjstatus"
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 1 — Claude Code
+    // ┌─────────────────┬──────┐
+    // │                 │      │
+    // │   claude code   │ yazi │
+    // │                 │      │
+    // ├─────────────────┤      │
+    // │    lazygit      │      │
+    // └─────────────────┴──────┘
+    // -------------------------------------------------------------------------
+    tab name="claude" focus=true {
+        pane split_direction="vertical" {
+            pane split_direction="horizontal" size="75%" {
+                pane command="claude" size="70%"
+                pane command="lazygit" size="30%"
+            }
+            pane command="yazi" size="25%"
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 2 — OpenCode
+    // ┌─────────────────┬──────┐
+    // │                 │      │
+    // │   opencode      │ yazi │
+    // │                 │      │
+    // ├─────────────────┤      │
+    // │    lazygit      │      │
+    // └─────────────────┴──────┘
+    // -------------------------------------------------------------------------
+    tab name="opencode" {
+        pane split_direction="vertical" {
+            pane split_direction="horizontal" size="75%" {
+                pane command="opencode" size="70%"
+                pane command="lazygit" size="30%"
+            }
+            pane command="yazi" size="25%"
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 3 — YouTube Music
+    // -------------------------------------------------------------------------
+    tab name="ytm" {
+        pane command="ytm"
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 4 — Dev Tools
+    // ┌──────────┬──────────┐
+    // │          │          │
+    // │ lazygit  │lazydocker│
+    // │          │          │
+    // ├──────────┴──────────┤
+    // │        yazi         │
+    // └─────────────────────┘
+    // -------------------------------------------------------------------------
+    tab name="devtools" {
+        pane split_direction="horizontal" {
+            pane split_direction="vertical" size="60%" {
+                pane command="lazygit"
+                pane command="lazydocker"
+            }
+            pane command="yazi" size="40%"
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 5 — Shell
+    // -------------------------------------------------------------------------
+    tab name="shell" {
+        pane
     }
 }
