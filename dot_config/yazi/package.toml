@@ -1,34 +1,29 @@
 [[plugin.deps]]
-use = "yazi-rs/plugins:mount"
-rev = "b224ddf"
-hash = "5f7ad59184c71b4151689738570eec01"
+use = "yazi-rs/plugins:full-border"
+rev = "1962818"
+hash = "1e13c39c1ba52ad020e6e26a2dd39ae5"
 
 [[plugin.deps]]
-use = "boydaihungst/mediainfo"
-rev = "8ab04b2"
-hash = "d8b0f62b582f65f53b54fe87fe9ba1f6"
+use = "yazi-rs/plugins:git"
+rev = "1962818"
+hash = "33241d0d2c0f65d80d03e3388ba9e0e3"
 
 [[plugin.deps]]
-use = "yazi-rs/plugins:vcs-files"
-rev = "b224ddf"
-hash = "bf27af00d3b131451db55426ff38ba52"
+use = "DreamMaoMao/searchjump"
+rev = "cab627c"
+hash = "4df5f3783cbbfed60466f1aa9bc45b5e"
 
 [[plugin.deps]]
-use = "AnirudhG07/rich-preview"
-rev = "7d616ad"
-hash = "4b15d186d555d318134160f843193ee9"
+use = "Rolv-Apneseth/starship"
+rev = "a837101"
+hash = "d396365cef932fce588b80df69438f2e"
 
 [[plugin.deps]]
-use = "peterfication/mux"
-rev = "e76edd5"
-hash = "d77f78c57afcfbb1964418e3735700b5"
-
-[[plugin.deps]]
-use = "wylie102/duckdb"
-rev = "3f8c863"
-hash = "5112de4ea9ce83c9b6aa748b3fad665d"
+use = "ndtoan96/ouch"
+rev = "406ce6c"
+hash = "c30dfd49121b0860ce41ebf6765c6e6e"
 
 [[flavor.deps]]
 use = "yazi-rs/flavors:catppuccin-mocha"
-rev = "4c57537"
-hash = "eb541426744368b99b827494111ca44d"
+rev = "9511cb0"
+hash = "5ebc8659108fcb68fe853e523115ed3c"
