@@ -1,0 +1,5 @@
+# cargo install --git packages (minimal profile)
+# Required git crates for the base setup.
+# Format: <git-url> [extra cargo install flags...]
+
+https://github.com/Dutch-Raptor/GAT-GWM.git --features=no_console

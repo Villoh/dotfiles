@@ -90,13 +90,13 @@ if (-not (Test-Path $winKeys)) {
 LogSec "Startup"
 
 function Start-IfNotRunning {
-    param([string]$Name, [string]$Path, [string]$Args = "")
+    param([string]$Name, [string]$Path, [string]$Args = "", [string]$ProcessName = "")
     $expanded = [System.Environment]::ExpandEnvironmentVariables($Path)
     if (-not (Test-Path $expanded)) {
         LogSkip "$Name - not found"
         return
     }
-    $procName = [System.IO.Path]::GetFileNameWithoutExtension($expanded)
+    $procName = if ($ProcessName) { $ProcessName } else { [System.IO.Path]::GetFileNameWithoutExtension($expanded) }
     if (Get-Process -Name $procName -ErrorAction SilentlyContinue) {
         LogSkip "$Name - already running"
         return
@@ -123,7 +123,7 @@ $micaPkg = Get-AppxPackage -Name "*MicaForEveryone*" -ErrorAction SilentlyContin
 if ($micaPkg) {
     $micaExe = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WindowsApps" `
         -Filter "*MicaForEveryone*.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if ($micaExe) { Start-IfNotRunning "MicaForEveryone" $micaExe.FullName }
+    if ($micaExe) { Start-IfNotRunning "MicaForEveryone" $micaExe.FullName -ProcessName "MicaForEveryone.App" }
 } else {
     LogSkip "MicaForEveryone - not installed"
 }

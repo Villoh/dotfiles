@@ -2,7 +2,7 @@
   "registry": [
     {
       "name": "GlazeWM",
-      "path": "%ProgramFiles%\\glzr.io\\GlazeWM\\cli\\glazewm.exe"
+      "path": "%USERPROFILE%\\scoop\\apps\\glazewm\\current\\glazewm.exe"
     },
     {
       "name": "YASB",
@@ -10,20 +10,20 @@
     },
     {
       "name": "AltSnap",
-      "path": "%USERPROFILE%\\scoop\\apps\\altsnap\\current\\AltSnap.exe",
+      "path": "%APPDATA%\\AltSnap\\AltSnap.exe",
       "args": "-hide"
     },
     {
       "name": "Ditto",
-      "path": "%USERPROFILE%\\scoop\\apps\\ditto\\current\\Ditto.exe"
+      "path": "%ProgramFiles%\\Ditto\\Ditto.exe"
     },
     {
       "name": "Flow.Launcher",
-      "path": "%USERPROFILE%\\scoop\\apps\\flow-launcher\\current\\Flow.Launcher.exe"
+      "path": "%LOCALAPPDATA%\\FlowLauncher\\Flow.Launcher.exe"
     },
     {
       "name": "Rainmeter",
-      "path": "%USERPROFILE%\\scoop\\apps\\rainmeter\\current\\Rainmeter.exe"
+      "path": "%ProgramFiles%\\Rainmeter\\Rainmeter.exe"
     },
     {
       "name": "Handy",

@@ -16,9 +16,9 @@ Import-Module -Name Terminal-Icons
 
 $PSUserPath = Split-Path $PROFILE
 
-# Source Functions and Completions
-@("Functions", "Completions") | ForEach-Object {
-    Get-ChildItem "$PSUserPath\$_\*.ps1" | ForEach-Object { . $_ }
+# Source Functions, Completions and Secrets
+@("Functions", "Completions", "Secrets") | ForEach-Object {
+    Get-ChildItem "$PSUserPath\$_\*.ps1" -ErrorAction SilentlyContinue | ForEach-Object { . $_ }
 }
 
 # Winget Completions

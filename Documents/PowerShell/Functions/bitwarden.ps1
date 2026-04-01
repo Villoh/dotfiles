@@ -702,6 +702,26 @@ function bwedit {
             $current.login.uris[0].uri = $uri
             $current.notes             = $notes
 
+            # Custom fields
+            if ($current.fields -and $current.fields.Count -gt 0) {
+                Write-Host "Custom fields:"
+                foreach ($f in $current.fields) {
+                    Write-Host "  [$($f.name)] = $($f.value)"
+                    Write-Host "  New value for '$($f.name)' (leave empty to keep): " -NoNewline
+                    $newVal = [Console]::ReadLine()
+                    if ($newVal) { $f.value = $newVal }
+                }
+            }
+            Write-Host "Add new field? (name=value, leave empty to skip): " -NoNewline
+            $newField = [Console]::ReadLine()
+            if ($newField -and $newField -match '^(.+)=(.+)$') {
+                $current.fields += [pscustomobject]@{
+                    name  = $Matches[1].Trim()
+                    value = $Matches[2].Trim()
+                    type  = 0
+                }
+            }
+
             $current | _bw_encode | bw edit item $Id | Out-Null
             Write-Host 'OK Item updated successfully'
         }

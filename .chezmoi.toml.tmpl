@@ -10,11 +10,14 @@ mode = "symlink"
     {{- end }}
 
 [git]
-    autoCommit = true
-    autoPush = true
+    autoCommit = false
+    autoPush = false
 
 [data]
     isWindows = {{ $isWindows }}
+
+    # ── Owner-only — do NOT enable unless you are Villoh ─────────────────────
+    enable_secrets = {{ promptBool "Enable personal secrets (owner only — requires Bitwarden)" false }}
 
     # ── Cross-platform modules ─────────────────────────────────────────────
     enable_zed        = {{ or $all (promptBool "Enable Zed editor" true) }}
