@@ -44,9 +44,6 @@
           "PackageIdentifier": "Nilesoft.Shell"
         },
         {
-          "PackageIdentifier": "GitHub.cli"
-        },
-        {
           "PackageIdentifier": "karlstav.cava"
         },
         {
@@ -57,9 +54,6 @@
         },
         {
           "PackageIdentifier": "glzr-io.glazewm"
-        },
-        {
-          "PackageIdentifier": "wez.wezterm"
         },
         {
           "PackageIdentifier": "EpicGames.EpicGamesLauncher"
@@ -102,9 +96,6 @@
         },
         {
           "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
-        },
-        {
-          "PackageIdentifier": "o2sh.onefetch"
         },
         {
           "PackageIdentifier": "Vencord.Vesktop"
@@ -190,7 +181,7 @@
         {
           "PackageIdentifier": "Spotify.Spotify"
         },
-{
+        {
           "PackageIdentifier": "astral-sh.uv"
         },
         {
@@ -204,9 +195,6 @@
         },
         {
           "PackageIdentifier": "Warp.Warp"
-        },
-        {
-          "PackageIdentifier": "yorukot.superfile"
         },
         {
           "PackageIdentifier": "yt-dlp.FFmpeg"
