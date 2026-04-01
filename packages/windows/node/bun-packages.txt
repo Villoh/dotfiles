@@ -1,3 +1,2 @@
 @filen/cli@0.0.39
-@openai/codex@0.116.0
 ctx7@0.3.6

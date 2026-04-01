@@ -4,23 +4,15 @@
     {
       "Packages": [
         { "PackageIdentifier": "Git.Git" },
-{ "PackageIdentifier": "twpayne.chezmoi" },
         { "PackageIdentifier": "Microsoft.PowerShell" },
         { "PackageIdentifier": "Microsoft.WindowsTerminal" },
-        { "PackageIdentifier": "Starship.Starship" },
-        { "PackageIdentifier": "Alacritty.Alacritty" },
-        { "PackageIdentifier": "ZedIndustries.Zed" },
-        { "PackageIdentifier": "glzr-io.glazewm" },
-        { "PackageIdentifier": "AmN.yasb" },
         { "PackageIdentifier": "Flow-Launcher.Flow-Launcher" },
         { "PackageIdentifier": "Ditto.Ditto" },
-{ "PackageIdentifier": "RamenSoftware.Windhawk" },
-        { "PackageIdentifier": "MicaForEveryone.MicaForEveryone" },
         { "PackageIdentifier": "Rainmeter.Rainmeter" },
-        { "PackageIdentifier": "Rustlang.Rustup" },
-        { "PackageIdentifier": "Fastfetch-cli.Fastfetch" },
-        { "PackageIdentifier": "namazso.SecureUXTheme" },
         { "PackageIdentifier": "AltSnap.AltSnap" },
+        { "PackageIdentifier": "RamenSoftware.Windhawk" },
+        { "PackageIdentifier": "MicaForEveryone.MicaForEveryone" },
+        { "PackageIdentifier": "namazso.SecureUXTheme" },
         { "PackageIdentifier": "KRTirtho.Flemozi" }
       ],
       "SourceDetails": {

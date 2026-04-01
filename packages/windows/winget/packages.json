@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-03-25T19:58:04.179+01:00",
+  "CreationDate": "2026-04-01T19:32:38.879+02:00",
   "Sources": [
     {
       "Packages": [
@@ -29,9 +29,6 @@
           "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
         },
         {
-          "PackageIdentifier": "AmN.yasb"
-        },
-        {
           "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
@@ -53,7 +50,7 @@
           "PackageIdentifier": "TechPowerUp.NVCleanstall"
         },
         {
-          "PackageIdentifier": "glzr-io.glazewm"
+          "PackageIdentifier": "TeamSpeakSystems.TeamSpeakClient.Beta.6"
         },
         {
           "PackageIdentifier": "EpicGames.EpicGamesLauncher"
@@ -95,6 +92,9 @@
           "PackageIdentifier": "Microsoft.VCRedist.2013.x64"
         },
         {
+          "PackageIdentifier": "Microsoft.DotNet.Runtime.6"
+        },
+        {
           "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
         },
         {
@@ -110,40 +110,16 @@
           "PackageIdentifier": "AltSnap.AltSnap"
         },
         {
-          "PackageIdentifier": "Anthropic.ClaudeCode"
-        },
-        {
           "PackageIdentifier": "Anthropic.Claude"
         },
         {
           "PackageIdentifier": "AutoHotkey.AutoHotkey"
         },
         {
-          "PackageIdentifier": "Bitwarden.CLI"
-        },
-        {
           "PackageIdentifier": "Brave.Brave"
         },
         {
-          "PackageIdentifier": "DenoLand.Deno"
-        },
-        {
-          "PackageIdentifier": "Fastfetch-cli.Fastfetch"
-        },
-        {
           "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
-        },
-        {
-          "PackageIdentifier": "GNU.Nano"
-        },
-        {
-          "PackageIdentifier": "JernejSimoncic.Wget"
-        },
-        {
-          "PackageIdentifier": "JesseDuffield.Lazydocker"
-        },
-        {
-          "PackageIdentifier": "JesseDuffield.lazygit"
         },
         {
           "PackageIdentifier": "Logitech.OnboardMemoryManager"
@@ -161,19 +137,7 @@
           "PackageIdentifier": "SST.OpenCodeDesktop"
         },
         {
-          "PackageIdentifier": "Oven-sh.Bun"
-        },
-        {
-          "PackageIdentifier": "Rclone.Rclone"
-        },
-        {
           "PackageIdentifier": "Rustlang.Rustup"
-        },
-        {
-          "PackageIdentifier": "SST.opencode"
-        },
-        {
-          "PackageIdentifier": "Schniz.fnm"
         },
         {
           "PackageIdentifier": "Spicetify.Spicetify"
@@ -182,40 +146,10 @@
           "PackageIdentifier": "Spotify.Spotify"
         },
         {
-          "PackageIdentifier": "astral-sh.uv"
-        },
-        {
-          "PackageIdentifier": "junegunn.fzf"
-        },
-        {
           "PackageIdentifier": "Proton.ProtonMail"
         },
         {
-          "PackageIdentifier": "twpayne.chezmoi"
-        },
-        {
-          "PackageIdentifier": "Warp.Warp"
-        },
-        {
-          "PackageIdentifier": "yt-dlp.FFmpeg"
-        },
-        {
-          "PackageIdentifier": "yt-dlp.yt-dlp"
-        },
-        {
-          "PackageIdentifier": "zyedidia.micro"
-        },
-        {
-          "PackageIdentifier": "ZedIndustries.Zed"
-        },
-        {
           "PackageIdentifier": "Microsoft.PowerToys"
-        },
-        {
-          "PackageIdentifier": "Python.Python.3.14"
-        },
-        {
-          "PackageIdentifier": "M2Team.NanaZip"
         },
         {
           "PackageIdentifier": "MicaForEveryone.MicaForEveryone"
@@ -225,9 +159,6 @@
         },
         {
           "PackageIdentifier": "Microsoft.WSL"
-        },
-        {
-          "PackageIdentifier": "JanDeDobbeleer.OhMyPosh"
         }
       ],
       "SourceDetails": {
@@ -235,19 +166,6 @@
         "Identifier": "Microsoft.Winget.Source_8wekyb3d8bbwe",
         "Name": "winget",
         "Type": "Microsoft.PreIndexed.Package"
-      }
-    },
-    {
-      "Packages": [
-        {
-          "PackageIdentifier": "9NKSQGP7F2NH"
-        }
-      ],
-      "SourceDetails": {
-        "Argument": "https://storeedge.implemenation.microsoft.com/v9/manifestations/packagerepository/packageidentifier/",
-        "Identifier": "Microsoft.Winget.MSStore.Source_8wekyb3d8bbwe",
-        "Name": "msstore",
-        "Type": "Microsoft.Rest"
       }
     }
   ],
