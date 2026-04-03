@@ -10,6 +10,9 @@
 
 ### Windows
 
+> [!IMPORTANT]
+> Open **Terminal as Administrator** before running the install command. Some winget packages require elevation and will prompt UAC individually if the terminal is not elevated.
+
 Install **Git** and **chezmoi** via winget:
 
 ```powershell
