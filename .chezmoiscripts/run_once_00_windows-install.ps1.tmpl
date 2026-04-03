@@ -109,7 +109,7 @@ if ($devModeVal -eq 1) {
 $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
             [System.Environment]::GetEnvironmentVariable('PATH', 'User')
 
-# == PACKAGE SELECTION =========================================================
+# == PACKAGE MANAGER SELECTION =================================================
 LogSection "Package selection"
 
 # Build list of available managers
@@ -154,31 +154,145 @@ if ($selectedManagers.Count -eq 0) {
     Log "  Selected: $($selectedManagers -join ', ')" "Cyan"
 }
 
-# == PACKAGE INSTALLS ==========================================================
+# == PACKAGE CONFIGURATION (all interactive prompts upfront) ===================
+LogSection "Package configuration"
 
 # -- winget --------------------------------------------------------------------
+$wingetFile        = $null
+$selectedWingetIds = @()
 if ($selectedManagers -contains "winget") {
-    LogSection "winget"
-
     $wingetProfiles = @()
     if (Test-Path "$pkgDir\winget\minimal.json")  { $wingetProfiles += "minimal  |  necessary packages to replicate the setup (recommended)" }
     if (Test-Path "$pkgDir\winget\packages.json") { $wingetProfiles += "full     |  personal complete setup" }
 
     $profileChoice = Select-OneFzf $wingetProfiles "winget profile>"
-    $profileKey = if ($profileChoice) { ($profileChoice -split '\s+|\s+')[0].Trim() } else { "full" }
-    $wingetFile = if ($profileKey -eq "minimal") {
-        "$pkgDir\winget\minimal.json"
-    } else {
-        "$pkgDir\winget\packages.json"
-    }
-    Log "  Profile: $(Split-Path $wingetFile -Leaf)" "Cyan"
+    $profileKey    = if ($profileChoice) { ($profileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $wingetFile    = if ($profileKey -eq "minimal") { "$pkgDir\winget\minimal.json" } else { "$pkgDir\winget\packages.json" }
+    Log "  winget profile: $(Split-Path $wingetFile -Leaf)" "Cyan"
 
-    $wingetJson = Get-Content $wingetFile | ConvertFrom-Json
-    $allWingetIds = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
+    $wingetJson    = Get-Content $wingetFile | ConvertFrom-Json
+    $allWingetIds  = @($wingetJson.Sources | ForEach-Object { $_.Packages } |
         Select-Object -ExpandProperty PackageIdentifier | Sort-Object)
+    $selectedWingetIds = Select-WithFzf $allWingetIds "winget>"
+}
 
-    $selectedIds = Select-WithFzf $allWingetIds "winget>"
-    foreach ($id in $selectedIds) {
+# -- winget (elevated) ---------------------------------------------------------
+$selectedElevatedPkgs = @()
+if ($selectedManagers -contains "winget-elevated") {
+    $selectedElevatedPkgs = Select-WithFzf $elevatedPkgs "winget-elevated>"
+}
+
+# -- scoop ---------------------------------------------------------------------
+$scoopFile          = $null
+$scoopData          = $null
+$selectedScoopNames = @()
+if ($selectedManagers -contains "scoop") {
+    $scoopProfiles = @()
+    if (Test-Path "$pkgDir\scoop\minimal.json")  { $scoopProfiles += "minimal  |  essential tools to bootstrap the setup" }
+    if (Test-Path "$pkgDir\scoop\packages.json") { $scoopProfiles += "full     |  personal complete setup" }
+
+    $scoopProfileChoice = Select-OneFzf $scoopProfiles "scoop profile>"
+    $scoopProfileKey    = if ($scoopProfileChoice) { ($scoopProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $scoopFile          = if ($scoopProfileKey -eq "minimal") { "$pkgDir\scoop\minimal.json" } else { "$pkgDir\scoop\packages.json" }
+    Log "  scoop profile: $(Split-Path $scoopFile -Leaf)" "Cyan"
+
+    $scoopData          = Get-Content $scoopFile | ConvertFrom-Json
+    $allScoopNames      = @($scoopData.apps | Select-Object -ExpandProperty Name | Sort-Object)
+    $selectedScoopNames = Select-WithFzf $allScoopNames "scoop>"
+}
+
+# -- npm -----------------------------------------------------------------------
+$selectedNpmPkgs = @()
+if ($selectedManagers -contains "npm") {
+    $npm = Get-Content "$pkgDir\node\npm-packages.json" | ConvertFrom-Json
+    if ($npm.dependencies) {
+        $allNpmPkgs      = @($npm.dependencies.PSObject.Properties |
+            ForEach-Object { "$($_.Name)@$($_.Value)" } | Sort-Object)
+        $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>"
+    }
+}
+
+# -- bun -----------------------------------------------------------------------
+$selectedBunPkgs = @()
+if ($selectedManagers -contains "bun") {
+    $bunPkgs = @(Get-Content "$pkgDir\node\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    if ($bunPkgs) { $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>" }
+}
+
+# -- uv tools ------------------------------------------------------------------
+$selectedUvTools = @()
+if ($selectedManagers -contains "uv") {
+    $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    if ($uvTools) { $selectedUvTools = Select-WithFzf $uvTools "uv>" }
+}
+
+# -- PowerShell modules --------------------------------------------------------
+$selectedPsModules = @()
+if ($selectedManagers -contains "powershell-modules") {
+    $allPsModules      = @("Terminal-Icons")
+    $selectedPsModules = Select-WithFzf $allPsModules "powershell-modules>"
+}
+
+# -- bin (GitHub release binaries) ---------------------------------------------
+$selectedBinUrls = @()
+if ($selectedManagers -contains "bin") {
+    $binPkgs = @(Get-Content "$pkgDir\bin-packages.txt" | Where-Object { $_.Trim() -ne "" })
+    if ($binPkgs) {
+        $binItems = $binPkgs | ForEach-Object {
+            [PSCustomObject]@{
+                Label = ($_ -replace 'https://github.com/', '' -replace '/releases/.*', '')
+                Url   = $_
+            }
+        }
+        $selectedBinLabels = Select-WithFzf ($binItems.Label | Sort-Object) "bin>"
+        $selectedBinUrls   = $binItems |
+            Where-Object { $selectedBinLabels -contains $_.Label } |
+            Select-Object -ExpandProperty Url
+    }
+}
+
+# -- cargo (crates.io) ---------------------------------------------------------
+$selectedCargoPkgs = @()
+if ($selectedManagers -contains "cargo") {
+    $cargoPkgs = @(Get-Content "$pkgDir\cargo\packages.txt" |
+        Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
+    if ($cargoPkgs) { $selectedCargoPkgs = Select-WithFzf ($cargoPkgs | Sort-Object) "cargo>" }
+}
+
+# -- cargo (git) ---------------------------------------------------------------
+$cargoGitFile           = $null
+$cargoGitPkgs           = @()
+$selectedCargoGitLabels = @()
+if ($selectedManagers -contains "cargo-git") {
+    $cargoGitProfiles = @()
+    if (Test-Path "$pkgDir\cargo\git-packages-minimal.txt") { $cargoGitProfiles += "minimal  |  essential git crates (gap-gwm for GlazeWM autotiling)" }
+    if (Test-Path "$pkgDir\cargo\git-packages.txt")         { $cargoGitProfiles += "full     |  all personal git crates" }
+
+    $cargoGitProfileChoice = Select-OneFzf $cargoGitProfiles "cargo-git profile>"
+    $cargoGitProfileKey    = if ($cargoGitProfileChoice) { ($cargoGitProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $cargoGitFile          = if ($cargoGitProfileKey -eq "minimal") {
+        "$pkgDir\cargo\git-packages-minimal.txt"
+    } else {
+        "$pkgDir\cargo\git-packages.txt"
+    }
+    Log "  cargo-git profile: $(Split-Path $cargoGitFile -Leaf)" "Cyan"
+
+    $cargoGitPkgs = @(Get-Content $cargoGitFile |
+        Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
+    if ($cargoGitPkgs) {
+        $cargoLabels            = $cargoGitPkgs | ForEach-Object {
+            ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', ''
+        }
+        $selectedCargoGitLabels = Select-WithFzf ($cargoLabels | Sort-Object) "cargo (git)>"
+    }
+}
+
+# == PACKAGE INSTALLS ==========================================================
+
+# -- winget --------------------------------------------------------------------
+if ($selectedManagers -contains "winget") {
+    LogSection "winget"
+    foreach ($id in $selectedWingetIds) {
         $installed = winget list --id $id --accept-source-agreements 2>$null | Select-String $id
         if ($installed) {
             LogSkip "winget: $id already installed"
@@ -194,8 +308,7 @@ if ($selectedManagers -contains "winget") {
 # -- winget (elevated) ---------------------------------------------------------
 if ($selectedManagers -contains "winget-elevated") {
     LogSection "winget (elevated)"
-    $selectedElevated = Select-WithFzf $elevatedPkgs "winget-elevated>"
-    foreach ($pkg in $selectedElevated) {
+    foreach ($pkg in $selectedElevatedPkgs) {
         $installed = winget list --id $pkg --accept-source-agreements 2>$null | Select-String $pkg
         if ($installed) {
             LogSkip "winget: $pkg already installed"
@@ -224,24 +337,9 @@ winget install --id $pkg --accept-package-agreements --accept-source-agreements 
 if ($selectedManagers -contains "scoop") {
     LogSection "scoop"
 
-    $scoopProfiles = @()
-    if (Test-Path "$pkgDir\scoop\minimal.json")  { $scoopProfiles += "minimal  |  essential tools to bootstrap the setup" }
-    if (Test-Path "$pkgDir\scoop\packages.json") { $scoopProfiles += "full     |  personal complete setup" }
-
-    $scoopProfileChoice = Select-OneFzf $scoopProfiles "scoop profile>"
-    $scoopProfileKey = if ($scoopProfileChoice) { ($scoopProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
-    $scoopFile = if ($scoopProfileKey -eq "minimal") {
-        "$pkgDir\scoop\minimal.json"
-    } else {
-        "$pkgDir\scoop\packages.json"
-    }
-    Log "  Profile: $(Split-Path $scoopFile -Leaf)" "Cyan"
-
-    $scoop = Get-Content $scoopFile | ConvertFrom-Json
-
     # Always add all buckets (apps may depend on them regardless of selection)
     $scoopBuckets = scoop bucket list | Select-Object -ExpandProperty Name 2>$null
-    foreach ($bucket in $scoop.buckets) {
+    foreach ($bucket in $scoopData.buckets) {
         if ($scoopBuckets -contains $bucket.Name) {
             LogSkip "bucket: $($bucket.Name) already added"
             $summary.skip++
@@ -252,11 +350,9 @@ if ($selectedManagers -contains "scoop") {
         }
     }
 
-    $allScoopNames = @($scoop.apps | Select-Object -ExpandProperty Name | Sort-Object)
-    $selectedNames = Select-WithFzf $allScoopNames "scoop>"
     $scoopInstalled = scoop list 2>$null | Select-Object -ExpandProperty Name
-    foreach ($name in $selectedNames) {
-        $app = $scoop.apps | Where-Object { $_.Name -eq $name }
+    foreach ($name in $selectedScoopNames) {
+        $app = $scoopData.apps | Where-Object { $_.Name -eq $name }
         if ($scoopInstalled -contains $name) {
             LogSkip "scoop: $name already installed"
             $summary.skip++
@@ -286,14 +382,8 @@ if ($selectedManagers -contains "npm") {
         LogSkip "Node.js already installed"
         $summary.skip++
     }
-    $npm = Get-Content "$pkgDir\node\npm-packages.json" | ConvertFrom-Json
-    if ($npm.dependencies) {
-        $allNpmPkgs = @($npm.dependencies.PSObject.Properties |
-            ForEach-Object { "$($_.Name)@$($_.Value)" } | Sort-Object)
-        $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>"
-        foreach ($pkg in $selectedNpmPkgs) {
-            TryInstall "npm: $pkg" { npm install -g $pkg }
-        }
+    foreach ($pkg in $selectedNpmPkgs) {
+        TryInstall "npm: $pkg" { npm install -g $pkg }
     }
 }
 
@@ -310,18 +400,14 @@ if ($selectedManagers -contains "bun") {
         LogSkip "Bun already installed"
         $summary.skip++
     }
-    $bunPkgs = @(Get-Content "$pkgDir\node\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
-    if ($bunPkgs) {
-        $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>"
-        $bunInstalled = bun pm ls -g 2>$null
-        foreach ($pkg in $selectedBunPkgs) {
-            $pkgName = ($pkg -split '@')[0]
-            if ($bunInstalled -match [regex]::Escape($pkgName)) {
-                LogSkip "bun: $pkg already installed"
-                $summary.skip++
-            } else {
-                TryInstall "bun: $pkg" { bun add -g $pkg }
-            }
+    $bunInstalled = bun pm ls -g 2>$null
+    foreach ($pkg in $selectedBunPkgs) {
+        $pkgName = ($pkg -split '@')[0]
+        if ($bunInstalled -match [regex]::Escape($pkgName)) {
+            LogSkip "bun: $pkg already installed"
+            $summary.skip++
+        } else {
+            TryInstall "bun: $pkg" { bun add -g $pkg }
         }
     }
 }
@@ -339,17 +425,13 @@ if ($selectedManagers -contains "uv") {
         LogSkip "uv already installed"
         $summary.skip++
     }
-    $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
-    if ($uvTools) {
-        $selectedUvTools = Select-WithFzf $uvTools "uv>"
-        $uvInstalled = uv tool list 2>$null
-        foreach ($tool in $selectedUvTools) {
-            if ($uvInstalled -match [regex]::Escape($tool)) {
-                LogSkip "uv: $tool already installed"
-                $summary.skip++
-            } else {
-                TryInstall "uv: $tool" { uv tool install $tool }
-            }
+    $uvInstalled = uv tool list 2>$null
+    foreach ($tool in $selectedUvTools) {
+        if ($uvInstalled -match [regex]::Escape($tool)) {
+            LogSkip "uv: $tool already installed"
+            $summary.skip++
+        } else {
+            TryInstall "uv: $tool" { uv tool install $tool }
         }
     }
 }
@@ -357,8 +439,6 @@ if ($selectedManagers -contains "uv") {
 # -- PowerShell modules --------------------------------------------------------
 if ($selectedManagers -contains "powershell-modules") {
     LogSection "PowerShell modules"
-    $allPsModules = @("Terminal-Icons")
-    $selectedPsModules = Select-WithFzf $allPsModules "powershell-modules>"
     foreach ($mod in $selectedPsModules) {
         if (Get-Module -ListAvailable -Name $mod) {
             LogSkip "$mod already installed"
@@ -391,8 +471,7 @@ if ($selectedManagers -contains "bin") {
         $summary.skip++
     }
 
-    $binPkgs = @(Get-Content "$pkgDir\bin-packages.txt" | Where-Object { $_.Trim() -ne "" })
-    if ($binPkgs) {
+    if ($selectedBinUrls) {
         # Setup ~/.bin dir and PATH
         $binDir = "$env:USERPROFILE\.bin"
         New-Item -ItemType Directory -Force -Path $binDir | Out-Null
@@ -402,7 +481,7 @@ if ($selectedManagers -contains "bin") {
         }
 
         # Ensure bin config has correct default_path
-        $binConfigDir = "$env:USERPROFILE\.config\bin"
+        $binConfigDir  = "$env:USERPROFILE\.config\bin"
         $binConfigFile = "$binConfigDir\config.json"
         New-Item -ItemType Directory -Force -Path $binConfigDir | Out-Null
         if (Test-Path $binConfigFile) {
@@ -413,21 +492,9 @@ if ($selectedManagers -contains "bin") {
             [pscustomobject]@{ default_path = "$binDir/" } | ConvertTo-Json | Set-Content $binConfigFile
         }
 
-        # Build label→url map for nicer fzf display (e.g. "Atlas-OS/atlas-toolbox")
-        $binItems = $binPkgs | ForEach-Object {
-            [PSCustomObject]@{
-                Label = ($_ -replace 'https://github.com/', '' -replace '/releases/.*', '')
-                Url   = $_
-            }
-        }
-        $selectedLabels = Select-WithFzf ($binItems.Label | Sort-Object) "bin>"
-        $selectedUrls = $binItems |
-            Where-Object { $selectedLabels -contains $_.Label } |
-            Select-Object -ExpandProperty Url
-
         $binInstalled = (bin list 2>$null) -join "`n"
         Push-Location $binDir
-        foreach ($url in $selectedUrls) {
+        foreach ($url in $selectedBinUrls) {
             $baseUrl = ($url -split '/releases/')[0]
             if ($binInstalled -match [regex]::Escape($baseUrl)) {
                 LogSkip "bin: $url already installed"
@@ -464,22 +531,17 @@ if (Get-Command rustup -ErrorAction SilentlyContinue) {
 
 # -- cargo (crates.io) --------------------------------------------------------
 if ($selectedManagers -contains "cargo") {
-    $cargoPkgs = @(Get-Content "$pkgDir\cargo\packages.txt" |
-        Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
-    if ($cargoPkgs) {
-        LogSection "cargo"
-        if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-            Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
-        } else {
-            $selectedCargoPkgs = Select-WithFzf ($cargoPkgs | Sort-Object) "cargo>"
-            $cargoInstalled = cargo install --list 2>$null
-            foreach ($pkg in $selectedCargoPkgs) {
-                if ($cargoInstalled -match "^$([regex]::Escape($pkg))\s") {
-                    LogSkip "cargo: $pkg already installed"
-                    $summary.skip++
-                } else {
-                    TryInstall "cargo: $pkg" { Invoke-Expression "cargo install $pkg" }
-                }
+    LogSection "cargo"
+    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+        Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
+    } else {
+        $cargoInstalled = cargo install --list 2>$null
+        foreach ($pkg in $selectedCargoPkgs) {
+            if ($cargoInstalled -match "^$([regex]::Escape($pkg))\s") {
+                LogSkip "cargo: $pkg already installed"
+                $summary.skip++
+            } else {
+                TryInstall "cargo: $pkg" { Invoke-Expression "cargo install $pkg" }
             }
         }
     }
@@ -488,55 +550,33 @@ if ($selectedManagers -contains "cargo") {
 # -- cargo (git) ---------------------------------------------------------------
 if ($selectedManagers -contains "cargo-git") {
     LogSection "cargo (git)"
-
-    $cargoGitProfiles = @()
-    if (Test-Path "$pkgDir\cargo\git-packages-minimal.txt") { $cargoGitProfiles += "minimal  |  essential git crates (gap-gwm for GlazeWM autotiling)" }
-    if (Test-Path "$pkgDir\cargo\git-packages.txt")         { $cargoGitProfiles += "full     |  all personal git crates" }
-
-    $cargoGitProfileChoice = Select-OneFzf $cargoGitProfiles "cargo-git profile>"
-    $cargoGitProfileKey    = if ($cargoGitProfileChoice) { ($cargoGitProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
-    $cargoGitFile = if ($cargoGitProfileKey -eq "minimal") {
-        "$pkgDir\cargo\git-packages-minimal.txt"
+    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+        Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
     } else {
-        "$pkgDir\cargo\git-packages.txt"
-    }
-    Log "  Profile: $(Split-Path $cargoGitFile -Leaf)" "Cyan"
-
-    $cargoGitPkgs = @(Get-Content $cargoGitFile |
-        Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
-    if ($cargoGitPkgs) {
-        if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-            Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
-        } else {
-            $cargoLabels = $cargoGitPkgs | ForEach-Object {
-                ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', ''
+        $cargoInstalled = cargo install --list 2>$null
+        foreach ($label in $selectedCargoGitLabels) {
+            $entry = $cargoGitPkgs | Where-Object {
+                (($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', '') -eq $label
             }
-            $selectedLabels = Select-WithFzf ($cargoLabels | Sort-Object) "cargo (git)>"
-            $cargoInstalled = cargo install --list 2>$null
-            foreach ($label in $selectedLabels) {
-                $entry = $cargoGitPkgs | Where-Object {
-                    (($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', '') -eq $label
-                }
-                if (-not $entry) {
-                    # Extra package typed by user: treat label as raw URL
-                    $entry = $label
-                }
-                $url = ($entry -split '\s+')[0]
-                $baseUrl = $url -replace '\.git$', ''
-                if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
-                    LogSkip "cargo: $label already installed"
-                    $summary.skip++
-                } else {
-                    Log "  [....] cargo: $label" "Cyan"
-                    try {
-                        Invoke-Expression "cargo install --git $entry"
-                        if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
-                        LogOk "cargo: $label"
-                        $summary.ok++
-                    } catch {
-                        LogFail "cargo: $label - $($_.Exception.Message)"
-                        $summary.fail++
-                    }
+            if (-not $entry) {
+                # Extra package typed by user: treat label as raw URL
+                $entry = $label
+            }
+            $url     = ($entry -split '\s+')[0]
+            $baseUrl = $url -replace '\.git$', ''
+            if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
+                LogSkip "cargo: $label already installed"
+                $summary.skip++
+            } else {
+                Log "  [....] cargo: $label" "Cyan"
+                try {
+                    Invoke-Expression "cargo install --git $entry"
+                    if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
+                    LogOk "cargo: $label"
+                    $summary.ok++
+                } catch {
+                    LogFail "cargo: $label - $($_.Exception.Message)"
+                    $summary.fail++
                 }
             }
         }
