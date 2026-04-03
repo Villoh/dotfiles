@@ -110,6 +110,14 @@ function Start-IfNotRunning {
     }
 }
 
+# Wait for explorer to be running before launching startup apps
+# (accent color and win key steps kill explorer; it may still be restarting)
+$waited = 0
+while ($waited -lt 15 -and -not (Get-Process -Name explorer -ErrorAction SilentlyContinue)) {
+    Start-Sleep -Seconds 1
+    $waited++
+}
+
 if (Test-Path "$pkgDir\system\startup.json") {
     $startup = Get-Content "$pkgDir\system\startup.json" | ConvertFrom-Json
     foreach ($entry in $startup.registry) {
