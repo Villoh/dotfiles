@@ -1,0 +1,22 @@
+---
+"editor_view:cut_word_right": ctrl-delete
+"pane_group:resize_left": alt-shift-H
+"pane_group:add_down": alt-d
+"pane_group:resize_down": alt-shift-J
+"editor:insert_last_word_previous_command": ctrl-.
+"workspace:new_tab": alt-t
+"pane_group:toggle_maximize_pane": alt-z
+"pane_group:navigate_right": alt-l
+"pane_group:resize_up": alt-shift-K
+"pane_group:resize_right": alt-shift-L
+"pane_group:navigate_down": alt-j
+"workspace:open_new_tab": alt-t
+"pane_group:navigate_up": alt-k
+"pane_group:close_current_session": alt-x
+"pane_group:add_right": alt-e
+"workspace:activate_prev_tab": "alt-,"
+"workspace:activate_next_tab": alt-.
+"pane_group:navigate_left": alt-h
+"workspace:left_panel_project_explorer": alt-2
+"terminal:select_bookmark_down": ctrl-down
+"terminal:select_bookmark_up": ctrl-up
