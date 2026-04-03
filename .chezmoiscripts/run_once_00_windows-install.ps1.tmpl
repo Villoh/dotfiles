@@ -75,7 +75,7 @@ LogSection "Bootstrap"
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     TryInstall "Scoop" {
         Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-        irm get.scoop.sh | iex
+        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
     }
     $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
                 [System.Environment]::GetEnvironmentVariable('PATH', 'User')

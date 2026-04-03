@@ -21,6 +21,7 @@
         { "Name": "fastfetch",            "Source": "main"        },
         { "Name": "rustup",               "Source": "main"        },
         { "Name": "mingw",                "Source": "main"        },
+        { "Name": "alacritty",            "Source": "extras"      },
         { "Name": "wezterm",              "Source": "extras"      },
         { "Name": "glazewm",              "Source": "extras"      },
         { "Name": "yasb",                 "Source": "extras"      },
