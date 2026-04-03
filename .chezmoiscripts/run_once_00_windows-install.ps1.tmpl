@@ -440,12 +440,13 @@ if ($selectedManagers -contains "uv") {
 if ($selectedManagers -contains "powershell-modules") {
     LogSection "PowerShell modules"
     foreach ($mod in $selectedPsModules) {
-        if (Get-Module -ListAvailable -Name $mod) {
+        $isInstalled = pwsh -NoProfile -Command "if (Get-Module -ListAvailable -Name '$mod') { 'yes' } else { 'no' }"
+        if ($isInstalled -eq "yes") {
             LogSkip "$mod already installed"
             $summary.skip++
         } else {
             TryInstall "PSModule: $mod" {
-                Install-Module $mod -Scope CurrentUser -Force -SkipPublisherCheck
+                pwsh -NoProfile -Command "Install-Module '$mod' -Scope CurrentUser -Force -SkipPublisherCheck"
             }
         }
     }
