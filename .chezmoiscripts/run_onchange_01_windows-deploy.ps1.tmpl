@@ -117,43 +117,6 @@ if (Test-Path "`$pkgDir\system\startup.json") {
         }
     }
 
-    # -- MSIX packaged startup tasks --------------------------------------------
-    `$msixBase = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData"
-    foreach (`$entry in `$startup.msix) {
-        `$pkg = Get-AppxPackage -Name "*`$(`$entry.package)*" -ErrorAction SilentlyContinue
-        if (-not `$pkg) { LogSkip "msix: `$(`$entry.name) (package not installed)"; continue }
-
-        `$taskKey = Get-ChildItem "`$msixBase\`$(`$pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
-            Where-Object { `$_.GetValue("State") -ne `$null } | Select-Object -First 1
-
-        if (-not `$taskKey) {
-            # Key only exists after first launch — start the app once to register it
-            # Try package name first, fall back to app name (MSIX exe aliases vary)
-            `$appExe = Get-ChildItem "`$env:LOCALAPPDATA\Microsoft\WindowsApps" -Filter "*`$(`$entry.package)*" -ErrorAction SilentlyContinue | Select-Object -First 1
-            if (-not `$appExe) {
-                `$appExe = Get-ChildItem "`$env:LOCALAPPDATA\Microsoft\WindowsApps" -Filter "*`$(`$entry.name)*" -ErrorAction SilentlyContinue | Select-Object -First 1
-            }
-            if (`$appExe) {
-                `$proc = Start-Process `$appExe.FullName -PassThru -WindowStyle Hidden
-                # Poll until the startup task key appears (up to 10s)
-                `$waited = 0
-                while (`$waited -lt 10) {
-                    Start-Sleep -Seconds 1
-                    `$waited++
-                    `$taskKey = Get-ChildItem "`$msixBase\`$(`$pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
-                        Where-Object { `$_.GetValue("State") -ne `$null } | Select-Object -First 1
-                    if (`$taskKey) { break }
-                }
-                Stop-Process -Id `$proc.Id -ErrorAction SilentlyContinue
-            }
-        }
-
-        if (-not `$taskKey) { LogSkip "msix: `$(`$entry.name) (startup task key not found)"; continue }
-
-        TryRun "msix: `$(`$entry.name)" {
-            Set-ItemProperty -Path `$taskKey.PSPath -Name State -Value 2 -Type DWord
-        }
-    }
 } else {
     LogSkip "startup.json not found"
 }
@@ -266,6 +229,57 @@ Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
 
 Write-Host "[windows-setup] Requesting elevation..." -ForegroundColor Cyan
 Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+# -- MSIX packaged startup tasks (non-elevated: needs user HKCU + AppxPackage) -
+function Write-MsixLog {
+    param([string]$pfx, [string]$msg)
+    Add-Content -Path $logFile -Value "[$(Get-Date -Format 'HH:mm:ss')] [$pfx] $msg"
+}
+
+if (Test-Path "$pkgDir\system\startup.json") {
+    $startup  = Get-Content "$pkgDir\system\startup.json" | ConvertFrom-Json
+    $msixBase = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData"
+    Add-Content -Path $logFile -Value ""
+    Add-Content -Path $logFile -Value "[$(Get-Date -Format 'HH:mm:ss')] [--] -- MSIX startup tasks --"
+    foreach ($entry in $startup.msix) {
+        $pkg = Get-AppxPackage -Name "*$($entry.package)*" -ErrorAction SilentlyContinue
+        if (-not $pkg) { Write-MsixLog "SKIP" "msix: $($entry.name) (package not installed)"; continue }
+
+        $taskKey = Get-ChildItem "$msixBase\$($pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
+            Where-Object { $_.GetValue("State") -ne $null } | Select-Object -First 1
+
+        if (-not $taskKey) {
+            # Key only exists after first launch — start the app once to register it
+            # Try package name first, fall back to app name (MSIX exe aliases vary)
+            $appExe = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WindowsApps" -Filter "*$($entry.package)*" -ErrorAction SilentlyContinue | Select-Object -First 1
+            if (-not $appExe) {
+                $appExe = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WindowsApps" -Filter "*$($entry.name)*" -ErrorAction SilentlyContinue | Select-Object -First 1
+            }
+            if ($appExe) {
+                $proc = Start-Process $appExe.FullName -PassThru -WindowStyle Hidden
+                # Poll until the startup task key appears (up to 10s)
+                $waited = 0
+                while ($waited -lt 10) {
+                    Start-Sleep -Seconds 1
+                    $waited++
+                    $taskKey = Get-ChildItem "$msixBase\$($pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
+                        Where-Object { $_.GetValue("State") -ne $null } | Select-Object -First 1
+                    if ($taskKey) { break }
+                }
+                Stop-Process -Id $proc.Id -ErrorAction SilentlyContinue
+            }
+        }
+
+        if (-not $taskKey) { Write-MsixLog "SKIP" "msix: $($entry.name) (startup task key not found)"; continue }
+
+        try {
+            Set-ItemProperty -Path $taskKey.PSPath -Name State -Value 2 -Type DWord
+            Write-MsixLog "OK" "msix: $($entry.name)"
+        } catch {
+            Write-MsixLog "FAIL" "msix: $($entry.name) - $($_.Exception.Message)"
+        }
+    }
+}
 
 # -- Stream log back to current terminal with colors ---------------------------
 Write-Host ""
