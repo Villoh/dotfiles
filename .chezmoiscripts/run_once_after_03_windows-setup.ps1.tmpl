@@ -48,8 +48,9 @@ function Set-RegValue($path, $name, $value, $type) {
     }
 }
 
-$paletteHex = 'e9,d9,fb,ff,d5,b8,f8,ff,c8,a1,f6,ff,ba,8a,f4,ff,ac,72,f2,ff,9f,5b,f0,ff,8c,3a,ed,ff,88,17,98,00'
-$palette    = [byte[]]($paletteHex.Split(',') | ForEach-Object { "0x$_" })
+$paletteHex      = 'e9,d9,fb,ff,d5,b8,f8,ff,c8,a1,f6,ff,ba,8a,f4,ff,ac,72,f2,ff,9f,5b,f0,ff,8c,3a,ed,ff,88,17,98,00'
+$palette         = [byte[]]($paletteHex.Split(',') | ForEach-Object { "0x$_" })
+$restartExplorer = $false
 
 TryRun "Accent color #BA8AF4 (Catppuccin Mocha Mauve)" {
     Set-RegValue $accentPath "AccentColor"          '0xfff48aba' "DWORD"
@@ -57,7 +58,7 @@ TryRun "Accent color #BA8AF4 (Catppuccin Mocha Mauve)" {
     Set-RegValue $accentPath "StartColorMenu"       '0xfff272ac' "DWORD"
     Set-RegValue $accentPath "AccentPalette"        $palette     "BINARY"
     Set-RegValue $accentPath "MotionAccentId_v1.00" '0x000000db' "DWORD"
-    Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+    $script:restartExplorer = $true
 }
 
 # == GLAZEWM — DISABLE WIN KEYS ===============================================
@@ -82,8 +83,13 @@ if (-not (Test-Path $winKeys)) {
         TryRun "Disable Win keys - User (HKCU)" {
             if (-not (_Set-WinKeysValue -Value 1 -Scope User)) { throw "Failed to set HKCU\NoWinKeys" }
         }
-        Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+        $restartExplorer = $true
     }
+}
+
+if ($restartExplorer) {
+    Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue
+    Start-Process explorer.exe  # explicit restart needed when running as admin
 }
 
 # == STARTUP ==================================================================
@@ -117,6 +123,8 @@ while ($waited -lt 15 -and -not (Get-Process -Name explorer -ErrorAction Silentl
     Start-Sleep -Seconds 1
     $waited++
 }
+# Extra grace period for the shell to fully initialize after explorer starts
+Start-Sleep -Seconds 3
 
 if (Test-Path "$pkgDir\system\startup.json") {
     $startup = Get-Content "$pkgDir\system\startup.json" | ConvertFrom-Json
