@@ -101,8 +101,13 @@ function Start-IfNotRunning {
         LogSkip "$Name - already running"
         return
     }
-    if ($Args) { Start-Process $expanded -ArgumentList $Args } else { Start-Process $expanded }
-    LogOk $Name
+    $proc = if ($Args) { Start-Process $expanded -ArgumentList $Args -PassThru } else { Start-Process $expanded -PassThru }
+    Start-Sleep -Milliseconds 500
+    if (-not $proc -or $proc.HasExited) {
+        LogFail "$Name - process exited immediately"
+    } else {
+        LogOk $Name
+    }
 }
 
 if (Test-Path "$pkgDir\system\startup.json") {
