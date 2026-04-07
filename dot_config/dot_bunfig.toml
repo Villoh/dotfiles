@@ -1,3 +1,5 @@
 [install]
 globalDir = "$HOME/.local/bun/install/global"
 globalBinDir = "$HOME/.local/bin"
+minimumReleaseAge = 259200
+exact = true
