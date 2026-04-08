@@ -17,7 +17,7 @@ Set-Alias -Name update-winget  -Value Invoke-WingetUpgrade
 Set-Alias -Name upgrade-winget -Value Invoke-WingetUpgrade
 
 function Invoke-ScoopUpgrade {
-    if (Get-Command scoop -ErrorAction SilentlyContinue) { scoop update * }
+    if (Get-Command scoop -ErrorAction SilentlyContinue) { scoop update --all }
     else { Write-Warning "scoop not found." }
 }
 Set-Alias -Name update-scoop   -Value Invoke-ScoopUpgrade
