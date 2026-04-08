@@ -38,6 +38,7 @@ bars:
         [
           "home",
           "notifications",
+          "github",
           "wallpaper",
           "update_check",
           "cpu",
@@ -54,7 +55,7 @@ bars:
         [
           "todo",
           "notes",
-          "weather",
+          "open_meteo",
           "clock",
           # "cava",
           "volume",
@@ -81,6 +82,31 @@ widgets:
         on_left: "toggle_notification"
         on_middle: "toggle_label"
         on_right: "do_nothing"
+  github:
+    type: "yasb.github.GithubWidget"
+    options:
+      label: "<span>\ueba1</span>"
+      label_alt: "GitHub {data}"
+      token: "env"
+      max_notification: 30
+      only_unread: true
+      show_comment_count: true
+      max_field_size: 54
+      update_interval: 300
+      notification_dot:
+        enabled: true
+        corner: "bottom_left"
+        color: "#cba6f7"
+        margin: [1, 1]
+      menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "#cba6f7"
+        alignment: "left"
+        direction: "down"
+        show_categories: true
+        categories_order: ["PullRequest", "Issue", "Release", "Discussion", "CheckSuite"]
   wallpaper:
     type: "yasb.wallpapers.WallpapersWidget"
     options:
@@ -197,30 +223,30 @@ widgets:
       label: "<span>\ue769</span>{%I:%M %p}"
       label_alt: "{%a, %d %b %H:%M:%S}"
       timezones: [] #Looking up time zone info from registry
-  weather:
-    type: "yasb.weather.WeatherWidget"
+  open_meteo:
+    type: "yasb.open_meteo.OpenMeteoWidget"
     options:
       label: "<span>{icon}</span> {temp}"
-      label_alt: "{location}: {conditions}, Min {min_temp}, Max {max_temp}, Humidity {humidity}"
-      api_key: '3bf4cf9a7c3f40d6b31174128242807'
-      update_interval: 600 #Update interval in seconds, Min 600
+      label_alt: "{location}: Min {min_temp}, Max {max_temp}, Humidity {humidity}"
+      tooltip: true
+      update_interval: 600
       hide_decimal: true
-      location: "Cantabria, Spain"
       units: "metric"
       callbacks:
         on_left: "toggle_card"
-      show_alerts: true
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
       icons:
         sunnyDay: "\ue30d"
         clearNight: "\ue32b"
         cloudyDay: "\ue312"
         cloudyNight: "\ue311"
+        drizzleDay: "\udb81\ude7e"
+        drizzleNight: "\udb81\ude7e"
         rainyDay: "\ue308"
         rainyNight: "\ue333"
         snowyDay: "\ue30a"
         snowyNight: "\ue335"
-        blizzardDay: "\udb83\udf36"
-        blizzardNight: "\udb83\udf36"
         foggyDay: "\ue303"
         foggyNight: "\ue346"
         thunderstormDay: "\ue30f"
@@ -230,14 +256,14 @@ widgets:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#45475a"
+        border_color: "#cba6f7"
         alignment: "right"
         direction: "down"
-        icon_size: 64
+        icon_size: 48
         show_hourly_forecast: true
         time_format: "24h"
         hourly_point_spacing: 76
-        hourly_icon_size: 32
+        hourly_icon_size: 24
         icon_smoothing: true
         temp_line_width: 2
         current_line_color: "#cba6f7"
@@ -248,7 +274,11 @@ widgets:
           top_color: "#cba6f7"
           bottom_color: "#1e1e2e"
         hourly_forecast_buttons:
-          enabled: false
+          enabled: true
+          default_view: "temperature"
+          temperature_icon: "\udb81\udd99"
+          rain_icon: "\udb81\udd96"
+          snow_icon: "\udb81\udd98"
   volume:
     type: "yasb.volume.VolumeWidget"
     options:
