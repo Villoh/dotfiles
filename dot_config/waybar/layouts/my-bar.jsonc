@@ -1,6 +1,6 @@
 {
   "layer": "top",
-  "position": "bottom",
+  "position": "top",
   "output": ["*"],
   "height": 10,
   "exclusive": true,
