@@ -1,0 +1,99 @@
+{{ if eq .chezmoi.os "windows" -}}
+# run_onchange_ triggers when any of these change:
+{{ if .enable_ditto -}}
+{{ range (glob "program_files/ditto/Themes/*.xml") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ end -}}
+{{ if .enable_nilesoft -}}
+{{ range (glob "program_files/nilesoft/imports/*.nss") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+{{ end -}}
+{{ range (glob "program_files/windows/resources/themes/**") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$logFile    = "$env:TEMP\chezmoi-program-files-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$tmpScript  = "$env:TEMP\chezmoi-program-files.ps1"
+
+@"
+`$chezmoisrc = "$chezmoisrc"
+`$logFile    = "$logFile"
+`$ok = 0; `$skip = 0; `$fail = 0
+
+function Log    { param([string]`$pfx, [string]`$msg) Add-Content -Path "`$logFile" -Value "[`$(Get-Date -Format 'HH:mm:ss')] [`$pfx] `$msg" }
+function LogOk  { param([string]`$msg) Log "OK"   `$msg; `$script:ok++   }
+function LogSkip{ param([string]`$msg) Log "SKIP" `$msg; `$script:skip++ }
+function LogFail{ param([string]`$msg) Log "FAIL" `$msg; `$script:fail++ }
+function LogSec { param([string]`$msg) Log "--"   "-- `$msg --"           }
+function TryRun {
+    param([string]`$name, [scriptblock]`$block)
+    try   { & `$block; LogOk `$name }
+    catch { LogFail "`$name - `$(`$_.Exception.Message)" }
+}
+
+LogSec "Program files"
+
+{{ if .enable_ditto -}}
+if (-not (Test-Path "C:\Program Files\Ditto")) {
+    LogSkip "Ditto - not installed at 'C:\Program Files\Ditto'"
+} else {
+    New-Item -ItemType Directory -Force -Path "C:\Program Files\Ditto\Themes" | Out-Null
+    `$files = Get-ChildItem "`$chezmoisrc\program_files\ditto\Themes\*.xml" -ErrorAction SilentlyContinue
+    `$files | ForEach-Object { Copy-Item `$_.FullName -Destination "C:\Program Files\Ditto\Themes\`$(`$_.Name)" -Force }
+    LogOk "Ditto - `$(`$files.Count) file(s) installed"
+}
+{{ end -}}
+{{ if .enable_nilesoft -}}
+if (-not (Test-Path "C:\Program Files\Nilesoft Shell")) {
+    LogSkip "Nilesoft Shell - not installed at 'C:\Program Files\Nilesoft Shell'"
+} else {
+    New-Item -ItemType Directory -Force -Path "C:\Program Files\Nilesoft Shell\imports" | Out-Null
+    `$files = Get-ChildItem "`$chezmoisrc\program_files\nilesoft\imports\*.nss" -ErrorAction SilentlyContinue
+    `$files | ForEach-Object { Copy-Item `$_.FullName -Destination "C:\Program Files\Nilesoft Shell\imports\`$(`$_.Name)" -Force }
+    LogOk "Nilesoft Shell - `$(`$files.Count) file(s) installed"
+}
+{{ end -}}
+# Exclude themes path from Defender to prevent false positives on unsigned .msstyles
+Add-MpPreference -ExclusionPath "C:\Windows\Resources\Themes" -ErrorAction SilentlyContinue
+
+`$secureUxInstalled = Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*" -ErrorAction SilentlyContinue |
+    Where-Object { `$_.DisplayName -like "*SecureUxTheme*" }
+
+if (-not (Test-Path "C:\Windows\Resources\Themes")) {
+    LogSkip "Windows themes - destination 'C:\Windows\Resources\Themes' not found"
+} else {
+    `$copyErrors = @()
+    Copy-Item -Path "`$chezmoisrc\program_files\windows\resources\themes\*" -Destination "C:\Windows\Resources\Themes" -Recurse -Force -ErrorAction SilentlyContinue -ErrorVariable copyErrors
+    if (`$copyErrors.Count -gt 0) {
+        LogOk "Windows themes - installed (`$(`$copyErrors.Count) file(s) skipped - in use)"
+    } else {
+        LogOk "Windows themes - installed"
+    }
+    if (-not `$secureUxInstalled) {
+        LogSkip "Windows themes - SecureUxTheme not installed, themes copied but won't apply"
+    }
+}
+
+Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
+"@ | Set-Content $tmpScript
+
+Write-Host "[windows-program-files] Requesting elevation..." -ForegroundColor Cyan
+Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+if (Test-Path $logFile) {
+    foreach ($line in Get-Content $logFile) {
+        if     ($line -match '\[OK\]')   { Write-Host $line -ForegroundColor Green  }
+        elseif ($line -match '\[SKIP\]') { Write-Host $line -ForegroundColor Yellow }
+        elseif ($line -match '\[FAIL\]') { Write-Host $line -ForegroundColor Red    }
+        elseif ($line -match '\[--\]')   { Write-Host $line -ForegroundColor Cyan   }
+        else                             { Write-Host $line -ForegroundColor Gray   }
+    }
+    Remove-Item $logFile
+} else {
+    Write-Warning "windows-program-files: no output received (UAC cancelled or script failed)"
+}
+Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+{{ end -}}

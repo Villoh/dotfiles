@@ -1,0 +1,102 @@
+{{ if and (eq .chezmoi.os "windows") .enable_startup -}}
+# run_onchange_ triggers when any of these change:
+# startup.json {{ include "packages/windows/system/startup.json" | sha256sum }}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$pkgDir     = "$chezmoisrc\packages\windows"
+$ok = 0; $skip = 0; $fail = 0
+
+function LogOk  { param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [OK]   $msg" -ForegroundColor Green;  $script:ok++   }
+function LogSkip{ param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [SKIP] $msg" -ForegroundColor Yellow; $script:skip++ }
+function LogFail{ param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [FAIL] $msg" -ForegroundColor Red;    $script:fail++ }
+function LogSec { param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [--]   -- $msg --" -ForegroundColor Cyan }
+function TryRun {
+    param([string]$name, [scriptblock]$block)
+    try   { & $block; LogOk $name }
+    catch { LogFail "$name - $($_.Exception.Message)" }
+}
+
+LogSec "Startup entries"
+
+if (Test-Path "$pkgDir\system\startup.json") {
+    $startup = Get-Content "$pkgDir\system\startup.json" | ConvertFrom-Json
+
+    # -- HKCU\Run registry entries ------------------------------------------------
+    $runPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run"
+    foreach ($entry in $startup.registry) {
+        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+
+        if ($entry.glob) {
+            $expanded = Get-ChildItem (Split-Path $expanded) -Filter (Split-Path $expanded -Leaf) -ErrorAction SilentlyContinue |
+                Sort-Object Name -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+
+        if (-not $expanded -or -not (Test-Path $expanded)) {
+            LogSkip "registry: $($entry.name) (exe not found)"
+            continue
+        }
+
+        $value = if ($entry.args) { "`"$expanded`" $($entry.args)" } else { "`"$expanded`"" }
+        TryRun "registry: $($entry.name)" {
+            Set-ItemProperty -Path $runPath -Name $entry.name -Value $value -Type String
+        }
+    }
+
+    # -- Startup folder shortcuts --------------------------------------------------
+    $startupFolder = [System.Environment]::GetFolderPath("Startup")
+    foreach ($entry in $startup.folder) {
+        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+
+        if (-not (Test-Path $expanded)) {
+            LogSkip "folder: $($entry.name) (exe not found)"
+            continue
+        }
+
+        $lnk = "$startupFolder\$($entry.name).lnk"
+        TryRun "folder: $($entry.name)" {
+            $shell    = New-Object -ComObject WScript.Shell
+            $shortcut = $shell.CreateShortcut($lnk)
+            $shortcut.TargetPath = $expanded
+            if ($entry.args)        { $shortcut.Arguments  = $entry.args }
+            if ($entry.windowStyle) { $shortcut.WindowStyle = $entry.windowStyle }
+            $shortcut.Save()
+        }
+    }
+
+    # -- MSIX packaged startup tasks -----------------------------------------------
+    $msixBase = "HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData"
+    foreach ($entry in $startup.msix) {
+        $pkg = Get-AppxPackage -Name "*$($entry.package)*" -ErrorAction SilentlyContinue
+        if (-not $pkg) { LogSkip "msix: $($entry.name) (package not installed)"; continue }
+
+        $taskKey = Get-ChildItem "$msixBase\$($pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
+            Where-Object { $_.GetValue("State") -ne $null } | Select-Object -First 1
+
+        if (-not $taskKey) {
+            # Key only exists after first launch via app model — launch once to register startup task
+            $appId = "$($pkg.PackageFamilyName)!App"
+            Start-Process "explorer.exe" "shell:AppsFolder\$appId"
+            # Poll until the startup task key appears (up to 15s)
+            $waited = 0
+            while ($waited -lt 15) {
+                Start-Sleep -Seconds 1
+                $waited++
+                $taskKey = Get-ChildItem "$msixBase\$($pkg.PackageFamilyName)" -ErrorAction SilentlyContinue |
+                    Where-Object { $_.GetValue("State") -ne $null } | Select-Object -First 1
+                if ($taskKey) { break }
+            }
+            Stop-Process -Name $entry.name -ErrorAction SilentlyContinue
+        }
+
+        if (-not $taskKey) { LogSkip "msix: $($entry.name) (startup task key not found)"; continue }
+
+        TryRun "msix: $($entry.name)" {
+            Set-ItemProperty -Path $taskKey.PSPath -Name State -Value 2 -Type DWord
+        }
+    }
+
+} else {
+    LogSkip "startup.json not found"
+}
+
+Write-Host "[windows-startup] $ok OK  $skip skipped  $fail failed" -ForegroundColor Cyan
+{{ end -}}
