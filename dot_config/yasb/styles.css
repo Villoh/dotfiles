@@ -142,6 +142,35 @@
 	background-color: rgba(17, 17, 27, 0.4);
 }
 
+/***--------------------------------      • Microphone Menu •      ----------------------------------***/
+
+.microphone-menu {
+	background-color: rgba(17, 17, 27, 0.4);
+}
+.microphone-menu .microphone-container .device {
+	background-color: transparent;
+	border: none;
+	padding: 6px 8px 6px 4px;
+	margin: 2px 0;
+	font-size: 12px;
+	border-radius: 4px;
+}
+.microphone-menu .microphone-container .device.selected {
+	background-color: rgba(255, 255, 255, 0.085);
+}
+.microphone-menu .microphone-container .device:hover {
+	background-color: rgba(255, 255, 255, 0.06);
+}
+.microphone-menu .system-volume-container .volume-slider {
+	border: none;
+}
+.microphone-menu .system-volume-container .volume-slider::groove {
+	color: transparent;
+}
+.microphone-menu .system-volume-container .volume-slider::handle {
+	background-color: transparent;
+}
+
 /***-------------------------------      • Power Menu Widget •      --------------------------------***/
 
 .power-menu-popup {
@@ -198,6 +227,13 @@
 	color: var(--mauve);
 	margin: 1px 2px 0 0;
 }
+.microphone-widget .icon {
+	color: var(--mauve);
+	margin: 1px 2px 0 0;
+}
+.microphone-widget .icon.muted {
+	color: var(--red);
+}
 .start-menu .icon {
 	font-size: 18px;
 	color: #89b4fa
@@ -210,9 +246,21 @@
 
 /***---------------------------------      • Weather Icons •      ----------------------------------***/
 
-.weather-widget .icon {
-    color: var(--mauve);
-}
+.weather-widget .icon.sunnyDay { color: var(--yellow); }
+.weather-widget .icon.clearNight { color: var(--lavender); }
+.weather-widget .icon.cloudyDay { color: var(--subtext0); }
+.weather-widget .icon.cloudyNight { color: var(--overlay1); }
+.weather-widget .icon.rainyDay,
+.weather-widget .icon.rainyNight { color: var(--sapphire); }
+.weather-widget .icon.snowyDay,
+.weather-widget .icon.snowyNight { color: var(--sky); }
+.weather-widget .icon.blizzardDay,
+.weather-widget .icon.blizzardNight { color: var(--blue); }
+.weather-widget .icon.foggyDay,
+.weather-widget .icon.foggyNight { color: var(--overlay2); }
+.weather-widget .icon.thunderstormDay,
+.weather-widget .icon.thunderstormNight { color: var(--peach); }
+.weather-widget .icon.default { color: var(--mauve); }
 
 /***----------------------------------      • Weather Card •      -----------------------------------***/
 
@@ -220,6 +268,7 @@
 	background-color: var(--mantle);
 }
 .weather-card-today {
+	border: 1px solid var(--surface0);
 	border-radius: 8px;
 	background-color: var(--base);
 	color: var(--text);
@@ -229,23 +278,76 @@
 }
 .weather-card-today .label.location {
 	font-size: 24px;
-	font-weight: 800;
+	font-weight: 700;
 }
 .weather-card-today .label.alert {
 	font-size: 12px;
 	font-weight: 700;
-	background-color: rgba(247, 199, 42, 0.05);
-	border: 1px solid rgba(247, 209, 42, 0.1);
-	color: rgba(196, 181, 162, 0.85);
+	background-color: rgba(249, 226, 175, 0.05);
+	border: 1px solid rgba(249, 226, 175, 0.15);
+	color: rgba(249, 226, 175, 0.85);
 	border-radius: 6px;
 	padding: 5px 0;
 }
 .weather-card-day {
+	border: 1px solid var(--surface1);
 	border-radius: 8px;
 	background-color: var(--base);
 }
+.weather-card-day.active {
+	background-color: var(--surface0);
+	border: 1px solid var(--surface2);
+}
+.weather-card-day:hover {
+	background-color: var(--surface0);
+}
 .weather-card-day .label {
 	font-size: 12px;
+}
+.weather-card .hourly-container {
+	border: 1px solid var(--surface0);
+	background-color: var(--base);
+	border-radius: 8px;
+	min-height: 150px;
+}
+.weather-card .hourly-data {
+	font-size: 12px;
+	font-weight: bold;
+}
+.weather-card .hourly-data.temperature {
+	background-color: #cba6f7;
+}
+.weather-card .hourly-data.rain {
+	background-color: #74c7ec;
+}
+.weather-card .hourly-data.snow {
+	background-color: #89dceb;
+}
+.weather-card .hourly-data .hourly-rain-animation {
+	color: rgba(116, 199, 236, 40);
+	background-color: rgba(0, 0, 0, 0.1);
+}
+.weather-card .hourly-data .hourly-snow-animation {
+	color: rgba(137, 220, 235, 150);
+	background-color: rgba(0, 0, 0, 0.1);
+}
+.weather-card .hourly-data-buttons {
+	margin: 4px 4px 0 4px;
+}
+.weather-card .hourly-data-button {
+	border-radius: 4px;
+	min-height: 24px;
+	min-width: 24px;
+	max-width: 24px;
+	max-height: 24px;
+	font-size: 14px;
+	color: rgba(205, 214, 244, 0.3);
+	border: 1px solid transparent;
+}
+.weather-card .hourly-data-button.active {
+	color: var(--mauve);
+	background-color: rgba(203, 166, 247, 0.15);
+	border: 1px solid rgba(203, 166, 247, 0.3);
 }
 
 /* Media Widget */
@@ -419,13 +521,79 @@
 }
 
 
+/***-----------------------------------      • Systray •      ---------------------------------------***/
+
+.systray {
+    background: transparent;
+    border: none;
+    margin: 0;
+}
+.systray .unpinned-container {
+    background: transparent;
+}
+.systray .pinned-container {
+    background: transparent;
+}
+.systray .button {
+    border-radius: 4px;
+    padding: 2px;
+}
+.systray .button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.systray .button.dragging {}
+.systray .button.drag-over {
+    background: rgba(255, 255, 255, 0.4);
+}
+.systray .pinned-container.drop-target {
+    background: rgba(255, 255, 255, 0.1);
+}
+.systray .unpinned-visibility-btn {
+    border-radius: 4px;
+    height: 20px;
+    width: 16px;
+    border: none;
+    outline: none;
+    color: var(--mauve);
+}
+.systray .unpinned-visibility-btn:checked {
+    background: transparent;
+}
+.systray .unpinned-visibility-btn:hover {
+    background: transparent;
+}
+.systray-popup .button.drag-over {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.systray-popup .button.dragging {}
+.systray .pinned-container.drop-target {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.systray-popup {
+    background-color: var(--mantle);
+    padding: 4px;
+}
+.systray-popup .button {
+    padding: 10px;
+    margin: 0;
+    border: 0;
+    border-radius: 6px;
+}
+.systray-popup .button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
 .cava-widget {
     padding: 0;
     margin: 0;
 }
 
-/* CPU MEMORY Setting */
+/* CPU GPU MEMORY Setting */
 .cpu-widget {
+    padding-right: 4;
+}
+.gpu-widget {
+    padding-left: 0;
     padding-right: 0;
 }
 .memory-widget {
@@ -435,25 +603,38 @@
     border-bottom-right-radius: 0;
     border-top-right-radius: 0;
 }
+.gpu-widget .widget-container {
+    border-radius: 0;
+}
 .memory-widget .widget-container {
     border-bottom-left-radius: 0;
     border-top-left-radius: 0;
 }
 .memory-widget .label {
-    min-width: 34px;
-    max-width: 34px;
+    min-width: 38px;
+    max-width: 38px;
 }
 .cpu-widget .label {
-    min-width: 34px;
-    max-width: 34px;
+    min-width: 38px;
+    max-width: 38px;
+}
+.gpu-widget .label {
+    min-width: 38px;
+    max-width: 38px;
 }
 .cpu-widget .icon {
     color: var(--mauve);
     margin-right: 4px;
 }
+.gpu-widget .icon {
+    color: var(--mauve);
+    margin-right: 4px;
+    margin-left: 8px;
+}
 .memory-widget .icon {
     color: var(--mauve);
     margin-right: 4px;
+    margin-left: 8px;
 }
 
 
@@ -462,6 +643,22 @@
     color: var(--mauve) !important;
 }
 
+
+/***-----------------------------      • Notifications Widget •      --------------------------------***/
+
+.notification-widget .icon {
+    font-size: 12px;
+    color: var(--mauve);
+}
+.notification-widget .label {
+    color: var(--mauve);
+}
+.notification-widget .icon.new-notification {
+    color: var(--mauve);
+}
+.notification-widget .label.new-notification {
+    color: var(--mauve);
+}
 
 .update-check-widget {
     padding: 0 0px 0 0px;
@@ -491,15 +688,6 @@
 
 
 
-.traffic-widget .icon {
-    color: rgb(203, 166, 247);
-    padding-right: 6px;
-    padding-left: 6px;
-}
-.traffic-widget .label {
-color: rgb(203, 166, 247);
-}
-
 
 .widget {
    border-radius: 8px;
@@ -507,6 +695,86 @@ color: rgb(203, 166, 247);
     background-color: var(--surface0);
 }
 
+
+.todo-widget {
+    padding: 4;
+}
+.todo-widget .label {
+   font-size: 14px;
+   color: rgb(203, 166, 247);
+}
+.todo-widget .icon {
+    font-size: 16px;
+    color: rgb(203, 166, 247);
+}
+.todo-menu {
+    min-width: 460px;
+    max-width: 460px;
+    background-color: #1e1e2e;
+}
+.todo-menu .task-item {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.todo-menu .task-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.todo-menu .header {
+    padding: 10px 12px 8px 12px;
+    margin-bottom: 4px;
+}
+.todo-menu .header .add-task-button {
+    padding: 5px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-family: 'Segoe UI';
+}
+.todo-menu .header .add-task-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.todo-menu .header .tab-buttons {
+    padding: 5px 14px;
+    font-size: 12px;
+    min-width: 90px;
+    margin: 0 2px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--subtext0);
+}
+.todo-menu .header .tab-buttons:checked {
+    background-color: rgba(203, 166, 247, 0.2);
+    border: 1px solid var(--mauve);
+    color: var(--mauve);
+}
+.todo-menu .header .tab-buttons.in-progress {
+    margin-left: 16px;
+}
+.todo-menu .header .tab-buttons.sort {
+    margin-left: 16px;
+    min-width: 32px;
+    padding: 5px 8px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.todo-menu .header .tab-buttons.sort:pressed {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.todo-menu .no-tasks {
+    font-family: 'Segoe UI';
+    color: rgb(203, 166, 247);
+    font-size: 24px;
+    font-weight: 600;
+    padding: 10px 0 20px 0;
+}
+.todo-menu .scroll-area {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+}
 
 .notes-widget {
     padding: 4;
@@ -562,9 +830,9 @@ color: rgb(203, 166, 247);
     color: rgb(203, 166, 247);
     font-size: 24px;
     font-weight: 600;
-    padding: 10px 0 20px 0;     
+    padding: 10px 0 20px 0;
 }
-.notes-menu .add-button,  
+.notes-menu .add-button,
 .notes-menu .cancel-button {
     padding: 8px;
     background-color: rgba(255, 255, 255, 0.1);
@@ -581,8 +849,8 @@ color: rgb(203, 166, 247);
     background-color: rgba(255, 255, 255, 0.2);
 }
 .notes-menu .scroll-area {
-    background: transparent; 
-    border: none; 
+    background: transparent;
+    border: none;
     border-radius:0;
 }
 .notes-menu .note-input {

@@ -37,11 +37,12 @@ bars:
       left:
         [
           "home",
+          "notifications",
           "wallpaper",
           "update_check",
           "cpu",
+          "gpu",
           "memory",
-          "traffic",
           "media",
         ]
       center:
@@ -51,13 +52,15 @@ bars:
         ]
       right:
         [
+          "todo",
           "notes",
           "weather",
           "clock",
           # "cava",
           "volume",
+          "microphone",
           # "wifi",
-          "disk",
+          "systray",
           "power_menu"
         ]
 widgets:
@@ -67,6 +70,17 @@ widgets:
       offline_label: "GlazeWM Offline"
       hide_empty_workspaces: true
       hide_if_offline: false
+  notifications:
+    type: "yasb.notifications.NotificationsWidget"
+    options:
+      label: "<span>\uf476</span> {count}"
+      label_alt: "{count} notifications"
+      hide_empty: true
+      tooltip: false
+      callbacks:
+        on_left: "toggle_notification"
+        on_middle: "toggle_label"
+        on_right: "do_nothing"
   wallpaper:
     type: "yasb.wallpapers.WallpapersWidget"
     options:
@@ -195,26 +209,46 @@ widgets:
       units: "metric"
       callbacks:
         on_left: "toggle_card"
+      show_alerts: true
       icons:
-        sunnyDay: "\udb81\udd99"
-        clearNight: "\ue3c2"
-        cloudyDay: "\ue21d"
-        cloudyNight: "\ue226"
-        rainyDay: "\ue371"
-        rainyNight: "\ue371"
-        snowyDay: "\udb81\udf17"
-        snowyNight: "\udb81\udf17"
-        blizzardDay: "\udb81\udd99"
-        default: "\udb81\udd99"
+        sunnyDay: "\ue30d"
+        clearNight: "\ue32b"
+        cloudyDay: "\ue312"
+        cloudyNight: "\ue311"
+        rainyDay: "\ue308"
+        rainyNight: "\ue333"
+        snowyDay: "\ue30a"
+        snowyNight: "\ue335"
+        blizzardDay: "\udb83\udf36"
+        blizzardNight: "\udb83\udf36"
+        foggyDay: "\ue303"
+        foggyNight: "\ue346"
+        thunderstormDay: "\ue30f"
+        thunderstormNight: "\ue338"
+        default: "\uebaa"
       weather_card:
-        blur: True
-        round_corners: True
+        blur: true
+        round_corners: true
         round_corners_type: "normal"
         border_color: "#45475a"
         alignment: "right"
         direction: "down"
-        distance: 6
-        icon_size: 48
+        icon_size: 64
+        show_hourly_forecast: true
+        time_format: "24h"
+        hourly_point_spacing: 76
+        hourly_icon_size: 32
+        icon_smoothing: true
+        temp_line_width: 2
+        current_line_color: "#cba6f7"
+        current_line_width: 1
+        current_line_style: "dot"
+        hourly_gradient:
+          enabled: true
+          top_color: "#cba6f7"
+          bottom_color: "#1e1e2e"
+        hourly_forecast_buttons:
+          enabled: false
   volume:
     type: "yasb.volume.VolumeWidget"
     options:
@@ -290,6 +324,53 @@ widgets:
         paused: "\ueba7"
       hide_when_not_recording: true
       blinking_icon: true
+  microphone:
+    type: "yasb.microphone.MicrophoneWidget"
+    options:
+      label: "<span>{icon}</span>"
+      label_alt: "<span>{icon}</span> {level}"
+      mute_text: "mute"
+      icons:
+        normal: "\uf130"
+        muted: "\uf131"
+      mic_menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "#45475a"
+        alignment: "right"
+        direction: "down"
+      callbacks:
+        on_left: "toggle_mic_menu"
+        on_middle: "toggle_label"
+        on_right: "toggle_mute"
+  systray:
+    type: "yasb.systray.SystrayWidget"
+    options:
+      class_name: "systray"
+      label_collapsed: "▼"
+      label_expanded: "▶"
+      label_position: "left"
+      icon_size: 16
+      pin_click_modifier: "alt"
+      show_unpinned: true
+      show_unpinned_button: true
+      show_in_popup: true
+      icons_per_row: 4
+      show_battery: false
+      show_volume: false
+      show_network: false
+      hide_icons: []
+      tooltip: true
+      popup:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "#45475a"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
   disk:
     type: "yasb.disk.DiskWidget"
     options:
@@ -314,15 +395,15 @@ widgets:
       label_alt: "<span>\uf437</span> {info[histograms][cpu_percent]}"
       update_interval: 2000
       histogram_icons:
-        - '\u2581' # 0%
-        - '\u2581' # 10%
-        - '\u2582' # 20%
-        - '\u2583' # 30%
-        - '\u2584' # 40%
-        - '\u2585' # 50%
-        - '\u2586' # 60%
-        - '\u2587' # 70%
-        - '\u2588' # 80%+
+        - "\u2581" # 0%
+        - "\u2581" # 10%
+        - "\u2582" # 20%
+        - "\u2583" # 30%
+        - "\u2584" # 40%
+        - "\u2585" # 50%
+        - "\u2586" # 60%
+        - "\u2587" # 70%
+        - "\u2588" # 80%+
       histogram_num_columns: 8
       callbacks:
         on_right: "exec cmd /c Taskmgr"
@@ -330,7 +411,36 @@ widgets:
         top: 0
         left: 0
         bottom: 0
-        right: 5
+        right: 0
+  gpu:
+    type: "yasb.gpu.GpuWidget"
+    options:
+      label: "<span>\uf4bc</span> {info[utilization]}%"
+      label_alt: "<span>\uf4bc</span> {info[temp]}°C"
+      update_interval: 2000
+      gpu_thresholds:
+        low: 25
+        medium: 50
+        high: 90
+      histogram_icons:
+        - "\u2581"
+        - "\u2581"
+        - "\u2582"
+        - "\u2583"
+        - "\u2584"
+        - "\u2585"
+        - "\u2586"
+        - "\u2587"
+        - "\u2588"
+      histogram_num_columns: 8
+      callbacks:
+        on_left: "toggle_label"
+        on_right: "do_nothing"
+      container_padding:
+        top: 0
+        left: 0
+        bottom: 0
+        right: 0
   memory:
     type: "yasb.memory.MemoryWidget"
     options:
@@ -343,7 +453,7 @@ widgets:
         on_right: "do_nothing"
       container_padding:
         top: 0
-        left: 8
+        left: 0
         bottom: 0
         right: 0
   wifi:
@@ -376,20 +486,33 @@ widgets:
         label: "<span>\uf0ab</span>{count}"
         interval: 180
         exclude: []
-      windows_update:
-        enabled: false
+      scoop_update:
+        enabled: true
         label: "<span>\uf0ab</span>{count}"
         interval: 240
         exclude: []
-  traffic:
-    type: "yasb.traffic.TrafficWidget"
+      windows_update:
+        enabled: false
+        label: "<span>\uf0ab</span>{count}"
+        interval: 1440
+        exclude: []
+  todo:
+    type: "yasb.todo.TodoWidget"
     options:
-      label: "<span>\udb82\udcfa</span> \uea9a{download_speed} \ueaa1{upload_speed}"
-      label_alt: "<span>\udb82\udcfa</span> Download {download_speed} | Upload {upload_speed}"
-      update_interval: 1000
+      label: "<span>\udb82\udd0c</span> {count}/{completed}"
+      label_alt: "<span>\udb82\udd0c</span> Tasks: {count}"
+      menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "System"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
       callbacks:
-        on_left: 'toggle_label'
-        on_right: 'exec cmd /c Taskmgr'
+        on_left: "toggle_menu"
+        on_right: "toggle_label"
   notes:
     type: "yasb.notes.NotesWidget"
     options:
