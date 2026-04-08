@@ -1,0 +1,85 @@
+{{ if and (eq .chezmoi.os "windows") .enable_cursors -}}
+# run_onchange_ triggers when any of these change:
+{{ range (glob "program_files/windows/cursors/**") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$logFile    = "$env:TEMP\chezmoi-cursors-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$tmpScript  = "$env:TEMP\chezmoi-cursors.ps1"
+
+@"
+`$chezmoisrc = "$chezmoisrc"
+`$logFile    = "$logFile"
+`$ok = 0; `$skip = 0; `$fail = 0
+
+function Log    { param([string]`$pfx, [string]`$msg) Add-Content -Path "`$logFile" -Value "[`$(Get-Date -Format 'HH:mm:ss')] [`$pfx] `$msg" }
+function LogOk  { param([string]`$msg) Log "OK"   `$msg; `$script:ok++   }
+function LogSkip{ param([string]`$msg) Log "SKIP" `$msg; `$script:skip++ }
+function LogFail{ param([string]`$msg) Log "FAIL" `$msg; `$script:fail++ }
+function LogSec { param([string]`$msg) Log "--"   "-- `$msg --"           }
+function TryRun {
+    param([string]`$name, [scriptblock]`$block)
+    try   { & `$block; LogOk `$name }
+    catch { LogFail "`$name - `$(`$_.Exception.Message)" }
+}
+
+LogSec "Cursor schemes"
+
+Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "install.inf" | ForEach-Object {
+    `$infFile = `$_
+    TryRun "cursor: `$(`$infFile.Directory.Name)" {
+        rundll32.exe setupapi.dll,InstallHinfSection DefaultInstall 132 "`$(`$infFile.FullName)"
+    }
+}
+
+Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
+"@ | Set-Content $tmpScript
+
+Write-Host "[windows-cursors] Requesting elevation..." -ForegroundColor Cyan
+Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+if (Test-Path $logFile) {
+    foreach ($line in Get-Content $logFile) {
+        if     ($line -match '\[OK\]')   { Write-Host $line -ForegroundColor Green  }
+        elseif ($line -match '\[SKIP\]') { Write-Host $line -ForegroundColor Yellow }
+        elseif ($line -match '\[FAIL\]') { Write-Host $line -ForegroundColor Red    }
+        elseif ($line -match '\[--\]')   { Write-Host $line -ForegroundColor Cyan   }
+        else                             { Write-Host $line -ForegroundColor Gray   }
+    }
+    Remove-Item $logFile
+} else {
+    Write-Warning "windows-cursors: no output received (UAC cancelled or script failed)"
+}
+Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+# -- Apply cursor scheme (HKCU — no elevation needed) -------------------------
+$schemeName  = "{{ .cursor_scheme }}"
+$schemesPath = "HKCU:\Control Panel\Cursors\Schemes"
+$cursorsPath = "HKCU:\Control Panel\Cursors"
+
+$schemeValue = (Get-ItemProperty -Path $schemesPath -Name $schemeName -ErrorAction SilentlyContinue).$schemeName
+if (-not $schemeValue) {
+    Write-Warning "[windows-cursors] Scheme '$schemeName' not found in registry — was installation successful?"
+} else {
+    $cursorNames = @("Arrow","Help","AppStarting","Wait","Crosshair","IBeam","NWPen","No","SizeNS","SizeWE","SizeNWSE","SizeSWNE","SizeAll","UpArrow","Hand","Pin","Person")
+    $cursorPaths = $schemeValue -split ","
+
+    Set-ItemProperty -Path $cursorsPath -Name "" -Value $schemeName
+
+    for ($i = 0; $i -lt $cursorPaths.Count -and $i -lt $cursorNames.Count; $i++) {
+        Set-ItemProperty -Path $cursorsPath -Name $cursorNames[$i] -Value $cursorPaths[$i]
+    }
+
+    Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public class CursorUtil {
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
+}
+"@
+    [CursorUtil]::SystemParametersInfo(0x0057, 0, [IntPtr]::Zero, 0x03) | Out-Null
+    Write-Host "[windows-cursors] Applied scheme '$schemeName'" -ForegroundColor Green
+}
+
+{{ end -}}

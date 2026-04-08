@@ -1,0 +1,70 @@
+{{ if and (eq .chezmoi.os "windows") .enable_junctions -}}
+# run_onchange_ triggers when any of these change:
+# junctions.json {{ include "packages/windows/system/junctions.json" | sha256sum }}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$pkgDir     = "$chezmoisrc\packages\windows"
+$logFile    = "$env:TEMP\chezmoi-junctions-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$tmpScript  = "$env:TEMP\chezmoi-junctions.ps1"
+
+@"
+`$chezmoisrc = "$chezmoisrc"
+`$pkgDir     = "$pkgDir"
+`$logFile    = "$logFile"
+`$ok = 0; `$skip = 0; `$fail = 0
+
+function Log    { param([string]`$pfx, [string]`$msg) Add-Content -Path "`$logFile" -Value "[`$(Get-Date -Format 'HH:mm:ss')] [`$pfx] `$msg" }
+function LogOk  { param([string]`$msg) Log "OK"   `$msg; `$script:ok++   }
+function LogSkip{ param([string]`$msg) Log "SKIP" `$msg; `$script:skip++ }
+function LogFail{ param([string]`$msg) Log "FAIL" `$msg; `$script:fail++ }
+function LogSec { param([string]`$msg) Log "--"   "-- `$msg --"           }
+function TryRun {
+    param([string]`$name, [scriptblock]`$block)
+    try   { & `$block; LogOk `$name }
+    catch { LogFail "`$name - `$(`$_.Exception.Message)" }
+}
+
+LogSec "Junctions"
+
+if (Test-Path "`$pkgDir\system\junctions.json") {
+    `$junctions = Get-Content "`$pkgDir\system\junctions.json" | ConvertFrom-Json
+} else {
+    LogFail "junctions.json not found - skipping"
+    `$junctions = @()
+}
+
+foreach (`$j in `$junctions) {
+    `$src    = "`$chezmoisrc\`$(`$j.src)"
+    `$dst    = [System.Environment]::ExpandEnvironmentVariables(`$j.dst)
+    `$parent = Split-Path `$dst
+    if (`$parent -and -not (Test-Path `$parent)) { New-Item -ItemType Directory -Force -Path `$parent | Out-Null }
+    if (Test-Path `$dst) { Remove-Item `$dst -Recurse -Force }
+    if (`$j.type -eq "copy") {
+        TryRun "copy: `$dst" { Copy-Item "`$src" "`$dst" -Force }
+    } elseif (`$j.type -eq "file") {
+        TryRun "symlink: `$dst" { cmd /c mklink "`$dst" "`$src" | Out-Null }
+    } else {
+        TryRun "junction: `$dst" { cmd /c mklink /J "`$dst" "`$src" | Out-Null }
+    }
+}
+
+Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
+"@ | Set-Content $tmpScript
+
+Write-Host "[windows-junctions] Requesting elevation..." -ForegroundColor Cyan
+Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+if (Test-Path $logFile) {
+    foreach ($line in Get-Content $logFile) {
+        if     ($line -match '\[OK\]')   { Write-Host $line -ForegroundColor Green  }
+        elseif ($line -match '\[SKIP\]') { Write-Host $line -ForegroundColor Yellow }
+        elseif ($line -match '\[FAIL\]') { Write-Host $line -ForegroundColor Red    }
+        elseif ($line -match '\[--\]')   { Write-Host $line -ForegroundColor Cyan   }
+        else                             { Write-Host $line -ForegroundColor Gray   }
+    }
+    Remove-Item $logFile
+} else {
+    Write-Warning "windows-junctions: no output received (UAC cancelled or script failed)"
+}
+Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+{{ end -}}

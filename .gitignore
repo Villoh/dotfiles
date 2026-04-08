@@ -40,3 +40,8 @@ other_config/openvpn/
 
 # PowerShell runtime state
 Documents/PowerShell/LastExecutionTime.txt
+
+# ytm-player — only config.toml and theme.toml are config, rest is runtime state
+dot_config/ytm-player/*
+!dot_config/ytm-player/config.toml
+!dot_config/ytm-player/theme.toml

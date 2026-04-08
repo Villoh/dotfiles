@@ -1,5 +1,4 @@
 {{- $isWindows := eq .chezmoi.os "windows" -}}
-{{- $all := promptBool "Enable all modules" true -}}
 encryption = "gpg"
 mode = "symlink"
 
@@ -20,35 +19,40 @@ mode = "symlink"
     enable_secrets = {{ promptBool "Enable personal secrets (owner only — requires Bitwarden)" false }}
 
     # ── Cross-platform modules ─────────────────────────────────────────────
-    enable_zed        = {{ or $all (promptBool "Enable Zed editor" true) }}
-    enable_yazi       = {{ or $all (promptBool "Enable Yazi file manager" true) }}
-    enable_btop       = {{ or $all (promptBool "Enable btop" true) }}
-    enable_fastfetch  = {{ or $all (promptBool "Enable Fastfetch" true) }}
-    enable_cava       = {{ or $all (promptBool "Enable Cava audio visualizer" true) }}
-    enable_gh_dash    = {{ or $all (promptBool "Enable gh-dash" true) }}
-    enable_micro      = {{ or $all (promptBool "Enable Micro editor" true) }}
-    enable_opencode   = {{ or $all (promptBool "Enable OpenCode" true) }}
-    enable_starship   = {{ or $all (promptBool "Enable Starship prompt" true) }}
-    enable_ohmyposh   = {{ or $all (promptBool "Enable Oh My Posh" true) }}
-    enable_bun        = {{ or $all (promptBool "Enable Bun config" true) }}
+    enable_zed        = true
+    enable_yazi       = true
+    enable_btop       = true
+    enable_fastfetch  = true
+    enable_cava       = true
+    enable_gh_dash    = true
+    enable_micro      = true
+    enable_opencode   = true
+    enable_starship   = true
+    enable_ohmyposh   = true
+    enable_bun        = true
+    enable_git        = true
+    enable_uv         = true
+    enable_zellij     = true
+    enable_ytm_player = true
+    enable_scoop      = true
 
     # ── Linux-only modules ─────────────────────────────────────────────────
     {{ if not $isWindows -}}
-    enable_zsh        = {{ or $all (promptBool "Enable Zsh config" true) }}
-    enable_bash       = {{ or $all (promptBool "Enable Bash config" true) }}
-    enable_hyprland   = {{ or $all (promptBool "Enable Hyprland" true) }}
-    enable_waybar     = {{ or $all (promptBool "Enable Waybar" true) }}
-    enable_swaync     = {{ or $all (promptBool "Enable SwayNC" true) }}
-    enable_swayosd    = {{ or $all (promptBool "Enable SwayOSD" true) }}
-    enable_kitty      = {{ or $all (promptBool "Enable Kitty terminal" true) }}
-    enable_ghostty    = {{ or $all (promptBool "Enable Ghostty terminal" true) }}
-    enable_tmux       = {{ or $all (promptBool "Enable tmux" true) }}
-    enable_aerc       = {{ or $all (promptBool "Enable aerc email client" true) }}
-    enable_nchat      = {{ or $all (promptBool "Enable nchat" true) }}
-    enable_freetube   = {{ or $all (promptBool "Enable FreeTube" true) }}
-    enable_cliphist   = {{ or $all (promptBool "Enable cliphist" true) }}
-    enable_vesktop    = {{ or $all (promptBool "Enable Vesktop/Vencord" true) }}
-    enable_systemd    = {{ or $all (promptBool "Enable systemd user services" true) }}
+    enable_zsh        = true
+    enable_bash       = true
+    enable_hyprland   = true
+    enable_waybar     = true
+    enable_swaync     = true
+    enable_swayosd    = true
+    enable_kitty      = true
+    enable_ghostty    = true
+    enable_tmux       = true
+    enable_aerc       = true
+    enable_nchat      = true
+    enable_freetube   = true
+    enable_cliphist   = true
+    enable_vesktop    = true
+    enable_systemd    = true
     {{- else }}
     enable_zsh        = false
     enable_bash       = false
@@ -69,19 +73,23 @@ mode = "symlink"
 
     # ── Windows-only modules ───────────────────────────────────────────────
     {{ if $isWindows -}}
-    enable_glazewm          = {{ or $all (promptBool "Enable GlazeWM" true) }}
-    enable_yasb             = {{ or $all (promptBool "Enable YASB status bar" true) }}
-    enable_wezterm          = {{ or $all (promptBool "Enable WezTerm" true) }}
-    enable_alacritty        = {{ or $all (promptBool "Enable Alacritty" true) }}
-    enable_flow_launcher    = {{ or $all (promptBool "Enable Flow Launcher" true) }}
-    enable_ditto            = {{ or $all (promptBool "Enable Ditto clipboard" true) }}
-    enable_nilesoft         = {{ or $all (promptBool "Enable Nilesoft Shell" true) }}
-    enable_autohotkey       = {{ or $all (promptBool "Enable AutoHotkey" true) }}
-    enable_rainmeter        = {{ or $all (promptBool "Enable Rainmeter" true) }}
-    enable_warp             = {{ or $all (promptBool "Enable Warp terminal" true) }}
-    enable_windhawk         = {{ or $all (promptBool "Enable Windhawk" true) }}
-    enable_windows_terminal = {{ or $all (promptBool "Enable Windows Terminal" true) }}
-    enable_mica             = {{ or $all (promptBool "Enable MicaForEveryone" true) }}
+    enable_glazewm          = true
+    enable_yasb             = true
+    enable_wezterm          = true
+    enable_alacritty        = true
+    enable_flow_launcher    = true
+    enable_ditto            = true
+    enable_nilesoft         = true
+    enable_autohotkey       = true
+    enable_rainmeter        = true
+    enable_warp             = true
+    enable_windhawk         = true
+    enable_windows_terminal = true
+    enable_mica             = true
+    enable_junctions        = true
+    enable_startup          = true
+    enable_cursors          = true
+    cursor_scheme           = "Catppuccin-Mocha-Mauve-Cursors"
     {{- else }}
     enable_glazewm          = false
     enable_yasb             = false
@@ -96,4 +104,7 @@ mode = "symlink"
     enable_windhawk         = false
     enable_windows_terminal = false
     enable_mica             = false
+    enable_junctions        = false
+    enable_startup          = false
+    enable_cursors          = false
     {{- end }}
