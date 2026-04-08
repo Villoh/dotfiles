@@ -11,28 +11,7 @@ Set-Alias -Name update        -Value Invoke-AllUpgrade
 
 function Invoke-WingetUpgrade {
     if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { Write-Warning "winget not found."; return }
-
     winget upgrade --all --accept-package-agreements --accept-source-agreements --silent
-
-    # Check what's still pending after --all (packages that failed to upgrade)
-    $pending = winget upgrade 2>&1
-    $ids = @()
-    $inTable = $false
-    foreach ($line in $pending) {
-        if ($line -match '^-{3,}')                     { $inTable = $true; continue }
-        if ($inTable -and $line -match '\s+(\S+\.\S+)\s+') { $ids += $matches[1] }
-    }
-
-    # For each pending package, try individually to detect reinstall-required errors
-    foreach ($id in $ids) {
-        $result = winget upgrade --id $id --accept-package-agreements --accept-source-agreements 2>&1 | Out-String
-        if ($result -match 'install technology is different') {
-            Write-Host "Reinstalling $id (installer technology changed, requesting elevation)..." -ForegroundColor Cyan
-            $cmd = "winget uninstall --id $id --accept-source-agreements --all-versions; winget install -e --id $id --accept-package-agreements --accept-source-agreements"
-            Start-Process powershell -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-Command", $cmd -Wait
-            Write-Host "$id reinstalled successfully." -ForegroundColor Green
-        }
-    }
 }
 Set-Alias -Name update-winget  -Value Invoke-WingetUpgrade
 Set-Alias -Name upgrade-winget -Value Invoke-WingetUpgrade
@@ -67,8 +46,17 @@ function Invoke-WingetReinstall {
     )
     if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { Write-Warning "winget not found."; return }
     Write-Host "Reinstalling $Id (requesting elevation)..." -ForegroundColor Cyan
-    $cmd = "winget uninstall --id $Id --accept-source-agreements --all-versions; winget install -e --id $Id --accept-package-agreements --accept-source-agreements"
-    Start-Process powershell -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-Command", $cmd -Wait
+
+    # Write to a temp script so the elevated process can poll until uninstall actually finishes
+    $script = [System.IO.Path]::GetTempFileName() + '.ps1'
+    Set-Content $script @"
+winget uninstall --id '$Id' --accept-source-agreements --all-versions --interactive
+Write-Host 'Waiting for uninstall to complete...' -ForegroundColor Yellow
+do { Start-Sleep 2 } until (-not (winget list --id '$Id' | Out-String | Select-String '$Id'))
+winget install -e --id '$Id' --accept-package-agreements --accept-source-agreements --interactive
+"@
+    Start-Process powershell -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $script -Wait
+    Remove-Item $script -ErrorAction SilentlyContinue
     Write-Host "$Id reinstalled successfully." -ForegroundColor Green
 }
 Set-Alias -Name winget-reinstall -Value Invoke-WingetReinstall
