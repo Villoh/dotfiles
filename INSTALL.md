@@ -46,16 +46,23 @@ chezmoi runs scripts automatically in this order:
 
 **Phase 1 — before files (run_once / run_onchange, by numeric prefix):**
 
+**Windows:**
+
 | Script | What it does |
 |--------|--------------|
-| `run_once_00_windows-install` *(Windows)* | Bootstrap (Scoop, fzf, Dev Mode, Node, Bun, uv, bin) + interactive package install (winget, scoop, npm, bun, uv, PowerShell modules, bin, cargo) + GlazeWM win-keys |
-| `run_once_01_windows-secrets` *(Windows)* | Fetches API keys from Bitwarden (or prompts manually) and writes them to `~/Documents/PowerShell/Secrets/api-keys.ps1` |
-| `run_onchange_02_windows-junctions` *(Windows)* | Junctions for apps that can't use chezmoi symlinks |
-| `run_onchange_03_windows-startup` *(Windows)* | Startup registry entries |
-| `run_onchange_04_windows-program-files` *(Windows)* | Deploys Ditto/Nilesoft configs and Windows themes |
-| `run_onchange_05_windows-cursors` *(Windows)* | Installs cursor theme |
-| `run_onchange_06_windows-windhawk` *(Windows)* | Deploys Windhawk mod configs and registry settings |
-| `run_once_00_linux-install` *(Linux)* | Git submodules, bootstrap (paru, flatpak, Node, Bun, uv, bin) + packages (pacman/AUR, flatpak, npm, bun, uv, bin) |
+| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, Dev Mode, Node, Bun, uv, bin) + interactive package install (winget, scoop, npm, bun, uv, PowerShell modules, bin, cargo) + GlazeWM win-keys |
+| `run_once_01_windows-secrets` | Fetches API keys from Bitwarden (or prompts manually) and writes them to `~/Documents/PowerShell/Secrets/api-keys.ps1` |
+| `run_onchange_02_windows-junctions` | Junctions for apps that can't use chezmoi symlinks |
+| `run_onchange_03_windows-startup` | Startup registry entries |
+| `run_onchange_04_windows-program-files` | Deploys Ditto/Nilesoft configs and Windows themes |
+| `run_onchange_05_windows-cursors` | Installs cursor theme |
+| `run_onchange_06_windows-windhawk` | Deploys Windhawk mod configs and registry settings |
+
+**Linux:**
+
+| Script | What it does |
+|--------|--------------|
+| `run_once_00_linux-install` | Git submodules, bootstrap (paru, flatpak, Node, Bun, uv, bin) + packages (pacman/AUR, flatpak, npm, bun, uv, bin) |
 
 > Scripts run in numeric prefix order (00, 01, 02…).
 
@@ -63,10 +70,12 @@ chezmoi runs scripts automatically in this order:
 
 **Phase 3 — after files (run_after, by numeric prefix):**
 
+**Windows:**
+
 | Script | What it does |
 |--------|--------------|
-| `run_once_after_07_windows-setup` *(Windows)* | Accent color, theme |
-| `run_onchange_after_08_windows-wallpaper` *(Windows)* | Desktop wallpaper + lock screen (requires `~/Pictures/Wallpapers/` symlink to exist) |
+| `run_once_after_07_windows-setup` | Accent color, theme |
+| `run_onchange_after_08_windows-wallpaper` | Desktop wallpaper + lock screen (requires `~/Pictures/Wallpapers/` symlink to exist) |
 
 ---
 

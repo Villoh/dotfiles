@@ -889,7 +889,7 @@
     color: var(--mauve);
 }
 .notification-widget .label.new-notification {
-    color: var(--mauve);
+    color: var(--text);
 }
 
 .update-check-widget {
@@ -932,7 +932,7 @@
     padding: 0 10px;
 }
 .todo-widget .label {
-    color: var(--mauve);
+    color: var(--text);
 }
 .todo-widget .icon {
     color: var(--mauve);
@@ -1215,7 +1215,7 @@
 }
 .notes-widget .label {
    font-size: 14px;
-   color: rgb(203, 166, 247);
+   color: var(--text);
 }
 .notes-widget .icon {
     font-size: 16px;
