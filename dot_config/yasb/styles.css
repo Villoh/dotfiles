@@ -452,7 +452,7 @@
 	color: var(--mauve);
 }
 .open-meteo-widget .label {
-	color: var(--mauve);
+	color: var(--text);
 	padding-left: 4px;
 }
 
