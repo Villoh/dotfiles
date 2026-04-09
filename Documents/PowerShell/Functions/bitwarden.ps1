@@ -712,13 +712,18 @@ function bwedit {
                     if ($newVal) { $f.value = $newVal }
                 }
             }
-            Write-Host "Add new field? (name=value, leave empty to skip): " -NoNewline
-            $newField = [Console]::ReadLine()
-            if ($newField -and $newField -match '^(.+)=(.+)$') {
-                $current.fields += [pscustomobject]@{
-                    name  = $Matches[1].Trim()
-                    value = $Matches[2].Trim()
-                    type  = 0
+            while ($true) {
+                Write-Host "Add new field? (name=value, leave empty to finish): " -NoNewline
+                $newField = [Console]::ReadLine()
+                if (-not $newField) { break }
+                if ($newField -match '^(.+)=(.+)$') {
+                    $current.fields += [pscustomobject]@{
+                        name  = $Matches[1].Trim()
+                        value = $Matches[2].Trim()
+                        type  = 0
+                    }
+                } else {
+                    Write-Host 'X Invalid format, use name=value'
                 }
             }
 
@@ -1003,6 +1008,23 @@ function bwadd {
 
     $folderid = _bwadd_select_folder
     if ($folderid) { $item.folderId = $folderid }
+
+    # Custom fields
+    $item.fields = @()
+    while ($true) {
+        Write-Host "Add field? (name=value, leave empty to finish): " -NoNewline
+        $newField = [Console]::ReadLine()
+        if (-not $newField) { break }
+        if ($newField -match '^(.+)=(.+)$') {
+            $item.fields += [pscustomobject]@{
+                name  = $Matches[1].Trim()
+                value = $Matches[2].Trim()
+                type  = 0
+            }
+        } else {
+            Write-Host 'X Invalid format, use name=value'
+        }
+    }
 
     $output = $item | _bw_encode | bw create item 2>&1
     if ($LASTEXITCODE -eq 0) {
