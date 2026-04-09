@@ -61,7 +61,7 @@ bars:
           "volume",
           "microphone",
           # "wifi",
-          "systray",
+          # "systray",
           "power_menu"
         ]
 widgets:

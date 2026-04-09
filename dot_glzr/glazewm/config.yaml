@@ -141,7 +141,7 @@ gaps:
   outer_gap:
     top: "0px"
     right: "10px"
-    bottom: "10px"
+    bottom: "5px"
     left: "10px"
 
 window_effects:

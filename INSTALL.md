@@ -44,37 +44,35 @@ During `init --apply`, chezmoi will:
 
 chezmoi runs scripts automatically in this order:
 
-**Phase 1 — before files (run_once / run_onchange, alphabetical):**
+**Phase 1 — before files (run_once / run_onchange, by numeric prefix):**
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_windows-install` *(Windows)* | Bootstrap (Scoop, fzf, Dev Mode, Node, Bun, uv, bin) + interactive package install (winget, scoop, npm, bun, uv, PowerShell modules, bin, cargo) + GlazeWM win-keys |
-| `run_onchange_windows-setup` *(Windows)* | Junctions, startup registry entries, program files (Ditto/Nilesoft/themes/cursors), accent color, theme |
-| `run_once_linux-install` *(Linux)* | Git submodules, bootstrap (paru, flatpak, Node, Bun, uv, bin) + packages (pacman/AUR, flatpak, npm, bun, uv, bin) |
+| `run_once_00_windows-install` *(Windows)* | Bootstrap (Scoop, fzf, Dev Mode, Node, Bun, uv, bin) + interactive package install (winget, scoop, npm, bun, uv, PowerShell modules, bin, cargo) + GlazeWM win-keys |
+| `run_once_01_windows-secrets` *(Windows)* | Fetches API keys from Bitwarden (or prompts manually) and writes them to `~/Documents/PowerShell/Secrets/api-keys.ps1` |
+| `run_onchange_02_windows-junctions` *(Windows)* | Junctions for apps that can't use chezmoi symlinks |
+| `run_onchange_03_windows-startup` *(Windows)* | Startup registry entries |
+| `run_onchange_04_windows-program-files` *(Windows)* | Deploys Ditto/Nilesoft configs and Windows themes |
+| `run_onchange_05_windows-cursors` *(Windows)* | Installs cursor theme |
+| `run_onchange_06_windows-windhawk` *(Windows)* | Deploys Windhawk mod configs and registry settings |
+| `run_once_00_linux-install` *(Linux)* | Git submodules, bootstrap (paru, flatpak, Node, Bun, uv, bin) + packages (pacman/AUR, flatpak, npm, bun, uv, bin) |
 
-> `run_once_` sorts before `run_onchange_` alphabetically, so install always runs before setup.
+> Scripts run in numeric prefix order (00, 01, 02…).
 
 **Phase 2 — chezmoi applies all files and symlinks**
 
-**Phase 3 — after files (run_after, alphabetical):**
+**Phase 3 — after files (run_after, by numeric prefix):**
 
 | Script | What it does |
 |--------|--------------|
-| `run_onchange_after_windows-wallpaper` *(Windows)* | Desktop wallpaper + lock screen (requires `~/Pictures/Wallpapers/` symlink to exist) |
+| `run_once_after_07_windows-setup` *(Windows)* | Accent color, theme |
+| `run_onchange_after_08_windows-wallpaper` *(Windows)* | Desktop wallpaper + lock screen (requires `~/Pictures/Wallpapers/` symlink to exist) |
 
 ---
 
 ## Manual steps (Windows)
 
 Some steps require manual intervention and are exposed as PowerShell functions available in any session after install.
-
-### Windhawk
-
-Windhawk launches automatically on install. First install your desired mods inside the app, then close it completely and run:
-
-```powershell
-restore-windhawk
-```
 
 ### GPG as SSH agent
 
