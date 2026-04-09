@@ -64,5 +64,5 @@ streamFinal.SaveToFile configPath, 2
 streamFinal.Close
 
 ' Reload GlazeWM config
-Dim glazewmExe : glazewmExe = sh.ExpandEnvironmentStrings("%ProgramFiles%\glzr.io\GlazeWM\cli\glazewm.exe")
+Dim glazewmExe : glazewmExe = sh.ExpandEnvironmentStrings("%USERPROFILE%\scoop\apps\glazewm\current\cli\glazewm.exe")
 sh.Run """" & glazewmExe & """ command wm-reload-config", 0, False
