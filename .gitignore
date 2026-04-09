@@ -41,6 +41,12 @@ other_config/openvpn/
 # PowerShell runtime state
 Documents/PowerShell/LastExecutionTime.txt
 
+# Rainmeter — runtime files, only Rainmeter.ini and layouts are config
+AppData/Roaming/Rainmeter/Rainmeter.data
+AppData/Roaming/Rainmeter/Rainmeter.exe
+AppData/Roaming/Rainmeter/Rainmeter.stats
+AppData/Roaming/Rainmeter/Layouts/@Backup/
+
 # ytm-player — only config.toml and theme.toml are config, rest is runtime state
 dot_config/ytm-player/*
 !dot_config/ytm-player/config.toml

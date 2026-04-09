@@ -6,8 +6,8 @@ function Invoke-AllUpgrade {
     Invoke-NodeUpgrade
     Invoke-UvUpgrade
 }
-Set-Alias -Name upgrade       -Value Invoke-AllUpgrade
-Set-Alias -Name update        -Value Invoke-AllUpgrade
+Set-Alias -Name upgrade-all       -Value Invoke-AllUpgrade
+Set-Alias -Name update-all        -Value Invoke-AllUpgrade
 
 function Invoke-WingetUpgrade {
     if (-not (Get-Command winget -ErrorAction SilentlyContinue)) { Write-Warning "winget not found."; return }
