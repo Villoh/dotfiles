@@ -98,7 +98,7 @@ dot_config/ytm-player/history.db
 dot_config/ytm-player/history.db-shm
 dot_config/ytm-player/history.db-wal
 dot_config/ytm-player/ipc_port
-dot_config/ytm-player/session.json
+dot_config/ytm-player/theme.toml
 dot_config/ytm-player/ytm.pid
 AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/*.tmp
 AppData/Roaming/Rainmeter/Rainmeter.data
