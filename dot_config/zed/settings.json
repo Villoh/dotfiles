@@ -123,7 +123,7 @@
   "indent_guides": {
     "enabled": false
   },
-  "multi_cursor_modifier": "cmd_or_ctrl",
+  "multi_cursor_modifier": "alt",
   "cursor_shape": "bar",
   "cursor_blink": true,
   "selection_highlight": true,

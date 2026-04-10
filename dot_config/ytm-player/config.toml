@@ -39,7 +39,7 @@ col_artist = 0
 col_album = 0
 col_duration = 8
 bidi_mode = "auto"
-theme = "catppuccin-mocha"
+theme = "ytm-dark"
 
 [notifications]
 enabled = true
