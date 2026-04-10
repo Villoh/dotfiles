@@ -1,6 +1,7 @@
 [general]
 startup_page = "library"
 playback_bar_position = "bottom"
+brand_account_id = ""
 
 [playback]
 audio_quality = "high"
@@ -38,6 +39,7 @@ col_artist = 0
 col_album = 0
 col_duration = 8
 bidi_mode = "auto"
+theme = "catppuccin-mocha"
 
 [notifications]
 enabled = true

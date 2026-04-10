@@ -47,7 +47,7 @@ AppData/Roaming/Rainmeter/Rainmeter.exe
 AppData/Roaming/Rainmeter/Rainmeter.stats
 AppData/Roaming/Rainmeter/Layouts/@Backup/
 
-# ytm-player — config.toml and session.json (theme selection) are config, rest is runtime state
+# ytm-player — only config.toml and themes/ are config, rest is runtime state
 dot_config/ytm-player/*
 !dot_config/ytm-player/config.toml
-!dot_config/ytm-player/session.json
+!dot_config/ytm-player/themes/
