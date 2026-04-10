@@ -1,0 +1,19 @@
+name    = "catppuccin-personal"
+dark    = true
+
+primary    = "#cba6f7"  # Mauve
+secondary  = "#6c7086"  # Overlay0 (used as muted_text in the app)
+accent     = "#89b4fa"  # Blue
+success    = "#a6e3a1"  # Green
+warning    = "#f9e2af"  # Yellow
+error      = "#f38ba8"  # Red
+foreground = "#cdd6f4"  # Text
+background = "#1e1e2e"  # Base
+surface    = "#313244"  # Surface0
+
+[variables]
+border            = "#45475a"  # Surface1
+selected_item     = "#313244"  # Surface0
+progress_filled   = "#cba6f7"  # Mauve
+progress_empty    = "#45475a"  # Surface1
+playback_bar_bg   = "#181825"  # Mantle
