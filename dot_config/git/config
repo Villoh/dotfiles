@@ -1,6 +1,8 @@
 [include]
     path = ~/.config/git/local
     path = ~/.config/git/platform
+[includeIf "gitdir:~/Development/work/"]
+    path = ~/.config/git/work
 [init]
 	defaultBranch = main
 [core]
