@@ -60,7 +60,7 @@ bars:
           # "cava",
           "volume",
           "microphone",
-          # "wifi",
+          "wifi",
           # "systray",
           "power_menu"
         ]
@@ -491,16 +491,46 @@ widgets:
       options:
         label: "<span>{wifi_icon}</span>"
         label_alt: "{wifi_name} {wifi_strength}%"
+        ethernet_label: "<span>{wifi_icon}</span>"
+        ethernet_label_alt: "<span>{wifi_icon}</span> {ip_addr}"
+        ethernet_icon: "\ueba9"
         update_interval: 5000
         callbacks:
           on_left: "exec cmd.exe /c start ms-settings:network"
           on_middle: "do_nothing"
           on_right: "toggle_label"
+        # Old config with popup menu. Windows 11 requires Location Services
+        # for nearby WiFi scanning, otherwise YASB shows an error.
+        # callbacks:
+        #   on_left: "toggle_menu"
+        #   on_middle: "exec cmd.exe /c start ms-settings:network"
+        #   on_right: "toggle_label"
         container_padding:
           top: 0
           left: 0
           bottom: 0
           right: 0
+        # menu_config:
+        #   blur: true
+        #   round_corners: true
+        #   round_corners_type: "normal"
+        #   border_color: "System"
+        #   alignment: "right"
+        #   direction: "down"
+        #   offset_top: 6
+        #   offset_left: 0
+        #   wifi_icons_secured: [
+        #     "\ue670",
+        #     "\ue671",
+        #     "\ue672",
+        #     "\ue673"
+        #   ]
+        #   wifi_icons_unsecured: [
+        #     "\uec3c",
+        #     "\uec3d",
+        #     "\uec3e",
+        #     "\uec3f"
+        #   ]
         wifi_icons: [
           "\udb82\udd2e",  # Icon for 0% strength
           "\udb82\udd1f",  # Icon for 1-20% strength
