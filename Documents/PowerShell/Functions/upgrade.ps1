@@ -26,7 +26,17 @@ Set-Alias -Name upgrade-scoop  -Value Invoke-ScoopUpgrade
 function Invoke-NodeUpgrade {
     if (Get-Command npm -ErrorAction SilentlyContinue) { npm update -g }
     else { Write-Warning "npm not found." }
-    if (Get-Command bun -ErrorAction SilentlyContinue) { bun update --global }
+
+    if (Get-Command bun -ErrorAction SilentlyContinue) {
+        $packages = @(bun pm ls -g 2>$null | Select-Object -Skip 1 | ForEach-Object {
+            $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', ''
+        } | Where-Object { $_ })
+
+        foreach ($pkg in $packages) {
+            $pkgName = if ($pkg -match '^(.+?)@[^@]+$') { $Matches[1] } else { $pkg }
+            bun add -g "$pkgName@latest"
+        }
+    }
     else { Write-Warning "bun not found." }
 }
 Set-Alias -Name update-node    -Value Invoke-NodeUpgrade
