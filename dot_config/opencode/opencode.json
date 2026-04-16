@@ -4,7 +4,7 @@
     [
       "oc-plugin-vault-tec",
       {
-        "enabled": true,
+        "enabled": false,
         "mode": "append"
       }
     ]
@@ -42,14 +42,6 @@
         "--figma-api-key={env:FIGMA_API_KEY}",
         "--stdio"
       ]
-    }
-  },
-  "permission": {
-    "read": {
-      "~/.config/opencode/get-shit-done/*": "allow"
-    },
-    "external_directory": {
-      "~/.config/opencode/get-shit-done/*": "allow"
     }
   }
 }
