@@ -9,12 +9,6 @@
 	editor = zed
 [pull]
 	rebase = false
-[commit]
-	gpgsign = true
-[tag]
-  gpgsign = true
-[safe]
-	directory = /home/mikel/Development/Beyond Humane/Repositories/sgt-portal
 [alias]
   # ============================================================================
   # SPEED - Most used commands should be short

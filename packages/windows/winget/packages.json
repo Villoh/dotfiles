@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-04-01T19:32:38.879+02:00",
+  "CreationDate": "2026-04-17T02:11:30.934+02:00",
   "Sources": [
     {
       "Packages": [
@@ -32,31 +32,34 @@
           "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
-          "PackageIdentifier": "OpenJS.NodeJS.LTS"
-        },
-        {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
-        },
-        {
           "PackageIdentifier": "Nilesoft.Shell"
+        },
+        {
+          "PackageIdentifier": "Apple.Bonjour"
         },
         {
           "PackageIdentifier": "karlstav.cava"
         },
         {
+          "PackageIdentifier": "OpenJS.NodeJS.LTS"
+        },
+        {
           "PackageIdentifier": "IDRIX.VeraCrypt"
         },
         {
-          "PackageIdentifier": "TechPowerUp.NVCleanstall"
+          "PackageIdentifier": "Oracle.JDK.17"
         },
         {
-          "PackageIdentifier": "TeamSpeakSystems.TeamSpeakClient.Beta.6"
+          "PackageIdentifier": "TechPowerUp.NVCleanstall"
         },
         {
           "PackageIdentifier": "EpicGames.EpicGamesLauncher"
         },
         {
           "PackageIdentifier": "namazso.SecureUXTheme"
+        },
+        {
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
         },
         {
           "PackageIdentifier": "Nickvision.Parabolic"
@@ -92,6 +95,9 @@
           "PackageIdentifier": "Microsoft.VCRedist.2013.x64"
         },
         {
+          "PackageIdentifier": "Iterate.Cyberduck"
+        },
+        {
           "PackageIdentifier": "Microsoft.DotNet.Runtime.6"
         },
         {
@@ -110,13 +116,13 @@
           "PackageIdentifier": "AltSnap.AltSnap"
         },
         {
-          "PackageIdentifier": "Anthropic.Claude"
-        },
-        {
           "PackageIdentifier": "AutoHotkey.AutoHotkey"
         },
         {
           "PackageIdentifier": "Brave.Brave"
+        },
+        {
+          "PackageIdentifier": "Figma.Figma"
         },
         {
           "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
@@ -146,13 +152,31 @@
           "PackageIdentifier": "Spotify.Spotify"
         },
         {
-          "PackageIdentifier": "Proton.ProtonMail"
+          "PackageIdentifier": "JetBrains.Toolbox"
+        },
+        {
+          "PackageIdentifier": "beekeeper-studio.beekeeper-studio"
+        },
+        {
+          "PackageIdentifier": "JanProchazka.dbgate"
+        },
+        {
+          "PackageIdentifier": "WinSCP.WinSCP"
         },
         {
           "PackageIdentifier": "Microsoft.PowerToys"
         },
         {
+          "PackageIdentifier": "Anthropic.Claude"
+        },
+        {
           "PackageIdentifier": "MicaForEveryone.MicaForEveryone"
+        },
+        {
+          "PackageIdentifier": "Microsoft.WindowsAppRuntime.1.5"
+        },
+        {
+          "PackageIdentifier": "Microsoft.WindowsAppRuntime.1.6"
         },
         {
           "PackageIdentifier": "Microsoft.WindowsTerminal"
