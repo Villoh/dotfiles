@@ -1,2 +1,5 @@
+holded-tt-cli
 pre-commit
+specify-cli
+tinytuya
 ytm-player

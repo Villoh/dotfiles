@@ -11,13 +11,6 @@
   ],
   "provider": {},
   "mcp": {
-    "linkedin": {
-      "type": "local",
-      "command": [
-        "uvx",
-        "linkedin-scraper-mcp"
-      ]
-    },
     "chrome-devtools": {
       "type": "local",
       "command": [
