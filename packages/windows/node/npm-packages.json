@@ -1,3 +1,9 @@
 {
-  "name": "npm"
+  "name": "npm",
+  "dependencies": {
+    "pi-mcp-adapter": {
+      "version": "2.4.0",
+      "overridden": false
+    }
+  }
 }

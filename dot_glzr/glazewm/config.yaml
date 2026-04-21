@@ -220,6 +220,8 @@ window_rules:
       - window_process: { equals: "GameOverlayUI" }
       # GPG passphrase prompt
       - window_process: { equals: "pinentry" }
+      - window_process: { equals: "Openscreen" }
+      - window_process: { equals: "Keyboard Sounds" }
 
 binding_modes:
   # Resize mode — activate with Win+R, exit with Esc or Enter

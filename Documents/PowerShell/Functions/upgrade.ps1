@@ -28,13 +28,24 @@ function Invoke-NodeUpgrade {
     else { Write-Warning "npm not found." }
 
     if (Get-Command bun -ErrorAction SilentlyContinue) {
-        $packages = @(bun pm ls -g 2>$null | Select-Object -Skip 1 | ForEach-Object {
-            $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', ''
-        } | Where-Object { $_ })
+        $outdated = @(bun outdated -g 2>$null | ForEach-Object {
+            $line = ($_ -replace '\x1b\[[0-9;]*m', '').Trim()
+            if (-not $line -or $line -match '^bun outdated ' -or $line -match '^\|[- ]+\|$' -or $line -match '^\|\s*Package\s*\|') {
+                return
+            }
 
-        foreach ($pkg in $packages) {
-            $pkgName = if ($pkg -match '^(.+?)@[^@]+$') { $Matches[1] } else { $pkg }
-            bun add -g "$pkgName@latest"
+            $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+            if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
+                $columns[0]
+            }
+        })
+
+        if ($outdated.Count -eq 0) {
+            Write-Host "bun: all global packages are up to date." -ForegroundColor Green
+        } else {
+            foreach ($pkgName in $outdated) {
+                bun add -g "$pkgName@latest"
+            }
         }
     }
     else { Write-Warning "bun not found." }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-04-17T02:11:30.934+02:00",
+  "CreationDate": "2026-04-21T18:26:24.476+02:00",
   "Sources": [
     {
       "Packages": [
@@ -9,6 +9,9 @@
         },
         {
           "PackageIdentifier": "FilenCloud.FilenSync"
+        },
+        {
+          "PackageIdentifier": "SpanishGovernment.Autofirma"
         },
         {
           "PackageIdentifier": "Ditto.Ditto"
@@ -102,6 +105,12 @@
         },
         {
           "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
+        },
+        {
+          "PackageIdentifier": "SiddharthVaddem.OpenScreen"
+        },
+        {
+          "PackageIdentifier": "HaiNguyen.Mechvibes"
         },
         {
           "PackageIdentifier": "Vencord.Vesktop"

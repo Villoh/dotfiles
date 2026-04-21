@@ -7,7 +7,10 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
-{{ if ne .chezmoi.os "windows" }}AppData/
+{{ if ne .chezmoi.os "windows" }}.tmux.conf
+.tmux.bak.conf
+.tmux-keys.txt
+AppData/
 Documents/
 scoop/
 {{ end }}
@@ -57,7 +60,12 @@ scoop/
 {{ if not .enable_scoop }}.config/scoop/**{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
-.claude/
+.claude/*
+!.claude/settings.json
+.pi/agent/auth.json
+.pi/agent/sessions/**
+.pi/agent/git/**
+.pi/agent/skills/**
 
 # ── Reference only — never deployed to home ────────────────────────────────────
 packages/**

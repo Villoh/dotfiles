@@ -81,6 +81,7 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 - `dot_config/yasb/` — YASB status bar
 - `dot_config/scoop/` — Scoop config
 - `dot_config/wezterm/wezterm.lua` — WezTerm terminal
+- `dot_tmux.conf` — psmux native tmux-compatible config (`~/.tmux.conf`)
 - `program_files/ditto/` — Ditto clipboard manager (portable)
 - `program_files/nilesoft/` — Nilesoft Shell (portable)
 - `packages/windows/` — Package lists and Windhawk settings
