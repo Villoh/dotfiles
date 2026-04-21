@@ -69,7 +69,7 @@
 | Shell | zsh | [⚙️](dot_config/zsh/) |
 | Prompt | [Starship](https://starship.rs/) | [⚙️](dot_config/fastfetch/) |
 | Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/) · [Ghostty](https://ghostty.org/) | [⚙️](dot_config/kitty/) · [⚙️](dot_config/ghostty/) |
-| Multiplexer | [tmux](https://github.com/tmux/tmux) | [⚙️](dot_config/tmux/) |
+| Multiplexer | [tmux](https://github.com/tmux/tmux) · [psmux](https://github.com/psmux/psmux) | [⚙️](dot_config/tmux/) · [⚙️](dot_tmux.conf) |
 | Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
 | File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
 | Clipboard | [cliphist](https://github.com/sentriz/cliphist) | [⚙️](dot_config/cliphist/) |

@@ -1,0 +1,150 @@
+HELP VIEWER
+===========
+- Alt+y / Ctrl+a y open this file in less.
+- Press / to search, n/N for next/previous match, q to quit.
+
+TMUX / PSMUX HYBRID KEYBINDS
+===========================
+
+This cheatsheet shows both:
+- the hybrid no-prefix binds we added to feel closer to zellij
+- the important tmux/psmux defaults you are still inheriting behind Prefix
+
+Friendly help
+-------------
+Alt+y                    Open this cheatsheet
+Ctrl+a y                 Open this cheatsheet
+Ctrl+a Y                 Show raw tmux/psmux key table
+Ctrl+a ?                 Show raw tmux/psmux key table
+
+No-prefix binds (zellij-style layer)
+------------------------------------
+Focus panes
+Alt+h/j/k/l              Focus pane left/down/up/right
+Alt+Left/Down/Up/Right   Focus pane left/down/up/right
+
+Pane management
+Alt+n                    Smart split on the longest axis
+Alt+d                    Split below
+Alt+e                    Split right
+Alt+x                    Close pane
+Alt+z                    Toggle pane zoom
+Alt+f                    Popup shell
+
+Windows
+Alt+, / Alt+.            Previous / next window
+Alt+1..9                 Go to window 1..9 when the host terminal passes them
+Alt+F1..F9               Fallback window 1..9 for hosts that steal Alt+1..9
+
+Layouts / help
+Alt+[ / Alt+]            Previous / next layout
+Alt+s                    Enter copy mode
+Alt+w                    Chooser
+Alt+y                    Open this cheatsheet
+
+Prefix basics (Ctrl+a)
+----------------------
+Ctrl+a Ctrl+a            Send Ctrl+a to the program inside the pane
+Ctrl+a :                 Command prompt
+Ctrl+a ?                 Raw key table
+Ctrl+a y                 Friendly cheatsheet
+Ctrl+a Y                 Raw key table
+
+Windows behind prefix
+---------------------
+Ctrl+a c                 New window (canonical tmux)
+Ctrl+a t                 New window (zellij-style alias)
+Ctrl+a n                 Next window
+Ctrl+a p                 Previous window
+Ctrl+a w                 Window chooser
+Ctrl+a g                 Chooser alias
+Ctrl+a 0..9              Go to window 0..9
+Ctrl+a ,                 Rename window (canonical tmux)
+Ctrl+a r                 Rename window (alias)
+Ctrl+a &                 Kill current window
+Ctrl+a i / o             Move window left / right
+Ctrl+a Space             Next layout
+Ctrl+a Alt+1             Layout: even-horizontal
+Ctrl+a Alt+2             Layout: even-vertical
+Ctrl+a Alt+3             Layout: main-horizontal
+Ctrl+a Alt+4             Layout: main-vertical
+Ctrl+a Alt+5             Layout: tiled
+
+Session / client behind prefix
+------------------------------
+Ctrl+a d                 Detach client
+Ctrl+a s                 Session chooser
+Ctrl+a (                 Previous session
+Ctrl+a )                 Next session
+Ctrl+a $                 Rename session
+Ctrl+a Ctrl+q            Kill current psmux session (with confirmation)
+
+Panes behind prefix
+-------------------
+Focus / selection
+Ctrl+a h/j/k/l           Focus pane left/down/up/right
+Ctrl+a Left/Down/Up/Right
+                         Focus pane left/down/up/right
+Ctrl+a o                 Select next pane
+Ctrl+a ;                 Jump to previously active pane
+Ctrl+a q                 Show pane numbers
+
+Pane management
+Ctrl+a "                 Split below
+Ctrl+a %                 Split right
+Ctrl+a x                 Close pane
+Ctrl+a z                 Toggle pane zoom
+Ctrl+a { / }             Move pane backward / forward
+Ctrl+a !                 Break pane into its own window
+Ctrl+a f                 Popup shell
+Ctrl+a m                 Show pane/window move hint
+
+Resize behind prefix
+--------------------
+Ctrl+a H/J/K/L           Resize left/down/up/right by 5
+Ctrl+a Shift+Left/Down/Up/Right
+                         Resize left/down/up/right by 5
+Ctrl+a Alt+Left/Down/Up/Right
+                         Inherited tmux resize by 5
+Ctrl+a Ctrl+Left/Down/Up/Right
+                         Inherited tmux fine resize by 1
+
+Copy / paste / buffers
+----------------------
+Ctrl+a [                 Enter copy mode
+Ctrl+a ]                 Paste latest buffer
+Ctrl+a =                 Choose buffer interactively
+Ctrl+a #                 List buffers
+
+Copy mode (vi)
+--------------
+Movement
+h j k l                  Left / down / up / right
+w b e                    Word motions
+0 ^ $                    Start / first nonblank / end of line
+g / G                    Top / bottom of scrollback
+Ctrl+u / Ctrl+d          Half page up / down
+Ctrl+b / Ctrl+f          Full page up / down
+PageUp / PageDown        Full page up / down
+
+Search
+/                        Search forward
+?                        Search backward
+n / N                    Next / previous match
+
+Selection / copy
+Space                    Start selection
+v / Ctrl+v               Toggle rectangle selection
+V                        Line selection
+y / Enter                Copy and exit
+o                        Swap cursor/anchor ends
+Esc / q                  Exit copy mode
+
+Notes
+-----
+- Prefix is Ctrl+a.
+- The hybrid layer is intentionally incomplete: tmux defaults remain available behind Prefix.
+- Some Alt combinations can be intercepted by WezTerm or Windows Terminal.
+  If Alt+1..9 does not work, use Alt+F1..F9 or Ctrl+a 1..9.
+- psmux currently folds Alt+Shift+letter onto Alt+letter in your setup.
+  For resize, use Prefix+H/J/K/L or Prefix+Shift+Arrow.
