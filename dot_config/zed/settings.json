@@ -1,18 +1,33 @@
 {
+  "cli_default_open_behavior": "existing_window",
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  "agent": {
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": []
+  },
   "telemetry": {
     "diagnostics": false,
     "metrics": false
   },
   "agent_servers": {
-    "claude": {
-      "favorite_config_option_values": {
-        "model": [
-          "default"
-        ]
-      }
+    "claude-acp": {
+      "type": "registry"
+    },
+    "opencode": {
+      "type": "registry"
+    },
+    "pi-acp": {
+      "type": "registry"
+    },
+    "amp-acp": {
+      "type": "registry"
     }
   },
   "git_panel": {
+    "dock": "left",
     "tree_view": true
   },
   "icon_theme": "Catppuccin Mocha",
@@ -82,6 +97,7 @@
     }
   },
   "outline_panel": {
+    "dock": "left",
     "default_width": 300,
     "indent_guides": {
       "show": "never"
