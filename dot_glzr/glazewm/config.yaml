@@ -222,6 +222,7 @@ window_rules:
       - window_process: { equals: "pinentry" }
       - window_process: { equals: "Openscreen" }
       - window_process: { equals: "Keyboard Sounds" }
+      - window_process: { equals: "OnboardMemoryManager" }
 
 binding_modes:
   # Resize mode — activate with Win+R, exit with Esc or Enter
