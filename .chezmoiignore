@@ -7,6 +7,7 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.agents/skills/**{{ end }}
 {{ if ne .chezmoi.os "windows" }}.tmux.conf
 .tmux.bak.conf
 .tmux-keys.txt
