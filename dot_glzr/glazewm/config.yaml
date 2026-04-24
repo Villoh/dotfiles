@@ -277,12 +277,10 @@ keybindings:
     bindings: ["lwin+r"]
   - commands: ["wm-enable-binding-mode --name pause"]
     bindings: ["lwin+shift+p"]
-  - commands: ["toggle-tiling-direction"]
-    bindings: ["lwin+t"]
   - commands: ["wm-cycle-focus"]
     bindings: ["lwin+ctrl+tab"]
   - commands: ["toggle-floating --centered"]
-    bindings: ["lwin+shift+space"]
+    bindings: ["lwin+shift+space", "lwin+w"]
   - commands: ["toggle-fullscreen"]
     bindings: ["lwin+f"]
   - commands: ["toggle-minimized"]
@@ -376,6 +374,10 @@ keybindings:
     bindings: ["lwin+shift+d"]
   - commands: ["shell-exec explorer shell:AppsFolder\\5319275A.WhatsAppDesktop_cv1g1gvanyjgm!App"]
     bindings: ["lwin+shift+w"]
+  - commands: ["shell-exec explorer shell:AppsFolder\\Claude_pzs8sxrjxfjjc!Claude"]
+    bindings: ["lwin+shift+i"]
+  - commands: ["shell-exec %LOCALAPPDATA%\\Logseq\\Logseq.exe"]
+    bindings: ["lwin+shift+n"]
 
   # ---------------------------------------------------------------------------
   # Shortcuts de Windows restaurados (deshabilitados por NoWinKeys)
