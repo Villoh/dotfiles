@@ -126,8 +126,7 @@ if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm      
 if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun                | personal  |  Bun global tools") }
 if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv                 | personal  |  Python tools") }
 if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin                | personal  |  GitHub release binaries") }
-if (Test-Path "$pkgDir\cargo\packages.txt")         { $candidates.Add("cargo              | personal  |  Rust crates") }
-if (Test-Path "$pkgDir\cargo\git-packages.txt")     { $candidates.Add("cargo-git          | required  |  Rust crates from git (includes gap-gwm, GlazeWM autotiling)") }
+if (Test-Path "$pkgDir\cargo\cargo.txt" -or Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $candidates.Add("cargo              | personal  |  Rust crates (crates.io + git)") }
 $candidates.Add(                                       "powershell-modules | required  |  Terminal-Icons and other PS modules")
 
 # Required managers are auto-selected; personal ones go through fzf
@@ -251,40 +250,26 @@ if ($selectedManagers -contains "bin") {
     }
 }
 
-# -- cargo (crates.io) ---------------------------------------------------------
-$selectedCargoPkgs = @()
+# -- cargo (crates.io + git) ---------------------------------------------------
+$cargoFile         = $null
+$selectedCargoEntries = @()
 if ($selectedManagers -contains "cargo") {
-    $cargoPkgs = @(Get-Content "$pkgDir\cargo\packages.txt" |
-        Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
-    if ($cargoPkgs) { $selectedCargoPkgs = Select-WithFzf ($cargoPkgs | Sort-Object) "cargo>" }
-}
+    $cargoProfiles = @()
+    if (Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $cargoProfiles += "minimal  |  curated subset" }
+    if (Test-Path "$pkgDir\cargo\cargo.txt")         { $cargoProfiles += "full     |  all packages" }
 
-# -- cargo (git) ---------------------------------------------------------------
-$cargoGitFile           = $null
-$cargoGitPkgs           = @()
-$selectedCargoGitLabels = @()
-if ($selectedManagers -contains "cargo-git") {
-    $cargoGitProfiles = @()
-    if (Test-Path "$pkgDir\cargo\git-packages-minimal.txt") { $cargoGitProfiles += "minimal  |  essential git crates (gap-gwm for GlazeWM autotiling)" }
-    if (Test-Path "$pkgDir\cargo\git-packages.txt")         { $cargoGitProfiles += "full     |  all personal git crates" }
-
-    $cargoGitProfileChoice = Select-OneFzf $cargoGitProfiles "cargo-git profile>"
-    $cargoGitProfileKey    = if ($cargoGitProfileChoice) { ($cargoGitProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
-    $cargoGitFile          = if ($cargoGitProfileKey -eq "minimal") {
-        "$pkgDir\cargo\git-packages-minimal.txt"
+    $cargoProfileChoice = Select-OneFzf $cargoProfiles "cargo profile>"
+    $cargoProfileKey    = if ($cargoProfileChoice) { ($cargoProfileChoice -split '\s*\|')[0].Trim() } else { "minimal" }
+    $cargoFile          = if ($cargoProfileKey -eq "minimal") {
+        "$pkgDir\cargo\cargo-minimal.txt"
     } else {
-        "$pkgDir\cargo\git-packages.txt"
+        "$pkgDir\cargo\cargo.txt"
     }
-    Log "  cargo-git profile: $(Split-Path $cargoGitFile -Leaf)" "Cyan"
+    Log "  cargo profile: $(Split-Path $cargoFile -Leaf)" "Cyan"
 
-    $cargoGitPkgs = @(Get-Content $cargoGitFile |
+    $cargoEntries = @(Get-Content $cargoFile |
         Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
-    if ($cargoGitPkgs) {
-        $cargoLabels            = $cargoGitPkgs | ForEach-Object {
-            ($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', ''
-        }
-        $selectedCargoGitLabels = Select-WithFzf ($cargoLabels | Sort-Object) "cargo (git)>"
-    }
+    if ($cargoEntries) { $selectedCargoEntries = Select-WithFzf ($cargoEntries | Sort-Object) "cargo>" }
 }
 
 # == PACKAGE INSTALLS ==========================================================
@@ -530,54 +515,37 @@ if (Get-Command rustup -ErrorAction SilentlyContinue) {
     Log "  [INFO] rustup not found - skipping Rust toolchain setup (install rustup first)" "Yellow"
 }
 
-# -- cargo (crates.io) --------------------------------------------------------
+# -- cargo (crates.io + git) --------------------------------------------------
 if ($selectedManagers -contains "cargo") {
     LogSection "cargo"
     if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
         Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
     } else {
         $cargoInstalled = cargo install --list 2>$null
-        foreach ($pkg in $selectedCargoPkgs) {
-            if ($cargoInstalled -match "^$([regex]::Escape($pkg))\s") {
-                LogSkip "cargo: $pkg already installed"
-                $summary.skip++
+        foreach ($entry in $selectedCargoEntries) {
+            if ($entry -match '^https://') {
+                $baseUrl = ($entry -split '\s+')[0] -replace '\.git$', ''
+                if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
+                    LogSkip "cargo: $baseUrl already installed"
+                    $summary.skip++
+                } else {
+                    Log "  [....] cargo: $entry" "Cyan"
+                    try {
+                        Invoke-Expression "cargo install --git $entry"
+                        if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
+                        LogOk "cargo: $baseUrl"
+                        $summary.ok++
+                    } catch {
+                        LogFail "cargo: $entry - $($_.Exception.Message)"
+                        $summary.fail++
+                    }
+                }
             } else {
-                TryInstall "cargo: $pkg" { Invoke-Expression "cargo install $pkg" }
-            }
-        }
-    }
-}
-
-# -- cargo (git) ---------------------------------------------------------------
-if ($selectedManagers -contains "cargo-git") {
-    LogSection "cargo (git)"
-    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-        Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
-    } else {
-        $cargoInstalled = cargo install --list 2>$null
-        foreach ($label in $selectedCargoGitLabels) {
-            $entry = $cargoGitPkgs | Where-Object {
-                (($_ -split '\s+')[0] -replace 'https://github.com/', '' -replace '\.git$', '') -eq $label
-            }
-            if (-not $entry) {
-                # Extra package typed by user: treat label as raw URL
-                $entry = $label
-            }
-            $url     = ($entry -split '\s+')[0]
-            $baseUrl = $url -replace '\.git$', ''
-            if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
-                LogSkip "cargo: $label already installed"
-                $summary.skip++
-            } else {
-                Log "  [....] cargo: $label" "Cyan"
-                try {
-                    Invoke-Expression "cargo install --git $entry"
-                    if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
-                    LogOk "cargo: $label"
-                    $summary.ok++
-                } catch {
-                    LogFail "cargo: $label - $($_.Exception.Message)"
-                    $summary.fail++
+                if ($cargoInstalled -match "^$([regex]::Escape($entry))\s") {
+                    LogSkip "cargo: $entry already installed"
+                    $summary.skip++
+                } else {
+                    TryInstall "cargo: $entry" { Invoke-Expression "cargo install $entry" }
                 }
             }
         }

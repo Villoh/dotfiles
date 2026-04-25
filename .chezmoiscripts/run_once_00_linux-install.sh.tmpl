@@ -212,6 +212,40 @@ with open('$bin_config', 'w') as f: json.dump(c, f, indent=4)
     popd > /dev/null
 fi
 
+# -- cargo (crates.io + git) --------------------------------------------------
+if command -v cargo &>/dev/null; then
+    for profile in "$PKG_DIR/cargo-minimal.txt" "$PKG_DIR/cargo.txt"; do
+        [ -f "$profile" ] && CARGO_FILE="$profile" && break
+    done
+    if [ -n "${CARGO_FILE:-}" ]; then
+        log_section "cargo"
+        cargo_installed=$(cargo install --list 2>/dev/null)
+        while IFS= read -r entry; do
+            [[ -z "$entry" || "$entry" == '#'* ]] && continue
+            if [[ "$entry" == https://* ]]; then
+                base_url="${entry%% *}"
+                base_url="${base_url%.git}"
+                if echo "$cargo_installed" | grep -qF "$base_url"; then
+                    log_skip "cargo: $base_url"
+                    (( skip++ )) || true
+                else
+                    try_install "cargo git: $base_url" bash -c "cargo install --git $entry"
+                fi
+            else
+                if echo "$cargo_installed" | grep -qE "^$entry "; then
+                    log_skip "cargo: $entry"
+                    (( skip++ )) || true
+                else
+                    try_install "cargo: $entry" cargo install "$entry"
+                fi
+            fi
+        done < "$CARGO_FILE"
+    fi
+else
+    log_section "cargo"
+    log "  [INFO] cargo not found - skipping (install rustup first)"
+fi
+
 # -- Summary -------------------------------------------------------------------
 log
 log "======================================"
