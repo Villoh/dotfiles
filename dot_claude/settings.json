@@ -22,7 +22,13 @@
     "kotlin-lsp@claude-plugins-official": true,
     "pyright-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "basedpyright@claude-code-lsps": true,
+    "dart@claude-code-lsps": true,
+    "vscode-langservers@claude-code-lsps": true,
+    "powershell-editor-services@claude-code-lsps": true,
+    "superpowers@superpowers-marketplace": true,
+    "frontend-slides@frontend-slides": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -35,6 +41,36 @@
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
+      }
+    },
+    "claude-code-lsps": {
+      "source": {
+        "source": "github",
+        "repo": "Piebald-AI/claude-code-lsps"
+      }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "frontend-slides": {
+      "source": {
+        "source": "github",
+        "repo": "zarazhangrui/frontend-slides"
+      }
+    },
+    "anthropic-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/skills"
+      }
+    },
+    "everything-claude-code": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/affaan-m/everything-claude-code.git"
       }
     }
   },

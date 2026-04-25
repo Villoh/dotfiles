@@ -12,6 +12,9 @@
   // },
 
   "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    },
     "opencode": {
       "type": "registry"
     },
@@ -19,9 +22,6 @@
       "type": "registry"
     },
     "codex-acp": {
-      "type": "registry"
-    },
-    "claude-acp": {
       "type": "registry"
     }
   },
