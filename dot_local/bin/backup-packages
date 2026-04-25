@@ -10,16 +10,25 @@ NC='\033[0m'
 BACKUP_DIR="$(chezmoi source-path)/packages/linux"
 mkdir -p "${BACKUP_DIR}"
 
+# ── Helpers ────────────────────────────────────────────────────────────────────
+
+save_existing_backup() {
+    local path="$1"
+    [ -f "$path" ] && cp "$path" "${path}.bak"
+}
+
 # ── Backup functions ───────────────────────────────────────────────────────────
 
 backup_pacman() {
     echo -e "${GREEN}📦 Pacman packages (explicit):${NC}"
+    save_existing_backup "${BACKUP_DIR}/pacman.txt"
     pacman -Qqe > "${BACKUP_DIR}/pacman.txt"
     echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/pacman.txt") packages saved to pacman.txt${NC}\n"
 }
 
 backup_aur() {
     echo -e "${GREEN}🔧 AUR packages:${NC}"
+    save_existing_backup "${BACKUP_DIR}/aur.txt"
     pacman -Qqm > "${BACKUP_DIR}/aur.txt"
     echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/aur.txt") packages saved to aur.txt${NC}\n"
 }
@@ -27,6 +36,7 @@ backup_aur() {
 backup_flatpak() {
     if command -v flatpak >/dev/null 2>&1; then
         echo -e "${GREEN}📱 Flatpak packages:${NC}"
+        save_existing_backup "${BACKUP_DIR}/flatpak.txt"
         flatpak list --app --columns=application 2>/dev/null > "${BACKUP_DIR}/flatpak.txt" || echo "" > "${BACKUP_DIR}/flatpak.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/flatpak.txt") packages saved to flatpak.txt${NC}\n"
     else
@@ -37,6 +47,7 @@ backup_flatpak() {
 backup_uv() {
     if command -v uv >/dev/null 2>&1; then
         echo -e "${GREEN}🐍 uv tools:${NC}"
+        save_existing_backup "${BACKUP_DIR}/uv-tools.txt"
         uv tool list 2>/dev/null | grep -v '^\s' | awk '{print $1}' > "${BACKUP_DIR}/uv-tools.txt" || echo "" > "${BACKUP_DIR}/uv-tools.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/uv-tools.txt") tools saved to uv-tools.txt${NC}\n"
     else
@@ -47,6 +58,7 @@ backup_uv() {
 backup_bun() {
     if command -v bun >/dev/null 2>&1; then
         echo -e "${GREEN}🍞 Bun global packages:${NC}"
+        save_existing_backup "${BACKUP_DIR}/bun-global.txt"
         bun pm ls -g 2>/dev/null | tail -n +2 | awk '{print $2}' | sed 's/@[^@]*$//' > "${BACKUP_DIR}/bun-global.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/bun-global.txt") packages saved to bun-global.txt${NC}\n"
     else
@@ -57,6 +69,7 @@ backup_bun() {
 backup_npm() {
     if command -v npm >/dev/null 2>&1; then
         echo -e "${GREEN}📦 npm global packages:${NC}"
+        save_existing_backup "${BACKUP_DIR}/npm-global.txt"
         npm ls -g --depth=0 --json 2>/dev/null | jq -r '.dependencies | keys[]' > "${BACKUP_DIR}/npm-global.txt" || echo "" > "${BACKUP_DIR}/npm-global.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/npm-global.txt") packages saved to npm-global.txt${NC}\n"
     else
@@ -67,6 +80,7 @@ backup_npm() {
 backup_bin() {
     if command -v bin >/dev/null 2>&1; then
         echo -e "${GREEN}🗃️  bin packages:${NC}"
+        save_existing_backup "${BACKUP_DIR}/bin-packages.txt"
         bin list 2>/dev/null | grep -E 'https?://' | awk -F'  +' '{print $3}' > "${BACKUP_DIR}/bin-packages.txt" || echo "" > "${BACKUP_DIR}/bin-packages.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/bin-packages.txt") packages saved to bin-packages.txt${NC}\n"
     else
@@ -77,10 +91,32 @@ backup_bin() {
 backup_brew() {
     if command -v brew >/dev/null 2>&1; then
         echo -e "${GREEN}🍺 Brew packages:${NC}"
+        save_existing_backup "${BACKUP_DIR}/brew.txt"
         brew leaves > "${BACKUP_DIR}/brew.txt" || echo "" > "${BACKUP_DIR}/brew.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/brew.txt") packages saved to brew.txt${NC}\n"
     else
         echo -e "${YELLOW}⚠️  Brew not installed, skipping${NC}\n"
+    fi
+}
+
+backup_cargo() {
+    if command -v cargo >/dev/null 2>&1; then
+        echo -e "${GREEN}📦 Cargo packages (crates.io + git):${NC}"
+        save_existing_backup "${BACKUP_DIR}/cargo.txt"
+        {
+            cargo install --list 2>/dev/null \
+                | grep -E '^[a-z0-9_-]+\s+v' \
+                | grep -v 'https://' \
+                | awk '{print $1}'
+            cargo install --list 2>/dev/null \
+                | grep -E '^[a-z0-9_-]+.*https://' \
+                | grep -oE 'https://[^#)]+' \
+                | sed 's/\.git$//'
+        } | sort > "${BACKUP_DIR}/cargo.txt" || echo "" > "${BACKUP_DIR}/cargo.txt"
+        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/cargo.txt") packages saved to cargo.txt${NC}\n"
+        echo -e "  ${YELLOW}ℹ  cargo-minimal.txt is manually maintained — not overwritten${NC}\n"
+    else
+        echo -e "${YELLOW}⚠️  cargo not installed, skipping${NC}\n"
     fi
 }
 
@@ -93,6 +129,7 @@ run_all() {
     backup_npm
     backup_bin
     backup_brew
+    backup_cargo
 }
 
 # ── Entry point ────────────────────────────────────────────────────────────────
@@ -116,7 +153,8 @@ for arg in "$@"; do
         --bun)     backup_bun;     HANDLED=true ;;
         --npm)     backup_npm;     HANDLED=true ;;
         --bin)     backup_bin;     HANDLED=true ;;
-        --brew)    backup_brew;    HANDLED=true ;;
+        --brew)       backup_brew;       HANDLED=true ;;
+        --cargo)      backup_cargo;      HANDLED=true ;;
         --interactive|-i) : ;;  # handled below
         *) echo -e "${YELLOW}⚠️  Unknown flag: $arg${NC}" >&2 ;;
     esac
@@ -155,7 +193,8 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
         "🍞 bun" \
         "📦 npm" \
         "🗃️  bin" \
-        "🍺 brew")
+        "🍺 brew" \
+        "📦 cargo")
 
     if [ -z "$SELECTED" ]; then
         gum style --foreground 196 "❌ No se seleccionó ninguna opción"
@@ -171,8 +210,9 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
             *uv*)      backup_uv      ;;
             *bun*)     backup_bun     ;;
             *npm*)     backup_npm     ;;
-            *bin*)     backup_bin     ;;
-            *brew*)    backup_brew    ;;
+            *bin*)        backup_bin        ;;
+            *brew*)       backup_brew       ;;
+            *cargo*)  backup_cargo ;;
         esac
     done
 
