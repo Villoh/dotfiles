@@ -335,14 +335,46 @@ bwedit() {
       notes=${notes:-$cur_notes}
 
       # Use --arg to safely handle special characters in values
-      echo $current | jq \
+      local updated=$(echo $current | jq \
         --arg name     "$name"     \
         --arg username "$username" \
         --arg password "$password" \
         --arg uri      "$uri"      \
         --arg notes    "$notes"    \
-        '.name=$name | .login.username=$username | .login.password=$password | .login.uris[0].uri=$uri | .notes=$notes' \
-        | bw encode | bw edit item "$id" > /dev/null && echo "✓ Item updated successfully"
+        '.name=$name | .login.username=$username | .login.password=$password | .login.uris[0].uri=$uri | .notes=$notes')
+
+      # Edit existing custom fields
+      local fields_count=$(echo "$updated" | jq '(.fields // []) | length')
+      if [ "$fields_count" -gt 0 ]; then
+        echo "Custom fields:"
+        local i=0
+        while [ "$i" -lt "$fields_count" ]; do
+          local fname=$(echo "$updated" | jq -r ".fields[$i].name")
+          local fvalue=$(echo "$updated" | jq -r ".fields[$i].value // \"\"")
+          echo "  [$fname] = $fvalue"
+          read "newval?  New value for '$fname' (leave empty to keep): "
+          if [ -n "$newval" ]; then
+            updated=$(echo "$updated" | jq --argjson idx "$i" --arg val "$newval" '.fields[$idx].value = $val')
+          fi
+          i=$((i + 1))
+        done
+      fi
+
+      # Add new custom fields
+      while true; do
+        read "newfield?Add field? (name=value, leave empty to finish): "
+        [ -z "$newfield" ] && break
+        if [[ "$newfield" == *=* ]]; then
+          updated=$(echo "$updated" | jq \
+            --arg name  "${newfield%%=*}" \
+            --arg value "${newfield#*=}"  \
+            '.fields = (.fields // []) + [{"name": $name, "value": $value, "type": 0}]')
+        else
+          echo "✗ Invalid format, use name=value"
+        fi
+      done
+
+      echo "$updated" | bw encode | bw edit item "$id" > /dev/null && echo "✓ Item updated successfully"
       ;;
 
     folder)
@@ -756,6 +788,20 @@ bwadd() {
   if [ -n "$folderid" ]; then
     item=$(echo $item | jq --arg fid "$folderid" '.folderId = $fid')
   fi
+
+  # Add custom fields
+  while true; do
+    read "newfield?Add field? (name=value, leave empty to finish): "
+    [ -z "$newfield" ] && break
+    if [[ "$newfield" == *=* ]]; then
+      item=$(echo "$item" | jq \
+        --arg name  "${newfield%%=*}" \
+        --arg value "${newfield#*=}"  \
+        '.fields = (.fields // []) + [{"name": $name, "value": $value, "type": 0}]')
+    else
+      echo "✗ Invalid format, use name=value"
+    fi
+  done
 
   echo $item | bw encode | bw create item > /dev/null && echo "✓ Item created successfully"
 }
