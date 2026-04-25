@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -e
+
+settings="$HOME/.claude/settings.json"
+installed_json="$HOME/.claude/plugins/installed_plugins.json"
+
+wanted=$(jq -r '.enabledPlugins | keys[]' "$settings")
+installed=$(jq -r '.plugins | to_entries[] | select(.value[] | .scope == "user") | .key' "$installed_json" 2>/dev/null || true)
+
+for plugin in $wanted; do
+    if echo "$installed" | grep -qx "$plugin"; then
+        echo "  skip  $plugin (already installed)"
+    else
+        echo "install $plugin"
+        claude plugin install "$plugin" --scope user
+    fi
+done
