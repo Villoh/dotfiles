@@ -16,6 +16,7 @@ function Invoke-AllBackup {
     Invoke-BunBackup
     Invoke-UvBackup
     Invoke-BinBackup
+    Invoke-CargoBackup
     Write-Host "Backup completado en $PackagesDir" -ForegroundColor Green
 }
 Set-Alias -Name backup         -Value Invoke-AllBackup
@@ -96,6 +97,23 @@ function Invoke-BinBackup {
     Write-Host "bin backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
+
+function Invoke-CargoBackup {
+    $file = "$PackagesDir\cargo\cargo.txt"
+    New-Item -ItemType Directory -Force -Path (Split-Path $file) | Out-Null
+    Save-ExistingBackup $file
+
+    $list = cargo install --list 2>$null
+    $crates = $list | Where-Object { $_ -match '^[a-z0-9_-]+\s+v' -and $_ -notmatch 'https://' } |
+        ForEach-Object { ($_ -split '\s+')[0] }
+    $git = $list | Where-Object { $_ -match 'https://' } |
+        ForEach-Object { [regex]::Match($_, 'https://[^#)]+').Value -replace '\.git$', '' }
+
+    ($crates + $git) | Where-Object { $_ } | Sort-Object | Set-Content $file -Encoding UTF8
+    Write-Host "cargo backup OK ($(($crates).Count) crates + $(($git).Count) git)" -ForegroundColor Green
+    Write-Host "  (cargo-minimal.txt is manually maintained — not overwritten)" -ForegroundColor DarkGray
+}
+Set-Alias -Name backup-cargo -Value Invoke-CargoBackup
 
 function Invoke-WindhawkBackup {
     $sourceDir   = chezmoi source-path
