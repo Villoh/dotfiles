@@ -2,3 +2,4 @@ https://github.com/Atlas-OS/atlas-toolbox
 https://github.com/cakama3a/Polling
 https://github.com/vertopolkaLF/silence/releases/tag/v1.9.2
 https://github.com/xdagiz/xytz/releases/tag/v0.8.8
+https://github.com/fwcd/kotlin-language-server/

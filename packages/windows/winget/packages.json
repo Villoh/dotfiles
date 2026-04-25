@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-04-21T18:26:24.476+02:00",
+  "CreationDate": "2026-04-25T17:50:49.721+02:00",
   "Sources": [
     {
       "Packages": [
@@ -32,13 +32,19 @@
           "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
         },
         {
-          "PackageIdentifier": "Microsoft.PowerShell"
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+        },
+        {
+          "PackageIdentifier": "farion1231.CC-Switch"
         },
         {
           "PackageIdentifier": "Nilesoft.Shell"
         },
         {
           "PackageIdentifier": "Apple.Bonjour"
+        },
+        {
+          "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
           "PackageIdentifier": "karlstav.cava"
@@ -60,9 +66,6 @@
         },
         {
           "PackageIdentifier": "namazso.SecureUXTheme"
-        },
-        {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
         },
         {
           "PackageIdentifier": "Nickvision.Parabolic"
@@ -125,6 +128,9 @@
           "PackageIdentifier": "AltSnap.AltSnap"
         },
         {
+          "PackageIdentifier": "Atlassian.AtlassianCLI"
+        },
+        {
           "PackageIdentifier": "AutoHotkey.AutoHotkey"
         },
         {
@@ -176,6 +182,9 @@
           "PackageIdentifier": "Microsoft.PowerToys"
         },
         {
+          "PackageIdentifier": "M2Team.NanaZip"
+        },
+        {
           "PackageIdentifier": "Anthropic.Claude"
         },
         {
@@ -202,5 +211,5 @@
       }
     }
   ],
-  "WinGetVersion": "1.28.220"
+  "WinGetVersion": "1.28.240"
 }

@@ -1,6 +1,10 @@
+basedpyright
 holded-tt
 pre-commit
+pyright
 specify-cli
 tinytuya
+trafilatura
 ytm-player
 ytmx
+zuban
