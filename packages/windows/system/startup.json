@@ -36,6 +36,13 @@
       "package": "MicaForEveryone.MicaForEveryone2"
     }
   ],
+  "scheduler": [
+    {
+      "name": "ButteryTaskbar",
+      "path": "%USERPROFILE%\\scoop\\apps\\buttery-taskbar\\current\\buttery-taskbar.exe",
+      "runLevel": "Highest"
+    }
+  ],
   "folder": [
     {
       "name": "gpg-connect-agent",

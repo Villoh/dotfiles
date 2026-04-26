@@ -94,6 +94,38 @@ if (Test-Path "$pkgDir\system\startup.json") {
         }
     }
 
+    # -- Task Scheduler entries ---------------------------------------------------
+    foreach ($entry in $startup.scheduler) {
+        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+
+        if (-not (Test-Path $expanded)) {
+            LogSkip "scheduler: $($entry.name) (exe not found)"
+            continue
+        }
+
+        $runLevel = if ($entry.runLevel) { $entry.runLevel } else { "LeastPrivilege" }
+        $existing = Get-ScheduledTask -TaskName $entry.name -ErrorAction SilentlyContinue
+
+        if ($existing) {
+            $currentExe = $existing.Actions[0].Execute.Trim('"')
+            $currentArgs = $existing.Actions[0].Arguments
+            $expectedArgs = if ($entry.args) { $entry.args } else { "" }
+            if ($currentExe -eq $expanded -and $currentArgs -eq $expectedArgs) {
+                LogSkip "scheduler: $($entry.name) (already registered)"
+                continue
+            }
+        }
+
+        TryRun "scheduler: $($entry.name)" {
+            $action    = New-ScheduledTaskAction -Execute "`"$expanded`"" -Argument ($entry.args ?? "")
+            $trigger   = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+            $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel $runLevel
+            $settings  = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero)
+            Register-ScheduledTask -TaskName $entry.name -Action $action -Trigger $trigger `
+                -Principal $principal -Settings $settings -Force | Out-Null
+        }
+    }
+
 } else {
     LogSkip "startup.json not found"
 }
