@@ -48,6 +48,7 @@ Apps that don't respect `$HOME` or need a folder-level link are handled via junc
 | `~/AppData/Roaming/yazi/config` | `dot_config/yazi` | Yazi file manager |
 | `~/AppData/Roaming/Vencord/settings` | `dot_config/vesktop/settings` | Vencord/Vesktop (shared settings) |
 | `~/AppData/Roaming/Zellij/config`    | `dot_config/zellij`           | Zellij terminal multiplexer      |
+| `~/AppData/Roaming/gitui`            | `dot_config/gitui`            | Gitui TUI git client             |
 
 All junctions are built using:
 ```powershell

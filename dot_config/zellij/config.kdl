@@ -54,7 +54,7 @@ keybinds {
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
 
         // Pane management
-        bind "Alt n"         { NewPane; }
+        bind "Alt n"         { NewPane "Stacked"; }
         bind "Alt d"         { NewPane "Down"; }
         bind "Alt e"         { NewPane "Right"; }
         bind "Alt x"         { CloseFocus; }
@@ -112,7 +112,7 @@ keybinds {
                 "focus down"            "Alt j / Alt ↓"
                 "focus up"              "Alt k / Alt ↑"
                 "focus right"           "Alt l / Alt →"
-                "new pane (BSP)"        "Alt n"
+                "new pane (stacked)"    "Alt n"
                 "split down"            "Alt d"
                 "split right"           "Alt e"
                 "close pane"            "Alt x"
