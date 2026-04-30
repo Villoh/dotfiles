@@ -16,7 +16,7 @@ CachyOS (Arch-based) + Hyprland (Wayland compositor).
 | `swayosd/` | OSD overlays (volume, brightness) |
 | `kitty/` | Kitty terminal |
 | `ghostty/` | Ghostty terminal |
-| `tmux/` | Tmux multiplexer |
+| `dot_tmux.conf.tmpl` | Tmux multiplexer (`~/.tmux.conf`) |
 | `zsh/` | Zsh functions, aliases, completions. `functions/bitwarden.zsh` holds sensitive helpers |
 | `cliphist/` | Cliphist clipboard history |
 | `aerc/` | Aerc terminal email client. `aerc.template.conf` is the base template |

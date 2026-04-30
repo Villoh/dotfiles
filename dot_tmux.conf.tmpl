@@ -1,8 +1,8 @@
 # =============================================================================
-# psmux / tmux - Windows configuration
+# tmux / psmux - cross-platform configuration
 # =============================================================================
-# Path: %USERPROFILE%/.tmux.conf
-# psmux reads ~/.tmux.conf natively and uses tmux-compatible syntax.
+# Path: ~/.tmux.conf
+# Windows uses psmux. Linux uses tmux.
 #
 # Goal: keep the zellij muscle memory that pays off most, but move session- and
 # window-management actions back toward the natural tmux model.
@@ -12,7 +12,9 @@
 # =============================================================================
 
 # --- shell & behavior ---------------------------------------------------------
+{{ if eq .chezmoi.os "windows" -}}
 set -g default-shell "pwsh"
+{{ end -}}
 set -g mouse on
 set -g mode-keys vi
 set -g history-limit 10000
@@ -25,6 +27,37 @@ set -g focus-events on
 set -g status-position bottom
 set -g repeat-time 750
 
+{{ if ne .chezmoi.os "windows" -}}
+# --- Linux tmux plugins -------------------------------------------------------
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'alexwforsythe/tmux-which-key'
+set -g @plugin 'Nybkox/tmux-kanagawa'
+
+set -g @kanagawa-theme 'Kanagawa'
+set -g @kanagawa-plugins "git cpu-usage ram-usage"
+set -g @kanagawa-ignore-window-colors true
+
+set -g default-terminal "tmux-256color"
+set -ga terminal-overrides ",*:Tc"
+set -s extended-keys off
+
+if-shell 'command -v wl-copy >/dev/null 2>&1' \
+  'bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "wl-copy"' \
+  'bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "xclip -selection clipboard"'
+
+# Floating scratch session, kept Linux-only because it shells out to tmux.
+bind-key -n M-g if-shell -F '#{==:#{session_name},scratch}' {
+  detach-client
+} {
+  display-popup -d "#{pane_current_path}" -E "tmux new-session -A -s scratch"
+}
+
+bind-key K confirm-before -p "Kill all other sessions? (y/n)" "kill-session -a"
+{{ end -}}
 
 # --- prefix -------------------------------------------------------------------
 unbind-key C-b
@@ -96,7 +129,11 @@ bind-key -n 'M-[' previous-layout
 bind-key -n 'M-]' next-layout
 bind-key -n M-s copy-mode
 bind-key -n M-w choose-tree
+{{ if eq .chezmoi.os "windows" -}}
 bind-key -n M-y display-popup -E "pwsh -NoLogo -NoProfile -Command \"less -N -- (Join-Path $env:USERPROFILE '.tmux-keys')\""
+{{ else -}}
+bind-key -n M-y display-popup -E "less -N -- ~/.tmux-keys"
+{{ end -}}
 
 # --- prefix aliases for zellij habits that do not map cleanly as globals -----
 # Pane focus aliases
@@ -124,8 +161,12 @@ bind-key o swap-window -t +1
 # Popup / chooser / quit
 bind-key f display-popup -d "#{pane_current_path}" -E "#{default-shell}"
 bind-key g choose-tree
-bind-key C-q confirm-before -p "Kill current psmux session? (y/n)" "kill-session"
-bind-key y display-popup -E "pwsh -NoLogo -NoProfile -Command \"less -N -- (Join-Path $env:USERPROFILE '.tmux-keys.txt')\""
+bind-key C-q confirm-before -p "Kill current tmux/psmux session? (y/n)" "kill-session"
+{{ if eq .chezmoi.os "windows" -}}
+bind-key y display-popup -E "pwsh -NoLogo -NoProfile -Command \"less -N -- (Join-Path $env:USERPROFILE '.tmux-keys')\""
+{{ else -}}
+bind-key y display-popup -E "less -N -- ~/.tmux-keys"
+{{ end -}}
 bind-key Y list-keys
 
 # There is no faithful zellij move mode in tmux. Keep a discoverable hint.
@@ -154,3 +195,8 @@ bind-key m display-message "Pane move: Prefix+{ / Prefix+} | Window move: Prefix
 # Ctrl-q         -> Prefix+Ctrl+q
 # Alt-y          -> opens the friendly cheatsheet; Prefix+y does the same; Prefix+Y / Prefix+? show the raw tmux key table
 # Alt-+/-        -> no faithful tmux equivalent; use directional resize instead
+
+{{ if ne .chezmoi.os "windows" -}}
+# --- TPM init -----------------------------------------------------------------
+run '~/.tmux/plugins/tpm/tpm'
+{{ end -}}

@@ -33,7 +33,9 @@
     "powershell-editor-services@claude-code-lsps": true,
     "superpowers@superpowers-marketplace": true,
     "frontend-slides@frontend-slides": true,
-    "claude-hud@claude-hud": true
+    "claude-hud@claude-hud": true,
+    "jdtls@claude-code-lsps": true,
+    "pyright@claude-code-lsps": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {

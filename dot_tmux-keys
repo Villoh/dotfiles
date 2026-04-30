@@ -77,7 +77,7 @@ Ctrl+a s                 Session chooser
 Ctrl+a (                 Previous session
 Ctrl+a )                 Next session
 Ctrl+a $                 Rename session
-Ctrl+a Ctrl+q            Kill current psmux session (with confirmation)
+Ctrl+a Ctrl+q            Kill current tmux/psmux session (with confirmation)
 
 Panes behind prefix
 -------------------

@@ -201,6 +201,9 @@
         },
         {
           "PackageIdentifier": "Microsoft.WSL"
+        },
+        {
+          "PackageIdentifier": "AmN.yasb"
         }
       ],
       "SourceDetails": {

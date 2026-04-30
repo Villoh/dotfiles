@@ -7,11 +7,12 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_autohotkey) }}Documents/AutoHotkey/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}AppData/Roaming/Rainmeter/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}Documents/Rainmeter/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.config/psmux/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.agents/skills/**{{ end }}
-{{ if ne .chezmoi.os "windows" }}.tmux.conf
-.tmux.bak.conf
-.tmux-keys.txt
-AppData/
+{{ if ne .chezmoi.os "windows" }}AppData/
 Documents/
 scoop/
 {{ end }}
@@ -30,7 +31,6 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_swayosd) }}.config/swayosd/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_kitty) }}.config/kitty/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_ghostty) }}.config/ghostty/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.config/tmux/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}.config/nchat/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
@@ -59,6 +59,8 @@ scoop/
 {{ if not .enable_zellij }}.config/zellij/**{{ end }}
 {{ if not .enable_ytm_player }}.config/ytm-player/**{{ end }}
 {{ if not .enable_scoop }}.config/scoop/**{{ end }}
+{{ if not .enable_tmux }}.tmux.conf
+.tmux-keys{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
 .claude/*

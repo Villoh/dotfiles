@@ -2,6 +2,12 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     [
+      "superpowers@git+https://github.com/obra/superpowers.git",
+      {
+        "enabled": false
+      }
+    ],
+    [
       "oc-plugin-vault-tec",
       {
         "enabled": false,
