@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-04-25T17:50:49.721+02:00",
+  "CreationDate": "2026-04-30T18:56:47.047+02:00",
   "Sources": [
     {
       "Packages": [
@@ -32,13 +32,16 @@
           "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
         },
         {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+          "PackageIdentifier": "AmN.yasb"
         },
         {
           "PackageIdentifier": "farion1231.CC-Switch"
         },
         {
           "PackageIdentifier": "Nilesoft.Shell"
+        },
+        {
+          "PackageIdentifier": "Neovim.Neovim"
         },
         {
           "PackageIdentifier": "Apple.Bonjour"
@@ -57,6 +60,9 @@
         },
         {
           "PackageIdentifier": "Oracle.JDK.17"
+        },
+        {
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
         },
         {
           "PackageIdentifier": "TechPowerUp.NVCleanstall"
@@ -128,6 +134,9 @@
           "PackageIdentifier": "AltSnap.AltSnap"
         },
         {
+          "PackageIdentifier": "AmN.YASBGUI"
+        },
+        {
           "PackageIdentifier": "Atlassian.AtlassianCLI"
         },
         {
@@ -138,6 +147,9 @@
         },
         {
           "PackageIdentifier": "Figma.Figma"
+        },
+        {
+          "PackageIdentifier": "Figma.FigmaAgent"
         },
         {
           "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
@@ -179,6 +191,9 @@
           "PackageIdentifier": "WinSCP.WinSCP"
         },
         {
+          "PackageIdentifier": "ZedIndustries.Zed"
+        },
+        {
           "PackageIdentifier": "Microsoft.PowerToys"
         },
         {
@@ -201,9 +216,6 @@
         },
         {
           "PackageIdentifier": "Microsoft.WSL"
-        },
-        {
-          "PackageIdentifier": "AmN.yasb"
         }
       ],
       "SourceDetails": {
