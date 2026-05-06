@@ -289,18 +289,6 @@
   "show_edit_predictions": true,
   "context_server_timeout": 45,
   "context_servers": {
-    "mcp-server-github": {
-      "enabled": true,
-      "settings": {
-        "github_personal_access_token": "***"
-      }
-    },
-    "mcp-server-context7": {
-      "enabled": true,
-      "settings": {
-        "context7_api_key": "***"
-      }
-    }
   },
   "icon_theme": {
     "mode": "dark",

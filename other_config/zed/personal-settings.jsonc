@@ -1,37 +1,42 @@
 {
   "cli_default_open_behavior": "existing_window",
   "collaboration_panel": {
-    "dock": "left"
+    "dock": "left",
   },
   "agent": {
-    "dock": "right",
+    "dock": "left",
     "favorite_models": [],
-    "model_parameters": []
+    "model_parameters": [],
   },
   "telemetry": {
     "diagnostics": false,
-    "metrics": false
+    "metrics": false,
   },
   "agent_servers": {
-    "claude-acp": {
-      "type": "registry"
-    },
     "opencode": {
       "type": "registry"
     },
-    "pi-acp": {
-      "type": "registry"
+    "claude-acp": {
+      "type": "registry",
     },
-    "amp-acp": {
-      "type": "registry"
+    "pi-acp": {
+      "type": "registry",
     }
   },
   "git_panel": {
     "dock": "left",
-    "tree_view": true
+    "tree_view": true,
   },
-  "icon_theme": "Catppuccin Mocha",
-  "theme": "Catppuccin Mocha (Blur)",
+  "icon_theme": {
+    "mode": "light",
+    "light": "Catppuccin Mocha",
+    "dark": "Catppuccin Mocha"
+  },
+  "theme": {
+    "mode": "dark",
+    "light": "One Light",
+    "dark": "Catppuccin Mocha"
+  },
   "theme_overrides": {
     "Aura Dark": {
       "editor.document_highlight.read_background": "#00000000",
@@ -43,18 +48,18 @@
       "panel.focused_border": "#4E466E",
       "players": [
         {
-          "cursor": "#BD9DFF"
-        }
+          "cursor": "#BD9DFF",
+        },
       ],
       "syntax": {
         "comment": {
-          "font_style": "italic"
+          "font_style": "italic",
         },
         "comment.doc": {
-          "font_style": "italic"
-        }
-      }
-    }
+          "font_style": "italic",
+        },
+      },
+    },
   },
 
   // ============================================================
@@ -65,16 +70,16 @@
     "show_onboarding_banner": false,
     "show_project_items": false,
     "show_branch_name": true,
-    "show_user_menu": false
+    "show_user_menu": false,
   },
   "tab_bar": {
-    "show": true
+    "show": false,
   },
   "toolbar": {
-    "quick_actions": false
+    "quick_actions": false,
   },
   "status_bar": {
-    "experimental.show": true
+    "experimental.show": true,
   },
 
   // ============================================================
@@ -90,25 +95,25 @@
     "git_status": true,
     "sticky_scroll": false,
     "scrollbar": {
-      "show": "never"
+      "show": "never",
     },
     "indent_guides": {
-      "show": "never"
-    }
+      "show": "never",
+    },
   },
   "outline_panel": {
     "dock": "left",
     "default_width": 300,
     "indent_guides": {
-      "show": "never"
-    }
+      "show": "never",
+    },
   },
   "file_finder": {
-    "modal_max_width": "large"
+    "modal_max_width": "large",
   },
   "centered_layout": {
     "right_padding": 0.15,
-    "left_padding": 0.15
+    "left_padding": 0.15,
   },
 
   // ============================================================
@@ -120,7 +125,7 @@
   "buffer_font_family": "Lilex",
   "buffer_font_size": 18,
   "buffer_line_height": {
-    "custom": 2
+    "custom": 2,
   },
   "agent_buffer_font_size": 20,
 
@@ -129,22 +134,22 @@
   // ============================================================
 
   "scrollbar": {
-    "show": "auto"
+    "show": "auto",
   },
   "gutter": {
     "min_line_number_digits": 0,
     "folds": true,
-    "runnables": false
+    "runnables": false,
   },
   "indent_guides": {
-    "enabled": false
+    "enabled": false,
   },
   "multi_cursor_modifier": "alt",
   "cursor_shape": "bar",
   "cursor_blink": true,
   "selection_highlight": true,
   "drag_and_drop_selection": {
-    "enabled": false
+    "enabled": false,
   },
   "seed_search_query_from_cursor": "never",
   "current_line_highlight": "none",
@@ -156,25 +161,25 @@
   "vertical_scroll_margin": 1,
 
   // ============================================================
-  // LSP — desactivado intencionalmente (filosofía Vim)
+  // LSP
   // ============================================================
 
-  "show_completions_on_input": false,
-  "show_completion_documentation": false,
-  "inline_code_actions": false,
-  "lsp_document_colors": "none",
-  "hover_popover_enabled": true,
+  "show_completions_on_input": true,
+  "show_completion_documentation": true,
+  "inline_code_actions": true,
+  "lsp_document_colors": "inlay",
+  "hover_popover_enable": true,
 
   // ============================================================
   // GUARDADO
   // ============================================================
 
   "format_on_save": "off",
-  "autosave": {
-    "after_delay": {
-      "milliseconds": 1000
-    }
-  },
+  // "autosave": {
+  //   "after_delay": {
+  //     "milliseconds": 1000,
+  //   },
+  // },
   "extend_comment_on_newline": false,
 
   // ============================================================
@@ -184,8 +189,8 @@
   "git": {
     "git_gutter": "tracked_files",
     "inline_blame": {
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
 
   // ============================================================
@@ -198,7 +203,7 @@
   "restore_on_file_reopen": false,
   "restore_on_startup": "empty_tab",
   "session": {
-    "restore_unsaved_buffers": false
+    "restore_unsaved_buffers": false,
   },
 
   // ============================================================
@@ -210,7 +215,7 @@
     "font_weight": 400,
     "line_height": "standard",
     "font_features": {
-      "calt": false
-    }
-  }
+      "calt": false,
+    },
+  },
 }

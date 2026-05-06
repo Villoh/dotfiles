@@ -31,6 +31,7 @@ prefetch_next = true
 location = ""
 
 [ui]
+theme = "catppuccin-mocha"
 album_art = true
 border_style = "rounded"
 progress_style = "block"

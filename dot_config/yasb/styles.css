@@ -230,14 +230,11 @@
 .volume-slider::handle {
 	background-color: transparent;
 }
-.audio-menu {
-	background-color: rgba(17, 17, 27, 0.4);
-}
 
 /***--------------------------------      • Microphone Menu •      ----------------------------------***/
 
 .microphone-menu {
-	background-color: rgba(17, 17, 27, 0.4);
+	background-color: var(--mantle);
 }
 .microphone-menu .microphone-container .device {
 	background-color: transparent;
@@ -319,9 +316,17 @@
 	color: var(--mauve);
 	margin: 1px 2px 0 0;
 }
+.volume-widget .widget-container {
+	background-color: var(--surface0);
+	border-radius: 8px;
+}
 .microphone-widget .icon {
 	color: var(--mauve);
 	margin: 1px 2px 0 0;
+}
+.microphone-widget .widget-container {
+	background-color: var(--surface0);
+	border-radius: 8px;
 }
 .microphone-widget .icon.muted {
 	color: var(--red);
@@ -671,9 +676,6 @@
 
 .volume-slider {
 	border: none;
-}
-.audio-menu {
-	background-color: rgba(17, 17, 27, 0.4);
 }
 .audio-container .device {
 	background-color: transparent;
@@ -1541,4 +1543,26 @@ Example: "Windows Media" becomes "windows-media" */
     background: var(--mauve);
     border-radius: 3px;
     height: 4px;
+}
+
+/* --------------------------------------------------------------------------------------------------- */
+/* Tooltip Styling (Yasb 2.0.0+)                                                                       */
+/* --------------------------------------------------------------------------------------------------- */
+
+.tooltip {
+    background-color: var(--base);
+    border: 1px solid var(--surface0);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 6px 12px;
+    font-size: 12px;
+    font-family: "JetBrainsMono NFP";
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+.dark.tooltip {
+    background-color: var(--base);
+    border: 1px solid var(--surface0);
+    color: var(--text);
 }
