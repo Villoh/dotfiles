@@ -1,77 +1,54 @@
 {
-  "permissions": {
-    "defaultMode": "bypassPermissions"
-  },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "cols=$(stty size </dev/tty 2>/dev/null | awk '{print $2}'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -1d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | sort -V | tail -1); exec \"/c/Program Files/nodejs/node\" \"${plugin_dir}dist/index.js\""
-  },
   "enabledPlugins": {
+    "basedpyright@claude-code-lsps": true,
     "caveman@caveman": true,
+    "claude-hud@claude-hud": true,
+    "dart@claude-code-lsps": true,
+    "frontend-slides@frontend-slides": true,
     "gopls-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true,
-    "kotlin-lsp@claude-plugins-official": true,
-    "pyright-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true,
-    "typescript-lsp@claude-plugins-official": true,
-    "basedpyright@claude-code-lsps": true,
-    "dart@claude-code-lsps": true,
-    "vscode-langservers@claude-code-lsps": true,
-    "powershell-editor-services@claude-code-lsps": true,
-    "superpowers@superpowers-marketplace": true,
-    "frontend-slides@frontend-slides": true,
-    "claude-hud@claude-hud": true,
     "jdtls@claude-code-lsps": true,
-    "pyright@claude-code-lsps": true
+    "kotlin-lsp@claude-plugins-official": true,
+    "powershell-editor-services@claude-code-lsps": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "pyright@claude-code-lsps": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "vscode-langservers@claude-code-lsps": true
+  },
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "cliproxyapi",
+    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5-20251001",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-7",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-6",
+    "ANTHROPIC_MODEL": "claude-sonnet-4-6",
+    "ANTHROPIC_SMALL_FAST_MODEL": "claude-haiku-4-5-20251001"
   },
   "extraKnownMarketplaces": {
-    "openai-codex": {
+    "anthropic-agent-skills": {
       "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
+        "repo": "anthropics/skills",
+        "source": "github"
       }
     },
     "caveman": {
       "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
+        "repo": "JuliusBrussee/caveman",
+        "source": "github"
       }
     },
     "claude-code-lsps": {
       "source": {
-        "source": "github",
-        "repo": "Piebald-AI/claude-code-lsps"
+        "repo": "Piebald-AI/claude-code-lsps",
+        "source": "github"
       }
     },
-    "superpowers-marketplace": {
+    "claude-hud": {
       "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
-      }
-    },
-    "frontend-slides": {
-      "source": {
-        "source": "github",
-        "repo": "zarazhangrui/frontend-slides"
-      }
-    },
-    "anthropic-agent-skills": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/skills"
+        "repo": "jarrodwatts/claude-hud",
+        "source": "github"
       }
     },
     "everything-claude-code": {
@@ -80,17 +57,49 @@
         "url": "https://github.com/affaan-m/everything-claude-code.git"
       }
     },
-    "claude-hud": {
+    "frontend-slides": {
       "source": {
-        "source": "github",
-        "repo": "jarrodwatts/claude-hud"
+        "repo": "zarazhangrui/frontend-slides",
+        "source": "github"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "repo": "openai/codex-plugin-cc",
+        "source": "github"
+      }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "repo": "obra/superpowers-marketplace",
+        "source": "github"
       }
     }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "rtk hook claude",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ]
+  },
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "command": "cols=$(stty size </dev/tty 2>/dev/null | awk '{print $2}'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -1d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | sort -V | tail -1); exec \"/c/Program Files/nodejs/node\" \"${plugin_dir}dist/index.js\"",
+    "type": "command"
   },
   "voice": {
     "enabled": false,
     "mode": "hold"
   },
-  "skipDangerousModePermissionPrompt": true,
   "voiceEnabled": false
 }

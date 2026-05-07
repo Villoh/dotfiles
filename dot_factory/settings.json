@@ -1,0 +1,62 @@
+{
+  "customModels": [
+    {
+      "model": "claude-opus-4-7",
+      "id": "custom:Claude-Opus-4.7",
+      "index": 1,
+      "baseUrl": "http://localhost:8317",
+      "apiKey": "cliproxyapi",
+      "displayName": "Claude Opus 4.7",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "model": "claude-sonnet-4-6",
+      "id": "custom:Claude-Sonnet-4.6",
+      "index": 2,
+      "baseUrl": "http://localhost:8317",
+      "apiKey": "cliproxyapi",
+      "displayName": "Claude Sonnet 4.6",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "model": "claude-haiku-4-6",
+      "id": "custom:Claude-Haiku-4.6",
+      "index": 3,
+      "baseUrl": "http://localhost:8317",
+      "apiKey": "cliproxyapi",
+      "displayName": "Claude Haiku 4.6",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "model": "gpt-5.4",
+      "id": "custom:GPT-5.4-Codex",
+      "index": 4,
+      "baseUrl": "http://localhost:8317/v1",
+      "apiKey": "cliproxyapi",
+      "displayName": "GPT-5.4 Codex [ChatGPT Plus]",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "model": "gpt-5.5",
+      "id": "custom:GPT-5.5-Codex",
+      "index": 5,
+      "baseUrl": "http://localhost:8317/v1",
+      "apiKey": "cliproxyapi",
+      "displayName": "GPT-5.5 Codex [ChatGPT Plus]",
+      "noImageSupport": false,
+      "provider": "openai"
+    }
+  ],
+  "enabledPlugins": {
+    "core@factory-plugins": true
+  },
+  "logoAnimation": "off",
+  "sessionDefaultSettings": {
+    "model": "custom:GPT-5.5-Codex",
+    "reasoningEffort": "none"
+  }
+}
