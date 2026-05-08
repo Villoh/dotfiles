@@ -63,6 +63,7 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 | `Documents/PowerShell/Microsoft.PowerShell_profile.ps1` | Main PS profile |
 | `Documents/PowerShell/Modules/` | Terminal-Icons, PowerToys Configure modules |
 | `Documents/PowerShell/Functions/bitwarden.ps1` | Bitwarden CLI helpers (sensitive) |
+| `Documents/PowerShell/Functions/secrets.ps1` | Manual secret refresh with `fzf`, backed by `packages/windows/system/secrets.json` |
 | `Documents/AutoHotkey/` | AutoHotkey automation scripts |
 | `Documents/Rainmeter/Skins/` | Rainmeter desktop widgets (sideCat, Trashy) |
 

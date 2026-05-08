@@ -37,6 +37,7 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `backup-packages` | Export installed packages to `packages/linux/` (pacman, AUR, flatpak, npm, bun, uv) |
 | `restore-packages` | Reinstall packages from `packages/linux/` lists |
 | `list-packages` | List currently installed packages |
+| `secrets` | Manual secret refresh with `fzf`, backed by `packages/linux/system/secrets.json` |
 | `extract-claude-config` | Export Claude config docs to `other_config/claude/` |
 | `cleanup` | System cleanup (cache, logs, orphan packages) |
 | `plymouth-themes` | Install/switch Plymouth boot themes from `other_config/plymouth/themes/` |

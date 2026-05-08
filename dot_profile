@@ -1,6 +1,8 @@
 
 . "$HOME/.local/share/../bin/env"
 
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/secrets/global-env.sh" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/secrets/global-env.sh"
+
 # GPG SSH Agent
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 export GPG_TTY=$(tty)
