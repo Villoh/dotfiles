@@ -648,11 +648,12 @@ _bwadd_select_folder() {
 _bwadd_login() {
   read "uri?URL: "
   read "username?Username: "
-  read "password?Password (leave empty to generate one): "
-
-  if [ -z "$password" ]; then
+  read "generate_password?Generate password? (y/n) [n]: "
+  if [ "$generate_password" = "y" ]; then
     password=$(_bwgen_interactive)
     echo "✓ Password generated" >&2
+  else
+    read "password?Password (leave empty for blank): "
   fi
 
   bw get template item.login | jq \

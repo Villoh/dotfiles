@@ -49,14 +49,36 @@
       "displayName": "GPT-5.5 Codex [ChatGPT Plus]",
       "noImageSupport": false,
       "provider": "openai"
+    },
+    {
+      "model": "kimi-k2.6",
+      "id": "custom:kimi-k2.6",
+      "index": 6,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "Kimi K2.6 [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
     }
   ],
   "enabledPlugins": {
-    "core@factory-plugins": true
+    "core@factory-plugins": true,
+    "superpowers@superpowers": true
   },
   "logoAnimation": "off",
   "sessionDefaultSettings": {
-    "model": "custom:GPT-5.5-Codex",
-    "reasoningEffort": "none"
+    "model": "custom:kimi-k2.6",
+    "reasoningEffort": "none",
+    "interactionMode": "auto",
+    "autonomyLevel": "medium",
+    "autonomyMode": "auto-medium"
+  },
+  "extraKnownMarketplaces": {
+    "superpowers": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers"
+      }
+    }
   }
 }

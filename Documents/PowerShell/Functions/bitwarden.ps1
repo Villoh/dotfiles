@@ -305,11 +305,12 @@ function _bwadd_select_folder {
 function _bwadd_login {
     $uri      = Read-Host 'URL'
     $username = Read-Host 'Username'
-    $password = Read-Host 'Password (leave empty to generate one)'
-
-    if (-not $password) {
+    $generatePassword = Read-Host 'Generate password? (y/n) [n]'
+    if ($generatePassword -eq 'y') {
         $password = _bwgen_interactive
         Write-Host 'OK Password generated'
+    } else {
+        $password = Read-Host 'Password (leave empty for blank)'
     }
 
     $login          = bw get template item.login | ConvertFrom-Json
