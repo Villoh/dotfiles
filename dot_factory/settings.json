@@ -59,6 +59,66 @@
       "displayName": "Kimi K2.6 [OpenCode Go]",
       "noImageSupport": false,
       "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "id": "custom:deepseek-v4-pro",
+      "index": 7,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "DeepSeek V4 Pro [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "deepseek-v4-flash",
+      "id": "custom:deepseek-v4-flash",
+      "index": 8,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "DeepSeek V4 Flash [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "qwen3.6-plus",
+      "id": "custom:qwen3.6-plus",
+      "index": 9,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "Qwen3.6 Plus [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "minimax-m2.7",
+      "id": "custom:minimax-m2.7",
+      "index": 10,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "Minimax M2.7 [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "mimo-v2.5",
+      "id": "custom:mimo-v2.5",
+      "index": 11,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "Mimo V2.5 [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
+    },
+    {
+      "model": "mimo-v2.5-pro",
+      "id": "custom:mimo-v2.5-pro",
+      "index": 12,
+      "baseUrl": "https://opencode.ai/zen/go/v1",
+      "apiKey": "${OPENCODE_API_KEY}",
+      "displayName": "Mimo V2.5 Pro [OpenCode Go]",
+      "noImageSupport": false,
+      "provider": "generic-chat-completion-api"
     }
   ],
   "enabledPlugins": {

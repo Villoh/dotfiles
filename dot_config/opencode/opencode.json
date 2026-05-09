@@ -13,9 +13,28 @@
         "enabled": false,
         "mode": "append"
       }
+    ],
+    [
+      "C:\\Users\\mikel\\scoop\\persist\\bun\\install\\global\\node_modules\\@rynfar\\meridian\\plugin\\meridian.ts",
+      {
+        "enabled": true,
+      }
     ]
   ],
-  "provider": {},
+  "provider": {
+    // CLIProxyAPI
+    "anthropic": {
+      "options": {
+        "baseURL": "http://localhost:8317/v1",
+        "apiKey": "cliproxyapi",
+        "models": [
+          { "id": "claude-sonnet-4-6", "name": "Claude Sonnet 4.6 (Claude Code)", "context_window": 1000000, "default_max_tokens": 64000, "can_reason": true, "supports_attachments": true },
+          { "id": "claude-opus-4-7",   "name": "Claude Opus 4.7 (Claude Code)",   "context_window": 1000000, "default_max_tokens": 32768, "can_reason": true, "supports_attachments": true },
+          { "id": "claude-haiku-4-5-20251001", "name": "Claude Haiku 4.5", "context_window": 200000, "default_max_tokens": 16384, "can_reason": true, "supports_attachments": true }
+        ]
+      }
+    },
+  },
   "mcp": {
   }
 }
