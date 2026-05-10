@@ -79,6 +79,11 @@ bwlock() {
   bw lock && unset BW_SESSION
 }
 
+# Sync the vault with the server
+bwsync() {
+  bw sync
+}
+
 #endregion
 
 #region ── List & Search ───────────────────────────────────
@@ -95,6 +100,8 @@ bwlock() {
 unalias bwls 2>/dev/null
 bwls() {
   local folderid="" action="" list_trash=0
+
+  bw sync > /dev/null
 
   while [ $# -gt 0 ]; do
     case "$1" in

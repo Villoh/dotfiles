@@ -217,6 +217,14 @@ function bwconfig {
 
 <#
 .SYNOPSIS
+    Sincroniza el vault con el servidor.
+#>
+function bwsync {
+    bw sync
+}
+
+<#
+.SYNOPSIS
     Bloquea el vault y elimina la variable de sesion.
 #>
 function bwlock {
@@ -460,6 +468,8 @@ function bwls {
         [switch]$Delete,
         [switch]$ListTrash
     )
+
+    bw sync | Out-Null
 
     if ($ListTrash) {
         (bw list items --trash | ConvertFrom-Json) | ForEach-Object {
