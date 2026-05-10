@@ -137,9 +137,12 @@ bwls() {
   esac
 }
 
-# Search items by name, user or URL with support for actions
+# Search items by name, user, URL or ID with support for actions
 # Filters can be combined with each other
 # Usage:
+#   bwfind --id "item-id"
+#   bwfind --id "item-id" --show
+#   bwfind --id "item-id" --copy
 #   bwfind --name "github"
 #   bwfind --user "you@email.com"
 #   bwfind --url "github.com"
@@ -154,10 +157,11 @@ bwls() {
 #   bwfind --name "github" --trash                            → move to trash with fzf
 #   bwfind --name "github" --delete                           → delete with fzf
 bwfind() {
-  local name="" user="" url="" action="" field="" attachment_name="" attachment_output=""
+  local id="" name="" user="" url="" action="" field="" attachment_name="" attachment_output=""
 
   while [ $# -gt 0 ]; do
     case "$1" in
+      --id)    id="$2";    shift 2 ;;
       --name)  name="$2";  shift 2 ;;
       --user)  user="$2";  shift 2 ;;
       --url)   url="$2";   shift 2 ;;
@@ -189,28 +193,35 @@ bwfind() {
     esac
   done
 
-  if [ -z "$name" ] && [ -z "$user" ] && [ -z "$url" ]; then
-    echo "✗ You must specify at least one filter: --name, --user or --url"
+  if [ -z "$id" ] && [ -z "$name" ] && [ -z "$user" ] && [ -z "$url" ]; then
+    echo "✗ You must specify at least one filter: --id, --name, --user or --url"
     return 1
   fi
 
-  # Build jq filter combining the provided criteria using --arg to avoid injection
-  local filter='.[]'
-  local jq_args=()
-  [ -n "$name" ] && filter+=' | select(.name | ascii_downcase | contains($name))' && jq_args+=(--arg name "${name:l}")
-  [ -n "$user" ] && filter+=' | select(.login.username == $user)'                 && jq_args+=(--arg user "$user")
-  [ -n "$url"  ] && filter+=' | select(.login.uris != null and (.login.uris[] | .uri | contains($url)))' && jq_args+=(--arg url "$url")
+  local results=""
+  if [ -n "$id" ]; then
+    results="$id"
+  else
+    # Build jq filter combining the provided criteria using --arg to avoid injection
+    local filter='.[]'
+    local jq_args=()
+    [ -n "$name" ] && filter+=' | select(.name | ascii_downcase | contains($name))' && jq_args+=(--arg name "${name:l}")
+    [ -n "$user" ] && filter+=' | select(.login.username == $user)'                 && jq_args+=(--arg user "$user")
+    [ -n "$url"  ] && filter+=' | select(.login.uris != null and (.login.uris[] | .uri | contains($url)))' && jq_args+=(--arg url "$url")
 
-  local results=$(bw list items | jq "${jq_args[@]}" -r "[${filter}] | .[] | \"\(.id) \(.name) — \(.login.username)\"")
+    results=$(bw list items | jq "${jq_args[@]}" -r "[${filter}] | .[] | \"\(.id) \(.name) — \(.login.username)\"")
 
-  if [ -z "$results" ]; then
-    echo "✗ No items found"
-    return 1
+    if [ -z "$results" ]; then
+      echo "✗ No items found"
+      return 1
+    fi
   fi
 
   # Select item — if only one result select directly, otherwise use fzf
   _select_item() {
-    if [ "$(echo "$results" | wc -l)" -eq 1 ]; then
+    if [ -n "$id" ]; then
+      echo "$id"
+    elif [ "$(echo "$results" | wc -l)" -eq 1 ]; then
       echo "$results" | awk '{print $1}'
     else
       echo "$results" | fzf | awk '{print $1}'
@@ -273,7 +284,11 @@ bwfind() {
       echo "✓ Items permanently deleted"
       ;;
     *)
-      echo "$results" | sort
+      if [ -n "$id" ]; then
+        bw get item "$id" | jq '.'
+      else
+        echo "$results" | sort
+      fi
       ;;
   esac
 }

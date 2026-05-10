@@ -496,6 +496,8 @@ function bwls {
 .SYNOPSIS
     Busca items por nombre, usuario o URL con soporte para acciones.
     Los filtros son combinables entre si.
+.PARAMETER Id
+    Busca directamente por ID del item (exacto).
 .PARAMETER Name
     Filtra por nombre (insensible a mayusculas, coincidencia parcial).
 .PARAMETER User
@@ -521,6 +523,9 @@ function bwls {
 .PARAMETER Delete
     Selecciona items con fzf y los elimina permanentemente.
 .EXAMPLE
+    bwfind -Id "item-id"
+    bwfind -Id "item-id" -Show
+    bwfind -Id "item-id" -Copy
     bwfind -Name "github"
     bwfind -Name "github" -User "me@mail.com"
     bwfind -Name "github" -Show
@@ -534,6 +539,7 @@ function bwls {
 #>
 function bwfind {
     param(
+        [string]$Id,
         [string]$Name,
         [string]$User,
         [string]$Url,
@@ -547,24 +553,30 @@ function bwfind {
         [switch]$Delete
     )
 
-    if (-not $Name -and -not $User -and -not $Url) {
-        Write-Host 'X You must specify at least one filter: -Name, -User or -Url'
+    if (-not $Id -and -not $Name -and -not $User -and -not $Url) {
+        Write-Host 'X You must specify at least one filter: -Id, -Name, -User or -Url'
         return
     }
 
-    $items = bw list items | ConvertFrom-Json
+    if ($Id) {
+        $results = @("$Id")
+    } else {
+        $items = bw list items | ConvertFrom-Json
 
-    if ($Name) { $items = $items | Where-Object { $_.name -like "*$Name*" } }
-    if ($User) { $items = $items | Where-Object { $_.login.username -eq $User } }
-    if ($Url)  { $items = $items | Where-Object { $_.login.uris -and ($_.login.uris | Where-Object { $_.uri -like "*$Url*" }) } }
+        if ($Name) { $items = $items | Where-Object { $_.name -like "*$Name*" } }
+        if ($User) { $items = $items | Where-Object { $_.login.username -eq $User } }
+        if ($Url)  { $items = $items | Where-Object { $_.login.uris -and ($_.login.uris | Where-Object { $_.uri -like "*$Url*" }) } }
 
-    if (-not $items) { Write-Host 'X No items found'; return }
+        if (-not $items) { Write-Host 'X No items found'; return }
 
-    $results = @($items | ForEach-Object { "$($_.id) $($_.name) - $($_.login.username)" })
+        $results = @($items | ForEach-Object { "$($_.id) $($_.name) - $($_.login.username)" })
+    }
 
     # Selecciona un item: directo si solo hay uno, fzf si hay varios
     $selectItem = {
-        if ($results.Count -eq 1) {
+        if ($Id) {
+            $Id
+        } elseif ($results.Count -eq 1) {
             ($results[0] -split '\s+')[0]
         } else {
             $sel = $results | _bw_select
@@ -631,7 +643,11 @@ function bwfind {
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] --permanent }
         Write-Host 'OK Items permanently deleted'
     } else {
-        $results | Sort-Object
+        if ($Id) {
+            bw get item $Id | ConvertFrom-Json | _bw_pretty
+        } else {
+            $results | Sort-Object
+        }
     }
 }
 
