@@ -1,13 +1,5 @@
 {
-  "env": {
-    "ANTHROPIC_AUTH_TOKEN": "cliproxyapi",
-    "ANTHROPIC_BASE_URL": "http://127.0.0.1:8317",
-    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-haiku-4-5-20251001",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-7",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "claude-sonnet-4-6",
-    "ANTHROPIC_MODEL": "claude-sonnet-4-6",
-    "ANTHROPIC_SMALL_FAST_MODEL": "claude-haiku-4-5-20251001"
-  },
+  "skillListingBudgetFraction": 0.02,
   "permissions": {
     "defaultMode": "bypassPermissions"
   },
@@ -19,6 +11,68 @@
           {
             "type": "command",
             "command": "rtk hook claude"
+          }
+        ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
@@ -45,7 +99,7 @@
     "superpowers@superpowers-marketplace": true,
     "typescript-lsp@claude-plugins-official": true,
     "vscode-langservers@claude-code-lsps": true,
-    "context7-plugin@context7-marketplace": true
+    "csharp-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -95,12 +149,6 @@
         "source": "github",
         "repo": "obra/superpowers-marketplace"
       }
-    },
-    "context7-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "upstash/context7"
-      }
     }
   },
   "voice": {
@@ -108,6 +156,5 @@
     "mode": "hold"
   },
   "skipDangerousModePermissionPrompt": true,
-  "voiceEnabled": false,
-  "skillListingBudgetFraction": 0.02
+  "voiceEnabled": false
 }

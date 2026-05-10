@@ -1,9 +1,104 @@
 # ProxyPal - Codex Configuration
 model_provider = "cliproxyapi"
-model = "gpt-5-codex"
-model_reasoning_effort = "high"
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
 
 [model_providers.cliproxyapi]
 name = "cliproxyapi"
 base_url = "http://127.0.0.1:8317/v1"
 wire_api = "responses"
+
+[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:session_start:0:0"]
+enabled = true
+trusted_hash = "sha256:700a54edc7853a1568fcb1fd24665a870aeaea3a39fca246de8777f4935786be"
+[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:user_prompt_submit:0:0"]
+enabled = true
+trusted_hash = "sha256:2ddab19fea1e3b81bbdbc69be679c6ec20f1afaa1a6a91572d8a71acad3382d2"
+[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:pre_tool_use:0:0"]
+enabled = true
+trusted_hash = "sha256:03eee774d39b65571f41882f18a8d69d7a9d616766827ebd025821cc4953ea6c"
+[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:post_tool_use:0:0"]
+enabled = true
+trusted_hash = "sha256:760d064e906e823f94573867ba12441f14c45346a8607a2955496ef087f4d1bb"
+[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:stop:0:0"]
+enabled = true
+trusted_hash = "sha256:d0b497ff815fc386f173a3ecb5579d4451af310b72444eb57e50f92f2949aca3"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-10T23:27:32Z"
+source_type = "local"
+source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-10T13:48:51Z"
+source_type = "local"
+source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+
+[marketplaces.caveman-repo]
+last_updated = "2026-05-10T23:27:30Z"
+last_revision = "754795ada42dea54adf061d42a61e560caa4f9ce"
+source_type = "git"
+source = "https://github.com/JuliusBrussee/caveman.git"
+
+[marketplaces.claude-code-lsps]
+last_updated = "2026-05-10T23:27:32Z"
+last_revision = "d2cdacd4f0db0d7373df04f3658e3b21592884fc"
+source_type = "git"
+source = "https://github.com/Piebald-AI/claude-code-lsps.git"
+
+[marketplaces.claude-hud]
+last_updated = "2026-05-10T23:27:34Z"
+last_revision = "8ea813f95e723170b488387c8da3f47773c6d877"
+source_type = "git"
+source = "https://github.com/jarrodwatts/claude-hud.git"
+
+[marketplaces.claude-plugins-official]
+last_updated = "2026-05-10T23:27:36Z"
+last_revision = "00679aef889efe36bb0389f81d70b6229a2013ee"
+source_type = "git"
+source = "https://github.com/anthropics/claude-plugins-official.git"
+
+[marketplaces.context7-marketplace]
+last_updated = "2026-05-10T23:27:39Z"
+last_revision = "78b98266954d35da8aa93ad40c67df33a3ff4443"
+source_type = "git"
+source = "https://github.com/upstash/context7.git"
+
+[marketplaces.frontend-slides]
+last_updated = "2026-05-10T23:27:41Z"
+last_revision = "8dca834fc61abc9dd633cbe6a74ed7be3d82a608"
+source_type = "git"
+source = "https://github.com/zarazhangrui/frontend-slides.git"
+
+[marketplaces.superpowers-marketplace]
+last_updated = "2026-05-10T23:27:42Z"
+last_revision = "91cb319aedbfa57b67b2460b38c1a80d38b0137f"
+source_type = "git"
+source = "https://github.com/obra/superpowers-marketplace.git"
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."caveman@caveman-repo"]
+enabled = true
+
+[plugins."context7-plugin@context7-marketplace"]
+enabled = true
+
+[plugins."frontend-slides@frontend-slides"]
+enabled = true
+
+[plugins."superpowers@superpowers-marketplace"]
+enabled = true
+
+[plugins."atlassian@claude-plugins-official"]
+enabled = true
+
+[plugins."browser-use@openai-bundled"]
+enabled = true
