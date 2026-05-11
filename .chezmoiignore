@@ -65,6 +65,8 @@ scoop/
 # ── Claude Code — local session state, never deployed ─────────────────────────
 .claude/*
 !.claude/settings.json
+!.claude/RTK.md
+!.claude/CLAUDE.md
 .pi/agent/auth.json
 .pi/agent/sessions/**
 .pi/agent/git/**
