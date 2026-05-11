@@ -1,0 +1,14 @@
+FN+ Q = Bluetooth 1
+FN+W = Bluetooth 2
+FN+E = Bluetooth 3
+FN+T = 2.4 Ghz
+FN+RCtrl = Battery Level -2,4ghz 2.4ghz only, (sometimes :)
+FN+Spacebar - USB Mode? / Reset with a long press space bar-Verified, done it a few times.
+FN+Winkey = Winlock
+FN+S= Toggle Layer 0 - Win Mode
+FN+A= Toggle to layer 2 - Mac mode
+FN+BS (Backspace) = All LED off
+FN+4 MacOS Launchpad (Mac Mode only)
+FN+Pu (Page Up) = Status light brightness up - Wireless mode only
+FN+PD (Page Down) = Status light down - Wireless mode only
+FN+L= Lock Down Mode? All LED off with exception of white L lit, no keypresses register in any mode until unlocked by triggering again.
