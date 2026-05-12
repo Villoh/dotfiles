@@ -404,6 +404,7 @@ function Invoke-WingetToScoopMigration {
 function Invoke-ScoopToWingetMigration {
     Write-Host "[migrate] Reading scoop packages..." -ForegroundColor Cyan
     $scoopNames = Get-ScoopPackages
+    $wingetIds  = Get-WingetPackages
 
     $selected = Invoke-FzfPicker -Items ($scoopNames | Sort-Object) `
         -Prompt "  migrate scoop -> winget> " `
