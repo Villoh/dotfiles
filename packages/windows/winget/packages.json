@@ -53,9 +53,6 @@
           "PackageIdentifier": "karlstav.cava"
         },
         {
-          "PackageIdentifier": "OpenJS.NodeJS.LTS"
-        },
-        {
           "PackageIdentifier": "IDRIX.VeraCrypt"
         },
         {
