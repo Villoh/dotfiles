@@ -14,6 +14,7 @@ function Invoke-AllBackup {
     Invoke-ScoopBackup
     Invoke-NodeBackup
     Invoke-BunBackup
+    Invoke-PnpmBackup
     Invoke-UvBackup
     Invoke-BinBackup
     Invoke-CargoBackup
@@ -75,6 +76,24 @@ function Invoke-BunBackup {
     Write-Host "bun backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-bun     -Value Invoke-BunBackup
+
+function Invoke-PnpmBackup {
+    $file = "$PackagesDir\node\pnpm-packages.txt"
+    Save-ExistingBackup $file
+    try {
+        $json = pnpm list -g --json 2>$null | ConvertFrom-Json
+        $deps = $json[0].dependencies
+        if ($deps) {
+            $deps.PSObject.Properties.Name | Sort-Object | Out-File $file -Encoding UTF8
+        } else {
+            @() | Out-File $file -Encoding UTF8
+        }
+        Write-Host "pnpm backup OK" -ForegroundColor Green
+    } catch {
+        Write-Warning "pnpm backup failed: $_"
+    }
+}
+Set-Alias -Name backup-pnpm -Value Invoke-PnpmBackup
 
 function Invoke-UvBackup {
     $file = "$PackagesDir\uv-tools.txt"
