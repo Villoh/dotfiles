@@ -161,7 +161,8 @@ function Install-WingetPackage([string]$Id) {
 function Uninstall-WingetPackage([string]$Id) {
     Write-Host "    [....] winget uninstall $Id" -ForegroundColor Gray
     winget uninstall --id $Id --accept-source-agreements --silent 2>$null
-    Write-Host "    [OK]  winget uninstall $Id" -ForegroundColor Green
+    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] winget uninstall $Id" -ForegroundColor Red; return $false }
+    Write-Host "    [OK]  winget uninstall $Id" -ForegroundColor Green; return $true
 }
 
 function Install-ScoopPackage([string]$Ref) {
@@ -174,7 +175,8 @@ function Install-ScoopPackage([string]$Ref) {
 function Uninstall-ScoopPackage([string]$Name) {
     Write-Host "    [....] scoop uninstall $Name" -ForegroundColor Gray
     scoop uninstall $Name 2>$null
-    Write-Host "    [OK]  scoop uninstall $Name" -ForegroundColor Green
+    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] scoop uninstall $Name" -ForegroundColor Red; return $false }
+    Write-Host "    [OK]  scoop uninstall $Name" -ForegroundColor Green; return $true
 }
 
 function Install-NpmPackage([string]$Name) {
@@ -187,7 +189,8 @@ function Install-NpmPackage([string]$Name) {
 function Uninstall-NpmPackage([string]$Name) {
     Write-Host "    [....] npm uninstall -g $Name" -ForegroundColor Gray
     npm uninstall -g $Name
-    Write-Host "    [OK]  npm uninstall -g $Name" -ForegroundColor Green
+    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] npm uninstall -g $Name" -ForegroundColor Red; return $false }
+    Write-Host "    [OK]  npm uninstall -g $Name" -ForegroundColor Green; return $true
 }
 
 function Install-BunPackage([string]$Name) {
@@ -200,7 +203,8 @@ function Install-BunPackage([string]$Name) {
 function Uninstall-BunPackage([string]$Name) {
     Write-Host "    [....] bun remove -g $Name" -ForegroundColor Gray
     bun remove -g $Name
-    Write-Host "    [OK]  bun remove -g $Name" -ForegroundColor Green
+    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] bun remove -g $Name" -ForegroundColor Red; return $false }
+    Write-Host "    [OK]  bun remove -g $Name" -ForegroundColor Green; return $true
 }
 
 function Install-PnpmPackage([string]$Name) {
@@ -213,7 +217,8 @@ function Install-PnpmPackage([string]$Name) {
 function Uninstall-PnpmPackage([string]$Name) {
     Write-Host "    [....] pnpm remove -g $Name" -ForegroundColor Gray
     pnpm remove -g $Name
-    Write-Host "    [OK]  pnpm remove -g $Name" -ForegroundColor Green
+    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] pnpm remove -g $Name" -ForegroundColor Red; return $false }
+    Write-Host "    [OK]  pnpm remove -g $Name" -ForegroundColor Green; return $true
 }
 
 # -- Backup updaters -----------------------------------------------------------
@@ -273,15 +278,20 @@ function Invoke-NodeMigration {
         $installed = & $installMap[$Target] $name
         if (-not $installed) { $fail++; continue }
 
-        & $uninstallMap[$Source] $name
+        $uninstalled = & $uninstallMap[$Source] $name
+        if (-not $uninstalled) { $fail++; continue }
         $ok++
     }
 
     if ($ok -gt 0) {
-        & $updateMap[$Source]
-        & $updateMap[$Target]
+        $sourceBackupOk = & $updateMap[$Source]
+        $targetBackupOk = & $updateMap[$Target]
         Write-Host ""
-        Write-Host "  Backup files updated." -ForegroundColor Green
+        if ($sourceBackupOk -and $targetBackupOk) {
+            Write-Host "  Backup files updated." -ForegroundColor Green
+        } else {
+            Write-Warning "Backup refresh failed for one or more package managers."
+        }
     }
 
     Write-Host ""
@@ -376,7 +386,8 @@ function Invoke-WingetToScoopMigration {
             Write-Host "    [SKIP] already available in scoop" -ForegroundColor DarkGray
         }
 
-        Uninstall-WingetPackage $entry.WingetId
+        $uninstalled = Uninstall-WingetPackage $entry.WingetId
+        if (-not $uninstalled) { $fail++; continue }
 
         if ($startupData) {
             $patch = Get-StartupPatch -ScoopName $entry.ScoopName -StartupData $startupData
@@ -393,10 +404,14 @@ function Invoke-WingetToScoopMigration {
         if ($startupData) {
             $startupData | ConvertTo-Json -Depth 10 | Set-Content $startupFile -Encoding UTF8
         }
-        Update-WingetBackup
-        Update-ScoopBackup
+        $wingetBackupOk = Update-WingetBackup
+        $scoopBackupOk = Update-ScoopBackup
         Write-Host ""
-        Write-Host "  Backup files updated." -ForegroundColor Green
+        if ($wingetBackupOk -and $scoopBackupOk) {
+            Write-Host "  Backup files updated." -ForegroundColor Green
+        } else {
+            Write-Warning "Backup refresh failed for one or more package managers."
+        }
     }
 
     Write-Host ""
@@ -443,15 +458,20 @@ function Invoke-ScoopToWingetMigration {
             if (-not $ok_install) { $fail++; continue }
         }
 
-        Uninstall-ScoopPackage $entry.ScoopName
+        $uninstalled = Uninstall-ScoopPackage $entry.ScoopName
+        if (-not $uninstalled) { $fail++; continue }
         $ok++
     }
 
     if ($ok -gt 0) {
-        Update-ScoopBackup
-        Update-WingetBackup
+        $scoopBackupOk = Update-ScoopBackup
+        $wingetBackupOk = Update-WingetBackup
         Write-Host ""
-        Write-Host "  Backup files updated." -ForegroundColor Green
+        if ($scoopBackupOk -and $wingetBackupOk) {
+            Write-Host "  Backup files updated." -ForegroundColor Green
+        } else {
+            Write-Warning "Backup refresh failed for one or more package managers."
+        }
     }
 
     Write-Host ""

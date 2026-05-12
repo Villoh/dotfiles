@@ -28,26 +28,34 @@ function Invoke-WingetBackup {
     $excludeFile = "$PackagesDir\winget\exclude.txt"
     $tmp         = "$env:TEMP\winget-export-raw.json"
 
-    Save-ExistingBackup $file
-    winget export -o $tmp --source winget --accept-source-agreements
+    try {
+        Save-ExistingBackup $file
+        winget export -o $tmp --source winget --accept-source-agreements
+        if ($LASTEXITCODE -ne 0 -or -not (Test-Path $tmp)) { throw "winget export failed" }
 
-    $data = Get-Content $tmp | ConvertFrom-Json
+        $data = Get-Content $tmp | ConvertFrom-Json
 
-    if (Test-Path $excludeFile) {
-        $excluded = Get-Content $excludeFile | Where-Object { $_.Trim() -and -not $_.StartsWith('#') }
-        foreach ($source in $data.Sources) {
-            $source.Packages = $source.Packages | Where-Object {
-                $_.PackageIdentifier -notin $excluded
+        if (Test-Path $excludeFile) {
+            $excluded = Get-Content $excludeFile | Where-Object { $_.Trim() -and -not $_.StartsWith('#') }
+            foreach ($source in $data.Sources) {
+                $source.Packages = $source.Packages | Where-Object {
+                    $_.PackageIdentifier -notin $excluded
+                }
             }
+            Write-Host "  (excluded $($excluded.Count) packages from winget/exclude.txt)" -ForegroundColor DarkGray
         }
-        Write-Host "  (excluded $($excluded.Count) packages from winget/exclude.txt)" -ForegroundColor DarkGray
+
+        $data | ConvertTo-Json -Depth 10 | Set-Content $file -Encoding UTF8
+        Remove-Item $tmp -ErrorAction SilentlyContinue
+
+        $count = ($data.Sources | ForEach-Object { $_.Packages.Count } | Measure-Object -Sum).Sum
+        Write-Host "winget backup OK ($count packages)" -ForegroundColor Green
+        return $true
+    } catch {
+        Remove-Item $tmp -ErrorAction SilentlyContinue
+        Write-Warning "winget backup failed: $_"
+        return $false
     }
-
-    $data | ConvertTo-Json -Depth 10 | Set-Content $file -Encoding UTF8
-    Remove-Item $tmp -ErrorAction SilentlyContinue
-
-    $count = ($data.Sources | ForEach-Object { $_.Packages.Count } | Measure-Object -Sum).Sum
-    Write-Host "winget backup OK ($count packages)" -ForegroundColor Green
 }
 Set-Alias -Name backup-winget  -Value Invoke-WingetBackup
 
@@ -55,7 +63,9 @@ function Invoke-ScoopBackup {
     $file = "$PackagesDir\scoop\packages.json"
     Save-ExistingBackup $file
     scoop export > $file
+    if ($LASTEXITCODE -ne 0) { Write-Warning "scoop backup failed"; return $false }
     Write-Host "scoop backup OK" -ForegroundColor Green
+    return $true
 }
 Set-Alias -Name backup-scoop   -Value Invoke-ScoopBackup
 
@@ -63,7 +73,9 @@ function Invoke-NodeBackup {
     $file = "$PackagesDir\node\npm-packages.json"
     Save-ExistingBackup $file
     npm list -g --depth=0 --json > $file
+    if ($LASTEXITCODE -ne 0) { Write-Warning "npm backup failed"; return $false }
     Write-Host "npm backup OK" -ForegroundColor Green
+    return $true
 }
 Set-Alias -Name backup-node    -Value Invoke-NodeBackup
 
@@ -73,7 +85,9 @@ function Invoke-BunBackup {
     bun pm ls -g | Select-Object -Skip 1 | ForEach-Object {
         $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', ''
     } | Where-Object { $_ } | Out-File $file -Encoding UTF8
+    if ($LASTEXITCODE -ne 0) { Write-Warning "bun backup failed"; return $false }
     Write-Host "bun backup OK" -ForegroundColor Green
+    return $true
 }
 Set-Alias -Name backup-bun     -Value Invoke-BunBackup
 
@@ -81,7 +95,9 @@ function Invoke-PnpmBackup {
     $file = "$PackagesDir\node\pnpm-packages.txt"
     Save-ExistingBackup $file
     try {
-        $json = pnpm list -g --json 2>$null | ConvertFrom-Json
+        $raw = pnpm list -g --json 2>$null
+        if ($LASTEXITCODE -ne 0) { throw "pnpm list -g failed" }
+        $json = $raw | ConvertFrom-Json
         $deps = $json[0].dependencies
         if ($deps) {
             $deps.PSObject.Properties.Name | Sort-Object | Out-File $file -Encoding UTF8
@@ -89,8 +105,10 @@ function Invoke-PnpmBackup {
             @() | Out-File $file -Encoding UTF8
         }
         Write-Host "pnpm backup OK" -ForegroundColor Green
+        return $true
     } catch {
         Write-Warning "pnpm backup failed: $_"
+        return $false
     }
 }
 Set-Alias -Name backup-pnpm    -Value Invoke-PnpmBackup
