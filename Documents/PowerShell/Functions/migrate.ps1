@@ -128,7 +128,10 @@ function Get-BunGlobalPackages {
             Write-Warning "  [warn] fallback $fallback not found — no packages loaded"
             return @()
         }
-        return @(Get-Content $fallback | Where-Object { $_ })
+        return @(Get-Content $fallback |
+            ForEach-Object { $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', '' } |
+            Where-Object { $_ } |
+            ForEach-Object { $_ -replace '@[0-9][^@]*$', '' })
     }
 }
 

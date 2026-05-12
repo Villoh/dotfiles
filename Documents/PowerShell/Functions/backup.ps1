@@ -10,15 +10,22 @@ function Save-ExistingBackup {
 
 function Invoke-AllBackup {
     New-Item -ItemType Directory -Force -Path $PackagesDir | Out-Null
-    Invoke-WingetBackup
-    Invoke-ScoopBackup
-    Invoke-NodeBackup
-    Invoke-BunBackup
-    Invoke-PnpmBackup
-    Invoke-UvBackup
-    Invoke-BinBackup
-    Invoke-CargoBackup
+    $results = @(
+        Invoke-WingetBackup
+        Invoke-ScoopBackup
+        Invoke-NodeBackup
+        Invoke-BunBackup
+        Invoke-PnpmBackup
+        Invoke-UvBackup
+        Invoke-BinBackup
+        Invoke-CargoBackup
+    )
+    if ($results -contains $false) {
+        Write-Warning "Backup failed for one or more sources."
+        return $false
+    }
     Write-Host "Backup completado en $PackagesDir" -ForegroundColor Green
+    return $true
 }
 Set-Alias -Name backup         -Value Invoke-AllBackup
 Set-Alias -Name backup-pkgs    -Value Invoke-AllBackup
