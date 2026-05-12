@@ -127,7 +127,9 @@ function Invoke-UvBackup {
         $parts = $_ -split ' '
         if ($parts.Count -gt 0) { $parts[0].Trim() }
     } | Where-Object { $_ } | Out-File $file -Encoding UTF8
+    if ($LASTEXITCODE -ne 0) { Write-Warning "uv backup failed"; return $false }
     Write-Host "uv backup OK" -ForegroundColor Green
+    return $true
 }
 Set-Alias -Name backup-uv      -Value Invoke-UvBackup
 
@@ -138,7 +140,9 @@ function Invoke-BinBackup {
         $parts = $_ -split '\s{2,}'
         if ($parts.Count -ge 3) { $parts[2].Trim() }
     } | Where-Object { $_ } | Out-File $file -Encoding UTF8
+    if ($LASTEXITCODE -ne 0) { Write-Warning "bin backup failed"; return $false }
     Write-Host "bin backup OK" -ForegroundColor Green
+    return $true
 }
 Set-Alias -Name backup-bin     -Value Invoke-BinBackup
 
@@ -148,6 +152,7 @@ function Invoke-CargoBackup {
     Save-ExistingBackup $file
 
     $list = cargo install --list 2>$null
+    if ($LASTEXITCODE -ne 0) { Write-Warning "cargo backup failed"; return $false }
     $crates = $list | Where-Object { $_ -match '^[a-z0-9_-]+\s+v' -and $_ -notmatch 'https://' } |
         ForEach-Object { ($_ -split '\s+')[0] }
     $git = $list | Where-Object { $_ -match 'https://' } |
@@ -156,6 +161,7 @@ function Invoke-CargoBackup {
     ($crates + $git) | Where-Object { $_ } | Sort-Object | Set-Content $file -Encoding UTF8
     Write-Host "cargo backup OK ($(($crates).Count) crates + $(($git).Count) git)" -ForegroundColor Green
     Write-Host "  (cargo-minimal.txt is manually maintained — not overwritten)" -ForegroundColor DarkGray
+    return $true
 }
 Set-Alias -Name backup-cargo -Value Invoke-CargoBackup
 
