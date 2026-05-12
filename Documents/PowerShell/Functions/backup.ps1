@@ -93,7 +93,7 @@ function Invoke-PnpmBackup {
         Write-Warning "pnpm backup failed: $_"
     }
 }
-Set-Alias -Name backup-pnpm -Value Invoke-PnpmBackup
+Set-Alias -Name backup-pnpm    -Value Invoke-PnpmBackup
 
 function Invoke-UvBackup {
     $file = "$PackagesDir\uv-tools.txt"
