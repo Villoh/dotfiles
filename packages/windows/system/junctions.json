@@ -11,5 +11,6 @@
   { "src": "other_config\\mica-for-everyone\\settings.json", "dst": "%LOCALAPPDATA%\\Packages\\MicaForEveryone.MicaForEveryone2_eydvrrwaqjtyw\\LocalState\\settings.json", "type": "copy" },
   { "src": "dot_config\\ytm-player",                        "dst": "%APPDATA%\\ytm-player",                                                                                   "type": "junction" },
   { "src": "dot_config\\pnpm\\rc",                         "dst": "%LOCALAPPDATA%\\pnpm\\config\\rc",                                                                 "type": "file"    },
+  { "src": "dot_config\\pnpm\\config.yaml",                "dst": "%LOCALAPPDATA%\\pnpm\\config\\config.yaml",                                                        "type": "file"    },
   { "src": "dot_config\\gitui",                            "dst": "%APPDATA%\\gitui",                                                                                "type": "junction" }
 ]

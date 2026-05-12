@@ -36,15 +36,24 @@ function Invoke-NodeUpgrade {
 
             $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
             if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
-                $columns[0]
+                $pkgName = $columns[0]
+                $current = $columns[1]
+                $update = $columns[2]
+
+                if ($current -ne $update) {
+                    [PSCustomObject]@{
+                        Name = $pkgName
+                        Version = $update
+                    }
+                }
             }
         })
 
         if ($outdated.Count -eq 0) {
             Write-Host "bun: all global packages are up to date." -ForegroundColor Green
         } else {
-            foreach ($pkgName in $outdated) {
-                bun add -g "$pkgName@latest"
+            foreach ($pkg in $outdated) {
+                bun add -g "$($pkg.Name)@$($pkg.Version)"
             }
         }
     }
