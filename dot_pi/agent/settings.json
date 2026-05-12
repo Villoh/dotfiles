@@ -1,12 +1,13 @@
 {
-  "lastChangelogVersion": "0.73.1",
+  "lastChangelogVersion": "0.74.0",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.5",
-  "defaultThinkingLevel": "high",
+  "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-rtk-optimizer",
-    "npm:pi-subagents"
+    "npm:pi-subagents",
+    "npm:pi-lens"
   ]
 }
