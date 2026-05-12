@@ -3,25 +3,31 @@
         {
             "Name": "main",
             "Source": "https://github.com/ScoopInstaller/Main.git",
-            "Updated": "2026-04-30T12:43:08+02:00",
-            "Manifests": 1509
+            "Updated": "2026-05-12T19:03:24+02:00",
+            "Manifests": 1531
         },
         {
             "Name": "extras",
             "Source": "https://github.com/ScoopInstaller/Extras",
-            "Updated": "2026-04-30T12:12:57+02:00",
-            "Manifests": 2305
+            "Updated": "2026-05-12T19:04:10+02:00",
+            "Manifests": 2306
+        },
+        {
+            "Name": "versions",
+            "Source": "https://github.com/ScoopInstaller/Versions",
+            "Updated": "2026-05-12T17:12:38+02:00",
+            "Manifests": 580
         },
         {
             "Name": "nerd-fonts",
             "Source": "https://github.com/matthewjberger/scoop-nerd-fonts",
-            "Updated": "2026-04-18T17:36:56+02:00",
+            "Updated": "2026-05-04T20:19:14+02:00",
             "Manifests": 367
         },
         {
             "Name": "java",
             "Source": "https://github.com/ScoopInstaller/Java",
-            "Updated": "2026-04-29T16:28:56+02:00",
+            "Updated": "2026-05-12T16:28:22+02:00",
             "Manifests": 335
         },
         {
@@ -39,626 +45,640 @@
         {
             "Name": "gentleman",
             "Source": "https://github.com/Gentleman-Programming/scoop-bucket",
-            "Updated": "2026-04-30T11:28:31+02:00",
+            "Updated": "2026-05-12T19:13:57+02:00",
             "Manifests": 0
         }
     ],
     "apps": [
         {
-            "Info": "",
-            "Name": "7zip",
-            "Updated": "2026-04-27T21:17:54.3086256+02:00",
             "Version": "26.01",
-            "Source": "main"
+            "Updated": "2026-04-27T21:17:54.3086256+02:00",
+            "Name": "7zip",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "alacritty",
-            "Updated": "2026-04-08T16:50:45.2409492+02:00",
             "Version": "0.17.0",
-            "Source": "extras"
+            "Updated": "2026-04-08T16:50:45.2409492+02:00",
+            "Name": "alacritty",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "aria2",
-            "Updated": "2026-03-23T22:35:39.9630601+01:00",
             "Version": "1.37.0-1",
-            "Source": "main"
+            "Updated": "2026-03-23T22:35:39.9630601+01:00",
+            "Name": "aria2",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "bat",
-            "Updated": "2026-04-19T20:03:30.0285776+02:00",
             "Version": "0.26.1",
-            "Source": "main"
+            "Updated": "2026-04-19T20:03:30.0285776+02:00",
+            "Name": "bat",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "bin",
-            "Updated": "2026-04-27T09:05:36.6732994+02:00",
             "Version": "0.25.5",
-            "Source": "extras"
+            "Updated": "2026-04-27T09:05:36.6732994+02:00",
+            "Name": "bin",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "bitwarden-cli",
-            "Updated": "2026-04-23T21:56:56.1268159+02:00",
             "Version": "2026.4.1",
-            "Source": "main"
+            "Updated": "2026-04-23T21:56:56.1268159+02:00",
+            "Name": "bitwarden-cli",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "bruno",
-            "Updated": "2026-04-23T00:12:05.750035+02:00",
             "Version": "3.3.0",
-            "Source": "extras"
+            "Updated": "2026-04-23T00:12:05.750035+02:00",
+            "Name": "bruno",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "btop",
-            "Updated": "2026-03-20T14:18:24.719686+01:00",
             "Version": "1.0.5",
-            "Source": "main"
+            "Updated": "2026-03-20T14:18:24.719686+01:00",
+            "Name": "btop",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "bun",
-            "Updated": "2026-04-20T22:07:05.9455422+02:00",
             "Version": "1.3.13",
-            "Source": "main"
+            "Updated": "2026-04-20T22:07:05.9455422+02:00",
+            "Name": "bun",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "buttery-taskbar",
-            "Updated": "2026-04-25T16:48:52.0047484+02:00",
             "Version": "2.3.1",
-            "Source": "CrypticButter"
+            "Updated": "2026-04-25T16:48:52.0047484+02:00",
+            "Name": "buttery-taskbar",
+            "Source": "CrypticButter",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "cacert",
-            "Updated": "2026-04-01T16:33:37.0015754+02:00",
             "Version": "2026-03-19",
-            "Source": "main"
+            "Updated": "2026-04-01T16:33:37.0015754+02:00",
+            "Name": "cacert",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "CascadiaCode-NF",
+            "Version": "3.4.0",
             "Updated": "2026-03-20T14:18:26.4059039+01:00",
-            "Version": "3.4.0",
-            "Source": "nerd-fonts"
+            "Name": "CascadiaCode-NF",
+            "Source": "nerd-fonts",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "chafa",
-            "Updated": "2026-04-30T08:56:36.3590613+02:00",
             "Version": "1.18.2",
-            "Source": "main"
+            "Updated": "2026-04-30T08:56:36.3590613+02:00",
+            "Name": "chafa",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "2.70.3",
+            "Updated": "2026-05-08T08:05:06.38522+02:00",
             "Name": "chezmoi",
-            "Updated": "2026-04-17T09:10:27.76281+02:00",
-            "Version": "2.70.2",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "2.1.139",
+            "Updated": "2026-05-12T09:20:38.5188564+02:00",
             "Name": "claude-code",
-            "Updated": "2026-04-29T08:15:16.1351094+02:00",
-            "Version": "2.1.123",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "cloudflared",
-            "Updated": "2026-04-20T22:31:09.8828716+02:00",
             "Version": "2026.3.0",
-            "Source": "main"
+            "Updated": "2026-04-20T22:31:09.8828716+02:00",
+            "Name": "cloudflared",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "dark",
-            "Updated": "2026-04-01T16:55:59.7232646+02:00",
+            "Version": "0.130.0",
+            "Updated": "2026-05-09T11:53:39.6365408+02:00",
+            "Name": "codex",
+            "Source": "main",
+            "Info": ""
+        },
+        {
             "Version": "3.14.1",
-            "Source": "main"
+            "Updated": "2026-04-01T16:55:59.7232646+02:00",
+            "Name": "dark",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "delta",
-            "Updated": "2026-04-19T20:41:41.1908114+02:00",
             "Version": "0.19.2",
-            "Source": "main"
+            "Updated": "2026-04-19T20:41:41.1908114+02:00",
+            "Name": "delta",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "deno",
-            "Updated": "2026-04-28T20:36:57.9607796+02:00",
             "Version": "2.7.14",
-            "Source": "main"
+            "Updated": "2026-04-28T20:36:57.9607796+02:00",
+            "Name": "deno",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "eza",
-            "Updated": "2026-04-19T20:04:35.3226322+02:00",
             "Version": "0.23.4",
-            "Source": "main"
+            "Updated": "2026-04-19T20:04:35.3226322+02:00",
+            "Name": "eza",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "fastfetch",
-            "Updated": "2026-04-23T16:44:30.4498487+02:00",
             "Version": "2.62.1",
-            "Source": "main"
+            "Updated": "2026-04-23T16:44:30.4498487+02:00",
+            "Name": "fastfetch",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "fd",
-            "Updated": "2026-04-01T13:37:56.7528603+02:00",
             "Version": "10.4.2",
-            "Source": "main"
+            "Updated": "2026-04-01T13:37:56.7528603+02:00",
+            "Name": "fd",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "8.1.1",
+            "Updated": "2026-05-04T16:37:55.1305418+02:00",
             "Name": "ffmpeg",
-            "Updated": "2026-04-01T16:23:40.1017413+02:00",
-            "Version": "8.1",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "fnm",
-            "Updated": "2026-04-01T16:55:55.3346616+02:00",
             "Version": "1.39.0",
-            "Source": "main"
+            "Updated": "2026-04-01T16:55:55.3346616+02:00",
+            "Name": "fnm",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "fzf",
-            "Updated": "2026-04-26T21:29:07.4198591+02:00",
             "Version": "0.72.0",
-            "Source": "main"
+            "Updated": "2026-04-26T21:29:07.4198591+02:00",
+            "Name": "fzf",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "1.28.1",
+            "Updated": "2026-05-12T19:32:32.0253866+02:00",
             "Name": "gentle-ai",
-            "Updated": "2026-04-30T14:34:55.7161326+02:00",
-            "Version": "1.24.3",
-            "Source": "gentleman"
+            "Source": "gentleman",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "gh",
-            "Updated": "2026-04-28T16:51:40.6560047+02:00",
             "Version": "2.92.0",
-            "Source": "main"
+            "Updated": "2026-04-28T16:51:40.6560047+02:00",
+            "Name": "gh",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "ghostscript",
-            "Updated": "2026-04-12T23:15:28.6849425+02:00",
             "Version": "10.07.0",
-            "Source": "main"
+            "Updated": "2026-04-12T23:15:28.6849425+02:00",
+            "Name": "ghostscript",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "git-filter-repo",
-            "Updated": "2026-03-20T14:18:27.3113199+01:00",
             "Version": "2.47.0",
-            "Source": "main"
+            "Updated": "2026-03-20T14:18:27.3113199+01:00",
+            "Name": "git-filter-repo",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "gitui",
-            "Updated": "2026-04-21T16:22:26.777133+02:00",
             "Version": "0.28.1",
-            "Source": "main"
+            "Updated": "2026-04-21T16:22:26.777133+02:00",
+            "Name": "gitui",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "glazewm",
-            "Updated": "2026-04-01T16:43:07.5358503+02:00",
             "Version": "3.10.1",
-            "Source": "extras"
+            "Updated": "2026-04-01T16:43:07.5358503+02:00",
+            "Name": "glazewm",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "glow",
-            "Updated": "2026-04-19T20:45:15.5517752+02:00",
             "Version": "2.1.2",
-            "Source": "main"
+            "Updated": "2026-04-19T20:45:15.5517752+02:00",
+            "Name": "glow",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "1.26.3",
+            "Updated": "2026-05-07T21:06:06.1119605+02:00",
             "Name": "go",
-            "Updated": "2026-04-08T16:34:08.3143917+02:00",
-            "Version": "1.26.2",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "2.12.2",
+            "Updated": "2026-05-06T18:15:09.0966442+02:00",
             "Name": "golangci-lint",
-            "Updated": "2026-04-23T23:19:31.649971+02:00",
-            "Version": "2.11.4",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "Hack-NF",
+            "Version": "3.4.0",
             "Updated": "2026-03-20T14:18:28.1821451+01:00",
-            "Version": "3.4.0",
-            "Source": "nerd-fonts"
+            "Name": "Hack-NF",
+            "Source": "nerd-fonts",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "handy",
-            "Updated": "2026-04-28T08:37:20.7828074+02:00",
             "Version": "0.8.3",
-            "Source": "extras"
+            "Updated": "2026-04-28T08:37:20.7828074+02:00",
+            "Name": "handy",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "7.1.2-22",
+            "Updated": "2026-05-12T19:32:38.7105201+02:00",
             "Name": "imagemagick",
-            "Updated": "2026-04-22T00:00:15.0156847+02:00",
-            "Version": "7.1.2-21",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "2.67.9",
+            "Updated": "2026-05-01T10:34:15.0398969+02:00",
             "Name": "innounp",
-            "Updated": "2026-04-22T16:17:50.0579207+02:00",
-            "Version": "2.67.8",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "1.59.0-202605111959",
+            "Updated": "2026-05-12T18:59:20.4248563+02:00",
             "Name": "jdtls",
-            "Updated": "2026-04-23T09:00:41.9775446+02:00",
-            "Version": "1.58.0-202604151538",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "JetBrainsMono-NF",
+            "Version": "3.4.0",
             "Updated": "2026-03-20T14:18:36.2789974+01:00",
-            "Version": "3.4.0",
-            "Source": "nerd-fonts"
+            "Name": "JetBrainsMono-NF",
+            "Source": "nerd-fonts",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "JetBrainsMono-NF-Propo",
+            "Version": "3.4.0",
             "Updated": "2026-03-20T14:18:39.1478237+01:00",
-            "Version": "3.4.0",
-            "Source": "nerd-fonts"
+            "Name": "JetBrainsMono-NF-Propo",
+            "Source": "nerd-fonts",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "0.10.5",
+            "Updated": "2026-05-09T19:59:05.481316+02:00",
             "Name": "jjui",
-            "Updated": "2026-04-26T21:29:10.7925012+02:00",
-            "Version": "0.10.4",
-            "Source": "extras"
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "jq",
-            "Updated": "2026-04-01T13:37:58.3346317+02:00",
             "Version": "1.8.1",
-            "Source": "main"
+            "Updated": "2026-04-01T13:37:58.3346317+02:00",
+            "Name": "jq",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "kotlin",
-            "Updated": "2026-04-23T20:25:50.4982718+02:00",
             "Version": "2.3.21",
-            "Source": "main"
+            "Updated": "2026-04-23T20:25:50.4982718+02:00",
+            "Name": "kotlin",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "lazydocker",
-            "Updated": "2026-04-19T16:40:00.2214332+02:00",
             "Version": "0.25.2",
-            "Source": "main"
+            "Updated": "2026-04-19T16:40:00.2214332+02:00",
+            "Name": "lazydocker",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "lazygit",
-            "Updated": "2026-04-14T00:22:36.9366982+02:00",
             "Version": "0.61.1",
-            "Source": "extras"
+            "Updated": "2026-04-14T00:22:36.9366982+02:00",
+            "Name": "lazygit",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "less",
-            "Updated": "2026-03-20T14:18:39.6576271+01:00",
             "Version": "692",
-            "Source": "main"
+            "Updated": "2026-03-20T14:18:39.6576271+01:00",
+            "Name": "less",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "Lilex-NF",
-            "Updated": "2026-03-20T14:18:41.1123991+01:00",
             "Version": "3.4.0",
-            "Source": "nerd-fonts"
+            "Updated": "2026-03-20T14:18:41.1123991+01:00",
+            "Name": "Lilex-NF",
+            "Source": "nerd-fonts",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "maven",
-            "Updated": "2026-04-17T22:25:20.805814+02:00",
             "Version": "3.9.15",
-            "Source": "main"
+            "Updated": "2026-04-17T22:25:20.805814+02:00",
+            "Name": "maven",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "mdr",
-            "Updated": "2026-04-19T20:46:54.4663905+02:00",
             "Version": "0.2.8",
-            "Source": "clevercloud"
+            "Updated": "2026-04-19T20:46:54.4663905+02:00",
+            "Name": "mdr",
+            "Source": "clevercloud",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "micro",
-            "Updated": "2026-04-01T16:33:58.2348388+02:00",
             "Version": "2.0.15",
-            "Source": "main"
+            "Updated": "2026-04-01T16:33:58.2348388+02:00",
+            "Name": "micro",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "16.1.0-rt_v14-rev0",
+            "Updated": "2026-05-05T22:56:08.0321193+02:00",
             "Name": "mingw",
-            "Updated": "2026-04-20T22:00:36.4081123+02:00",
-            "Version": "15.2.0-rt_v13-rev1",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "2026.5.6",
+            "Updated": "2026-05-11T21:32:17.5976657+02:00",
             "Name": "mise",
-            "Updated": "2026-04-30T08:56:38.3202659+02:00",
-            "Version": "2026.4.27",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "mpv",
-            "Updated": "2026-03-24T00:53:47.2972199+01:00",
             "Version": "0.41.0",
-            "Source": "extras"
+            "Updated": "2026-03-24T00:53:47.2972199+01:00",
+            "Name": "mpv",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "nano",
-            "Updated": "2026-04-01T16:33:33.8675134+02:00",
             "Version": "7.2-22.1",
-            "Source": "main"
+            "Updated": "2026-04-01T16:33:33.8675134+02:00",
+            "Name": "nano",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "neovim",
-            "Updated": "2026-04-29T20:01:24.1982075+02:00",
             "Version": "0.12.2",
-            "Source": "main"
+            "Updated": "2026-04-29T20:01:24.1982075+02:00",
+            "Name": "neovim",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "nmap",
-            "Updated": "2026-04-09T19:16:21.4336056+02:00",
+            "Version": "3.39.1",
+            "Updated": "2026-05-03T13:45:33.5015967+02:00",
+            "Name": "ngrok",
+            "Source": "main",
+            "Info": ""
+        },
+        {
             "Version": "7.99",
-            "Source": "main"
+            "Updated": "2026-04-09T19:16:21.4336056+02:00",
+            "Name": "nmap",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "nodejs-lts",
-            "Updated": "2026-04-16T17:17:06.7002883+02:00",
             "Version": "24.15.0",
-            "Source": "main"
+            "Updated": "2026-04-16T17:17:06.7002883+02:00",
+            "Name": "nodejs-lts",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "29.13.1",
+            "Updated": "2026-05-07T13:16:53.474544+02:00",
             "Name": "oh-my-posh",
-            "Updated": "2026-04-29T14:30:49.9572895+02:00",
-            "Version": "29.12.0",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "onefetch",
-            "Updated": "2026-04-01T14:04:39.5846075+02:00",
             "Version": "2.27.1",
-            "Source": "extras"
+            "Updated": "2026-04-01T14:04:39.5846075+02:00",
+            "Name": "onefetch",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "1.14.48",
+            "Updated": "2026-05-11T08:43:32.6890892+02:00",
             "Name": "opencode",
-            "Updated": "2026-04-30T14:31:09.2891131+02:00",
-            "Version": "1.14.30",
-            "Source": "main"
+            "Source": "<auto-generated>",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "oxipng",
-            "Updated": "2026-04-29T18:19:03.0628471+02:00",
             "Version": "10.1.1",
-            "Source": "main"
+            "Updated": "2026-04-29T18:19:03.0628471+02:00",
+            "Name": "oxipng",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "pngquant",
-            "Updated": "2026-04-29T18:18:58.1857741+02:00",
+            "Version": "1.12.0",
+            "Updated": "2026-05-10T17:54:38.19717+02:00",
+            "Name": "pipx",
+            "Source": "main",
+            "Info": ""
+        },
+        {
             "Version": "2.18.0",
-            "Source": "main"
+            "Updated": "2026-04-29T18:18:58.1857741+02:00",
+            "Name": "pngquant",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "11.1.1",
+            "Updated": "2026-05-12T22:22:45.5851899+02:00",
             "Name": "pnpm",
-            "Updated": "2026-04-26T00:23:26.8347377+02:00",
-            "Version": "10.33.2",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "26.02.0-0",
+            "Updated": "2026-05-09T13:58:34.3678441+02:00",
             "Name": "poppler",
-            "Updated": "2026-04-01T13:38:01.1278051+02:00",
-            "Version": "25.12.0-0",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "psmux",
-            "Updated": "2026-04-28T12:36:54.7615661+02:00",
             "Version": "3.3.4",
-            "Source": "main"
+            "Updated": "2026-04-28T12:36:54.7615661+02:00",
+            "Name": "psmux",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "3.14.5",
+            "Updated": "2026-05-10T20:57:05.819174+02:00",
             "Name": "python",
-            "Updated": "2026-04-08T16:34:38.7997068+02:00",
-            "Version": "3.14.4",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "1.74.1",
+            "Updated": "2026-05-09T11:53:48.2995085+02:00",
             "Name": "rclone",
-            "Updated": "2026-04-19T16:40:08.8547043+02:00",
-            "Version": "1.73.5",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "resvg",
-            "Updated": "2026-04-01T13:37:59.2833745+02:00",
             "Version": "0.47.0",
-            "Source": "main"
+            "Updated": "2026-04-01T13:37:59.2833745+02:00",
+            "Name": "resvg",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "ripgrep",
-            "Updated": "2026-04-01T13:37:57.7287447+02:00",
             "Version": "15.1.0",
-            "Source": "main"
+            "Updated": "2026-04-01T13:37:57.7287447+02:00",
+            "Name": "ripgrep",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "0.39.0",
+            "Updated": "2026-05-06T21:55:25.4896164+02:00",
             "Name": "rtk",
-            "Updated": "2026-04-30T08:56:39.8330704+02:00",
-            "Version": "0.38.0",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "ruff",
-            "Updated": "2026-04-25T13:51:12.4733364+02:00",
             "Version": "0.15.12",
-            "Source": "main"
+            "Updated": "2026-04-25T13:51:12.4733364+02:00",
+            "Name": "ruff",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "rustup",
-            "Updated": "2026-04-01T16:55:43.7069422+02:00",
             "Version": "1.29.0",
-            "Source": "main"
+            "Updated": "2026-04-01T16:55:43.7069422+02:00",
+            "Name": "rustup",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "1.25.1",
+            "Updated": "2026-05-01T10:34:16.3485046+02:00",
             "Name": "starship",
-            "Updated": "2026-04-19T16:40:10.0477389+02:00",
-            "Version": "1.25.0",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "superfile",
-            "Updated": "2026-03-24T11:52:36.3749239+01:00",
             "Version": "1.5.0",
-            "Source": "main"
+            "Updated": "2026-03-24T11:52:36.3749239+01:00",
+            "Name": "superfile",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "temurin21-jdk",
-            "Updated": "2026-04-28T20:37:04.5917281+02:00",
             "Version": "21.0.11-10.0",
-            "Source": "java"
+            "Updated": "2026-04-28T20:37:04.5917281+02:00",
+            "Name": "temurin21-jdk",
+            "Source": "java",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "11.0.22",
+            "Updated": "2026-05-05T17:49:59.9057137+02:00",
             "Name": "tomcat",
-            "Updated": "2026-04-17T09:57:27.4808781+02:00",
-            "Version": "11.0.21",
-            "Source": "extras"
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "0.11.13",
+            "Updated": "2026-05-11T08:37:52.6591274+02:00",
             "Name": "uv",
-            "Updated": "2026-04-27T21:17:56.7120273+02:00",
-            "Version": "0.11.8",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "vscodium",
-            "Updated": "2026-04-27T21:18:17.5899271+02:00",
-            "Version": "1.116.02821",
-            "Source": "extras"
-        },
-        {
-            "Info": "",
+            "Version": "0.2026.05.06.15.42.stable_04",
+            "Updated": "2026-05-12T19:00:03.7251913+02:00",
             "Name": "warp-terminal",
-            "Updated": "2026-04-30T08:56:56.3209705+02:00",
-            "Version": "0.2026.04.27.15.32.stable_03",
-            "Source": "extras"
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "3.3.0",
+            "Updated": "2026-05-01T10:34:24.1985075+02:00",
             "Name": "wealthfolio",
-            "Updated": "2026-04-21T17:31:57.5003484+02:00",
-            "Version": "3.2.1",
-            "Source": "extras"
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "wezterm",
-            "Updated": "2026-04-01T14:09:24.1844961+02:00",
             "Version": "20240203-110809-5046fc22",
-            "Source": "extras"
+            "Updated": "2026-04-01T14:09:24.1844961+02:00",
+            "Name": "wezterm",
+            "Source": "extras",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "wget",
-            "Updated": "2026-04-01T16:33:38.9585941+02:00",
             "Version": "1.21.4",
-            "Source": "main"
+            "Updated": "2026-04-01T16:33:38.9585941+02:00",
+            "Name": "wget",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "26.5.6",
+            "Updated": "2026-05-06T09:07:09.3407071+02:00",
             "Name": "yazi",
-            "Updated": "2026-03-24T11:52:32.1716789+01:00",
-            "Version": "26.1.22",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "yt-dlp",
-            "Updated": "2026-04-01T16:23:43.9205903+02:00",
             "Version": "2026.03.17",
-            "Source": "main"
+            "Updated": "2026-04-01T16:23:43.9205903+02:00",
+            "Name": "yt-dlp",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
+            "Version": "0.44.2",
+            "Updated": "2026-05-05T15:11:43.3995073+02:00",
             "Name": "zellij",
-            "Updated": "2026-04-08T16:34:42.7534327+02:00",
-            "Version": "0.44.1",
-            "Source": "main"
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "zip",
-            "Updated": "2026-03-20T14:18:48.1715805+01:00",
             "Version": "3.0",
-            "Source": "main"
+            "Updated": "2026-03-20T14:18:48.1715805+01:00",
+            "Name": "zip",
+            "Source": "main",
+            "Info": ""
         },
         {
-            "Info": "",
-            "Name": "zoxide",
-            "Updated": "2026-03-25T19:22:57.1606729+01:00",
             "Version": "0.9.9",
-            "Source": "main"
+            "Updated": "2026-03-25T19:22:57.1606729+01:00",
+            "Name": "zoxide",
+            "Source": "main",
+            "Info": ""
         }
     ]
 }

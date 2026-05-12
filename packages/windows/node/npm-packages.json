@@ -1,12 +1,24 @@
 {
-  "name": "npm",
+  "name": "bin",
   "dependencies": {
-    "npm": {
-      "version": "11.13.0",
+    "@getpaseo/cli": {
+      "version": "0.1.74",
+      "overridden": false
+    },
+    "pi-lens": {
+      "version": "3.8.43",
       "overridden": false
     },
     "pi-mcp-adapter": {
-      "version": "2.5.1",
+      "version": "2.6.0",
+      "overridden": false
+    },
+    "pi-rtk-optimizer": {
+      "version": "0.7.1",
+      "overridden": false
+    },
+    "pi-subagents": {
+      "version": "0.24.2",
       "overridden": false
     }
   }

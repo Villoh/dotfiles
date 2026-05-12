@@ -6,5 +6,4 @@ specify-cli
 tinytuya
 trafilatura
 ytm-player
-ytmx
 zuban

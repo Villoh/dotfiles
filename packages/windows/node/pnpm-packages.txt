@@ -1,0 +1,15 @@
+@earendil-works/pi-coding-agent
+@filen/cli
+@fission-ai/openspec
+@gsd-build/sdk
+@oh-my-pi/pi-coding-agent
+@vtsls/language-server
+agent-skill-manager
+eslint
+happy
+ocx
+oxlint
+tokscale
+typescript
+typescript-language-server
+vscode-langservers-extracted
