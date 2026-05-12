@@ -224,4 +224,291 @@ function Update-NpmBackup     { Invoke-NodeBackup }
 function Update-BunBackup     { Invoke-BunBackup }
 function Update-PnpmBackup    { Invoke-PnpmBackup }
 
+# -- Node migrations (npm / bun / pnpm, any direction) ------------------------
+
+function Invoke-NodeMigration {
+    param([string]$Source, [string]$Target)
+
+    $getterMap = @{
+        npm  = { Get-NpmGlobalPackages }
+        bun  = { Get-BunGlobalPackages }
+        pnpm = { Get-PnpmGlobalPackages }
+    }
+    $installMap = @{
+        npm  = { param($n) Install-NpmPackage  $n }
+        bun  = { param($n) Install-BunPackage  $n }
+        pnpm = { param($n) Install-PnpmPackage $n }
+    }
+    $uninstallMap = @{
+        npm  = { param($n) Uninstall-NpmPackage  $n }
+        bun  = { param($n) Uninstall-BunPackage  $n }
+        pnpm = { param($n) Uninstall-PnpmPackage $n }
+    }
+    $updateMap = @{
+        npm  = { Update-NpmBackup }
+        bun  = { Update-BunBackup }
+        pnpm = { Update-PnpmBackup }
+    }
+
+    Write-Host "[migrate] Reading $Source global packages..." -ForegroundColor Cyan
+    $packages = & $getterMap[$Source]
+
+    if (-not $packages) {
+        Write-Host "No packages found in $Source." -ForegroundColor Yellow
+        return
+    }
+
+    $selected = Invoke-FzfPicker -Items $packages `
+        -Prompt "  migrate $Source -> $Target> " `
+        -Header "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=cancel"
+
+    if (-not $selected) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
+
+    $ok = 0; $fail = 0
+
+    foreach ($name in $selected) {
+        Write-Host ""
+        Write-Host "  [$name]" -ForegroundColor Cyan
+
+        $installed = & $installMap[$Target] $name
+        if (-not $installed) { $fail++; continue }
+
+        & $uninstallMap[$Source] $name
+        $ok++
+    }
+
+    if ($ok -gt 0) {
+        & $updateMap[$Source]
+        & $updateMap[$Target]
+        Write-Host ""
+        Write-Host "  Backup files updated." -ForegroundColor Green
+    }
+
+    Write-Host ""
+    Write-Host "  Done — $ok migrated  $fail failed" -ForegroundColor Cyan
+}
+
+# -- winget -> scoop -----------------------------------------------------------
+
+function Invoke-WingetToScoopMigration {
+    $startupFile = "$script:PkgDir\system\startup.json"
+    $startupData = if (Test-Path $startupFile) { Get-Content $startupFile | ConvertFrom-Json } else { $null }
+
+    Write-Host "[migrate] Reading winget packages..." -ForegroundColor Cyan
+    $wingetIds  = Get-WingetPackages
+    $scoopNames = Get-ScoopPackages
+
+    Write-Host "[migrate] Scanning scoop buckets..." -ForegroundColor Cyan
+    $manifests = Get-ScoopManifests
+
+    $candidates = $wingetIds | ForEach-Object {
+        $match = Find-ScoopMatch -WingetId $_ -Manifests $manifests
+        [pscustomobject]@{
+            WingetId    = $_
+            ScoopName   = $match.Name
+            Bucket      = $match.Bucket
+            AutoMatched = $null -ne $match.Name
+        }
+    }
+
+    $fzfItems = $candidates | ForEach-Object {
+        if ($_.AutoMatched) { "$($_.WingetId)  ->  $($_.Bucket)/$($_.ScoopName)" }
+        else                { "$($_.WingetId)  ->  ? [enter manually]" }
+    }
+
+    $selected = Invoke-FzfPicker -Items $fzfItems `
+        -Prompt "  migrate winget -> scoop> " `
+        -Header "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=cancel"
+
+    if (-not $selected) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
+
+    $selectedIds = @($selected | ForEach-Object { ($_ -split '\s+->\s+')[0].Trim() })
+    $toMigrate   = $candidates | Where-Object { $selectedIds -contains $_.WingetId }
+
+    foreach ($entry in $toMigrate | Where-Object { -not $_.AutoMatched }) {
+        Write-Host ""
+        Write-Host "  No scoop match found for: $($entry.WingetId)" -ForegroundColor Yellow
+        Write-Host "  Enter scoop name (bucket/name or just name, empty to skip): " -NoNewline
+        $answer = [Console]::ReadLine()
+        if (-not $answer) { $entry.ScoopName = $null; continue }
+        if ($answer -match '/') {
+            $entry.Bucket    = ($answer -split '/')[0]
+            $entry.ScoopName = ($answer -split '/')[1]
+        } else {
+            $entry.ScoopName = $answer
+            $entry.Bucket    = if ($manifests.ContainsKey($answer)) { $manifests[$answer] } else { "extras" }
+        }
+    }
+
+    $toMigrate = @($toMigrate | Where-Object { $_.ScoopName })
+    if (-not $toMigrate) { Write-Host "Nothing to migrate." -ForegroundColor Yellow; return }
+
+    $bucketsNeeded = @($toMigrate | Select-Object -ExpandProperty Bucket -Unique | Where-Object { $_ })
+    $scoopBuckets  = scoop bucket list | Select-Object -ExpandProperty Name 2>$null
+    foreach ($b in $bucketsNeeded) {
+        if ($scoopBuckets -notcontains $b) {
+            Write-Host "  Adding scoop bucket: $b" -ForegroundColor Cyan
+            scoop bucket add $b
+        }
+    }
+
+    $ok = 0; $fail = 0
+
+    foreach ($entry in $toMigrate) {
+        $ref = if ($entry.Bucket) { "$($entry.Bucket)/$($entry.ScoopName)" } else { $entry.ScoopName }
+        Write-Host ""
+        Write-Host "  [$($entry.WingetId)  ->  $ref]" -ForegroundColor Cyan
+
+        $alreadyInScoop = $scoopNames -contains $entry.ScoopName
+        if (-not $alreadyInScoop) {
+            $installed = scoop list 2>$null | Select-Object -ExpandProperty Name
+            if ($installed -contains $entry.ScoopName) {
+                Write-Host "    [SKIP] scoop: already installed" -ForegroundColor DarkGray
+            } else {
+                $ok_install = Install-ScoopPackage $ref
+                if (-not $ok_install) { $fail++; continue }
+            }
+        } else {
+            Write-Host "    [SKIP] already tracked in scoop" -ForegroundColor DarkGray
+        }
+
+        Uninstall-WingetPackage $entry.WingetId
+
+        if ($startupData) {
+            $patch = Get-StartupPatch -ScoopName $entry.ScoopName -StartupData $startupData
+            if ($patch) {
+                $patch.Entry.path = $patch.NewPath
+                Write-Host "    [OK]  startup.json: $($patch.Entry.name)" -ForegroundColor Green
+            }
+        }
+
+        $ok++
+    }
+
+    if ($ok -gt 0) {
+        if ($startupData) {
+            $startupData | ConvertTo-Json -Depth 10 | Set-Content $startupFile -Encoding UTF8
+        }
+        Update-WingetBackup
+        Update-ScoopBackup
+        Write-Host ""
+        Write-Host "  Backup files updated." -ForegroundColor Green
+    }
+
+    Write-Host ""
+    Write-Host "  Done — $ok migrated  $fail failed" -ForegroundColor Cyan
+}
+
+# -- scoop -> winget -----------------------------------------------------------
+
+function Invoke-ScoopToWingetMigration {
+    Write-Host "[migrate] Reading scoop packages..." -ForegroundColor Cyan
+    $scoopNames = Get-ScoopPackages
+    $wingetIds  = Get-WingetPackages
+
+    $selected = Invoke-FzfPicker -Items ($scoopNames | Sort-Object) `
+        -Prompt "  migrate scoop -> winget> " `
+        -Header "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=cancel"
+
+    if (-not $selected) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
+
+    $migrations = @()
+    foreach ($name in @($selected)) {
+        Write-Host ""
+        Write-Host "  Scoop package: $name" -ForegroundColor Cyan
+        Write-Host "  Enter winget ID (empty to skip): " -NoNewline
+        $wingetId = [Console]::ReadLine()
+        if (-not $wingetId) { continue }
+        $migrations += [pscustomobject]@{ ScoopName = $name; WingetId = $wingetId }
+    }
+
+    if (-not $migrations) { Write-Host "Nothing to migrate." -ForegroundColor Yellow; return }
+
+    $ok = 0; $fail = 0
+
+    foreach ($entry in $migrations) {
+        Write-Host ""
+        Write-Host "  [$($entry.ScoopName)  ->  $($entry.WingetId)]" -ForegroundColor Cyan
+
+        $alreadyInWinget = $wingetIds -contains $entry.WingetId
+        if (-not $alreadyInWinget) {
+            $installed = winget list --id $entry.WingetId --accept-source-agreements 2>$null |
+                         Select-String $entry.WingetId
+            if ($installed) {
+                Write-Host "    [SKIP] winget: already installed" -ForegroundColor DarkGray
+            } else {
+                $ok_install = Install-WingetPackage $entry.WingetId
+                if (-not $ok_install) { $fail++; continue }
+            }
+        } else {
+            Write-Host "    [SKIP] already tracked in winget" -ForegroundColor DarkGray
+        }
+
+        Uninstall-ScoopPackage $entry.ScoopName
+        $ok++
+    }
+
+    if ($ok -gt 0) {
+        Update-ScoopBackup
+        Update-WingetBackup
+        Write-Host ""
+        Write-Host "  Backup files updated." -ForegroundColor Green
+    }
+
+    Write-Host ""
+    Write-Host "  Done — $ok migrated  $fail failed" -ForegroundColor Cyan
+}
+
+# -- Helpers (scoop/winget) ----------------------------------------------------
+
+function Get-ScoopManifests {
+    $result = @{}
+    $bucketsPath = "$env:USERPROFILE\scoop\buckets"
+    if (-not (Test-Path $bucketsPath)) { return $result }
+    Get-ChildItem $bucketsPath -Directory | ForEach-Object {
+        $bucket = $_.Name
+        $manifestDir = Join-Path $_.FullName "bucket"
+        if (Test-Path $manifestDir) {
+            Get-ChildItem $manifestDir -Filter "*.json" -ErrorAction SilentlyContinue | ForEach-Object {
+                $name = $_.BaseName.ToLower()
+                if (-not $result.ContainsKey($name)) { $result[$name] = $bucket }
+            }
+        }
+    }
+    return $result
+}
+
+function Find-ScoopMatch {
+    param([string]$WingetId, [hashtable]$Manifests)
+    $after = ($WingetId -split '\.', 2)[-1]
+    $last  = ($WingetId -split '\.')[-1]
+    $candidates = @(
+        ($after.ToLower() -replace '[^a-z0-9-]', '-'),
+        ($last.ToLower()  -replace '[^a-z0-9-]', '-'),
+        $last.ToLower()
+    ) | Select-Object -Unique
+    foreach ($c in $candidates) {
+        if ($Manifests.ContainsKey($c)) { return @{ Name = $c; Bucket = $Manifests[$c] } }
+    }
+    return @{ Name = $null; Bucket = $null }
+}
+
+function Get-StartupPatch {
+    param([string]$ScoopName, $StartupData)
+    $scoopAppDir = "$env:USERPROFILE\scoop\apps\$ScoopName\current"
+    if (-not (Test-Path $scoopAppDir)) { return $null }
+    $scoopExes = Get-ChildItem $scoopAppDir -Filter "*.exe" -ErrorAction SilentlyContinue
+    foreach ($entry in $StartupData.registry) {
+        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+        if ($expanded -like "*\scoop\*") { continue }
+        $exeName = Split-Path $expanded -Leaf
+        $match   = $scoopExes | Where-Object { $_.Name -ieq $exeName } | Select-Object -First 1
+        if ($match) {
+            $newPath = $match.FullName -replace [regex]::Escape($env:USERPROFILE), '%USERPROFILE%'
+            return @{ Entry = $entry; OldPath = $entry.path; NewPath = $newPath }
+        }
+    }
+    return $null
+}
+
 Set-Alias -Name migrate -Value Invoke-Migration
