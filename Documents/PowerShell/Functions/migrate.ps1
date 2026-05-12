@@ -99,6 +99,7 @@ function Get-NpmGlobalPackages {
     $fallback = "$script:PkgDir\node\npm-packages.json"
     try {
         $json = npm list -g --depth=0 --json 2>$null | ConvertFrom-Json
+        if (-not $json -or -not $json.dependencies) { return @() }
         return @($json.dependencies.PSObject.Properties.Name)
     } catch {
         Write-Warning "  [warn] npm runtime query failed, using backup JSON"
@@ -114,8 +115,9 @@ function Get-NpmGlobalPackages {
 function Get-BunGlobalPackages {
     $fallback = "$script:PkgDir\node\bun-packages.txt"
     try {
-        $lines = bun pm ls -g 2>$null | Select-Object -Skip 1
+        $raw = bun pm ls -g 2>$null
         if ($LASTEXITCODE -ne 0) { throw "bun pm ls -g failed" }
+        $lines = $raw | Select-Object -Skip 1
         return @($lines |
             ForEach-Object { $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', '' } |
             Where-Object { $_ } |
