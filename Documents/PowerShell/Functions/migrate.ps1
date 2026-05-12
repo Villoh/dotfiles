@@ -13,9 +13,21 @@ $script:PkgDir = "$(chezmoi source-path)/packages/windows".Replace('/', '\')
 
 function Invoke-Migration {
     param(
-        [string]$Source = "winget",
-        [string]$Target = "scoop"
+        [string]$Source,
+        [string]$Target
     )
+
+    if (-not $Source) {
+        $sourceChoices = @("winget", "scoop", "npm", "bun", "pnpm")
+        $Source = Invoke-ManagerPicker -Items $sourceChoices -Prompt "  select source> " -Header "ENTER=confirm  ESC=cancel"
+        if (-not $Source) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
+    }
+
+    if (-not $Target) {
+        $targetChoices = Get-MigrationTargets -Source $Source
+        $Target = Invoke-ManagerPicker -Items $targetChoices -Prompt "  select target> " -Header "ENTER=confirm  ESC=cancel"
+        if (-not $Target) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
+    }
 
     switch ("$Source->$Target") {
         "winget->scoop" { Invoke-WingetToScoopMigration }
@@ -54,45 +66,57 @@ function Invoke-FzfPicker {
     return @($selected)
 }
 
-# -- Runtime getters -----------------------------------------------------------
+function Invoke-ManagerPicker {
+    param(
+        [string[]]$Items,
+        [string]$Prompt = "  select> ",
+        [string]$Header = "ENTER=confirm  ESC=cancel"
+    )
 
-function Get-WingetPackages {
-    $fallback = "$script:PkgDir\winget\packages.json"
-    try {
-        $tmp = "$env:TEMP\winget-migrate-export.json"
-        winget export -o $tmp --source winget --accept-source-agreements 2>$null
-        if ($LASTEXITCODE -ne 0) { throw "winget export failed" }
-        $data = Get-Content $tmp | ConvertFrom-Json
-        Remove-Item $tmp -ErrorAction SilentlyContinue
-        return @($data.Sources | ForEach-Object { $_.Packages } |
-                 Select-Object -ExpandProperty PackageIdentifier)
-    } catch {
-        Write-Warning "  [warn] winget runtime query failed, using backup JSON"
-        if (-not (Test-Path $fallback)) {
-            Write-Warning "  [warn] fallback $fallback not found — no packages loaded"
-            return @()
-        }
-        $data = Get-Content $fallback | ConvertFrom-Json
-        return @($data.Sources | ForEach-Object { $_.Packages } |
-                 Select-Object -ExpandProperty PackageIdentifier)
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
+        Write-Error "fzf not found. Install with: scoop install fzf"
+        return $null
+    }
+
+    return ($Items | fzf --prompt=$Prompt --header=$Header --layout=reverse --border --color="hl:yellow,hl+:yellow")
+}
+
+function Get-MigrationTargets {
+    param([string]$Source)
+
+    switch ($Source) {
+        "winget" { return @("scoop") }
+        "scoop"  { return @("winget") }
+        "npm"    { return @("bun", "pnpm") }
+        "bun"    { return @("npm", "pnpm") }
+        "pnpm"   { return @("npm", "bun") }
+        default   { return @() }
     }
 }
 
-function Get-ScoopPackages {
-    $fallback = "$script:PkgDir\scoop\packages.json"
-    try {
-        $list = scoop list 2>$null
-        if ($LASTEXITCODE -ne 0) { throw "scoop list failed" }
-        return @($list | Select-Object -ExpandProperty Name)
-    } catch {
-        Write-Warning "  [warn] scoop runtime query failed, using backup JSON"
-        if (-not (Test-Path $fallback)) {
-            Write-Warning "  [warn] fallback $fallback not found — no packages loaded"
-            return @()
-        }
-        $data = Get-Content $fallback | ConvertFrom-Json
-        return @($data.apps | Select-Object -ExpandProperty Name)
+# -- Runtime getters -----------------------------------------------------------
+
+function Get-WingetPackages {
+    $file = "$script:PkgDir\winget\packages.json"
+    if (-not (Test-Path $file)) {
+        Write-Warning "  [warn] $file not found — no packages loaded"
+        return @()
     }
+
+    $data = Get-Content $file | ConvertFrom-Json
+    return @($data.Sources | ForEach-Object { $_.Packages } |
+             Select-Object -ExpandProperty PackageIdentifier)
+}
+
+function Get-ScoopPackages {
+    $file = "$script:PkgDir\scoop\packages.json"
+    if (-not (Test-Path $file)) {
+        Write-Warning "  [warn] $file not found — no packages loaded"
+        return @()
+    }
+
+    $data = Get-Content $file | ConvertFrom-Json
+    return @($data.apps | Select-Object -ExpandProperty Name)
 }
 
 function Get-NpmGlobalPackages {
@@ -114,14 +138,17 @@ function Get-NpmGlobalPackages {
 
 function Get-BunGlobalPackages {
     $fallback = "$script:PkgDir\node\bun-packages.txt"
+    $extractor = {
+        $line = $_ -replace '\x1b\[[0-9;]*m', ''
+        if ($line -match '(@[^@\s]+/[^@\s]+|[A-Za-z0-9._-]+)@[0-9][^@]*$') { $matches[1] }
+    }
     try {
         $raw = bun pm ls -g 2>$null
         if ($LASTEXITCODE -ne 0) { throw "bun pm ls -g failed" }
         $lines = $raw | Select-Object -Skip 1
         return @($lines |
-            ForEach-Object { $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', '' } |
-            Where-Object { $_ } |
-            ForEach-Object { $_ -replace '@[0-9][^@]*$', '' })
+            ForEach-Object $extractor |
+            Where-Object { $_ })
     } catch {
         Write-Warning "  [warn] bun runtime query failed, using backup txt"
         if (-not (Test-Path $fallback)) {
@@ -129,9 +156,8 @@ function Get-BunGlobalPackages {
             return @()
         }
         return @(Get-Content $fallback |
-            ForEach-Object { $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', '' } |
-            Where-Object { $_ } |
-            ForEach-Object { $_ -replace '@[0-9][^@]*$', '' })
+            ForEach-Object $extractor |
+            Where-Object { $_ })
     }
 }
 
@@ -232,6 +258,23 @@ function Update-NpmBackup     { Invoke-NodeBackup }
 function Update-BunBackup     { Invoke-BunBackup }
 function Update-PnpmBackup    { Invoke-PnpmBackup }
 
+function Normalize-PackageName {
+    param([string]$Name)
+
+    if ($null -eq $Name) { return $null }
+
+    return ($Name -replace '^[\uFEFF\u200B\u200C\u200D\u2060]+', '').Trim()
+}
+
+function Get-ProtectedSourcePackages {
+    param([string]$Source)
+
+    switch ($Source) {
+        'pnpm' { return @('@pnpm/exe') }
+        default { return @() }
+    }
+}
+
 # -- Node migrations (npm / bun / pnpm, any direction) ------------------------
 
 function Invoke-NodeMigration {
@@ -273,10 +316,19 @@ function Invoke-NodeMigration {
     if (-not $selected) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
 
     $ok = 0; $fail = 0
+    $protected = Get-ProtectedSourcePackages $Source
 
     foreach ($name in $selected) {
+        $name = Normalize-PackageName $name
+        if (-not $name) { continue }
+
         Write-Host ""
         Write-Host "  [$name]" -ForegroundColor Cyan
+
+        if ($protected -contains $name) {
+            Write-Host "    [SKIP] protected package for $Source" -ForegroundColor DarkGray
+            continue
+        }
 
         $installed = & $installMap[$Target] $name
         if (-not $installed) { $fail++; continue }

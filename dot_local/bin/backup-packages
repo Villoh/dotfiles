@@ -77,6 +77,17 @@ backup_npm() {
     fi
 }
 
+backup_pnpm() {
+    if command -v pnpm >/dev/null 2>&1; then
+        echo -e "${GREEN}📦 pnpm global packages:${NC}"
+        save_existing_backup "${BACKUP_DIR}/pnpm-global.txt"
+        pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' > "${BACKUP_DIR}/pnpm-global.txt" || echo "" > "${BACKUP_DIR}/pnpm-global.txt"
+        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/pnpm-global.txt") packages saved to pnpm-global.txt${NC}\n"
+    else
+        echo -e "${YELLOW}⚠️  pnpm not installed, skipping${NC}\n"
+    fi
+}
+
 backup_bin() {
     if command -v bin >/dev/null 2>&1; then
         echo -e "${GREEN}🗃️  bin packages:${NC}"
@@ -127,6 +138,7 @@ run_all() {
     backup_uv
     backup_bun
     backup_npm
+    backup_pnpm
     backup_bin
     backup_brew
     backup_cargo
@@ -155,6 +167,7 @@ for arg in "$@"; do
         --bin)     backup_bin;     HANDLED=true ;;
         --brew)       backup_brew;       HANDLED=true ;;
         --cargo)      backup_cargo;      HANDLED=true ;;
+        --pnpm)       backup_pnpm;       HANDLED=true ;;
         --interactive|-i) : ;;  # handled below
         *) echo -e "${YELLOW}⚠️  Unknown flag: $arg${NC}" >&2 ;;
     esac
@@ -192,6 +205,7 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
         "🐍 uv" \
         "🍞 bun" \
         "📦 npm" \
+        "📦 pnpm" \
         "🗃️  bin" \
         "🍺 brew" \
         "📦 cargo")
@@ -209,6 +223,7 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
             *flatpak*) backup_flatpak ;;
             *uv*)      backup_uv      ;;
             *bun*)     backup_bun     ;;
+            *pnpm*)    backup_pnpm    ;;
             *npm*)     backup_npm     ;;
             *bin*)        backup_bin        ;;
             *brew*)       backup_brew       ;;

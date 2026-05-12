@@ -89,10 +89,21 @@ Set-Alias -Name backup-node    -Value Invoke-NodeBackup
 function Invoke-BunBackup {
     $file = "$PackagesDir\node\bun-packages.txt"
     Save-ExistingBackup $file
-    bun pm ls -g | Select-Object -Skip 1 | ForEach-Object {
+    $raw = & bun pm ls -g 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        $errorText = ($raw | Out-String).Trim()
+        if ($errorText -match 'Lockfile not found') {
+            @() | Out-File $file -Encoding UTF8
+            Write-Host "bun backup OK (0 packages)" -ForegroundColor Green
+            return $true
+        }
+        Write-Warning "bun backup failed: $errorText"
+        return $false
+    }
+
+    $raw | Select-Object -Skip 1 | ForEach-Object {
         $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', ''
     } | Where-Object { $_ } | Out-File $file -Encoding UTF8
-    if ($LASTEXITCODE -ne 0) { Write-Warning "bun backup failed"; return $false }
     Write-Host "bun backup OK" -ForegroundColor Green
     return $true
 }

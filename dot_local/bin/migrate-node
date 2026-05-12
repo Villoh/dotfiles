@@ -1,0 +1,273 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+DRY_RUN=false
+SOURCE=""
+TARGET=""
+BACKUP_DIR="$(chezmoi source-path)/packages/linux"
+
+show_help() {
+    cat << EOF
+${CYAN}Uso:${NC} migrate-node [OPCIONES] [SOURCE] [TARGET]
+
+${YELLOW}Descripción:${NC}
+  Migra paquetes globales entre npm, bun y pnpm.
+  Instala en el gestor destino, desinstala del origen y refresca backups al final.
+
+${YELLOW}Opciones:${NC}
+  -n, --dry-run   Simular migración sin realizar cambios
+  -h, --help      Mostrar esta ayuda
+
+${YELLOW}Ejemplos:${NC}
+  migrate-node npm bun
+  migrate-node bun pnpm
+  migrate-node -n pnpm npm
+  migrate-node               # elige source y target con gum
+EOF
+    exit 0
+}
+
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+choose_manager() {
+    local prompt="$1"
+    shift
+    printf '%s\n' "$@" | gum choose \
+        --cursor.foreground="75" \
+        --selected.foreground="75" \
+        --header="$prompt" \
+        --header.foreground="245"
+}
+
+normalize_bun_lines() {
+    sed -E 's/\x1b\[[0-9;]*m//g; s/^[^[:alnum:]@]+//; s/@[0-9][^@]*$//'
+}
+
+get_npm_packages() {
+    if command_exists npm; then
+        npm ls -g --depth=0 --json 2>/dev/null | jq -r '.dependencies // {} | keys[]'
+    elif [ -f "$BACKUP_DIR/npm-global.txt" ]; then
+        cat "$BACKUP_DIR/npm-global.txt"
+    fi
+}
+
+get_bun_packages() {
+    if command_exists bun; then
+        bun pm ls -g 2>/dev/null | tail -n +2 | normalize_bun_lines
+    elif [ -f "$BACKUP_DIR/bun-global.txt" ]; then
+        cat "$BACKUP_DIR/bun-global.txt" | normalize_bun_lines
+    fi
+}
+
+get_pnpm_packages() {
+    if command_exists pnpm; then
+        pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]'
+    elif [ -f "$BACKUP_DIR/pnpm-global.txt" ]; then
+        cat "$BACKUP_DIR/pnpm-global.txt"
+    fi
+}
+
+get_packages() {
+    case "$1" in
+        npm) get_npm_packages ;;
+        bun) get_bun_packages ;;
+        pnpm) get_pnpm_packages ;;
+    esac
+}
+
+is_installed_in_target() {
+    local manager="$1"
+    local pkg="$2"
+    get_packages "$manager" | grep -qxF "$pkg"
+}
+
+install_in_target() {
+    local manager="$1"
+    local pkg="$2"
+
+    case "$manager" in
+        npm)  npm install -g "$pkg" ;;
+        bun)  bun add -g "$pkg" ;;
+        pnpm) pnpm add -g "$pkg" ;;
+    esac
+}
+
+uninstall_from_source() {
+    local manager="$1"
+    local pkg="$2"
+
+    case "$manager" in
+        npm)  npm uninstall -g "$pkg" ;;
+        bun)  bun remove -g "$pkg" ;;
+        pnpm) pnpm remove -g "$pkg" ;;
+    esac
+}
+
+refresh_backups() {
+    local source="$1"
+    local target="$2"
+    local flags=()
+
+    case "$source" in
+        npm) flags+=(--npm) ;;
+        bun) flags+=(--bun) ;;
+        pnpm) flags+=(--pnpm) ;;
+    esac
+
+    case "$target" in
+        npm) [ "$source" != "npm" ] && flags+=(--npm) ;;
+        bun) [ "$source" != "bun" ] && flags+=(--bun) ;;
+        pnpm) [ "$source" != "pnpm" ] && flags+=(--pnpm) ;;
+    esac
+
+    if command_exists backup-packages; then
+        backup-packages "${flags[@]}"
+    else
+        return 1
+    fi
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            ;;
+        -* )
+            echo -e "${RED}Error: opción desconocida '$1'${NC}"
+            exit 1
+            ;;
+        *)
+            if [ -z "$SOURCE" ]; then
+                SOURCE="$1"
+            elif [ -z "$TARGET" ]; then
+                TARGET="$1"
+            else
+                echo -e "${RED}Error: demasiados argumentos posicionales${NC}"
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+if ! command_exists gum; then
+    echo -e "${RED}❌ Error: gum no está instalado${NC}" >&2
+    exit 1
+fi
+
+if [ -z "$SOURCE" ]; then
+    SOURCE=$(choose_manager "Selecciona el gestor origen" npm bun pnpm) || exit 0
+fi
+
+if [ -z "$TARGET" ]; then
+    choices=(npm bun pnpm)
+    filtered=()
+    for choice in "${choices[@]}"; do
+        [ "$choice" != "$SOURCE" ] && filtered+=("$choice")
+    done
+    TARGET=$(choose_manager "Selecciona el gestor destino" "${filtered[@]}") || exit 0
+fi
+
+if [ "$SOURCE" = "$TARGET" ]; then
+    echo -e "${RED}❌ Source y target no pueden ser iguales${NC}"
+    exit 1
+fi
+
+echo -e "${CYAN}================================================================${NC}"
+if [ "$DRY_RUN" = true ]; then
+    echo -e "${CYAN}      ${YELLOW}SIMULACIÓN: MIGRACIÓN NODE GLOBALS${NC}"
+else
+    echo -e "${CYAN}           ${YELLOW}MIGRACIÓN NODE GLOBALS${NC}"
+fi
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${GREEN}Origen:${NC} $SOURCE"
+echo -e "${GREEN}Destino:${NC} $TARGET\n"
+
+mapfile -t ALL_PACKAGES < <(get_packages "$SOURCE" | sed '/^$/d' | sort -u)
+
+if [ ${#ALL_PACKAGES[@]} -eq 0 ]; then
+    echo -e "${YELLOW}⚠️  No se encontraron paquetes en $SOURCE${NC}"
+    exit 0
+fi
+
+SELECTED=$(printf '%s\n' "${ALL_PACKAGES[@]}" | gum choose \
+    --no-limit \
+    --cursor.foreground="75" \
+    --selected.foreground="75" \
+    --header="Selecciona paquetes para migrar ($SOURCE → $TARGET)" \
+    --header.foreground="245")
+
+if [ -z "$SELECTED" ]; then
+    echo -e "${YELLOW}⚠️  No se seleccionó ningún paquete${NC}"
+    exit 0
+fi
+
+SUCCESS_COUNT=0
+FAILED_COUNT=0
+
+echo ""
+echo -e "${BLUE}🚀 Iniciando migración...${NC}\n"
+
+while IFS= read -r pkg; do
+    [ -z "$pkg" ] && continue
+
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+    echo -e "📦 Migrando: ${GREEN}$pkg${NC} ${YELLOW}[$SOURCE]${NC} → ${BLUE}[$TARGET]${NC}"
+    echo -e "${CYAN}----------------------------------------------------------------${NC}"
+
+    if [ "$DRY_RUN" = true ]; then
+        echo -e "${YELLOW}[DRY] Instalar en $TARGET: $pkg${NC}"
+        echo -e "${YELLOW}[DRY] Desinstalar de $SOURCE: $pkg${NC}\n"
+        continue
+    fi
+
+    if is_installed_in_target "$TARGET" "$pkg"; then
+        echo -e "${YELLOW}⊘ Ya instalado en $TARGET${NC}"
+    else
+        echo -e "${YELLOW}Instalando en $TARGET...${NC}"
+        if install_in_target "$TARGET" "$pkg"; then
+            echo -e "${GREEN}✓ Instalado en $TARGET${NC}"
+        else
+            echo -e "${RED}✗ Error al instalar en $TARGET${NC}\n"
+            FAILED_COUNT=$((FAILED_COUNT + 1))
+            continue
+        fi
+    fi
+
+    echo -e "${YELLOW}Desinstalando de $SOURCE...${NC}"
+    if uninstall_from_source "$SOURCE" "$pkg"; then
+        echo -e "${GREEN}✓ Eliminado de $SOURCE${NC}\n"
+        SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+    else
+        echo -e "${RED}✗ Error al desinstalar de $SOURCE${NC}\n"
+        FAILED_COUNT=$((FAILED_COUNT + 1))
+    fi
+done <<< "$SELECTED"
+
+echo -e "\n${CYAN}================================================================${NC}"
+echo -e "${CYAN}                   ${GREEN}MIGRACIÓN COMPLETADA${NC}"
+echo -e "${CYAN}================================================================${NC}"
+echo -e "${CYAN}Exitosos:  ${GREEN}$SUCCESS_COUNT${NC}"
+echo -e "${CYAN}Fallidos:  ${RED}$FAILED_COUNT${NC}"
+echo -e "${CYAN}================================================================${NC}\n"
+
+if [ "$DRY_RUN" = false ] && [ $SUCCESS_COUNT -gt 0 ]; then
+    echo -e "${YELLOW}💾 Refrescando backups de $SOURCE y $TARGET...${NC}"
+    if refresh_backups "$SOURCE" "$TARGET"; then
+        echo -e "${GREEN}✓ Backups actualizados${NC}\n"
+    else
+        echo -e "${YELLOW}⚠️  No se pudieron refrescar los backups${NC}\n"
+    fi
+fi
+
+echo -e "${YELLOW}💡 Tip: Ejecuta 'backup-packages --$SOURCE --$TARGET' si quieres regenerarlos manualmente${NC}"

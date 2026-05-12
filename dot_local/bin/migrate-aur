@@ -251,4 +251,14 @@ echo -e "${CYAN}Exitosos:  ${GREEN}$SUCCESS_COUNT${NC}"
 echo -e "${CYAN}Fallidos:  ${RED}$FAILED_COUNT${NC}"
 echo -e "${CYAN}================================================================${NC}\n"
 
+if [ $SUCCESS_COUNT -gt 0 ]; then
+    echo -e "${YELLOW}💾 Refrescando backups de pacman y AUR...${NC}"
+    if command -v backup-packages >/dev/null 2>&1; then
+        backup-packages --pacman --aur
+        echo ""
+    else
+        echo -e "${YELLOW}⚠️  backup-packages no está disponible, omitiendo refresh${NC}\n"
+    fi
+fi
+
 echo -e "${YELLOW}💡 Tip: Ejecuta 'list-packages' para verificar los cambios${NC}"

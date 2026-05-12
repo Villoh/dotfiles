@@ -13,6 +13,7 @@ DEFAULT_BREW="$DEFAULT_DIR/brew.txt"
 DEFAULT_UV="$DEFAULT_DIR/uv-tools.txt"
 DEFAULT_BUN="$DEFAULT_DIR/bun-global.txt"
 DEFAULT_NPM="$DEFAULT_DIR/npm-global.txt"
+DEFAULT_PNPM="$DEFAULT_DIR/pnpm-global.txt"
 DEFAULT_BIN="$DEFAULT_DIR/bin-packages.txt"
 DEFAULT_CARGO="$DEFAULT_DIR/cargo.txt"
 DEFAULT_CARGO_MINIMAL="$DEFAULT_DIR/cargo-minimal.txt"
@@ -56,6 +57,7 @@ SELECTED_MANAGERS=$(gum choose \
     "🐍 uv" \
     "🍞 bun" \
     "📦 npm" \
+    "📦 pnpm" \
     "🗃️  bin" \
     "📦 cargo")
 
@@ -278,6 +280,29 @@ install_npm_packages() {
     done <<< "$selected"
 }
 
+install_pnpm_packages() {
+    local file="$1"
+    [ ! -f "$file" ] && _warn_missing "$file" && return 1
+    echo ""
+    gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 pnpm — $(basename "$file")"
+
+    local selected
+    selected=$(_select_packages "$file" "📦 Selecciona paquetes pnpm") || return 0
+
+    local installed
+    installed=$(pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' || true)
+
+    while IFS= read -r pkg; do
+        [ -z "$pkg" ] && continue
+        if echo "$installed" | grep -qxF "$pkg"; then
+            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
+        else
+            gum style --foreground 75 "  [....] $pkg"
+            pnpm add -g "$pkg"
+        fi
+    done <<< "$selected"
+}
+
 install_cargo_packages() {
     if ! command_exists cargo; then
         gum style --foreground 214 --border rounded --padding "1 2" "⚠️  cargo no instalado — instala rustup primero"
@@ -388,6 +413,9 @@ while IFS= read -r manager; do
         *bun*)
             file=$(get_file_location "bun-global.txt" "🍞" "$DEFAULT_BUN")
             install_bun_packages "$file" ;;
+        *pnpm*)
+            file=$(get_file_location "pnpm-global.txt" "📦" "$DEFAULT_PNPM")
+            install_pnpm_packages "$file" ;;
         *npm*)
             file=$(get_file_location "npm-global.txt" "📦" "$DEFAULT_NPM")
             install_npm_packages "$file" ;;
