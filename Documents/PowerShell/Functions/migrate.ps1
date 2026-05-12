@@ -404,7 +404,6 @@ function Invoke-WingetToScoopMigration {
 function Invoke-ScoopToWingetMigration {
     Write-Host "[migrate] Reading scoop packages..." -ForegroundColor Cyan
     $scoopNames = Get-ScoopPackages
-    $wingetIds  = Get-WingetPackages
 
     $selected = Invoke-FzfPicker -Items ($scoopNames | Sort-Object) `
         -Prompt "  migrate scoop -> winget> " `
@@ -430,18 +429,13 @@ function Invoke-ScoopToWingetMigration {
         Write-Host ""
         Write-Host "  [$($entry.ScoopName)  ->  $($entry.WingetId)]" -ForegroundColor Cyan
 
-        $alreadyInWinget = $wingetIds -contains $entry.WingetId
-        if (-not $alreadyInWinget) {
-            $installed = winget list --id $entry.WingetId --accept-source-agreements 2>$null |
-                         Select-String $entry.WingetId
-            if ($installed) {
-                Write-Host "    [SKIP] winget: already installed" -ForegroundColor DarkGray
-            } else {
-                $ok_install = Install-WingetPackage $entry.WingetId
-                if (-not $ok_install) { $fail++; continue }
-            }
+        $installed = winget list --id $entry.WingetId --accept-source-agreements 2>$null |
+                     Select-String $entry.WingetId
+        if ($installed) {
+            Write-Host "    [SKIP] winget: already installed" -ForegroundColor DarkGray
         } else {
-            Write-Host "    [SKIP] already tracked in winget" -ForegroundColor DarkGray
+            $ok_install = Install-WingetPackage $entry.WingetId
+            if (-not $ok_install) { $fail++; continue }
         }
 
         Uninstall-ScoopPackage $entry.ScoopName
