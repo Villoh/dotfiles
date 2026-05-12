@@ -349,6 +349,10 @@ function Invoke-WingetToScoopMigration {
         if ($scoopBuckets -notcontains $b) {
             Write-Host "  Adding scoop bucket: $b" -ForegroundColor Cyan
             scoop bucket add $b
+            if ($LASTEXITCODE -ne 0) {
+                Write-Warning "Failed to add scoop bucket '$b'. Migration stopped."
+                return
+            }
         }
     }
 
@@ -369,7 +373,7 @@ function Invoke-WingetToScoopMigration {
                 if (-not $ok_install) { $fail++; continue }
             }
         } else {
-            Write-Host "    [SKIP] already tracked in scoop" -ForegroundColor DarkGray
+            Write-Host "    [SKIP] already available in scoop" -ForegroundColor DarkGray
         }
 
         Uninstall-WingetPackage $entry.WingetId
@@ -404,7 +408,7 @@ function Invoke-WingetToScoopMigration {
 function Invoke-ScoopToWingetMigration {
     Write-Host "[migrate] Reading scoop packages..." -ForegroundColor Cyan
     $scoopNames = Get-ScoopPackages
-    $wingetIds  = Get-WingetPackages
+    $null = Get-WingetPackages
 
     $selected = Invoke-FzfPicker -Items ($scoopNames | Sort-Object) `
         -Prompt "  migrate scoop -> winget> " `
@@ -430,8 +434,8 @@ function Invoke-ScoopToWingetMigration {
         Write-Host ""
         Write-Host "  [$($entry.ScoopName)  ->  $($entry.WingetId)]" -ForegroundColor Cyan
 
-        $installed = winget list --id $entry.WingetId --accept-source-agreements 2>$null |
-                     Select-String $entry.WingetId
+        $installed = winget list --id $entry.WingetId -e --accept-source-agreements 2>$null |
+                     Select-String -SimpleMatch $entry.WingetId
         if ($installed) {
             Write-Host "    [SKIP] winget: already installed" -ForegroundColor DarkGray
         } else {
@@ -499,6 +503,7 @@ function Get-StartupPatch {
         $exeName = Split-Path $expanded -Leaf
         $match   = $scoopExes | Where-Object { $_.Name -ieq $exeName } | Select-Object -First 1
         if ($match) {
+            # Patch only the first matching startup entry for this Scoop app.
             $newPath = $match.FullName -replace [regex]::Escape($env:USERPROFILE), '%USERPROFILE%'
             return @{ Entry = $entry; OldPath = $entry.path; NewPath = $newPath }
         }
