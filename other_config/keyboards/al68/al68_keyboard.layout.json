@@ -75,7 +75,7 @@
       "KC_NO",
       "KC_NO",
       "MO(1)",
-      "KC_RCTL",
+      "KC_RALT",
       "KC_LEFT",
       "KC_DOWN",
       "KC_RGHT"
@@ -137,7 +137,7 @@
       "KC_TRNS",
       "KC_TRNS",
       "KC_DEL",
-      "KC_RALT",
+      "KC_TRNS",
       "KC_TRNS",
       "RGB_VAI",
       "CUSTOM(18)",
