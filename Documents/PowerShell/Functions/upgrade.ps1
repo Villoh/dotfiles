@@ -23,41 +23,68 @@ function Invoke-ScoopUpgrade {
 Set-Alias -Name update-scoop   -Value Invoke-ScoopUpgrade
 Set-Alias -Name upgrade-scoop  -Value Invoke-ScoopUpgrade
 
-function Invoke-NodeUpgrade {
+function Invoke-NpmUpgrade {
     if (Get-Command npm -ErrorAction SilentlyContinue) { npm update -g }
     else { Write-Warning "npm not found." }
+}
+Set-Alias -Name update-npm     -Value Invoke-NpmUpgrade
+Set-Alias -Name upgrade-npm    -Value Invoke-NpmUpgrade
 
-    if (Get-Command bun -ErrorAction SilentlyContinue) {
-        $outdated = @(bun outdated -g 2>$null | ForEach-Object {
-            $line = ($_ -replace '\x1b\[[0-9;]*m', '').Trim()
-            if (-not $line -or $line -match '^bun outdated ' -or $line -match '^\|[- ]+\|$' -or $line -match '^\|\s*Package\s*\|') {
-                return
-            }
+function Invoke-BunUpgrade {
+    if (-not (Get-Command bun -ErrorAction SilentlyContinue)) { Write-Warning "bun not found."; return }
 
-            $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
-            if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
-                $pkgName = $columns[0]
-                $current = $columns[1]
-                $update = $columns[2]
+    $outdated = @(bun outdated -g 2>$null | ForEach-Object {
+        $line = ($_ -replace '\x1b\[[0-9;]*m', '').Trim()
+        if (-not $line -or $line -match '^bun outdated ' -or $line -match '^\|[- ]+\|$' -or $line -match '^\|\s*Package\s*\|') {
+            return
+        }
 
-                if ($current -ne $update) {
-                    [PSCustomObject]@{
-                        Name = $pkgName
-                        Version = $update
-                    }
+        $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+        if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
+            $pkgName = $columns[0]
+            $current = $columns[1]
+            $update = $columns[2]
+
+            if ($current -ne $update) {
+                [PSCustomObject]@{
+                    Name = $pkgName
+                    Version = $update
                 }
             }
-        })
+        }
+    })
 
-        if ($outdated.Count -eq 0) {
-            Write-Host "bun: all global packages are up to date." -ForegroundColor Green
-        } else {
-            foreach ($pkg in $outdated) {
-                bun add -g "$($pkg.Name)@$($pkg.Version)"
-            }
+    if ($outdated.Count -eq 0) {
+        Write-Host "bun: all global packages are up to date." -ForegroundColor Green
+    } else {
+        foreach ($pkg in $outdated) {
+            bun add -g "$($pkg.Name)@$($pkg.Version)"
         }
     }
-    else { Write-Warning "bun not found." }
+}
+Set-Alias -Name update-bun     -Value Invoke-BunUpgrade
+Set-Alias -Name upgrade-bun    -Value Invoke-BunUpgrade
+
+function Invoke-PnpmUpgrade {
+    if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) { Write-Warning "pnpm not found."; return }
+
+    $outdated = pnpm outdated -g --format json 2>$null | ConvertFrom-Json
+    if (-not $outdated) {
+        Write-Host "pnpm: all global packages are up to date." -ForegroundColor Green
+        return
+    }
+
+    foreach ($pkg in $outdated.PSObject.Properties.Name) {
+        pnpm add -g "${pkg}@latest"
+    }
+}
+Set-Alias -Name update-pnpm    -Value Invoke-PnpmUpgrade
+Set-Alias -Name upgrade-pnpm   -Value Invoke-PnpmUpgrade
+
+function Invoke-NodeUpgrade {
+    Invoke-NpmUpgrade
+    Invoke-BunUpgrade
+    Invoke-PnpmUpgrade
 }
 Set-Alias -Name update-node    -Value Invoke-NodeUpgrade
 Set-Alias -Name upgrade-node   -Value Invoke-NodeUpgrade
