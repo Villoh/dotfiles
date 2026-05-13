@@ -1,8 +1,12 @@
 {
   "name": "bin",
   "dependencies": {
-    "@getpaseo/cli": {
-      "version": "0.1.74",
+    "@juicesharp/rpiv-ask-user-question": {
+      "version": "1.4.0",
+      "overridden": false
+    },
+    "@juicesharp/rpiv-todo": {
+      "version": "1.4.0",
       "overridden": false
     },
     "pi-lens": {
@@ -10,7 +14,7 @@
       "overridden": false
     },
     "pi-mcp-adapter": {
-      "version": "2.6.0",
+      "version": "2.5.4",
       "overridden": false
     },
     "pi-rtk-optimizer": {

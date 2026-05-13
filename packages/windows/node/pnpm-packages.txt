@@ -1,6 +1,7 @@
 @earendil-works/pi-coding-agent
 @filen/cli
 @fission-ai/openspec
+@getpaseo/cli
 @gsd-build/sdk
 @oh-my-pi/pi-coding-agent
 @vtsls/language-server
