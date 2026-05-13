@@ -164,7 +164,7 @@
   "CustomWindowTop": 0,
   "KeepMaxResults": false,
   "MaxResultsToShow": 5,
-  "ActivateTimes": 989,
+  "ActivateTimes": 1027,
   "CustomPluginHotkeys": [],
   "CustomShortcuts": [],
   "DontPromptUpdateMsg": false,
@@ -195,7 +195,7 @@
   "CustomAnimationLength": 360,
   "PluginSettings": {
     "PythonExecutablePath": "",
-    "NodeExecutablePath": "C:\\Program Files\\nodejs\\node.exe",
+    "NodeExecutablePath": "C:\\Users\\mikel\\scoop\\apps\\nodejs-lts\\current\\node.exe",
     "Plugins": {
       "0ECADE17459B49F587BF81DC3A125110": {
         "ID": "0ECADE17459B49F587BF81DC3A125110",
