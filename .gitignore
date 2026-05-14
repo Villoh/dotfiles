@@ -1,6 +1,9 @@
 # Claude Code — local session state, not config
 .claude/settings.local.json
 
+# Pi agent — local runtime state, not config
+.pi/
+
 # State / runtime — not config
 **/*.tmp
 **/*.log

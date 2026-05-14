@@ -99,7 +99,8 @@
     "superpowers@superpowers-marketplace": true,
     "typescript-lsp@claude-plugins-official": true,
     "vscode-langservers@claude-code-lsps": true,
-    "csharp-lsp@claude-plugins-official": true
+    "csharp-lsp@claude-plugins-official": true,
+    "plannotator@plannotator": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -148,6 +149,12 @@
       "source": {
         "source": "github",
         "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "plannotator": {
+      "source": {
+        "source": "github",
+        "repo": "backnotprop/plannotator"
       }
     }
   },
