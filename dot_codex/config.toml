@@ -23,7 +23,6 @@ trusted_hash = "sha256:760d064e906e823f94573867ba12441f14c45346a8607a2955496ef08
 [hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:stop:0:0"]
 enabled = true
 trusted_hash = "sha256:d0b497ff815fc386f173a3ecb5579d4451af310b72444eb57e50f92f2949aca3"
-
 [marketplaces.openai-bundled]
 last_updated = "2026-05-10T23:27:32Z"
 source_type = "local"
@@ -35,8 +34,8 @@ source_type = "local"
 source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
 
 [marketplaces.caveman-repo]
-last_updated = "2026-05-10T23:27:30Z"
-last_revision = "754795ada42dea54adf061d42a61e560caa4f9ce"
+last_updated = "2026-05-14T16:34:01Z"
+last_revision = "63a91ecadbf4c4719a4602a5abb00883f9966034"
 source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
