@@ -1,8 +1,8 @@
 {
   "lastChangelogVersion": "0.74.0",
-  "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-6",
-  "defaultThinkingLevel": "medium",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "deepseek-v4-pro",
+  "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-rtk-optimizer",
@@ -16,11 +16,9 @@
     "npm:@juicesharp/rpiv-advisor",
     "npm:@juicesharp/rpiv-i18n",
     "npm:@juicesharp/rpiv-args",
-    "npm:pi-intercom",
     "npm:pi-web-access",
     "npm:pi-powerline-footer",
-    "npm:context-mode",
-    "npm:@plannotator/pi-extension",
-    "npm:pi-autoresearch"
+    "npm:pi-autoresearch",
+    "npm:@plannotator/pi-extension"
   ]
 }
