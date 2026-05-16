@@ -20,22 +20,49 @@
         "enabled": false,
         "mode": "append"
       }
-    ]
+    ],
+    "./plugins/caveman/plugin.js"
   ],
   "provider": {
-    // CLIProxyAPI
     "anthropic": {
       "options": {
         "baseURL": "http://localhost:8317/v1",
         "apiKey": "cliproxyapi",
         "models": [
-          { "id": "claude-sonnet-4-6", "name": "Claude Sonnet 4.6 (Claude Code)", "context_window": 1000000, "can_reason": true, "supports_attachments": true },
-          { "id": "claude-opus-4-7",   "name": "Claude Opus 4.7 (Claude Code)",   "context_window": 1000000, "can_reason": true, "supports_attachments": true },
-          { "id": "claude-haiku-4-5-20251001", "name": "Claude Haiku 4.5", "context_window": 200000, "can_reason": true, "supports_attachments": true }
+          {
+            "id": "claude-sonnet-4-6",
+            "name": "Claude Sonnet 4.6 (Claude Code)",
+            "context_window": 1000000,
+            "can_reason": true,
+            "supports_attachments": true
+          },
+          {
+            "id": "claude-opus-4-7",
+            "name": "Claude Opus 4.7 (Claude Code)",
+            "context_window": 1000000,
+            "can_reason": true,
+            "supports_attachments": true
+          },
+          {
+            "id": "claude-haiku-4-5-20251001",
+            "name": "Claude Haiku 4.5",
+            "context_window": 200000,
+            "can_reason": true,
+            "supports_attachments": true
+          }
         ]
       }
-    },
+    }
   },
   "mcp": {
+    "caveman-shrink": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "caveman-shrink"
+      ],
+      "enabled": true
+    }
   }
 }
