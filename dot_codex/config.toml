@@ -10,19 +10,19 @@ wire_api = "responses"
 
 [hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:session_start:0:0"]
 enabled = true
-trusted_hash = "sha256:700a54edc7853a1568fcb1fd24665a870aeaea3a39fca246de8777f4935786be"
+trusted_hash = "sha256:ce6ffaa15378245d93d7602b7a244af0d6524cf280a7c6cf86b72ceae0487fe6"
 [hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:user_prompt_submit:0:0"]
 enabled = true
-trusted_hash = "sha256:2ddab19fea1e3b81bbdbc69be679c6ec20f1afaa1a6a91572d8a71acad3382d2"
+trusted_hash = "sha256:17cc89499a337bc96da474031b18e884eea429c5e0d57cbe001dacbcec3357eb"
 [hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:pre_tool_use:0:0"]
 enabled = true
-trusted_hash = "sha256:03eee774d39b65571f41882f18a8d69d7a9d616766827ebd025821cc4953ea6c"
+trusted_hash = "sha256:5e6589a168799af2ae1f1e53eaeb8769a7fe6fed6cd6bf782b72306884af8263"
 [hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:post_tool_use:0:0"]
 enabled = true
-trusted_hash = "sha256:760d064e906e823f94573867ba12441f14c45346a8607a2955496ef087f4d1bb"
+trusted_hash = "sha256:2256f1a8599264fa34a26d33f8faa11b0fde1f3feec0025899a91c4044183379"
 [hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:stop:0:0"]
 enabled = true
-trusted_hash = "sha256:d0b497ff815fc386f173a3ecb5579d4451af310b72444eb57e50f92f2949aca3"
+trusted_hash = "sha256:17cc25e0125fc6730a28fbaa3d3dbae05e591ffb5cd801566146fec2e706b8d8"
 [marketplaces.openai-bundled]
 last_updated = "2026-05-10T23:27:32Z"
 source_type = "local"
@@ -40,7 +40,7 @@ source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.claude-code-lsps]
-last_updated = "2026-05-10T23:27:32Z"
+last_updated = "2026-05-17T16:21:16Z"
 last_revision = "d2cdacd4f0db0d7373df04f3658e3b21592884fc"
 source_type = "git"
 source = "https://github.com/Piebald-AI/claude-code-lsps.git"
@@ -101,3 +101,7 @@ enabled = true
 
 [plugins."browser-use@openai-bundled"]
 enabled = true
+
+[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:permission_request:0:0"]
+enabled = true
+trusted_hash = "sha256:f5d868e9d9290cf001f2a9dbe946044e11e929041238311f1192ded1ad7638a0"

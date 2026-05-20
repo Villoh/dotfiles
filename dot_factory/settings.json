@@ -140,5 +140,80 @@
         "repo": "obra/superpowers"
       }
     }
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+          }
+        ]
+      }
+    ]
   }
 }

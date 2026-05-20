@@ -583,7 +583,8 @@
         },
         "Settings": {
             "enabled": true,
-            "settingsLocation": "aboveNitro"
+            "settingsLocation": "aboveNitro",
+            "includeVencordInfoWhenCopying": true
         },
         "DisableDeepLinks": {
             "enabled": true
@@ -624,6 +625,6 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1778283177589
+        "settingsSyncVersion": 1779289479585
     }
 }

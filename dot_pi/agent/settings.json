@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.74.0",
-  "defaultProvider": "opencode-go",
-  "defaultModel": "deepseek-v4-pro",
-  "defaultThinkingLevel": "high",
+  "lastChangelogVersion": "0.75.4",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.4",
+  "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-rtk-optimizer",
@@ -11,14 +11,27 @@
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@juicesharp/rpiv-todo",
     "npm:@juicesharp/rpiv-btw",
-    "npm:@juicesharp/rpiv-pi",
-    "npm:@tintinweb/pi-subagents",
     "npm:@juicesharp/rpiv-advisor",
-    "npm:@juicesharp/rpiv-i18n",
     "npm:@juicesharp/rpiv-args",
     "npm:pi-web-access",
-    "npm:pi-powerline-footer",
     "npm:pi-autoresearch",
-    "npm:@plannotator/pi-extension"
-  ]
+    {
+      "source": "npm:@plannotator/pi-extension",
+      "skills": []
+    },
+    "npm:pi-caveman",
+    "npm:pi-powerline-footer",
+    "npm:pi-rewind-hook",
+    "npm:gentle-pi",
+    "npm:gentle-engram",
+    "npm:pi-markdown-preview"
+  ],
+  "powerline": {
+    "preset": "default",
+    "fixedEditor": true
+  },
+  "npmCommand": [
+    "pnpm"
+  ],
+  "hideThinkingBlock": false
 }

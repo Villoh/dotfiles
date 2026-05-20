@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
@@ -50,7 +50,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
@@ -61,7 +61,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
@@ -72,7 +72,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "C:/Users/mikel/AppData/Roaming/orca/agent-hooks/claude-hook.cmd"
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
           }
         ]
       }
