@@ -34,44 +34,44 @@ source_type = "local"
 source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
 
 [marketplaces.caveman-repo]
-last_updated = "2026-05-14T16:34:01Z"
-last_revision = "63a91ecadbf4c4719a4602a5abb00883f9966034"
+last_updated = "2026-05-20T15:07:14Z"
+last_revision = "655b7d9c5431f822264b7732e9901c5578ac84cf"
 source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.claude-code-lsps]
-last_updated = "2026-05-17T16:21:16Z"
+last_updated = "2026-05-20T06:57:55Z"
 last_revision = "d2cdacd4f0db0d7373df04f3658e3b21592884fc"
 source_type = "git"
 source = "https://github.com/Piebald-AI/claude-code-lsps.git"
 
 [marketplaces.claude-hud]
-last_updated = "2026-05-10T23:27:34Z"
-last_revision = "8ea813f95e723170b488387c8da3f47773c6d877"
+last_updated = "2026-05-20T06:57:58Z"
+last_revision = "6f7d07323c5615afc08771cebc22073e8c04a946"
 source_type = "git"
 source = "https://github.com/jarrodwatts/claude-hud.git"
 
 [marketplaces.claude-plugins-official]
-last_updated = "2026-05-10T23:27:36Z"
-last_revision = "00679aef889efe36bb0389f81d70b6229a2013ee"
+last_updated = "2026-05-20T06:58:01Z"
+last_revision = "bef2b9b246e2072d167a71b7a8d65718ec55d2ef"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
 [marketplaces.context7-marketplace]
-last_updated = "2026-05-10T23:27:39Z"
-last_revision = "78b98266954d35da8aa93ad40c67df33a3ff4443"
+last_updated = "2026-05-19T18:07:55Z"
+last_revision = "438b1df235218c6dd66086e9b0d6a5b410f1635e"
 source_type = "git"
 source = "https://github.com/upstash/context7.git"
 
 [marketplaces.frontend-slides]
-last_updated = "2026-05-10T23:27:41Z"
+last_updated = "2026-05-19T18:07:57Z"
 last_revision = "8dca834fc61abc9dd633cbe6a74ed7be3d82a608"
 source_type = "git"
 source = "https://github.com/zarazhangrui/frontend-slides.git"
 
 [marketplaces.superpowers-marketplace]
-last_updated = "2026-05-10T23:27:42Z"
-last_revision = "91cb319aedbfa57b67b2460b38c1a80d38b0137f"
+last_updated = "2026-05-19T18:07:59Z"
+last_revision = "647ca50fc234330bc23cf27a556070af36f96a16"
 source_type = "git"
 source = "https://github.com/obra/superpowers-marketplace.git"
 

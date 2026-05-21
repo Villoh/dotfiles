@@ -27,14 +27,6 @@
     "keybindings": 
     [
         {
-            "id": "Terminal.MoveFocusLeft",
-            "keys": "alt+h"
-        },
-        {
-            "id": "Terminal.ResetFontSize",
-            "keys": "ctrl+0"
-        },
-        {
             "id": "Terminal.ResizePaneRight",
             "keys": "alt+shift+right"
         },
@@ -47,20 +39,28 @@
             "keys": "ctrl+shift+c"
         },
         {
-            "id": "Terminal.SwitchToTab6",
-            "keys": "alt+7"
+            "id": "Terminal.MoveFocusLeft",
+            "keys": "alt+h"
         },
         {
-            "id": "Terminal.ScrollUpPage",
-            "keys": "shift+pgup"
+            "id": "Terminal.ResetFontSize",
+            "keys": "ctrl+0"
+        },
+        {
+            "id": "Terminal.PasteFromClipboard",
+            "keys": "ctrl+shift+v"
         },
         {
             "id": "Terminal.TogglePaneZoom",
             "keys": "alt+z"
         },
         {
-            "id": "Terminal.PasteFromClipboard",
-            "keys": "ctrl+shift+v"
+            "id": "Terminal.SwitchToTab6",
+            "keys": "alt+7"
+        },
+        {
+            "id": "Terminal.ScrollUpPage",
+            "keys": "shift+pgup"
         },
         {
             "id": "Terminal.OpenNewWindow",
@@ -71,20 +71,20 @@
             "keys": "ctrl+shift+f"
         },
         {
-            "id": "User.splitPane.91AB55B1",
-            "keys": "alt+shift+d"
-        },
-        {
-            "id": "User.splitPane.91AB55B1",
-            "keys": "alt+n"
+            "id": "Terminal.DecreaseFontSize",
+            "keys": "ctrl+minus"
         },
         {
             "id": "Terminal.IncreaseFontSize",
             "keys": "ctrl+plus"
         },
         {
-            "id": "Terminal.DecreaseFontSize",
-            "keys": "ctrl+minus"
+            "id": "User.splitPane.91AB55B1",
+            "keys": "alt+n"
+        },
+        {
+            "id": "User.splitPane.91AB55B1",
+            "keys": "alt+shift+d"
         },
         {
             "id": "Terminal.ScrollDownPage",
@@ -115,12 +115,12 @@
             "keys": "alt+comma"
         },
         {
-            "id": "Terminal.ResizePaneDown",
-            "keys": "alt+shift+down"
-        },
-        {
             "id": "Terminal.NextTab",
             "keys": "ctrl+tab"
+        },
+        {
+            "id": "Terminal.ResizePaneDown",
+            "keys": "alt+shift+down"
         },
         {
             "id": "Terminal.PrevTab",
@@ -135,12 +135,12 @@
             "keys": "alt+2"
         },
         {
-            "id": "Terminal.MoveFocusLeft",
-            "keys": "alt+left"
-        },
-        {
             "id": "Terminal.SwitchToTab2",
             "keys": "alt+3"
+        },
+        {
+            "id": "Terminal.MoveFocusLeft",
+            "keys": "alt+left"
         },
         {
             "id": "Terminal.SwitchToTab3",
@@ -151,28 +151,28 @@
             "keys": "alt+5"
         },
         {
-            "id": "Terminal.ResizePaneLeft",
-            "keys": "alt+shift+left"
-        },
-        {
             "id": "Terminal.SwitchToTab5",
             "keys": "alt+6"
+        },
+        {
+            "id": "Terminal.ResizePaneLeft",
+            "keys": "alt+shift+left"
         },
         {
             "id": "Terminal.SwitchToTab7",
             "keys": "alt+8"
         },
         {
-            "id": "Terminal.ResizePaneUp",
-            "keys": "alt+shift+k"
+            "id": "Terminal.SwitchToTab8",
+            "keys": "alt+9"
         },
         {
             "id": "Terminal.ClosePane",
             "keys": "alt+x"
         },
         {
-            "id": "Terminal.SwitchToTab8",
-            "keys": "alt+9"
+            "id": "Terminal.ResizePaneUp",
+            "keys": "alt+shift+k"
         },
         {
             "id": "Terminal.SplitPaneDown",
@@ -207,12 +207,12 @@
             "keys": "alt+right"
         },
         {
-            "id": "Terminal.ResizePaneDown",
-            "keys": "alt+shift+j"
-        },
-        {
             "id": "Terminal.ClosePane",
             "keys": "alt+shift+w"
+        },
+        {
+            "id": "Terminal.ResizePaneDown",
+            "keys": "alt+shift+j"
         },
         {
             "id": "Terminal.ResizePaneLeft",
@@ -297,6 +297,12 @@
                 "hidden": false,
                 "name": "PowerShell 7",
                 "source": "Windows.Terminal.PowershellCore"
+            },
+            {
+                "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+                "hidden": false,
+                "name": "Git Bash",
+                "source": "Git"
             }
         ]
     },

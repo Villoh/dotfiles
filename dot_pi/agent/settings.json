@@ -24,7 +24,10 @@
     "npm:pi-rewind-hook",
     "npm:gentle-pi",
     "npm:gentle-engram",
-    "npm:pi-markdown-preview"
+    "npm:pi-markdown-preview",
+    "npm:pi-lifeline",
+    "npm:glimpseui",
+    "npm:pi-studio"
   ],
   "powerline": {
     "preset": "default",

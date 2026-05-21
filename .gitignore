@@ -69,3 +69,5 @@ AppData/Roaming/Rainmeter/Layouts/@Backup/
 dot_config/ytm-player/*
 !dot_config/ytm-player/config.toml
 !dot_config/ytm-player/themes/
+# Local Pi runtime state
+.atl/
