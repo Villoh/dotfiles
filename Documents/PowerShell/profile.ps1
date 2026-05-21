@@ -2,15 +2,6 @@
 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
             [System.Environment]::GetEnvironmentVariable("PATH", "User")
 
-# Overrides
-$EDITOR_Override = 'zed'
-
-# oh-my-posh
-function Get-Theme_Override {
-	#oh-my-posh init pwsh --config 'catppuccin' | Invoke-Expression
-	Invoke-Expression (&starship init powershell)
-}
-
 # Terminal Icons
 Import-Module -Name Terminal-Icons
 
@@ -31,9 +22,4 @@ Register-ArgumentCompleter -Native -CommandName winget -ScriptBlock {
         ForEach-Object {
             [System.Management.Automation.CompletionResult]::new($_, $_, 'ParameterValue', $_)
         }
-}
-
-# Force Fastfetch to use YOUR config every time (bypass path confusion)
-if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
-    fastfetch -c "C:/Users/Mikel/.config/fastfetch/config.jsonc"
 }
