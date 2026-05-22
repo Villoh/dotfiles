@@ -5,7 +5,10 @@ useDefault = true
 
 [allowlist]
 paths = [
-    '''.*Vencord.*''',
-    '''.*vesktop.*''',
-    '''.*WindowsTerminal.*settings\.json''',
+  '''.*Vencord.*''',
+  '''.*vesktop.*''',
+  '''.*WindowsTerminal.*settings\.json''',
+  '''^other_config/stylus/stylus\.json$''',
+  '''^dot_config/stylus/stylus\.json$''',
+  '''^stylus-old\.json$''',
 ]

@@ -1,4 +1,4 @@
 [install]
-minimumReleaseAge = 172800
+minimumReleaseAge = 259200
 exact = true
 ignoreScripts = true
