@@ -1,4 +1,4 @@
-# Migrated by Pretty PowerShell setup
+﻿# Migrated by Pretty PowerShell setup
 # Migration date: 2026-05-21 18:00:12 +02:00
 # Repo-managed logic lives in standalone PrettyPowerShell.ps1
 # Previous main profile backup: C:\Users\mikel\Documents\PowerShell\Backups\20260521-180005\Microsoft.PowerShell_profile.ps1

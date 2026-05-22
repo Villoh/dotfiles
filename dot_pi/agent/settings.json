@@ -2,7 +2,7 @@
   "lastChangelogVersion": "0.75.4",
   "defaultProvider": "openai-codex",
   "defaultModel": "gpt-5.4",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "off",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-rtk-optimizer",

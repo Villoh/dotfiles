@@ -24,6 +24,19 @@
           "contextWindow": 200000
         }
       ]
+    },
+    "perplexity": {
+      "baseUrl": "http://localhost:8327",
+      "apiKey": "",
+      "api": "openai-completions",
+      "models": [
+        {
+          "id": "anthropic/claude-sonnet-4-6",
+          "reasoning": true,
+          "input": ["text", "image"],
+          "contextWindow": 1000000
+        }
+      ]
     }
   }
 }

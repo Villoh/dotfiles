@@ -13,13 +13,13 @@
     "metrics": false,
   },
   "agent_servers": {
+    "pi-acp": {
+      "type": "registry"
+    },
     "opencode": {
       "type": "registry"
     },
     "claude-acp": {
-      "type": "registry",
-    },
-    "pi-acp": {
       "type": "registry",
     }
   },
