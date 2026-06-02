@@ -1,126 +1,4 @@
 {
-  "customModels": [
-    {
-      "model": "claude-opus-4-7",
-      "id": "custom:Claude-Opus-4.7",
-      "index": 1,
-      "baseUrl": "http://localhost:8317",
-      "apiKey": "cliproxyapi",
-      "displayName": "Claude Opus 4.7",
-      "noImageSupport": false,
-      "provider": "anthropic"
-    },
-    {
-      "model": "claude-sonnet-4-6",
-      "id": "custom:Claude-Sonnet-4.6",
-      "index": 2,
-      "baseUrl": "http://localhost:8317",
-      "apiKey": "cliproxyapi",
-      "displayName": "Claude Sonnet 4.6",
-      "noImageSupport": false,
-      "provider": "anthropic"
-    },
-    {
-      "model": "claude-haiku-4-6",
-      "id": "custom:Claude-Haiku-4.6",
-      "index": 3,
-      "baseUrl": "http://localhost:8317",
-      "apiKey": "cliproxyapi",
-      "displayName": "Claude Haiku 4.6",
-      "noImageSupport": false,
-      "provider": "anthropic"
-    },
-    {
-      "model": "gpt-5.4",
-      "id": "custom:GPT-5.4-Codex",
-      "index": 4,
-      "baseUrl": "http://localhost:8317/v1",
-      "apiKey": "cliproxyapi",
-      "displayName": "GPT-5.4 Codex [ChatGPT Plus]",
-      "noImageSupport": false,
-      "provider": "openai"
-    },
-    {
-      "model": "gpt-5.5",
-      "id": "custom:GPT-5.5-Codex",
-      "index": 5,
-      "baseUrl": "http://localhost:8317/v1",
-      "apiKey": "cliproxyapi",
-      "displayName": "GPT-5.5 Codex [ChatGPT Plus]",
-      "noImageSupport": false,
-      "provider": "openai"
-    },
-    {
-      "model": "kimi-k2.6",
-      "id": "custom:kimi-k2.6",
-      "index": 6,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "Kimi K2.6 [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    },
-    {
-      "model": "deepseek-v4-pro",
-      "id": "custom:deepseek-v4-pro",
-      "index": 7,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "DeepSeek V4 Pro [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    },
-    {
-      "model": "deepseek-v4-flash",
-      "id": "custom:deepseek-v4-flash",
-      "index": 8,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "DeepSeek V4 Flash [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    },
-    {
-      "model": "qwen3.6-plus",
-      "id": "custom:qwen3.6-plus",
-      "index": 9,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "Qwen3.6 Plus [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    },
-    {
-      "model": "minimax-m2.7",
-      "id": "custom:minimax-m2.7",
-      "index": 10,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "Minimax M2.7 [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    },
-    {
-      "model": "mimo-v2.5",
-      "id": "custom:mimo-v2.5",
-      "index": 11,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "Mimo V2.5 [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    },
-    {
-      "model": "mimo-v2.5-pro",
-      "id": "custom:mimo-v2.5-pro",
-      "index": 12,
-      "baseUrl": "https://opencode.ai/zen/go/v1",
-      "apiKey": "${OPENCODE_API_KEY}",
-      "displayName": "Mimo V2.5 Pro [OpenCode Go]",
-      "noImageSupport": false,
-      "provider": "generic-chat-completion-api"
-    }
-  ],
   "enabledPlugins": {
     "core@factory-plugins": true,
     "superpowers@superpowers": true
@@ -141,6 +19,147 @@
       }
     }
   },
-  "hooks": {
-  }
+  "hooks": {},
+  "customModels": [
+    {
+      "model": "claude-3-5-haiku-20241022",
+      "displayName": "claude-3-5-haiku-20241022",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-3-7-sonnet-20250219",
+      "displayName": "claude-3-7-sonnet-20250219",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-haiku-4-5-20251001",
+      "displayName": "claude-haiku-4-5-20251001",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-opus-4-1-20250805",
+      "displayName": "claude-opus-4-1-20250805",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-opus-4-20250514",
+      "displayName": "claude-opus-4-20250514",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-opus-4-5-20251101",
+      "displayName": "claude-opus-4-5-20251101",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-opus-4-6",
+      "displayName": "claude-opus-4-6",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-opus-4-7",
+      "displayName": "claude-opus-4-7",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-opus-4-8",
+      "displayName": "claude-opus-4-8",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-sonnet-4-20250514",
+      "displayName": "claude-sonnet-4-20250514",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-sonnet-4-5-20250929",
+      "displayName": "claude-sonnet-4-5-20250929",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "claude-sonnet-4-6",
+      "displayName": "claude-sonnet-4-6",
+      "baseUrl": "http://127.0.0.1:8317",
+      "provider": "anthropic",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "codex-auto-review",
+      "displayName": "codex-auto-review",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-5.2",
+      "displayName": "gpt-5.2",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-5.3-codex",
+      "displayName": "gpt-5.3-codex",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-5.3-codex-spark",
+      "displayName": "gpt-5.3-codex-spark",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-5.4",
+      "displayName": "gpt-5.4",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-5.4-mini",
+      "displayName": "gpt-5.4-mini",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-5.5",
+      "displayName": "gpt-5.5",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    },
+    {
+      "model": "gpt-image-2",
+      "displayName": "gpt-image-2",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "provider": "openai",
+      "apiKey": "no-key"
+    }
+  ]
 }

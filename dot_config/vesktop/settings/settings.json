@@ -241,7 +241,7 @@
         "ImageZoom": {
             "enabled": true,
             "size": 410,
-            "zoom": 1.4564354474680223,
+            "zoom": 1.5,
             "saveZoomValues": true,
             "nearestNeighbour": false,
             "square": true,
@@ -609,6 +609,12 @@
         },
         "NoMiddleClickPaste": {
             "enabled": false
+        },
+        "AutoDNDWhilePlaying": {
+            "enabled": false
+        },
+        "NoSystemBadge": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -625,7 +631,7 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1779401981420
+        "settingsSyncVersion": 1780390689402
     },
     "windowsMaterial": "none"
 }

@@ -1,3 +1,6 @@
 ignoreScripts: true
 saveExact: true
 minimumReleaseAge: 4320
+storeDir: C:\Users\mikel\scoop\apps\pnpm\current\store
+cacheDir: C:\Users\mikel\scoop\apps\pnpm\current\cache
+stateDir: C:\Users\mikel\scoop\apps\pnpm\current\state

@@ -1,8 +1,8 @@
 {
-  "lastChangelogVersion": "0.75.4",
-  "defaultProvider": "openai-codex",
-  "defaultModel": "gpt-5.4",
-  "defaultThinkingLevel": "off",
+  "lastChangelogVersion": "0.78.0",
+  "defaultProvider": "tunnel-agent",
+  "defaultModel": "claude-sonnet-4-6",
+  "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-rtk-optimizer",
@@ -25,9 +25,9 @@
     "npm:gentle-pi",
     "npm:gentle-engram",
     "npm:pi-markdown-preview",
-    "npm:pi-lifeline",
     "npm:glimpseui",
-    "npm:pi-studio"
+    "npm:pi-studio",
+    "npm:@upstash/context7-pi"
   ],
   "powerline": {
     "preset": "default",

@@ -1,38 +1,3 @@
-# ProxyPal - Codex Configuration
-model_provider = "cliproxyapi"
-model = "gpt-5.5"
-model_reasoning_effort = "medium"
-
-[model_providers.cliproxyapi]
-name = "cliproxyapi"
-base_url = "http://127.0.0.1:8317/v1"
-wire_api = "responses"
-
-[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:session_start:0:0"]
-enabled = true
-trusted_hash = "sha256:ce6ffaa15378245d93d7602b7a244af0d6524cf280a7c6cf86b72ceae0487fe6"
-[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:user_prompt_submit:0:0"]
-enabled = true
-trusted_hash = "sha256:17cc89499a337bc96da474031b18e884eea429c5e0d57cbe001dacbcec3357eb"
-[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:pre_tool_use:0:0"]
-enabled = true
-trusted_hash = "sha256:5e6589a168799af2ae1f1e53eaeb8769a7fe6fed6cd6bf782b72306884af8263"
-[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:post_tool_use:0:0"]
-enabled = true
-trusted_hash = "sha256:2256f1a8599264fa34a26d33f8faa11b0fde1f3feec0025899a91c4044183379"
-[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:stop:0:0"]
-enabled = true
-trusted_hash = "sha256:17cc25e0125fc6730a28fbaa3d3dbae05e591ffb5cd801566146fec2e706b8d8"
-[marketplaces.openai-bundled]
-last_updated = "2026-05-10T23:27:32Z"
-source_type = "local"
-source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
-
-[marketplaces.openai-primary-runtime]
-last_updated = "2026-05-10T13:48:51Z"
-source_type = "local"
-source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
-
 [marketplaces.caveman-repo]
 last_updated = "2026-05-20T15:07:14Z"
 last_revision = "655b7d9c5431f822264b7732e9901c5578ac84cf"
@@ -40,38 +5,32 @@ source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.claude-code-lsps]
-last_updated = "2026-05-20T06:57:55Z"
-last_revision = "d2cdacd4f0db0d7373df04f3658e3b21592884fc"
+last_updated = "2026-06-01T17:23:55Z"
+last_revision = "21bfc5918eac6b060b3ce83e68c8782f99d70927"
 source_type = "git"
 source = "https://github.com/Piebald-AI/claude-code-lsps.git"
 
-[marketplaces.claude-hud]
-last_updated = "2026-05-20T06:57:58Z"
-last_revision = "6f7d07323c5615afc08771cebc22073e8c04a946"
-source_type = "git"
-source = "https://github.com/jarrodwatts/claude-hud.git"
-
 [marketplaces.claude-plugins-official]
-last_updated = "2026-05-20T06:58:01Z"
-last_revision = "bef2b9b246e2072d167a71b7a8d65718ec55d2ef"
+last_updated = "2026-06-01T17:42:21Z"
+last_revision = "fcdcd079e359886e984634c25dff549236caad3d"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
 [marketplaces.context7-marketplace]
-last_updated = "2026-05-19T18:07:55Z"
-last_revision = "438b1df235218c6dd66086e9b0d6a5b410f1635e"
+last_updated = "2026-06-01T18:45:26Z"
+last_revision = "eb579860bf7c31427690fdac2d2e1949507e9296"
 source_type = "git"
 source = "https://github.com/upstash/context7.git"
 
 [marketplaces.frontend-slides]
-last_updated = "2026-05-19T18:07:57Z"
-last_revision = "8dca834fc61abc9dd633cbe6a74ed7be3d82a608"
+last_updated = "2026-06-01T17:24:07Z"
+last_revision = "24e420e4acef9850505142c449415ac867e43633"
 source_type = "git"
 source = "https://github.com/zarazhangrui/frontend-slides.git"
 
 [marketplaces.superpowers-marketplace]
-last_updated = "2026-05-19T18:07:59Z"
-last_revision = "647ca50fc234330bc23cf27a556070af36f96a16"
+last_updated = "2026-06-01T17:24:09Z"
+last_revision = "3eae6ba977a5f4bf3b9a99b4e28c23c97621f900"
 source_type = "git"
 source = "https://github.com/obra/superpowers-marketplace.git"
 
@@ -93,15 +52,22 @@ enabled = true
 [plugins."frontend-slides@frontend-slides"]
 enabled = true
 
-[plugins."superpowers@superpowers-marketplace"]
-enabled = true
-
-[plugins."atlassian@claude-plugins-official"]
-enabled = true
-
 [plugins."browser-use@openai-bundled"]
 enabled = true
 
-[hooks.state."C:\\Users\\mikel\\.codex\\hooks.json:permission_request:0:0"]
-enabled = true
-trusted_hash = "sha256:f5d868e9d9290cf001f2a9dbe946044e11e929041238311f1192ded1ad7638a0"
+
+[projects.'c:\users\mikel\.local\share\chezmoi']
+trust_level = "trusted"
+
+# >>> Managed by Tunnel Agent — do not edit this block <<<
+model_provider = "cliproxyapi"
+openai_base_url  = "http://127.0.0.1:8317/v1"
+
+[model_providers.cliproxyapi]
+name = "CLIProxyAPI (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+wire_api = "responses"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 2
+# <<< End Tunnel Agent block >>>

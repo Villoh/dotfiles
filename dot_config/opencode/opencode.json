@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "plugin": [
     [
-      "superpowers@git+https://github.com/obra/superpowers.git",
+      "superpowers@git\u002Bhttps://github.com/obra/superpowers.git",
       {
         "enabled": true
       }
@@ -24,33 +24,131 @@
     "./plugins/caveman/plugin.js"
   ],
   "provider": {
-    "anthropic": {
+    "tunnel-agent-cliproxy": {
+      "name": "Tunnel Agent",
+      "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://localhost:8317/v1",
-        "apiKey": "cliproxyapi",
-        "models": [
-          {
-            "id": "claude-sonnet-4-6",
-            "name": "Claude Sonnet 4.6 (Claude Code)",
-            "context_window": 1000000,
-            "can_reason": true,
-            "supports_attachments": true
-          },
-          {
-            "id": "claude-opus-4-7",
-            "name": "Claude Opus 4.7 (Claude Code)",
-            "context_window": 1000000,
-            "can_reason": true,
-            "supports_attachments": true
-          },
-          {
-            "id": "claude-haiku-4-5-20251001",
-            "name": "Claude Haiku 4.5",
-            "context_window": 200000,
-            "can_reason": true,
-            "supports_attachments": true
-          }
-        ]
+        "baseURL": "http://127.0.0.1:8317/v1",
+        "litellmProxy": true,
+        "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      },
+      "models": {
+        "claude-3-5-haiku-20241022": {
+          "name": "Claude 3.5 Haiku (Tunnel Agent)"
+        },
+        "claude-3-7-sonnet-20250219": {
+          "name": "Claude 3 7 Sonnet (Tunnel Agent)"
+        },
+        "claude-haiku-4-5-20251001": {
+          "name": "Claude Haiku 4.5 (Tunnel Agent)"
+        },
+        "claude-opus-4-1-20250805": {
+          "name": "Claude Opus 4.1 (Tunnel Agent)"
+        },
+        "claude-opus-4-20250514": {
+          "name": "Claude Opus 4 (Tunnel Agent)"
+        },
+        "claude-opus-4-5-20251101": {
+          "name": "Claude Opus 4.5 (Tunnel Agent)"
+        },
+        "claude-opus-4-6": {
+          "name": "Claude Opus 4.6 (Tunnel Agent)"
+        },
+        "claude-opus-4-7": {
+          "name": "Claude Opus 4.7 (Tunnel Agent)"
+        },
+        "claude-opus-4-8": {
+          "name": "Claude Opus 4.8 (Tunnel Agent)"
+        },
+        "claude-sonnet-4-20250514": {
+          "name": "Claude Sonnet 4 (Tunnel Agent)"
+        },
+        "claude-sonnet-4-5-20250929": {
+          "name": "Claude Sonnet 4.5 (Tunnel Agent)"
+        },
+        "claude-sonnet-4-6": {
+          "name": "Claude Sonnet 4.6 (Tunnel Agent)"
+        },
+        "codex-auto-review": {
+          "name": "Codex Auto Review (Tunnel Agent)"
+        },
+        "gpt-5.2": {
+          "name": "GPT-5.2 (Tunnel Agent)"
+        },
+        "gpt-5.3-codex": {
+          "name": "GPT-5.3-Codex (Tunnel Agent)"
+        },
+        "gpt-5.3-codex-spark": {
+          "name": "GPT 5.3 Codex Spark (Tunnel Agent)"
+        },
+        "gpt-5.4": {
+          "name": "GPT-5.4 (Tunnel Agent)"
+        },
+        "gpt-5.4-mini": {
+          "name": "GPT-5.4 Mini (Tunnel Agent)"
+        },
+        "gpt-5.5": {
+          "name": "GPT-5.5 (Tunnel Agent)"
+        },
+        "gpt-image-2": {
+          "name": "GPT Image 2 (Tunnel Agent)"
+        }
+      }
+    },
+    "tunnel-agent-perplexity": {
+      "name": "Tunnel Agent",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://127.0.0.1:8327/v1",
+        "litellmProxy": true,
+        "apiKey": "${TUNNEL_AGENT_PERPLEXITY_TOKEN}"
+      },
+      "models": {
+        "anthropic/claude-opus-4.7": {
+          "name": "Claude Opus 4.7 (Tunnel Agent - Perplexity)"
+        },
+        "anthropic/claude-opus-4.7-thinking": {
+          "name": "Claude Opus 4.7 Thinking (Tunnel Agent - Perplexity)"
+        },
+        "anthropic/claude-sonnet-4.6": {
+          "name": "Claude Sonnet 4.6 (Tunnel Agent - Perplexity)"
+        },
+        "anthropic/claude-sonnet-4.6-thinking": {
+          "name": "Claude Sonnet 4.6 Thinking (Tunnel Agent - Perplexity)"
+        },
+        "google/gemini-3.1-pro-thinking-high": {
+          "name": "Gemini 3.1 Pro Thinking High (Tunnel Agent - Perplexity)"
+        },
+        "google/gemini-3.1-pro-thinking-low": {
+          "name": "Gemini 3.1 Pro Thinking Low (Tunnel Agent - Perplexity)"
+        },
+        "moonshot/kimi-k2.6-instant": {
+          "name": "Kimi K2.6 Instant (Tunnel Agent - Perplexity)"
+        },
+        "moonshot/kimi-k2.6-thinking": {
+          "name": "Kimi K2.6 Thinking (Tunnel Agent - Perplexity)"
+        },
+        "nvidia/nemotron-3-super-thinking": {
+          "name": "Nemotron 3 Super Thinking (Tunnel Agent - Perplexity)"
+        },
+        "openai/gpt-5.4": {
+          "name": "GPT-5.4 (Tunnel Agent - Perplexity)"
+        },
+        "openai/gpt-5.4-thinking": {
+          "name": "GPT 5.4 Thinking (Tunnel Agent - Perplexity)"
+        },
+        "openai/gpt-5.5-thinking": {
+          "name": "GPT 5.5 Thinking (Tunnel Agent - Perplexity)"
+        },
+        "perplexity/best": {
+          "name": "Best (Tunnel Agent - Perplexity)"
+        },
+        "perplexity/deep-research": {
+          "name": "Deep Research (Tunnel Agent - Perplexity)"
+        },
+        "perplexity/sonar-2": {
+          "name": "Sonar 2 (Tunnel Agent - Perplexity)"
+        }
       }
     }
   },

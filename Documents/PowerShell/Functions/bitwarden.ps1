@@ -1025,16 +1025,16 @@ function bwadd {
     $item.notes = $notes
 
     switch ($type) {
-        '1' { $item.login      = _bwadd_login }
-        '2' { $item.secureNote = bw get template item.securenote | ConvertFrom-Json }
-        '3' { $item.card       = _bwadd_card }
-        '4' { $item.identity   = _bwadd_identity }
-        '5' { $item.sshKey     = _bwadd_sshkey }
+        '1' { $item | Add-Member -NotePropertyName login      -NotePropertyValue (_bwadd_login)                                        -Force }
+        '2' { $item | Add-Member -NotePropertyName secureNote -NotePropertyValue (bw get template item.securenote | ConvertFrom-Json) -Force }
+        '3' { $item | Add-Member -NotePropertyName card       -NotePropertyValue (_bwadd_card)                                        -Force }
+        '4' { $item | Add-Member -NotePropertyName identity   -NotePropertyValue (_bwadd_identity)                                    -Force }
+        '5' { $item | Add-Member -NotePropertyName sshKey     -NotePropertyValue (_bwadd_sshkey)                                     -Force }
         default { Write-Host 'X Invalid type'; return }
     }
 
     $folderid = _bwadd_select_folder
-    if ($folderid) { $item.folderId = $folderid }
+    if ($folderid) { $item | Add-Member -NotePropertyName folderId -NotePropertyValue $folderid -Force }
 
     # Custom fields
     $item.fields = @()
