@@ -302,8 +302,6 @@ keybindings:
   # ---------------------------------------------------------------------------
   # App launchers
   # ---------------------------------------------------------------------------
-  - commands: ["shell-exec %LOCALAPPDATA%\\vesktop\\vesktop.exe"]
-    bindings: ["lwin+shift+d"]
 
   # ---------------------------------------------------------------------------
   # Gaming mode — Win+Ctrl+G toggles focused_window border/corner/transparency
