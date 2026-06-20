@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.78.0",
-  "defaultProvider": "tunnel-agent",
-  "defaultModel": "claude-sonnet-4-6",
+  "lastChangelogVersion": "0.79.3",
+  "defaultProvider": "tunnel-agent-cliproxy-anthropic",
+  "defaultModel": "claude-opus-4-8",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -22,19 +22,19 @@
     "npm:pi-caveman",
     "npm:pi-powerline-footer",
     "npm:pi-rewind-hook",
-    "npm:gentle-pi",
-    "npm:gentle-engram",
     "npm:pi-markdown-preview",
     "npm:glimpseui",
     "npm:pi-studio",
-    "npm:@upstash/context7-pi"
+    "npm:@upstash/context7-pi",
+    "git:github.com/DietrichGebert/ponytail",
+    "npm:@ff-labs/pi-fff"
   ],
   "powerline": {
     "preset": "default",
     "fixedEditor": true
   },
   "npmCommand": [
-    "pnpm"
+    "npm"
   ],
   "hideThinkingBlock": false
 }

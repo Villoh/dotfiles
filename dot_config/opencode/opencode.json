@@ -30,7 +30,7 @@
       "options": {
         "baseURL": "http://127.0.0.1:8317/v1",
         "litellmProxy": true,
-        "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+        "apiKey": "{env:TUNNEL_AGENT_CLIPROXY_API_KEY}"
       },
       "models": {
         "claude-3-5-haiku-20241022": {
@@ -38,6 +38,9 @@
         },
         "claude-3-7-sonnet-20250219": {
           "name": "Claude 3 7 Sonnet (Tunnel Agent)"
+        },
+        "claude-fable-5": {
+          "name": "Claude Fable 5 (Tunnel Agent)"
         },
         "claude-haiku-4-5-20251001": {
           "name": "Claude Haiku 4.5 (Tunnel Agent)"
@@ -72,12 +75,6 @@
         "codex-auto-review": {
           "name": "Codex Auto Review (Tunnel Agent)"
         },
-        "gpt-5.2": {
-          "name": "GPT-5.2 (Tunnel Agent)"
-        },
-        "gpt-5.3-codex": {
-          "name": "GPT-5.3-Codex (Tunnel Agent)"
-        },
         "gpt-5.3-codex-spark": {
           "name": "GPT 5.3 Codex Spark (Tunnel Agent)"
         },
@@ -90,6 +87,9 @@
         "gpt-5.5": {
           "name": "GPT-5.5 (Tunnel Agent)"
         },
+        "gpt-image-1.5": {
+          "name": "GPT Image 1.5 (Tunnel Agent)"
+        },
         "gpt-image-2": {
           "name": "GPT Image 2 (Tunnel Agent)"
         }
@@ -101,7 +101,7 @@
       "options": {
         "baseURL": "http://127.0.0.1:8327/v1",
         "litellmProxy": true,
-        "apiKey": "${TUNNEL_AGENT_PERPLEXITY_TOKEN}"
+        "apiKey": "{env:TUNNEL_AGENT_PERPLEXITY_TOKEN}"
       },
       "models": {
         "anthropic/claude-opus-4.7": {

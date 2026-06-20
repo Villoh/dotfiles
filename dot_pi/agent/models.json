@@ -1,12 +1,66 @@
 {
   "providers": {
-    "tunnel-agent": {
+    "tunnel-agent-cliproxy": {
       "baseUrl": "http://127.0.0.1:8317/v1",
       "api": "openai-completions",
-      "apiKey": "no-key",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "models": [
+        {
+          "id": "codex-auto-review",
+          "name": "Codex Auto Review (Tunnel Agent)"
+        },
+        {
+          "id": "gpt-5.3-codex-spark",
+          "name": "GPT 5.3 Codex Spark (Tunnel Agent)"
+        },
+        {
+          "id": "gpt-5.4",
+          "name": "GPT-5.4 (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.4-mini",
+          "name": "GPT-5.4 Mini (Tunnel Agent)",
+          "contextWindow": 400000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.5",
+          "name": "GPT-5.5 (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-image-1.5",
+          "name": "GPT Image 1.5 (Tunnel Agent)"
+        },
+        {
+          "id": "gpt-image-2",
+          "name": "GPT Image 2 (Tunnel Agent)"
+        }
+      ]
+    },
+    "tunnel-agent-cliproxy-anthropic": {
+      "baseUrl": "http://127.0.0.1:8317",
+      "api": "anthropic-messages",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
       "models": [
         {
           "id": "claude-3-5-haiku-20241022",
+          "name": "Claude 3.5 Haiku (Tunnel Agent)",
           "contextWindow": 200000,
           "input": [
             "text",
@@ -14,87 +68,118 @@
           ]
         },
         {
-          "id": "claude-3-7-sonnet-20250219"
+          "id": "claude-3-7-sonnet-20250219",
+          "name": "Claude 3 7 Sonnet (Tunnel Agent)"
+        },
+        {
+          "id": "claude-fable-5",
+          "name": "Claude Fable 5 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-haiku-4-5-20251001",
+          "name": "Claude Haiku 4.5 (Tunnel Agent)",
           "contextWindow": 200000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-opus-4-1-20250805",
+          "name": "Claude Opus 4.1 (Tunnel Agent)",
           "contextWindow": 200000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-opus-4-20250514",
+          "name": "Claude Opus 4 (Tunnel Agent)",
           "contextWindow": 200000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-opus-4-5-20251101",
+          "name": "Claude Opus 4.5 (Tunnel Agent)",
           "contextWindow": 200000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-opus-4-6",
+          "name": "Claude Opus 4.6 (Tunnel Agent)",
           "contextWindow": 1000000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-opus-4-7",
+          "name": "Claude Opus 4.7 (Tunnel Agent)",
           "contextWindow": 1000000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-opus-4-8",
+          "name": "Claude Opus 4.8 (Tunnel Agent)",
           "contextWindow": 1000000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-sonnet-4-20250514",
+          "name": "Claude Sonnet 4 (Tunnel Agent)",
           "contextWindow": 1000000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-sonnet-4-5-20250929",
+          "name": "Claude Sonnet 4.5 (Tunnel Agent)",
           "contextWindow": 1000000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         },
         {
           "id": "claude-sonnet-4-6",
+          "name": "Claude Sonnet 4.6 (Tunnel Agent)",
           "contextWindow": 1000000,
           "input": [
             "text",
             "image"
-          ]
+          ],
+          "reasoning": true
         }
       ]
     }
