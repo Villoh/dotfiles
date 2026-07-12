@@ -4,3 +4,7 @@ minimumReleaseAge: 4320
 storeDir: C:\Users\mikel\scoop\apps\pnpm\current\store
 cacheDir: C:\Users\mikel\scoop\apps\pnpm\current\cache
 stateDir: C:\Users\mikel\scoop\apps\pnpm\current\state
+# global-dir/global-bin-dir en dir PLANO (fuera de las junctions de scoop):
+# evita que el GC del global-virtual-store de pnpm 11 pode paquetes en Windows.
+globalDir: C:\Users\mikel\AppData\Local\pnpm\global
+globalBinDir: C:\Users\mikel\AppData\Local\pnpm\bin

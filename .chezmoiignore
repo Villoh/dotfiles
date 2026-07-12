@@ -112,6 +112,7 @@ dot_config/ytm-player/history.db
 dot_config/ytm-player/history.db-shm
 dot_config/ytm-player/history.db-wal
 dot_config/ytm-player/ipc_port
+dot_config/ytm-player/ipc_token
 dot_config/ytm-player/recent_playlists.json
 dot_config/ytm-player/session.json
 dot_config/ytm-player/ytm.pid

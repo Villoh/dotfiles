@@ -1,20 +1,72 @@
 {
   "name": "bin",
   "dependencies": {
+    "@juicesharp/rpiv-advisor": {
+      "version": "1.6.1",
+      "overridden": false
+    },
+    "@juicesharp/rpiv-args": {
+      "version": "1.6.1",
+      "overridden": false
+    },
     "@juicesharp/rpiv-ask-user-question": {
-      "version": "1.4.0",
+      "version": "1.6.1",
+      "overridden": false
+    },
+    "@juicesharp/rpiv-btw": {
+      "version": "1.6.1",
+      "overridden": false
+    },
+    "@juicesharp/rpiv-i18n": {
+      "version": "1.6.1",
+      "overridden": false
+    },
+    "@juicesharp/rpiv-pi": {
+      "version": "1.6.1",
       "overridden": false
     },
     "@juicesharp/rpiv-todo": {
+      "version": "1.6.1",
+      "overridden": false
+    },
+    "@logseq/cli": {
+      "version": "0.4.3",
+      "overridden": false
+    },
+    "@tintinweb/pi-subagents": {
+      "version": "0.7.3",
+      "overridden": false
+    },
+    "pi-autoresearch": {
       "version": "1.4.0",
       "overridden": false
     },
+    "pi-caveman": {
+      "version": "1.0.7",
+      "overridden": false
+    },
+    "pi-image-tools": {
+      "version": "1.1.0",
+      "overridden": false
+    },
     "pi-lens": {
-      "version": "3.8.43",
+      "version": "3.8.44",
+      "overridden": false
+    },
+    "pi-markdown-preview": {
+      "version": "0.9.9",
       "overridden": false
     },
     "pi-mcp-adapter": {
-      "version": "2.5.4",
+      "version": "2.6.1",
+      "overridden": false
+    },
+    "pi-powerline-footer": {
+      "version": "0.5.4",
+      "overridden": false
+    },
+    "pi-rewind-hook": {
+      "version": "1.8.4",
       "overridden": false
     },
     "pi-rtk-optimizer": {
@@ -22,7 +74,11 @@
       "overridden": false
     },
     "pi-subagents": {
-      "version": "0.24.2",
+      "version": "0.24.3",
+      "overridden": false
+    },
+    "pi-web-access": {
+      "version": "0.10.7",
       "overridden": false
     }
   }

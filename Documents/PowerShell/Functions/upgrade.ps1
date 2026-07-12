@@ -74,8 +74,13 @@ function Invoke-PnpmUpgrade {
         return
     }
 
-    foreach ($pkg in $outdated.PSObject.Properties.Name) {
-        pnpm add -g "${pkg}@latest"
+    # Install every outdated package in a single `pnpm add -g` call. Running one
+    # `pnpm add -g` per package rewrites the global manifest each time and, on
+    # Windows, races with an ENOENT reading the just-linked package.json, leaving
+    # only the last package registered globally.
+    $specs = @($outdated.PSObject.Properties.Name | ForEach-Object { "${_}@latest" })
+    if ($specs.Count -gt 0) {
+        pnpm add -g @specs
     }
 }
 Set-Alias -Name update-pnpm    -Value Invoke-PnpmUpgrade

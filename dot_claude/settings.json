@@ -1,102 +1,9 @@
 {
-  "skillListingBudgetFraction": 0.02,
-  "permissions": {
-    "defaultMode": "bypassPermissions"
-  },
-  "model": "opus",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "PostToolUseFailure": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "StopFailure": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "cols=$(stty size </dev/tty 2>/dev/null | awk '{print $2}'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -1d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | sort -V | tail -1); exec \"/c/Program Files/nodejs/node\" \"${plugin_dir}dist/index.js\""
-  },
   "enabledPlugins": {
     "basedpyright@claude-code-lsps": true,
     "caveman@caveman": true,
     "claude-hud@claude-hud": true,
+    "csharp-lsp@claude-plugins-official": true,
     "dart@claude-code-lsps": true,
     "frontend-slides@frontend-slides": true,
     "gopls-lsp@claude-plugins-official": true,
@@ -109,33 +16,31 @@
     "rust-analyzer-lsp@claude-plugins-official": true,
     "superpowers@superpowers-marketplace": true,
     "typescript-lsp@claude-plugins-official": true,
-    "vscode-langservers@claude-code-lsps": true,
-    "csharp-lsp@claude-plugins-official": true,
-    "plannotator@plannotator": true
+    "vscode-langservers@claude-code-lsps": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
       "source": {
-        "source": "github",
-        "repo": "anthropics/skills"
+        "repo": "anthropics/skills",
+        "source": "github"
       }
     },
     "caveman": {
       "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
+        "repo": "JuliusBrussee/caveman",
+        "source": "github"
       }
     },
     "claude-code-lsps": {
       "source": {
-        "source": "github",
-        "repo": "Piebald-AI/claude-code-lsps"
+        "repo": "Piebald-AI/claude-code-lsps",
+        "source": "github"
       }
     },
     "claude-hud": {
       "source": {
-        "source": "github",
-        "repo": "jarrodwatts/claude-hud"
+        "repo": "jarrodwatts/claude-hud",
+        "source": "github"
       }
     },
     "everything-claude-code": {
@@ -146,33 +51,128 @@
     },
     "frontend-slides": {
       "source": {
-        "source": "github",
-        "repo": "zarazhangrui/frontend-slides"
-      }
-    },
-    "openai-codex": {
-      "source": {
-        "source": "github",
-        "repo": "openai/codex-plugin-cc"
+        "repo": "zarazhangrui/frontend-slides",
+        "source": "github"
       }
     },
     "superpowers-marketplace": {
       "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
-      }
-    },
-    "plannotator": {
-      "source": {
-        "source": "github",
-        "repo": "backnotprop/plannotator"
+        "repo": "obra/superpowers-marketplace",
+        "source": "github"
       }
     }
   },
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "rtk hook claude",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\mikel\\.claude\\hooks\\herdr-agent-state.ps1\" session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "StopFailure": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "opus",
+  "permissions": {
+    "defaultMode": "bypassPermissions"
+  },
+  "skillListingBudgetFraction": 0.02,
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "command": "cols=$(stty size </dev/tty 2>/dev/null | awk '{print $2}'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -1d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | sort -V | tail -1); exec \"/c/Program Files/nodejs/node\" \"${plugin_dir}dist/index.js\"",
+    "type": "command"
+  },
+  "tui": "fullscreen",
   "voice": {
     "enabled": false,
     "mode": "hold"
   },
-  "skipDangerousModePermissionPrompt": true,
   "voiceEnabled": false
 }

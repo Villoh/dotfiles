@@ -1,10 +1,9 @@
 https://github.com/Atlas-OS/atlas-toolbox
 https://github.com/cakama3a/Polling
-https://github.com/vertopolkaLF/silence/releases/tag/v2.0.2
-https://github.com/xdagiz/xytz/releases/tag/v0.8.8
-https://github.com/router-for-me/CLIProxyAPI
+https://github.com/vertopolkaLF/silence/releases/tag/v2.2.0
+https://github.com/xdagiz/xytz/releases/tag/v0.9.1
+https://github.com/router-for-me/CLIProxyAPI/releases/tag/v7.2.43
 https://github.com/fwcd/kotlin-language-server/
-https://github.com/wangdabaoqq/LinJun
-https://github.com/nexu-io/open-design
-https://github.com/stablyai/orca
-https://github.com/buddingnewinsights/proxypal
+https://github.com/nexu-io/open-design/releases/tag/open-design-v0.12.0
+https://github.com/stablyai/orca/releases/tag/v1.4.103
+https://github.com/buddingnewinsights/proxypal/releases/tag/v0.4.41

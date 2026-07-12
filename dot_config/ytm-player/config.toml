@@ -14,6 +14,7 @@ gapless = true
 api_timeout = 15
 resume_on_launch = true
 
+history_min_listen_seconds = 0
 [yt_dlp]
 cookies_file = ""
 remote_components = ""

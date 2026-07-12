@@ -1,3 +1,6 @@
+notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\ecfc0d9aa02807e3\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
+model = "gpt-5.6-sol"
+model_reasoning_effort = "low"
 [marketplaces.caveman-repo]
 last_updated = "2026-05-20T15:07:14Z"
 last_revision = "655b7d9c5431f822264b7732e9901c5578ac84cf"
@@ -5,34 +8,44 @@ source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.claude-code-lsps]
-last_updated = "2026-06-01T17:23:55Z"
-last_revision = "21bfc5918eac6b060b3ce83e68c8782f99d70927"
+last_updated = "2026-06-27T10:36:31Z"
+last_revision = "6346e5426e4b29a4dc6f9a372bdab2a21aa21673"
 source_type = "git"
 source = "https://github.com/Piebald-AI/claude-code-lsps.git"
 
 [marketplaces.claude-plugins-official]
-last_updated = "2026-06-01T17:42:21Z"
-last_revision = "fcdcd079e359886e984634c25dff549236caad3d"
+last_updated = "2026-07-12T08:07:17Z"
+last_revision = "1afdc0d238b61673e8f2bb57622e73641000bb75"
 source_type = "git"
 source = "https://github.com/anthropics/claude-plugins-official.git"
 
 [marketplaces.context7-marketplace]
-last_updated = "2026-06-01T18:45:26Z"
-last_revision = "eb579860bf7c31427690fdac2d2e1949507e9296"
+last_updated = "2026-07-10T16:54:18Z"
+last_revision = "a9d7c77f5e4c93c1c875b109d6d057487f2dc437"
 source_type = "git"
 source = "https://github.com/upstash/context7.git"
 
 [marketplaces.frontend-slides]
-last_updated = "2026-06-01T17:24:07Z"
-last_revision = "24e420e4acef9850505142c449415ac867e43633"
+last_updated = "2026-06-27T10:36:41Z"
+last_revision = "9906a34d640d2111f724544cbc50f7f130569ae1"
 source_type = "git"
 source = "https://github.com/zarazhangrui/frontend-slides.git"
 
 [marketplaces.superpowers-marketplace]
-last_updated = "2026-06-01T17:24:09Z"
-last_revision = "3eae6ba977a5f4bf3b9a99b4e28c23c97621f900"
+last_updated = "2026-07-10T07:29:55Z"
+last_revision = "d038aff9ea92159563e40c678fbc8b64b9ff713f"
 source_type = "git"
 source = "https://github.com/obra/superpowers-marketplace.git"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-07-12T08:06:37Z"
+source_type = "local"
+source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-07-10T08:24:08Z"
+source_type = "local"
+source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
 
 [plugins."documents@openai-primary-runtime"]
 enabled = true
@@ -56,12 +69,21 @@ enabled = true
 enabled = true
 
 
-[projects.'c:\users\mikel\.local\share\chezmoi']
-trust_level = "trusted"
-
 # >>> Managed by Tunnel Agent — do not edit this block <<<
 model_provider = "cliproxyapi"
 openai_base_url  = "http://127.0.0.1:8317/v1"
+
+[plugins."visualize@openai-bundled"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
 
 [model_providers.cliproxyapi]
 name = "CLIProxyAPI (Tunnel Agent)"
@@ -70,4 +92,44 @@ wire_api = "responses"
 
 [tui.model_availability_nux]
 "gpt-5.5" = 2
+
+[desktop]
+followUpQueueMode = "queue"
+conversationDetailMode = "STEPS_COMMANDS"
+
+[features]
+js_repl = false
+
+[windows]
+sandbox = "unelevated"
+
+[mcp_servers.node_repl]
+args = []
+command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\ecfc0d9aa02807e3\bin\node_repl.exe'
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\ecfc0d9aa02807e3\bin\node_modules'
+NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\ecfc0d9aa02807e3\bin\node.exe'
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
+CODEX_HOME = 'C:\Users\mikel\.codex'
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,c8b7e809d7cf9e20a57123b2530d476ccec9a01a6230a7b2b924fea7d94d7f4a"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.707.31428"
+SKY_CUA_NATIVE_PIPE = "1"
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-1d584734-ea9a-4d2d-8938-3c9509032daf'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\a7c12ebff69fb123\codex.exe'
+
+[projects.'c:\users\mikel\documents\codex\2026-07-10\ci']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-10\es']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-10\de']
+trust_level = "trusted"
 # <<< End Tunnel Agent block >>>

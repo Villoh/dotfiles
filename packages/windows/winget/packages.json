@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-05-13T00:24:08.653+02:00",
+  "CreationDate": "2026-07-12T21:21:40.443+02:00",
   "Sources": [
     {
       "Packages": [
@@ -38,31 +38,28 @@
           "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
         },
         {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+          "PackageIdentifier": "IDRIX.VeraCrypt"
         },
         {
-          "PackageIdentifier": "farion1231.CC-Switch"
+          "PackageIdentifier": "Microsoft.GameInput"
         },
         {
           "PackageIdentifier": "Nilesoft.Shell"
         },
         {
-          "PackageIdentifier": "Neovim.Neovim"
+          "PackageIdentifier": "Iterate.Cyberduck"
         },
         {
           "PackageIdentifier": "Apple.Bonjour"
         },
         {
-          "PackageIdentifier": "AmN.yasb"
+          "PackageIdentifier": "karlstav.cava"
         },
         {
           "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
-          "PackageIdentifier": "karlstav.cava"
-        },
-        {
-          "PackageIdentifier": "IDRIX.VeraCrypt"
+          "PackageIdentifier": "AmN.yasb"
         },
         {
           "PackageIdentifier": "Oracle.JDK.17"
@@ -71,13 +68,19 @@
           "PackageIdentifier": "TechPowerUp.NVCleanstall"
         },
         {
-          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+        },
+        {
+          "PackageIdentifier": "Neovim.Neovim"
         },
         {
           "PackageIdentifier": "namazso.SecureUXTheme"
         },
         {
           "PackageIdentifier": "Nickvision.Parabolic"
+        },
+        {
+          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
         },
         {
           "PackageIdentifier": "AppFlowy.AppFlowy"
@@ -116,22 +119,13 @@
           "PackageIdentifier": "Microsoft.DotNet.SDK.10"
         },
         {
-          "PackageIdentifier": "Iterate.Cyberduck"
-        },
-        {
           "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
-        },
-        {
-          "PackageIdentifier": "OpenCoworkAI.OpenCoDesign"
-        },
-        {
-          "PackageIdentifier": "SiddharthVaddem.OpenScreen"
         },
         {
           "PackageIdentifier": "HaiNguyen.Mechvibes"
         },
         {
-          "PackageIdentifier": "Vencord.Vesktop"
+          "PackageIdentifier": "StablyAI.Orca"
         },
         {
           "PackageIdentifier": "JohannesMillan.superProductivity"
@@ -155,6 +149,15 @@
           "PackageIdentifier": "Brave.Brave"
         },
         {
+          "PackageIdentifier": "Discord.Discord"
+        },
+        {
+          "PackageIdentifier": "Docker.DockerDesktop"
+        },
+        {
+          "PackageIdentifier": "FactoryAI.Factory"
+        },
+        {
           "PackageIdentifier": "Figma.Figma"
         },
         {
@@ -162,6 +165,9 @@
         },
         {
           "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
+        },
+        {
+          "PackageIdentifier": "Jan.Jan"
         },
         {
           "PackageIdentifier": "Logitech.OnboardMemoryManager"
@@ -194,13 +200,16 @@
           "PackageIdentifier": "JetBrains.Toolbox"
         },
         {
+          "PackageIdentifier": "Perplexity.Perplexity"
+        },
+        {
           "PackageIdentifier": "beekeeper-studio.beekeeper-studio"
         },
         {
           "PackageIdentifier": "JanProchazka.dbgate"
         },
         {
-          "PackageIdentifier": "Letta.LettaCode"
+          "PackageIdentifier": "Webadderall.Recordly"
         },
         {
           "PackageIdentifier": "AppWork.JDownloader"
@@ -209,13 +218,16 @@
           "PackageIdentifier": "WinSCP.WinSCP"
         },
         {
-          "PackageIdentifier": "ZedIndustries.Zed"
-        },
-        {
           "PackageIdentifier": "Microsoft.PowerToys"
         },
         {
+          "PackageIdentifier": "66HEX.Frame"
+        },
+        {
           "PackageIdentifier": "M2Team.NanaZip"
+        },
+        {
+          "PackageIdentifier": "Canva.Affinity"
         },
         {
           "PackageIdentifier": "Anthropic.Claude"
@@ -224,13 +236,13 @@
           "PackageIdentifier": "MicaForEveryone.MicaForEveryone"
         },
         {
+          "PackageIdentifier": "Microsoft.DirectX"
+        },
+        {
           "PackageIdentifier": "Microsoft.DotNet.Native.Runtime"
         },
         {
           "PackageIdentifier": "Microsoft.WindowsAppRuntime.1.5"
-        },
-        {
-          "PackageIdentifier": "Microsoft.WindowsAppRuntime.1.6"
         },
         {
           "PackageIdentifier": "Microsoft.WindowsTerminal"
@@ -247,5 +259,5 @@
       }
     }
   ],
-  "WinGetVersion": "1.28.240"
+  "WinGetVersion": "1.29.280"
 }

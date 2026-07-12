@@ -1,41 +1,397 @@
 {
+  "customModels": [
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-3-5-haiku-20241022",
+      "id": "custom:claude-3-5-haiku-20241022-0",
+      "index": 0,
+      "model": "claude-3-5-haiku-20241022",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-3-7-sonnet-20250219",
+      "id": "custom:claude-3-7-sonnet-20250219-0",
+      "index": 1,
+      "model": "claude-3-7-sonnet-20250219",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-haiku-4-5-20251001",
+      "id": "custom:claude-haiku-4-5-20251001-0",
+      "index": 2,
+      "model": "claude-haiku-4-5-20251001",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-opus-4-1-20250805",
+      "id": "custom:claude-opus-4-1-20250805-0",
+      "index": 3,
+      "model": "claude-opus-4-1-20250805",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-opus-4-20250514",
+      "id": "custom:claude-opus-4-20250514-0",
+      "index": 4,
+      "model": "claude-opus-4-20250514",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-opus-4-5-20251101",
+      "id": "custom:claude-opus-4-5-20251101-0",
+      "index": 5,
+      "model": "claude-opus-4-5-20251101",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-opus-4-6",
+      "id": "custom:claude-opus-4-6-0",
+      "index": 6,
+      "model": "claude-opus-4-6",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-opus-4-7",
+      "id": "custom:claude-opus-4-7-0",
+      "index": 7,
+      "model": "claude-opus-4-7",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-opus-4-8",
+      "id": "custom:claude-opus-4-8-0",
+      "index": 8,
+      "model": "claude-opus-4-8",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-sonnet-4-20250514",
+      "id": "custom:claude-sonnet-4-20250514-0",
+      "index": 9,
+      "model": "claude-sonnet-4-20250514",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-sonnet-4-5-20250929",
+      "id": "custom:claude-sonnet-4-5-20250929-0",
+      "index": 10,
+      "model": "claude-sonnet-4-5-20250929",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "no-key",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "claude-sonnet-4-6",
+      "id": "custom:claude-sonnet-4-6-0",
+      "index": 11,
+      "model": "claude-sonnet-4-6",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude 3.5 Haiku (Tunnel Agent)",
+      "id": "custom:Claude-3.5-Haiku-(Tunnel-Agent)-0",
+      "index": 12,
+      "model": "claude-3-5-haiku-20241022",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude 3 7 Sonnet (Tunnel Agent)",
+      "id": "custom:Claude-3-7-Sonnet-(Tunnel-Agent)-0",
+      "index": 13,
+      "model": "claude-3-7-sonnet-20250219",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Fable 5 (Tunnel Agent)",
+      "id": "custom:Claude-Fable-5-(Tunnel-Agent)-0",
+      "index": 14,
+      "model": "claude-fable-5",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Haiku 4.5 (Tunnel Agent)",
+      "id": "custom:Claude-Haiku-4.5-(Tunnel-Agent)-0",
+      "index": 15,
+      "model": "claude-haiku-4-5-20251001",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Opus 4.1 (Tunnel Agent)",
+      "id": "custom:Claude-Opus-4.1-(Tunnel-Agent)-0",
+      "index": 16,
+      "model": "claude-opus-4-1-20250805",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Opus 4 (Tunnel Agent)",
+      "id": "custom:Claude-Opus-4-(Tunnel-Agent)-0",
+      "index": 17,
+      "model": "claude-opus-4-20250514",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Opus 4.5 (Tunnel Agent)",
+      "id": "custom:Claude-Opus-4.5-(Tunnel-Agent)-0",
+      "index": 18,
+      "model": "claude-opus-4-5-20251101",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Opus 4.6 (Tunnel Agent)",
+      "id": "custom:Claude-Opus-4.6-(Tunnel-Agent)-0",
+      "index": 19,
+      "model": "claude-opus-4-6",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Opus 4.7 (Tunnel Agent)",
+      "id": "custom:Claude-Opus-4.7-(Tunnel-Agent)-0",
+      "index": 20,
+      "model": "claude-opus-4-7",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Opus 4.8 (Tunnel Agent)",
+      "id": "custom:Claude-Opus-4.8-(Tunnel-Agent)-0",
+      "index": 21,
+      "model": "claude-opus-4-8",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Sonnet 4 (Tunnel Agent)",
+      "id": "custom:Claude-Sonnet-4-(Tunnel-Agent)-0",
+      "index": 22,
+      "model": "claude-sonnet-4-20250514",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Sonnet 4.5 (Tunnel Agent)",
+      "id": "custom:Claude-Sonnet-4.5-(Tunnel-Agent)-0",
+      "index": 23,
+      "model": "claude-sonnet-4-5-20250929",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317",
+      "displayName": "Claude Sonnet 4.6 (Tunnel Agent)",
+      "id": "custom:Claude-Sonnet-4.6-(Tunnel-Agent)-0",
+      "index": 24,
+      "model": "claude-sonnet-4-6",
+      "noImageSupport": false,
+      "provider": "anthropic"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "Codex Auto Review (Tunnel Agent)",
+      "id": "custom:Codex-Auto-Review-(Tunnel-Agent)-0",
+      "index": 25,
+      "model": "codex-auto-review",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "GPT 5.3 Codex Spark (Tunnel Agent)",
+      "id": "custom:GPT-5.3-Codex-Spark-(Tunnel-Agent)-0",
+      "index": 26,
+      "model": "gpt-5.3-codex-spark",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "GPT-5.4 (Tunnel Agent)",
+      "id": "custom:GPT-5.4-(Tunnel-Agent)-0",
+      "index": 27,
+      "model": "gpt-5.4",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "GPT-5.4 Mini (Tunnel Agent)",
+      "id": "custom:GPT-5.4-Mini-(Tunnel-Agent)-0",
+      "index": 28,
+      "model": "gpt-5.4-mini",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "GPT-5.5 (Tunnel Agent)",
+      "id": "custom:GPT-5.5-(Tunnel-Agent)-0",
+      "index": 29,
+      "model": "gpt-5.5",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "GPT Image 1.5 (Tunnel Agent)",
+      "id": "custom:GPT-Image-1.5-(Tunnel-Agent)-0",
+      "index": 30,
+      "model": "gpt-image-1.5",
+      "noImageSupport": false,
+      "provider": "openai"
+    },
+    {
+      "apiKey": "test",
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "displayName": "GPT Image 2 (Tunnel Agent)",
+      "id": "custom:GPT-Image-2-(Tunnel-Agent)-0",
+      "index": 31,
+      "model": "gpt-image-2",
+      "noImageSupport": false,
+      "provider": "openai"
+    }
+  ],
   "enabledPlugins": {
     "core@factory-plugins": true,
     "superpowers@superpowers": true
   },
-  "logoAnimation": "off",
-  "sessionDefaultSettings": {
-    "model": "custom:kimi-k2.6",
-    "reasoningEffort": "none",
-    "interactionMode": "auto",
-    "autonomyLevel": "medium",
-    "autonomyMode": "auto-medium"
-  },
   "extraKnownMarketplaces": {
     "superpowers": {
       "source": {
-        "source": "github",
-        "repo": "obra/superpowers"
+        "repo": "obra/superpowers",
+        "source": "github"
       }
     }
   },
   "hooks": {
-    "SessionStart": [
+    "Notification": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
           }
         ]
       }
     ],
-    "UserPromptSubmit": [
+    "PermissionRequest": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\mikel\\.factory\\hooks\\herdr-agent-state.ps1\" session",
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -44,51 +400,8 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
           }
         ]
       }
@@ -97,237 +410,31 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd"
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
+            "type": "command"
           }
         ]
       }
     ]
   },
-  "customModels": [
-    {
-      "model": "claude-3-5-haiku-20241022",
-      "displayName": "claude-3-5-haiku-20241022",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-3-7-sonnet-20250219",
-      "displayName": "claude-3-7-sonnet-20250219",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-haiku-4-5-20251001",
-      "displayName": "claude-haiku-4-5-20251001",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-opus-4-1-20250805",
-      "displayName": "claude-opus-4-1-20250805",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-opus-4-20250514",
-      "displayName": "claude-opus-4-20250514",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-opus-4-5-20251101",
-      "displayName": "claude-opus-4-5-20251101",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-opus-4-6",
-      "displayName": "claude-opus-4-6",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-opus-4-7",
-      "displayName": "claude-opus-4-7",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-opus-4-8",
-      "displayName": "claude-opus-4-8",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-sonnet-4-20250514",
-      "displayName": "claude-sonnet-4-20250514",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-sonnet-4-5-20250929",
-      "displayName": "claude-sonnet-4-5-20250929",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-sonnet-4-6",
-      "displayName": "claude-sonnet-4-6",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "no-key"
-    },
-    {
-      "model": "claude-3-5-haiku-20241022",
-      "displayName": "Claude 3.5 Haiku (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-3-7-sonnet-20250219",
-      "displayName": "Claude 3 7 Sonnet (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-fable-5",
-      "displayName": "Claude Fable 5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-haiku-4-5-20251001",
-      "displayName": "Claude Haiku 4.5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-opus-4-1-20250805",
-      "displayName": "Claude Opus 4.1 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-opus-4-20250514",
-      "displayName": "Claude Opus 4 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-opus-4-5-20251101",
-      "displayName": "Claude Opus 4.5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-opus-4-6",
-      "displayName": "Claude Opus 4.6 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-opus-4-7",
-      "displayName": "Claude Opus 4.7 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-opus-4-8",
-      "displayName": "Claude Opus 4.8 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-sonnet-4-20250514",
-      "displayName": "Claude Sonnet 4 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-sonnet-4-5-20250929",
-      "displayName": "Claude Sonnet 4.5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "claude-sonnet-4-6",
-      "displayName": "Claude Sonnet 4.6 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "codex-auto-review",
-      "displayName": "Codex Auto Review (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "gpt-5.3-codex-spark",
-      "displayName": "GPT 5.3 Codex Spark (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "gpt-5.4",
-      "displayName": "GPT-5.4 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "gpt-5.4-mini",
-      "displayName": "GPT-5.4 Mini (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "gpt-5.5",
-      "displayName": "GPT-5.5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "gpt-image-1.5",
-      "displayName": "GPT Image 1.5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    },
-    {
-      "model": "gpt-image-2",
-      "displayName": "GPT Image 2 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
-    }
-  ]
+  "logoAnimation": "off",
+  "remoteAccessEnabled": false,
+  "sessionDefaultSettings": {
+    "autonomyLevel": "medium",
+    "autonomyMode": "auto-medium",
+    "interactionMode": "auto",
+    "model": "custom:kimi-k2.6",
+    "reasoningEffort": "none"
+  },
+  "windowZoomLevel": 0
 }
