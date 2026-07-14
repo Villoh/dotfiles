@@ -36,6 +36,8 @@ mode = "symlink"
     enable_ytm_player = true
     enable_scoop      = true
     enable_tmux       = true
+    enable_wezterm    = true
+    enable_alacritty  = true
 
     # ── Linux-only modules ─────────────────────────────────────────────────
     {{ if not $isWindows -}}
@@ -74,8 +76,6 @@ mode = "symlink"
     {{ if $isWindows -}}
     enable_glazewm          = true
     enable_yasb             = true
-    enable_wezterm          = true
-    enable_alacritty        = true
     enable_flow_launcher    = true
     enable_ditto            = true
     enable_nilesoft         = true
@@ -92,8 +92,6 @@ mode = "symlink"
     {{- else }}
     enable_glazewm          = false
     enable_yasb             = false
-    enable_wezterm          = false
-    enable_alacritty        = false
     enable_flow_launcher    = false
     enable_ditto            = false
     enable_nilesoft         = false

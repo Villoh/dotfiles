@@ -338,54 +338,50 @@
       {
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
         ]
       }
     ],
     "PermissionRequest": [
       {
+        "matcher": "*",
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
-        ],
-        "matcher": "*"
+        ]
       }
     ],
     "PostToolUse": [
       {
+        "matcher": "*",
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
-        ],
-        "matcher": "*"
+        ]
       }
     ],
     "PreToolUse": [
       {
+        "matcher": "*",
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
-        ],
-        "matcher": "*"
+        ]
       }
     ],
     "SessionStart": [
-      {
-        "hooks": [
-          {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
-          }
-        ]
-      },
       {
         "hooks": [
           {
@@ -394,14 +390,24 @@
             "type": "command"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "Stop": [
       {
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
         ]
       }
@@ -410,8 +416,9 @@
       {
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
         ]
       }
@@ -420,8 +427,9 @@
       {
         "hooks": [
           {
-            "command": "C:\\Users\\mikel\\.orca\\agent-hooks\\droid-hook.cmd",
-            "type": "command"
+            "type": "command",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand JgAgACcAQwA6AFwAVQBzAGUAcgBzAFwAbQBpAGsAZQBsAFwALgBvAHIAYwBhAFwAYQBnAGUAbgB0AC0AaABvAG8AawBzAFwAZAByAG8AaQBkAC0AaABvAG8AawAuAGMAbQBkACcAOwAgAGUAeABpAHQAIAAkAEwAQQBTAFQARQBYAEkAVABDAE8ARABFAA==",
+            "timeout": 10
           }
         ]
       }

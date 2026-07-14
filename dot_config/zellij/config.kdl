@@ -54,7 +54,7 @@ keybinds {
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
 
         // Pane management
-        bind "Alt n"         { NewPane "Stacked"; }
+        bind "Alt n"         { NewPane "stacked"; }
         bind "Alt d"         { NewPane "Down"; }
         bind "Alt e"         { NewPane "Right"; }
         bind "Alt x"         { CloseFocus; }
@@ -84,6 +84,7 @@ keybinds {
         bind "Alt 9"         { GoToTab 9; }
         bind "Alt Shift t"   { CloseTab; }
         bind "Alt r"         { SwitchToMode "RenameTab"; TabNameInput 0; }
+        bind "Alt Shift r"   { SwitchToMode "RenamePane"; PaneNameInput 0; }
         bind "Alt i"         { MoveTab "Left"; }
         bind "Alt o"         { MoveTab "Right"; }
 

@@ -68,6 +68,7 @@
         "hooks": [
           {
             "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
             "type": "command"
           }
         ],
@@ -79,6 +80,7 @@
         "hooks": [
           {
             "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
             "type": "command"
           }
         ],
@@ -90,6 +92,7 @@
         "hooks": [
           {
             "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
             "type": "command"
           }
         ],
@@ -100,20 +103,21 @@
       {
         "hooks": [
           {
-            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
-            "type": "command"
-          }
-        ],
-        "matcher": "*"
-      },
-      {
-        "hooks": [
-          {
             "command": "rtk hook claude",
             "type": "command"
           }
         ],
         "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "*"
       }
     ],
     "SessionStart": [
@@ -133,6 +137,7 @@
         "hooks": [
           {
             "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
             "type": "command"
           }
         ]
@@ -143,6 +148,40 @@
         "hooks": [
           {
             "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "TeammateIdle": [
+      {
+        "hooks": [
+          {
+            "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
             "type": "command"
           }
         ]
@@ -153,6 +192,7 @@
         "hooks": [
           {
             "command": "C:/Users/mikel/.orca/agent-hooks/claude-hook.cmd",
+            "timeout": 10,
             "type": "command"
           }
         ]

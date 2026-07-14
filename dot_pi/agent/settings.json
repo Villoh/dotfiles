@@ -15,14 +15,20 @@
     "npm:pi-web-access",
     "npm:pi-autoresearch",
     "npm:pi-caveman",
-    "npm:pi-powerline-footer",
-    "npm:pi-rewind-hook",
     "npm:pi-markdown-preview",
     "npm:glimpseui",
     "npm:pi-studio",
     "npm:@upstash/context7-pi",
     "git:github.com/DietrichGebert/ponytail",
-    "npm:@ff-labs/pi-fff"
+    "npm:@ff-labs/pi-fff",
+    "npm:@injaneity/pi-computer-use",
+    "npm:@quintinshaw/pi-dynamic-workflows",
+    "npm:pi-rewind",
+    "npm:pi-codex-goal",
+    "npm:@narumitw/pi-statusline",
+    "npm:context-mode",
+    "npm:pi-lens",
+    "npm:pi-messenger"
   ],
   "powerline": {
     "preset": "default",

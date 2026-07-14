@@ -1,8 +1,6 @@
 # ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
 {{ if or (ne .chezmoi.os "windows") (not .enable_glazewm) }}.glzr/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_yasb) }}.config/yasb/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_wezterm) }}.config/wezterm/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_alacritty) }}AppData/Roaming/alacritty/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_flow_launcher) }}AppData/Roaming/FlowLauncher/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
@@ -61,6 +59,8 @@ scoop/
 {{ if not .enable_scoop }}.config/scoop/**{{ end }}
 {{ if not .enable_tmux }}.tmux.conf
 .tmux-keys{{ end }}
+{{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
+{{ if not .enable_alacritty }}.config/alacritty/**{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
 .claude/*

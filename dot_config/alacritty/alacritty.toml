@@ -109,5 +109,10 @@ bindings = [
   { key = "N", mods = "Control|Shift", action = "CreateNewWindow" },  # New window
   { key = "T", mods = "Control|Shift", action = "CreateNewWindow" },  # New window (tab-like)
   { key = "W", mods = "Control|Shift", action = "Quit" },             # Close window
-  { key = "Return", mods = "Shift", chars = "\u001B\r" },
+
+  # --- Shift+Enter ---
+  # Sends the real CSI-u encoded Shift+Enter (kitty keyboard protocol),
+  # not raw LF — raw LF is indistinguishable from Ctrl+J downstream
+  # (e.g. through herdr), see earendil-works/pi#1872.
+  { key = "Return", mods = "Shift", chars = "\u001b[13;2u" },
 ]
