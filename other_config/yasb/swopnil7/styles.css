@@ -1,0 +1,2106 @@
+/* ===================== */
+/* === COLOR VARIABLES === */
+/* ===================== */
+:root {
+	/* Catppuccin Mocha color palette */
+	--rosewater: #f5e0dc;
+	--flamingo: #f2cdcd;
+	--pink: #f5c2e7;
+	--mauve: #cba6f7;
+	--red: #f38ba8;
+	--maroon: #eba0ac;
+	--peach: #fab387;
+	--yellow: #f9e2af;
+	--green: #a6e3a1;
+	--teal: #94e2d5;
+	--sky: #89dceb;
+	--sapphire: #74c7ec;
+	--blue: #89b4fa;
+	--lavender: #b4befe;
+	--og: #c39ff1;
+
+	/* Text colors */
+	--text: #cdd6f4;
+	--subtext1: #bac2de;
+	--subtext0: #a6adc8;
+
+	/* Overlay colors */
+	--overlay2: #9399b2;
+	--overlay1: #7f849c;
+	--overlay0: #6c7086;
+
+	/* Surface colors */
+	--surface2: #585b70;
+	--surface1: #45475a;
+	--surface0: #282936;
+
+	/* Base colors */
+	--base: #1e1e2e;
+	--mantle: #181825;
+	--crust: #11111b;
+	--rev-surface: rgba(24, 24, 37, 0.94);
+	--rev-hover: rgba(195, 159, 241, 0.14);
+	--rev-shadow: rgba(0, 0, 0, 0.22);
+}
+
+/* ================= */
+/* === BASE STYLES === */
+/* ================= */
+* {
+	font-size: 12px;
+	color: var(--subtext0);
+	font-weight: 600;
+	font-family: "JetBrainsMono NFP";
+	margin: 0;
+	padding: 0;
+}
+
+/* ================= */
+/* === BAR LAYOUT === */
+/* ================= */
+.yasb-bar {
+	padding: 0;
+	margin: 0 5px;
+	background: rgba(17, 17, 27, 0.01);
+	border-radius: 0;
+}
+
+/* Common widget styles */
+.widget {
+	padding: 0;
+	margin: 0;
+}
+
+.widget .label {
+	padding: 0 4px;
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.widget .label.alt {
+	padding: 0 4px;
+	font-size: 12px;
+}
+
+/* ===================== */
+/* === GROUPER STYLES === */
+/* ===================== */
+.left-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 4px;
+	border-radius: 10px;
+}
+
+.active-window-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 4px;
+	border-radius: 10px;
+}
+
+.center-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 4px;
+	border-radius: 10px;
+}
+
+.right-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 4px;
+	border-radius: 10px;
+}
+
+.utils-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 4px;
+	border-radius: 10px;
+}
+
+.utils-grouper .widget {
+	margin: 0 2px;
+}
+
+.systray-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 2px;
+	border-radius: 10px;
+}
+
+.media-grouper .container {
+	background-color: var(--mantle);
+	border: 1px solid var(--surface1);
+	margin: 0 2px;
+	padding: 0 4px;
+	border-radius: 10px;
+}
+
+.icon {
+	font-size: 14px;
+	margin: 0;
+	padding: 0 2px;
+}
+
+/* Icon hover effect (palette-diverse accents) */
+.power-menu-widget .label:hover {
+	color: var(--maroon);
+}
+.battery-widget .icon:hover {
+	color: var(--peach);
+}
+.disk-widget .icon:hover {
+	color: var(--sapphire);
+}
+.clock-widget .icon:hover {
+	color: var(--yellow);
+}
+.open-meteo-widget .icon:hover {
+	color: var(--flamingo);
+}
+.wifi-widget .icon:hover {
+	color: var(--sky);
+}
+.bluetooth-widget .icon:hover {
+	color: var(--lavender);
+}
+.memory-widget .icon:hover {
+	color: var(--blue);
+}
+.volume-widget .icon:hover {
+	color: var(--green);
+}
+.libre-monitor-widget .widget-container .icon:hover {
+	color: var(--yellow);
+}
+.cpu-widget .icon:hover {
+	color: var(--teal);
+}
+.notification-widget .icon:hover {
+	color: var(--mauve);
+}
+.notification-widget .icon.new-notification:hover {
+	color: var(--peach);
+}
+.vscode-widget .widget-container .icon:hover {
+	color: var(--red);
+}
+.traffic-widget .icon:hover {
+	color: var(--teal);
+}
+.home-widget .icon:hover {
+	color: var(--rosewater);
+}
+.wallpapers-widget .icon:hover {
+	color: var(--pink);
+}
+.systray .unpinned-visibility-btn:hover {
+	color: var(--og);
+}
+.launchpad-widget .icon:hover {
+	color: var(--mauve);
+}
+.active-window-widget .widget-container .icon:hover {
+	color: var(--yellow);
+}
+
+QPushButton {
+	outline: none;
+}
+
+.tooltip {
+	background-color: var(--mantle);
+	color: var(--text);
+	border: 0.5px solid var(--og);
+	border-radius: 6px;
+	font-size: 12px;
+	padding: 4px;
+}
+
+/* ==================== */
+/* === POWER MENU === */
+/* ==================== */
+.power-menu-widget {
+	padding: 0;
+	margin: 0;
+	background: transparent;
+}
+
+.power-menu-widget .label {
+	color: var(--red);
+	font-size: 12px;
+	font-weight: 700;
+	padding: 0 4px;
+}
+
+.power-menu-popup {
+	padding: 5px;
+	background-color: var(--mantle);
+	border: 1.5px solid var(--surface2);
+}
+
+.power-menu-popup .button {
+	padding: 0;
+	width: 180px;
+	height: 230px;
+	border-radius: 5px;
+	background-color: var(--base);
+	margin: 5px;
+}
+
+.power-menu-popup .button.sleep:hover,
+.power-menu-popup .button.restart:hover,
+.power-menu-popup .button.shutdown:hover,
+.power-menu-popup .button.hibernate:hover,
+.power-menu-popup .button.signout:hover,
+.power-menu-popup .button.lock:hover {
+	background-color: var(--crust);
+	border: 4px solid var(--og);
+}
+
+.power-menu-popup .button .label {
+	font-size: 16px;
+	font-weight: 500;
+	color: var(--og);
+}
+
+.power-menu-popup .button .icon {
+	font-size: 64px;
+	color: var(--og);
+}
+
+.power-menu-popup .button.cancel {
+	height: 40px;
+	border-radius: 5px;
+	min-width: 1130px;
+	padding: 0;
+}
+
+.power-menu-popup .button.cancel .icon {
+	padding: 0;
+	margin: 0;
+}
+
+.power-menu-popup .button.cancel .label {
+	color: var(--red);
+	margin: 0 auto;
+	text-align: center;
+	font-weight: bold;
+	font-size: 15px;
+}
+
+.power-menu-popup .button.cancel:hover {
+	background-color: var(--crust);
+	border: 2px solid var(--red);
+}
+
+/* ========================= */
+/* === MEDIA WIDGET      === */
+/* ========================= */
+.media-widget {
+	background: transparent;
+	color: var(--text);
+	padding: 0;
+	max-width: 300px;
+	margin: 3px 0;
+	border-style: solid;
+}
+.media-widget .label {
+	font-size: 12px;
+	font-weight: 700;
+	background-color: transparent;
+	margin: 0 2px;
+	letter-spacing: -1px;
+}
+.media-widget .btn {
+	background: transparent;
+	color: var(--og);
+	font-family: "Segoe Fluent Icons";
+	border: 1px solid var(--og);
+	padding: 0 2px;
+	margin: 2px;
+	color: var(--og);
+	border-radius: 4px;
+	font-size: 10px;
+}
+.media-widget .btn:hover {
+	color: var(--surface0);
+	background-color: var(--og);
+	border-color: var(--og);
+}
+.media-widget .btn.disabled,
+.media-widget .btn.disabled:hover {
+	color: var(--overlay0);
+	background-color: rgba(0, 0, 0, 0);
+	border-color: rgba(195, 159, 241, 0.15);
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+
+.media-menu {
+	min-width: 420px;
+	max-width: 420px;
+	background: var(--mantle);
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+	padding: 16px 20px;
+	color: var(--text);
+}
+
+.media-menu .title,
+.media-menu .artist,
+.media-menu .source {
+	font-size: 14px;
+	font-weight: 600;
+	margin-left: 10px;
+	font-family:
+		"JetBrainsMono NFP", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.media-menu .title {
+	color: var(--og);
+	font-size: 16px;
+}
+
+.media-menu .artist {
+	font-size: 13px;
+	color: var(--overlay1);
+}
+
+.media-menu .source {
+	font-size: 13px;
+	color: var(--surface0);
+	font-weight: bold;
+	border-radius: 3px;
+	background-color: var(--og);
+	color: #fff;
+	padding: 2px 6px;
+}
+
+/* The source class name is the same as what you see in the media widget; just replace spaces with dashes and convert it to lowercase.
+Example: "Windows Media" becomes "windows-media" */
+.media-menu .source.firefox {
+	background-color: #ff583b;
+	color: #ffffff;
+}
+.media-menu .source.spotify {
+	background-color: #199143;
+	color: #ffffff;
+}
+.media-menu .source.edge,
+.media-menu .source.windows-media {
+	background-color: #0078d4;
+	color: #ffffff;
+}
+.media-menu .source.zen {
+	background-color: #332a41;
+	color: #ffffff;
+}
+
+.media-menu .thumbnail {
+	border: 1px solid var(--subtext0);
+	border-radius: 8px;
+}
+
+.media-menu .btn {
+	font-family: "Segoe Fluent Icons";
+	font-size: 15px;
+	font-weight: 500;
+	margin: 3px;
+	min-width: 32px;
+	max-width: 32px;
+	min-height: 28px;
+	max-height: 28px;
+	border-radius: 8px;
+	background: transparent;
+	color: var(--og);
+	border: 1px solid var(--og);
+}
+
+.media-menu .btn.prev {
+	margin-left: 20px;
+}
+
+.media-menu .btn:hover {
+	color: var(--surface0);
+	background-color: var(--og);
+	border-color: var(--surface0);
+}
+
+.media-menu .btn.play {
+	background-color: var(--og);
+	color: var(--surface0);
+	font-size: 17px;
+	border-color: var(--og);
+}
+
+.media-menu .btn.disabled,
+.media-menu .btn.disabled:hover {
+	color: var(--overlay0);
+	background-color: transparent;
+	border-color: rgba(195, 159, 241, 0.15);
+}
+
+.media-menu .playback-time {
+	font-size: 13px;
+	font-family:
+		"JetBrainsMono NFP", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	color: var(--overlay1);
+	margin-top: 20px;
+}
+
+.media-menu .progress-slider {
+	height: 10px;
+	margin: 5px;
+	border-radius: 3px;
+}
+
+.media-menu .progress-slider::groove {
+	background: transparent;
+	height: 2px;
+	border-radius: 3px;
+	background: rgba(195, 159, 241, 0.3);
+}
+
+.media-menu .progress-slider::groove:hover {
+	background: rgba(195, 159, 241, 0.5);
+	height: 6px;
+	border-radius: 3px;
+}
+
+.media-menu .progress-slider::sub-page {
+	background: var(--og);
+	border-radius: 3px;
+	height: 4px;
+}
+
+.media-menu .app-volume-container {
+	background-color: var(--base);
+	padding: 8px 6px;
+	border-radius: 12px;
+	margin-left: 10px;
+}
+
+.media-menu .app-volume-container .volume-slider::groove {
+	background: transparent;
+	width: 2px;
+}
+
+.media-menu .app-volume-container .volume-slider::groove:hover {
+	background: transparent;
+	width: 6px;
+}
+
+.media-menu .app-volume-container .volume-slider::add-page {
+	background: var(--og);
+}
+
+.media-menu .app-volume-container .volume-slider::sub-page {
+	background: var(--overlay0);
+}
+.media-menu .app-volume-container .mute-button,
+.media-menu .app-volume-container .unmute-button {
+	font-size: 16px;
+	color: var(--og);
+	font-family: "Segoe Fluent Icons";
+	margin-top: 4px;
+}
+.media-menu .app-volume-container .unmute-button {
+	color: var(--overlay1);
+}
+
+/* ==================== */
+/* === VOLUME WIDGET === */
+/* ==================== */
+.volume-widget .icon {
+	color: var(--blue);
+}
+
+.volume-widget .label {
+	font-size: 12px;
+	color: var(--subtext0);
+	font-weight: 700;
+	font-family: "JetBrainsMono NFP";
+	background: transparent;
+}
+
+.audio-menu {
+	background-color: var(--mantle);
+	min-width: 250px;
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+}
+/* System volume */
+.audio-menu .system-volume-container .volume-slider {
+	border: none;
+}
+/* Device list styles */
+.audio-menu .audio-container .device {
+	background-color: transparent;
+	border: none;
+	padding: 6px 8px 6px 4px;
+	margin: 2px 0;
+	font-size: 12px;
+	font-weight: bold;
+	border-radius: 4px;
+}
+.audio-menu .audio-container .device.selected {
+	background-color: rgba(195, 159, 241, 0.24);
+}
+.audio-menu .audio-container .device:hover {
+	background-color: rgba(195, 159, 241, 0.14);
+}
+
+.audio-menu .audio-container .device.selected:hover {
+	background-color: rgba(195, 159, 241, 0.34);
+}
+
+/* Toggle button for application volumes (if is enabled) */
+.audio-menu .toggle-apps {
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	margin: 0 4px;
+	min-height: 20px;
+	min-width: 20px;
+	border-radius: 6px;
+}
+.audio-menu .toggle-apps.expanded {
+	background-color: transparent;
+}
+.audio-menu .toggle-apps:hover {
+	background-color: rgba(195, 159, 241, 0.14);
+}
+/* Container for application volumes (if is enabled) */
+.audio-menu .apps-container {
+	padding: 8px;
+	margin-top: 20px;
+	border-radius: 8px;
+	background-color: var(--base);
+}
+.audio-menu .apps-container .app-volume .app-icon-container {
+	min-width: 40px;
+	min-height: 40px;
+	max-width: 40px;
+	max-height: 40px;
+	border-radius: 6px;
+	margin-right: 8px;
+}
+.audio-menu .apps-container .app-volume .app-icon-container:hover {
+	background-color: rgba(195, 159, 241, 0.14);
+}
+
+/* ================== */
+/* === CAVA WIDGET === */
+/* ================= */
+
+.cava-widget {
+	padding: 0;
+	margin: 0;
+}
+
+/* ================= */
+/* === DISK WIDGET === */
+/* ================= */
+.disk-widget .icon {
+	color: var(--teal);
+}
+
+.disk-group {
+	background-color: var(--mantle);
+	padding: 0;
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+}
+
+.disk-group-row {
+	min-width: 220px;
+	max-width: 220px;
+	max-height: 40px;
+	margin: 0;
+	padding: 0;
+	border-radius: 6px;
+	border: 1px solid var(--surface1);
+}
+
+.disk-group-row:hover {
+	background-color: rgba(195, 159, 241, 0.14);
+}
+
+.disk-group-label-bar {
+	max-height: 8px;
+	background-color: var(--surface0);
+	border-radius: 4px;
+}
+
+.disk-group-label-bar::chunk {
+	background-color: var(--og);
+	border-radius: 4px;
+}
+
+.disk-group-label {
+	font-size: 12px;
+}
+
+.disk-group-label-size {
+	font-size: 12px;
+	color: var(--overlay0);
+}
+
+/* ================= */
+/* === CLOCK WIDGET === */
+/* ================= */
+
+.clock-widget .icon {
+	font-size: 14px;
+	color: var(--green);
+}
+
+.clock-widget .label {
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--subtext0);
+}
+
+.calendar {
+	background: var(--mantle);
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+	padding: 12px;
+	color: var(--text);
+}
+
+.calendar .calendar-table,
+.calendar .calendar-table::item {
+	background-color: transparent;
+	color: var(--og);
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.calendar .calendar-table::item {
+	border-radius: 4px;
+}
+
+.calendar .calendar-table::item:hover {
+	background-color: var(--lavender);
+	color: var(--surface0);
+}
+
+.calendar .calendar-table::item:selected {
+	color: var(--crust);
+	background-color: var(--og);
+}
+
+.calendar .day-label {
+	margin-top: 15px;
+}
+
+.calendar .day-label,
+.calendar .month-label,
+.calendar .date-label {
+	font-size: 16px;
+	color: var(--og);
+	font-weight: 700;
+	min-width: 150px;
+	max-width: 180px;
+	letter-spacing: 0.5px;
+}
+
+.calendar .month-label {
+	font-weight: 600;
+	color: var(--mauve);
+}
+
+.calendar .date-label {
+	font-size: 88px;
+	font-weight: 900;
+	color: var(--og);
+	margin-top: -20px;
+	letter-spacing: 2px;
+}
+
+/* ======================= */
+/* === OPEN METEO WIDGET === */
+/* ======================= */
+.open-meteo-widget {
+	padding: 0 6px;
+}
+
+.open-meteo-widget .icon {
+	font-size: 18px;
+	color: var(--mauve);
+}
+
+.open-meteo-widget .label {
+	color: var(--text);
+	padding-left: 4px;
+}
+
+.open-meteo-card {
+	background-color: var(--mantle);
+	min-width: 500px;
+}
+
+.open-meteo-card-today .label {
+	font-size: 13px;
+	font-weight: 400;
+	color: var(--subtext0);
+}
+
+.open-meteo-card-today .label.location {
+	font-size: 32px;
+	font-weight: 700;
+	color: var(--text);
+}
+
+.open-meteo-card-today .label.sunrisesunset,
+.open-meteo-card-today .label.sunrisesunset-icon {
+	font-size: 18px;
+	color: var(--yellow);
+}
+
+.open-meteo-card-today .label.sunrisesunset {
+	font-weight: 600;
+}
+
+.open-meteo-card-today .label.sunrisesunset-icon {
+	font-family: "JetBrainsMono NFP";
+}
+
+.open-meteo-card-day {
+	border: 1px solid rgba(203, 166, 247, 0.15);
+	border-radius: 8px;
+	background-color: transparent;
+	padding: 4px;
+	min-width: 70px;
+}
+
+.open-meteo-card-day .day-name {
+	color: var(--subtext0);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.open-meteo-card-day .day-temp-max {
+	font-size: 16px;
+	font-weight: 700;
+	color: var(--text);
+}
+
+.open-meteo-card-day .day-temp-min {
+	color: var(--overlay1);
+	font-size: 13px;
+	font-weight: 400;
+}
+
+.open-meteo-card-day.active {
+	background-color: rgba(203, 166, 247, 0.08);
+	border: 1px solid rgba(203, 166, 247, 0.25);
+}
+
+.open-meteo-card-day:hover {
+	background-color: rgba(203, 166, 247, 0.05);
+}
+
+.open-meteo-card .hourly-container {
+	border: none;
+	background-color: transparent;
+	min-height: 120px;
+}
+
+.open-meteo-card .hourly-data {
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.open-meteo-card .hourly-data.temperature {
+	background-color: var(--mauve);
+}
+
+.open-meteo-card .hourly-data.rain {
+	background-color: var(--sapphire);
+}
+
+.open-meteo-card .hourly-data.snow {
+	background-color: var(--sky);
+}
+
+.open-meteo-card .hourly-data .hourly-rain-animation {
+	color: rgba(116, 199, 236, 40);
+	background-color: transparent;
+}
+
+.open-meteo-card .hourly-data .hourly-snow-animation {
+	color: rgba(137, 220, 235, 150);
+	background-color: transparent;
+}
+
+.open-meteo-card .hourly-data-buttons {
+	margin-top: 11px;
+	margin-left: 11px;
+}
+
+.open-meteo-card .hourly-data-button {
+	border: 1px solid transparent;
+	border-radius: 4px;
+	min-width: 24px;
+	max-width: 24px;
+	min-height: 24px;
+	max-height: 24px;
+	font-size: 14px;
+	color: var(--overlay1);
+}
+
+.open-meteo-card .hourly-data-button.active {
+	color: var(--mauve);
+	background-color: rgba(203, 166, 247, 0.15);
+	border-color: rgba(203, 166, 247, 0.3);
+}
+
+.open-meteo-card .search-input {
+	padding: 8px 12px;
+	border: 1px solid var(--surface2);
+	border-radius: 6px;
+	background-color: rgba(17, 17, 27, 0.2);
+	color: var(--text);
+	font-size: 14px;
+}
+
+.open-meteo-card .search-input:focus {
+	border-color: var(--blue);
+	background-color: rgba(17, 17, 27, 0.4);
+}
+
+.open-meteo-card .search-results {
+	border: 1px solid transparent;
+	border-radius: 6px;
+	background-color: transparent;
+	color: var(--subtext1);
+	font-size: 13px;
+}
+
+.open-meteo-card .search-results::item {
+	padding: 6px;
+}
+
+.open-meteo-card .search-results::item:hover {
+	background-color: rgba(203, 166, 247, 0.08);
+}
+
+/* ====================== */
+/* === WORKSPACE WIDGET === */
+/* ====================== */
+.glazewm-workspaces {
+	background-color: transparent;
+	margin: 0;
+	border-radius: 0;
+	padding: 0;
+}
+
+.glazewm-workspaces .ws-btn {
+	background-color: var(--surface0);
+	margin: 3px;
+	color: transparent;
+	height: 8px;
+	border-radius: 4px;
+}
+
+.glazewm-workspaces .ws-btn:hover,
+.glazewm-workspaces .ws-btn.empty :hover,
+.glazewm-workspaces .ws-btn.populated:hover,
+.glazewm-workspaces .ws-btn.active_populated:hover,
+.glazewm-workspaces .ws-btn.active_empty:hover {
+	background-color: var(--og);
+}
+
+.glazewm-workspaces .ws-btn.empty {
+	background-color: var(--surface1);
+}
+
+.glazewm-workspaces .ws-btn.populated {
+	background-color: var(--subtext0);
+}
+
+.glazewm-workspaces .ws-btn.active_populated,
+.glazewm-workspaces .ws-btn.active_empty {
+	background-color: var(--og);
+	width: 25px;
+	height: 8px;
+	border-radius: 4px;
+}
+
+/* ================= */
+/* === WIFI WIDGET === */
+/* ================= */
+.wifi-widget .icon {
+	color: var(--yellow);
+}
+.wifi-widget .label {
+	font-size: 12px;
+	color: var(--subtext0);
+	font-weight: 700;
+	font-family: "JetBrainsMono NFP";
+	background: transparent;
+}
+
+.wifi-menu {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	background-color: var(--crust);
+	min-height: 400px;
+	min-width: 400px;
+	border: 1.5px solid var(--surface2);
+}
+
+.wifi-menu .progress-bar {
+	max-height: 2px;
+	background: var(--surface1);
+	border-radius: 4px;
+	margin: 6px;
+}
+
+.wifi-menu .progress-bar::chunk {
+	background-color: var(--og);
+}
+
+.wifi-menu .header {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 14px;
+	font-weight: 600;
+	margin-bottom: 2px;
+	padding: 12px;
+	background-color: var(--mantle);
+	color: var(--og);
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+	border-top: 1.5px solid var(--surface2);
+	border-bottom: 1px solid var(--og);
+	border-radius: 0 0 6px 6px;
+}
+
+.wifi-menu .error-message {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 14px;
+	font-weight: 600;
+	padding: 8px;
+	background-color: var(--red);
+	color: var(--crust);
+}
+
+.wifi-menu .wifi-list {
+	background-color: var(--base);
+	margin: 0;
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+}
+
+.wifi-menu .wifi-item {
+	min-height: 35px;
+	margin: 2px 6px;
+	border-radius: 6px;
+	padding: 4px 8px;
+}
+
+.wifi-menu .wifi-item:hover {
+	background-color: var(--rev-hover);
+}
+
+.wifi-menu .wifi-item[active="true"] {
+	background-color: rgba(195, 159, 241, 0.18);
+	font-size: 14px;
+	border-radius: 6px;
+	min-height: 80px;
+	border: 1.5px solid var(--og);
+}
+
+.wifi-menu .wifi-item .icon {
+	font-family: "Segoe Fluent Icons";
+	font-size: 26px;
+	margin-right: 10px;
+	color: var(--og);
+}
+
+.wifi-menu .wifi-item .name {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 14px;
+	margin-right: 10px;
+	color: var(--text);
+}
+
+.wifi-menu .wifi-item .password {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	background-color: var(--crust);
+	font-size: 14px;
+	color: var(--subtext1);
+	padding: 2px;
+}
+
+.wifi-menu .wifi-item .status {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 14px;
+	color: var(--subtext0);
+}
+
+.wifi-menu .wifi-item .strength {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 14px;
+	color: var(--og);
+}
+
+.wifi-menu .wifi-item .controls-container {
+	padding-top: 8px;
+}
+
+.wifi-menu .wifi-item .connect {
+	padding: 4px 15px;
+	border-radius: 4px;
+	font-size: 14px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-weight: 700;
+}
+
+.wifi-menu .wifi-item .connect:active {
+	background-color: var(--crust);
+	color: var(--og);
+}
+
+.wifi-menu .wifi-item .connect:active:hover {
+	background-color: var(--mauve);
+	color: var(--surface0);
+}
+
+.wifi-menu .footer {
+	padding: 12px;
+	margin-top: 2px;
+	background-color: var(--mantle);
+	border-top: 1px solid var(--og);
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+	border-bottom: 1.5px solid var(--surface2);
+	border-radius: 0 0 6px 6px;
+}
+
+.wifi-menu .footer .settings-button {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	background-color: transparent;
+	border: none;
+	padding: 0 2px;
+	min-width: 26px;
+	min-height: 26px;
+	color: var(--og);
+	border-radius: 4px;
+}
+
+.wifi-menu .footer .settings-button:hover {
+	background-color: var(--rev-hover);
+	color: var(--text);
+}
+
+.wifi-menu .footer .refresh-icon {
+	font-family: "Segoe Fluent Icons";
+	background-color: transparent;
+	border: none;
+	min-width: 26px;
+	min-height: 26px;
+	color: var(--og);
+	border-radius: 4px;
+}
+
+.wifi-menu .footer .refresh-icon:hover {
+	background-color: var(--rev-hover);
+	color: var(--text);
+}
+
+.context-menu {
+	background: var(--mantle);
+	border-radius: 4px;
+	border: 1px solid var(--surface1);
+	padding: 4px;
+}
+
+.context-menu .menu-checkbox {
+	border-radius: 3px;
+	color: var(--text);
+}
+
+.context-menu .menu-checkbox .checkbox {
+	margin: 2px;
+}
+
+.context-menu::item {
+	font-size: 12px;
+	color: var(--text);
+	background: transparent;
+	border: none;
+	border-radius: 4px;
+	margin: 2px;
+}
+
+.context-menu::item:selected,
+.context-menu .menu-checkbox:hover,
+.context-menu .menu-checkbox .checkbox:hover {
+	background: var(--rev-hover);
+	color: var(--text);
+}
+
+/* ===================== */
+/* === BATTERY WIDGET === */
+/* ===================== */
+.battery-widget .icon {
+	color: var(--flamingo);
+}
+
+.battery-widget {
+	padding: 0;
+	margin: 0 0 0 2px;
+	background: transparent;
+	border-radius: 6px;
+}
+
+.battery-widget .label {
+	color: var(--subtext0);
+	font-size: 12px;
+	font-weight: 700;
+	font-family: "JetBrainsMono NFP";
+	background: transparent;
+}
+
+.battery-widget .widget-container .icon.status-charging {
+	color: var(--teal);
+}
+.battery-widget .widget-container .icon.status-charging.blink {
+	color: var(--yellow);
+}
+.battery-widget .widget-container .icon.status-low {
+	color: var(--red);
+}
+.battery-widget .widget-container .icon.status-medium {
+	color: var(--yellow);
+}
+.battery-widget .widget-container .icon.status-high {
+	color: var(--green);
+}
+.battery-widget .widget-container .icon.status-full {
+	color: var(--blue);
+}
+
+/* ==================== */
+/* === MEMORY WIDGET === */
+/* ==================== */
+.memory-widget .icon {
+	color: var(--red);
+}
+
+.memory-widget .label {
+	font-size: 12px;
+	color: var(--subtext0);
+	font-weight: 700;
+	font-family: "JetBrainsMono NFP";
+	background: transparent;
+}
+
+/* Memory Popup Styling */
+.memory-popup {
+	background-color: var(--mantle);
+	min-width: 380px;
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+}
+
+.memory-popup .header {
+	background: var(--mantle);
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--og);
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+	border-top: 1.5px solid var(--surface2);
+	border-radius: 0 0 6px 6px;
+}
+
+.memory-popup .header .text {
+	font-size: 14px;
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	color: var(--og);
+	font-weight: 700;
+}
+
+.memory-popup .header .pin-btn {
+	font-size: 13px;
+	background: transparent;
+	font-family: "Segoe Fluent Icons";
+	border: none;
+	padding: 4px 6px;
+	color: var(--subtext1);
+}
+
+.memory-popup .header .pin-btn:hover {
+	color: var(--text);
+	background: rgba(137, 180, 250, 0.08);
+	border-radius: 4px;
+}
+
+.memory-popup .header .pin-btn.pinned {
+	color: var(--og);
+}
+
+/* Graph area */
+.memory-popup .graph-container {
+	background: var(--base);
+	min-height: 64px;
+	padding: 7px 14px;
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+}
+
+.memory-popup .memory-graph {
+	color: var(--blue);
+	background: transparent;
+	border-radius: 6px;
+}
+
+.memory-popup .memory-graph-grid {
+	color: transparent;
+}
+
+.memory-popup .graph-title {
+	font-size: 11px;
+	color: var(--subtext0);
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	padding: 6px 14px 4px 14px;
+	font-weight: 700;
+}
+
+/* Stats grid */
+.memory-popup .stats {
+	background: var(--base);
+	padding: 14px;
+	border-top: 1px solid var(--surface1);
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+	border-bottom: 1.5px solid var(--surface2);
+	border-radius: 0 0 6px 6px;
+}
+
+.memory-popup .stats .stat-item {
+	background-color: var(--surface0);
+	border: 1px solid var(--surface1);
+	border-radius: 6px;
+	padding: 8px 10px;
+	margin: 6px 4px;
+}
+
+.memory-popup .stats .stat-label {
+	font-size: 11px;
+	color: var(--subtext1);
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	font-weight: 400;
+	padding: 4px 0 2px 0;
+}
+
+.memory-popup .stats .stat-value {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--text);
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	padding: 2px 0;
+}
+
+/* ================= */
+/* === UPTIME WIDGET === */
+/* ================= */
+.uptime {
+	font-size: 12px;
+	margin-bottom: 10px;
+	color: var(--subtext0);
+	font-weight: 600;
+}
+
+/* ================= */
+/* === HOME WIDGET === */
+/* ================= */
+.home-widget {
+	padding: 0 2px 0 8px;
+}
+
+.home-widget .icon {
+	font-size: 18px;
+	color: var(--subtext1);
+}
+
+.home-menu .menu-item {
+	padding: 8px 48px 8px 12px;
+	font-weight: 600;
+	color: var(--text);
+}
+
+.home-menu .menu-item:hover {
+	background-color: var(--og);
+	color: var(--surface0);
+	margin: 4px 6px;
+	border-radius: 4px;
+}
+
+.home-menu .separator {
+	max-height: 1px;
+	background-color: var(--overlay0);
+	margin: 0 8px;
+}
+
+/* ================= */
+/* === System Tray === */
+/* ================= */
+.systray {
+	background-color: transparent;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+
+.systray .widget-container {
+	background-color: transparent;
+	padding: 0;
+	margin: 0;
+}
+
+.systray .unpinned-container {
+	background-color: transparent;
+	padding: 0;
+	margin-left: 5px;
+}
+
+.systray .button {
+	border: none;
+	padding: 3px 0;
+	background: transparent;
+	color: var(--text);
+	margin: 0;
+}
+
+.systray .button:hover {
+	background: rgba(195, 159, 241, 0.14);
+	border-radius: 4px;
+}
+
+.systray .button[dragging="true"] {
+	background: var(--sky);
+	border: 1.5px solid var(--peach);
+	color: var(--surface0);
+}
+
+.systray .unpinned-visibility-btn {
+	background: var(--mantle);
+	border: none;
+	color: var(--subtext0);
+	margin: 4px;
+	padding: 1px;
+	font-size: 17px;
+}
+
+.systray .unpinned-visibility-btn:hover {
+	color: var(--og);
+}
+
+.systray .unpinned-visibility-btn.active {
+	background: var(--surface0);
+	color: var(--blue);
+	border-color: var(--surface1);
+}
+
+/* ================= */
+/* === lIBRE SM === */
+/* ================= */
+
+.libre-monitor-widget .widget-container .label {
+	color: var(--subtext0);
+	font-size: 12px;
+	font-family: "JetBrainsMono NFP";
+	font-weight: 700;
+	background: transparent;
+}
+
+.libre-monitor-widget .widget-container .icon {
+	color: var(--mauve);
+	font-size: 16px;
+	background: transparent;
+}
+
+.libre-menu {
+	background: var(--mantle);
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+	padding: 10px 12px 6px 12px;
+	min-width: 260px;
+	max-width: 340px;
+}
+
+.libre-menu .header {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--og);
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	padding: 4px 0;
+	margin: 4px 0;
+	letter-spacing: 0.5px;
+}
+
+.libre-menu .sensor-item {
+	background-color: var(--surface0);
+	padding: 3px 8px;
+	border-radius: 5px;
+	border: 1px solid var(--surface1);
+	margin-bottom: 2px;
+}
+
+.libre-menu .sensor-name {
+	font-size: 12px;
+	font-weight: 700;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	color: var(--text);
+}
+
+.libre-menu .sensor-value {
+	font-size: 13px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-weight: 900;
+	color: var(--og);
+}
+
+/* ============================== */
+/* ==== Notification Widget ==== */
+/* ============================ */
+
+.notification-widget {
+	padding: 0;
+	margin: 0;
+}
+
+.notification-widget .widget-container {
+	margin: 0;
+}
+
+.notification-widget .icon {
+	font-size: 12px;
+	color: var(--rosewater);
+}
+
+.notification-widget .icon.new-notification {
+	color: var(--flamingo);
+}
+
+/* ======================== */
+/* === Traffic Widget === */
+/* ===================== */
+
+.traffic-widget {
+	padding: 0 0px;
+	margin: 0px;
+	background: var(--mantle);
+}
+
+/* ======================= */
+/* === VSCode Widget === */
+/* ==================== */
+.vscode-widget {
+	padding: 0;
+	background: transparent;
+}
+
+.vscode-widget .widget-container .icon {
+	color: var(--mauve);
+}
+
+.vscode-menu {
+	max-height: 410px;
+	min-width: 300px;
+}
+
+.vscode-menu .header {
+	font-size: 15px;
+	font-weight: 400;
+	padding: 8px;
+	color: var(--og);
+	background-color: var(--crust);
+	border-bottom: 1px solid var(--surface1);
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+	border-top: 1.5px solid var(--surface2);
+	border-radius: 0 0 6px 6px;
+}
+
+.vscode-menu .contents {
+	background-color: var(--base);
+	border-left: 1.5px solid var(--surface2);
+	border-right: 1.5px solid var(--surface2);
+	border-bottom: 1.5px solid var(--surface2);
+}
+
+.vscode-menu .contents .item {
+	min-height: 30px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.vscode-menu .contents .item .title {
+	font-size: 12px;
+	margin-right: 5px;
+	color: var(--text);
+}
+
+.vscode-menu .contents .item .folder-icon {
+	font-size: 16px;
+	margin-left: 8px;
+	color: var(--blue);
+}
+
+.vscode-menu .contents .item .file-icon {
+	font-size: 16px;
+	margin-left: 8px;
+	color: var(--red);
+}
+
+.vscode-menu .contents .item:hover {
+	background-color: rgba(195, 159, 241, 0.14);
+}
+
+/* ========================= */
+/* === Wallpaper Widget === */
+/* ======================= */
+
+.wallpapers-widget {
+	padding: 0;
+	background: transparent;
+}
+
+.wallpapers-gallery-window {
+	background: var(--crust);
+	border: 1.5px solid var(--surface2);
+	border-radius: 8px;
+	margin: 0;
+}
+
+.wallpapers-gallery-buttons {
+	background: rgba(100, 67, 157, 0.171);
+	color: var(--text);
+	border: 1px solid var(--og);
+	font-size: 15px;
+	font-weight: 900;
+	padding: 5px;
+	border-radius: 8px;
+	margin: 5px 5px 10px 5px;
+	width: 100px;
+}
+
+.wallpapers-gallery-buttons:hover {
+	background: var(--og);
+	color: var(--surface0);
+}
+
+.wallpapers-gallery-image {
+	border: 1.5px solid var(--surface1);
+	border-radius: 14px;
+}
+
+.wallpapers-gallery-image:hover {
+	border: 1.5px solid var(--maroon);
+}
+
+.wallpapers-gallery-image.focused {
+	border: 1.5px solid var(--og);
+}
+
+/* ===================== */
+/* === Launchpad === */
+/* =================== */
+
+/* Widget style */
+.launchpad-widget {
+	padding: 2px;
+	margin: 0 2px;
+	background: var(--base);
+	border-radius: 14px;
+	border: 1px solid var(--surface1);
+}
+
+.launchpad-widget .icon {
+	font-size: 18px;
+	color: var(--lavender);
+}
+
+/* Launchpad context menu style */
+.launchpad .context-menu {
+	background-color: var(--base);
+	border: 1px solid var(--surface1);
+	border-radius: 6px;
+	padding: 4px 0px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 12px;
+	color: var(--text);
+	font-weight: 600;
+}
+.launchpad .context-menu::item {
+	background-color: transparent;
+	padding: 6px 12px;
+	margin: 2px 6px;
+	border-radius: 4px;
+	min-width: 100px;
+}
+.launchpad .context-menu::item:selected {
+	background-color: var(--surface1);
+	color: var(--og);
+}
+.launchpad .context-menu::item:pressed {
+	background-color: var(--surface2);
+}
+.launchpad .context-menu::separator {
+	height: 1px;
+	background-color: var(--surface1);
+	margin: 4px 8px;
+}
+.launchpad .context-menu::item:disabled {
+	color: var(--overlay0);
+	background-color: transparent;
+}
+
+/* Launchpad App dialog style */
+.launchpad .app-dialog {
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	background-color: var(--mantle);
+}
+.launchpad .app-dialog .buttons-container {
+	background-color: var(--crust);
+	margin-top: 16px;
+	border-top: 1px solid var(--surface1);
+	max-height: 80px;
+	min-height: 80px;
+	padding: 0 20px 0 20px;
+}
+.launchpad .app-dialog .message {
+	color: var(--text);
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 10px 0;
+}
+.launchpad .app-dialog .title-field,
+.launchpad .app-dialog .path-field,
+.launchpad .app-dialog .icon-field {
+	background-color: var(--surface0);
+	border: 1px solid var(--surface1);
+	border-radius: 4px;
+	padding: 0 6px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 10px 0px 5px 0;
+	min-height: 30px;
+}
+.launchpad .app-dialog .title-field:focus,
+.launchpad .app-dialog .path-field:focus,
+.launchpad .app-dialog .icon-field:focus {
+	border-bottom-color: var(--og);
+}
+.launchpad .app-dialog .button {
+	background-color: var(--surface1);
+	border: none;
+	border-radius: 4px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text);
+	min-width: 80px;
+	padding: 0 6px;
+	margin: 10px 0 5px 6px;
+	min-height: 28px;
+}
+.launchpad .app-dialog .buttons-container .button {
+	margin: 10px 0 5px 0px;
+	font-size: 13px;
+}
+.launchpad .app-dialog .button:focus {
+	border: 2px solid var(--og);
+}
+.launchpad .app-dialog .button:focus,
+.launchpad .app-dialog .button:hover {
+	background-color: var(--og);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .button:pressed {
+	background-color: var(--surface2);
+}
+.launchpad .app-dialog .button.add,
+.launchpad .app-dialog .button.save {
+	background-color: var(--blue);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .button.add:focus,
+.launchpad .app-dialog .button.save:focus,
+.launchpad .app-dialog .button.add:hover,
+.launchpad .app-dialog .button.save:hover {
+	background-color: var(--sapphire);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .button.add:pressed,
+.launchpad .app-dialog .button.save:pressed {
+	background-color: var(--og);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .button.delete {
+	background-color: var(--red);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .button.delete:focus,
+.launchpad .app-dialog .button.delete:hover {
+	background-color: var(--maroon);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .button.delete:pressed {
+	background-color: var(--flamingo);
+	color: var(--surface0);
+}
+.launchpad .app-dialog .warning-message {
+	background-color: rgba(243, 139, 168, 0.12);
+	border: 1px solid var(--flamingo);
+	border-radius: 4px;
+	color: var(--flamingo);
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 12px;
+	font-weight: 600;
+	padding: 8px 12px;
+	margin: 4px 0px;
+}
+/* Launchpad popup style */
+.launchpad .drop-overlay {
+	background-color: rgba(30, 30, 46, 0.8);
+	border: 4px dashed var(--blue);
+}
+.launchpad .drop-overlay .text {
+	color: var(--og);
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 64px;
+	font-weight: 600;
+}
+.launchpad .launchpad-container {
+	background-color: rgba(30, 30, 46, 0.8);
+}
+.launchpad .search-container {
+	min-height: 80px;
+	margin: 0;
+	padding: 0;
+}
+.launchpad .search-input {
+	max-width: 400px;
+	padding: 8px 12px;
+	font-size: 14px;
+	min-height: 24px;
+	max-height: 24px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	border-radius: 20px;
+	border: 2px solid var(--surface2);
+	background-color: var(--crust);
+	color: var(--subtext0);
+}
+.launchpad .search-input:focus {
+	border: 2px solid var(--blue);
+	background-color: rgba(255, 255, 255, 0.05);
+}
+.launchpad .launchpad-scroll-area {
+	background-color: transparent;
+	border: none;
+}
+.launchpad .app-icon {
+	background-color: var(--mantle);
+	border-radius: 12px;
+	border: 2px solid var(--surface0);
+	padding-top: 15px;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin: 24px 6px 6px 6px;
+	max-width: 130px;
+	min-width: 130px;
+	min-height: 90px;
+}
+.launchpad .app-icon:focus {
+	border: 2px solid var(--og);
+	background-color: rgba(195, 159, 241, 0.13);
+}
+.launchpad .app-icon:hover {
+	border: 2px solid var(--og);
+	background-color: rgba(195, 159, 241, 0.18);
+}
+.launchpad .app-icon .title {
+	color: var(--subtext0);
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-size: 12px;
+	margin-top: 10px;
+	font-weight: 600;
+}
+/* App icon .launchpad .app-icon or URL icon .launchpad .app-icon.url */
+.launchpad .app-icon.url .title {
+	color: var(--teal);
+}
+.launchpad .app-icon .icon {
+	padding: 0;
+	margin: 0;
+}
+
+/* ==================== */
+/* === BLUETOOTH WIDGET === */
+/* ==================== */
+
+.bluetooth-widget {
+	padding: 0;
+	margin: 0;
+}
+.bluetooth-widget .icon {
+	color: var(--sky);
+}
+
+/* ==================== */
+/* ==== AI WIDGET ==== */
+/* ==================== */
+
+/* .ai-chat-widget {
+    padding: 0;
+}
+.ai-chat-widget .icon {
+    color: var(--blue);
+}
+.ai-chat-popup {
+    background-color: var(--base);
+    min-width: 500px;
+    max-width: 500px;
+    min-height: 600px;
+    max-height: 600px;
+}
+.ai-chat-popup.floating {
+    background-color: var(--base);
+    min-width: 1000px;
+    max-width: 1000px;
+    min-height: 800px;
+    max-height: 800px;
+}
+.ai-chat-popup .chat-header {
+    background-color: var(--crust);
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--surface2);
+}
+.ai-chat-popup .chat-header .loader-line {
+    color: var(--og);
+ }
+.ai-chat-popup .chat-header .float-button,
+.ai-chat-popup .chat-header .close-button {
+    background-color: transparent;
+    font-family: "JetBrainsMono NFP";
+    border: none;
+    color: var(--text);
+    font-weight: 400;
+    font-size: 16px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+.ai-chat-popup.floating .chat-header .float-button:hover,
+.ai-chat-popup.floating .chat-header .close-button:hover {
+    background-color: rgba(195, 159, 241, 0.10);
+} 
+.ai-chat-popup .chat-footer {
+    background-color: var(--mantle);
+    padding: 16px;
+}
+.ai-chat-popup .chat-header .provider-button,
+.ai-chat-popup .chat-header .model-button {
+    font-family: "Fira Code";
+    background-color: var(--mantle);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 12px;
+    color: var(--text);
+    margin-right: 8px;
+    min-width: 130px;
+    max-width: 230px;
+    border-radius: 4px;
+    padding: 4px 10px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+.ai-chat-popup .chat-header .provider-button:hover,
+.ai-chat-popup .chat-header .model-button:hover {
+    background-color: rgba(195, 159, 241, 0.2);
+    border-color: rgba(195, 159, 241, 0.2);
+}
+.ai-chat-popup .chat-header .provider-button:pressed,
+.ai-chat-popup .chat-header .model-button:pressed {
+    background-color: rgba(195, 159, 241, 0.4);
+    border-color: rgba(195, 159, 241, 0.4);
+}
+.ai-chat-popup .chat-header .provider-button:disabled,
+.ai-chat-popup .chat-header .model-button:disabled {
+    color: var(--overlay0);
+}
+
+.ai-chat-popup .context-menu {
+    background-color: var(--mantle);
+    border: 1px solid var(--surface1);
+    font-family: "Fira Code";
+    font-size: 12px;
+    color: var(--text);
+     
+}
+.ai-chat-popup .context-menu::separator {
+    height: 1px;
+    background-color: var(--surface2);
+    margin: 4px 8px;
+}
+
+.ai-chat-popup .context-menu::item {
+    background-color: transparent;
+    margin: 2px 8px;
+    border-radius: 4px;
+    min-width: 100px;
+ 
+}
+
+.ai-chat-popup .chat-header .context-menu::item {
+    min-width: 130px;
+    padding: 8px 12px
+}
+.ai-chat-popup .context-menu::item:disabled {
+    color: var(--overlay0);
+} 
+.ai-chat-popup .context-menu::item:selected {
+    background-color: rgba(195, 159, 241, 0.2);
+    color: var(--surface0);
+}
+.ai-chat-popup .context-menu::item:checked {
+    background-color: rgba(195, 159, 241, 0.4);
+    color: var(--text);
+}
+.ai-chat-popup .context-menu::item:pressed {
+    background-color: rgba(195, 159, 241, 0.6);
+     color: var(--surface0);
+}
+.ai-chat-popup .chat-content {
+    background-color: var(--base);
+    border: none;
+}
+.ai-chat-popup .chat-content .empty-chat .greeting,
+.ai-chat-popup .chat-content .empty-chat .message {
+    color: rgba(255, 255, 255, 0.8);
+    font-family: "Fira Code";
+    font-size: 18px;
+    font-weight: 600;
+}
+.ai-chat-popup .chat-content .empty-chat .message {
+    color: rgba(255, 255, 255, 0.4);
+    padding-top: 8px;
+    color: var(--overlay0);
+}
+.ai-chat-popup .chat-content .user-message,
+.ai-chat-popup .chat-content .assistant-message {
+    padding: 12px;
+    border-radius: 8px;
+    margin: 4px 0
+}
+
+.ai-chat-popup .chat-content .user-message .text,
+.ai-chat-popup .chat-content .assistant-message .text {
+    font-family: "Fira Code";
+    font-size: 14px;
+    color: var(--text);
+}
+.ai-chat-popup .chat-content .user-message {
+    margin-left: 26px;
+ 
+}
+.ai-chat-popup .chat-content .assistant-message {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+ 
+.ai-chat-popup .chat-content .assistant-icon {
+    font-size: 24px;
+    color: var(--overlay0);
+    margin-right: 8px;
+    font-family: "JetBrainsMono NFP";
+}
+
+ .ai-chat-popup .chat-footer .chat-input-wrapper {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    max-height: 64px;
+    min-height: 32px;
+    padding: 5px 8px 3px 8px;
+}
+ 
+.ai-chat-popup .chat-footer .chat-input {
+    font-family: "Fira Code";
+    font-size: 12px;
+    color: var(--text);
+    background-color: transparent;
+}
+
+.ai-chat-popup .chat-footer .chat-input-wrapper.focused {
+    border-color: var(--og);
+}
+ 
+.ai-chat-popup .chat-footer .clear-button,
+.ai-chat-popup .chat-footer .send-button,
+.ai-chat-popup .chat-footer .stop-button,
+.ai-chat-popup .chat-footer .attach-button {
+    color: var(--text);
+    font-size: 16px;
+    max-width: 30px;
+    min-width: 30px;
+    max-height: 30px;
+    min-height: 30px;
+    border-radius: 4px;
+    border: none;
+    font-family: "JetBrainsMono NFP";
+}
+.ai-chat-popup .chat-footer .stop-button {
+    background-color: var(--red);
+    color: var(--surface0);
+    border-radius: 14px;
+    margin-left: 8px;
+}
+.ai-chat-popup .chat-footer .clear-button:hover,
+.ai-chat-popup .chat-footer .send-button:hover,
+.ai-chat-popup .chat-footer .stop-button:hover,
+.ai-chat-popup .chat-footer .attach-button:hover {
+    background-color: var(--red);
+}
+.ai-chat-popup .chat-footer .clear-button:disabled,
+.ai-chat-popup .chat-footer .send-button:disabled,
+.ai-chat-popup .chat-footer .stop-button:disabled,
+.ai-chat-popup .chat-footer .attach-button:disabled {
+    color: var(--overlay0);
+}
+.ai-chat-popup .attachment-chip {
+    background-color: rgba(195, 159, 241, 0.1);
+    border: 1px solid rgba(195, 159, 241, 0.2);
+    border-radius: 6px;
+    min-height: 28px;
+ 
+} 
+.ai-chat-popup .attachment-chip .attachment-label {
+    font-family: "Fira Code";
+    color: var(--text);
+    font-size: 12px;
+    padding: 0 4px;
+}
+.ai-chat-popup .attachment-chip .attachment-remove-button {
+    font-size: 12px;
+    font-family: "JetBrainsMono NFP";
+    background-color: transparent;
+    border: none;
+} */

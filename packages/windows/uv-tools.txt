@@ -1,4 +1,5 @@
 basedpyright
+graphifyy
 holded-tt
 pre-commit
 pyright

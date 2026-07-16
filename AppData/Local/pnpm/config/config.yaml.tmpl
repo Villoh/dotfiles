@@ -1,0 +1,10 @@
+# pnpm config Windows.
+# globalDir/globalBinDir evitan las junctions de scoop y sobreviven a update.
+ignoreScripts: true
+saveExact: true
+minimumReleaseAge: 4320
+globalDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\.local\pnpm\global
+globalBinDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\.local\pnpm\bin
+storeDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\scoop\apps\pnpm\current\store
+cacheDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\scoop\apps\pnpm\current\cache
+stateDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\scoop\apps\pnpm\current\state

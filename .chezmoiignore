@@ -16,6 +16,7 @@ scoop/
 {{ end }}
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
+{{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshenv
 .zprofile
 .config/zsh/**{{ end }}

@@ -1,3 +1,8 @@
+# Config pnpm cross-platform (Linux: ~/.config/pnpm/config.yaml).
+# Solo ajustes: SIN rutas absolutas (romperian el otro SO).
+# En Linux, global/bin/store usan los defaults de pnpm.
+# En Windows pnpm NO lee este archivo; lee %LOCALAPPDATA%\pnpm\config\config.yaml
+# (gestionado por AppData/Local/pnpm/config/config.yaml.tmpl).
 ignoreScripts: true
 saveExact: true
 minimumReleaseAge: 4320

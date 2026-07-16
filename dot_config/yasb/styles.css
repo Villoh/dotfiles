@@ -1,4 +1,3 @@
-
 /* -------------------------------------------------------------------------------------------------- */
 /* Variables                                                                                         */
 /* -------------------------------------------------------------------------------------------------- */
@@ -58,7 +57,6 @@
 
 .widget .label {
 	padding: 2px 2px 1px 2px;
-
 }
 
 .widget .label.alt {
@@ -85,31 +83,31 @@
 	margin: 0;
 }
 .glazewm-workspaces .offline-status {
-    color: rgb(205, 214, 244);
-    font-size: 12px;
-    padding: 0 4px;
-    font-weight: 900;
+	color: rgb(205, 214, 244);
+	font-size: 12px;
+	padding: 0 4px;
+	font-weight: 900;
 }
 .glazewm-workspaces .ws-btn {
-    border: none;
-    background-color: var(--surface2);
-    margin: 0px 4px;
-    padding: 0;
-    color: rgba(0, 0, 0, 0);
-    border-radius: 5px;
-    height: 10px;
-    width: 10px;
+	border: none;
+	background-color: var(--surface2);
+	margin: 0px 4px;
+	padding: 0;
+	color: rgba(0, 0, 0, 0);
+	border-radius: 5px;
+	height: 10px;
+	width: 10px;
 }
 .glazewm-workspaces .ws-btn.populated {
-    background-color:var(--surface2);
+	background-color: var(--surface2);
 }
 .glazewm-workspaces .ws-btn.active_populated,
 .glazewm-workspaces .ws-btn.active_empty {
-    color: rgba(0, 68, 255, 0);
-    background-color:var(--mauve);
-    width: 28px;
-    height: 10px;
-    border-radius: 5px;
+	color: rgba(0, 68, 255, 0);
+	background-color: var(--mauve);
+	width: 28px;
+	height: 10px;
+	border-radius: 5px;
 }
 
 /***----------------------------------      • GitHub Widget •      ----------------------------------***/
@@ -130,7 +128,7 @@
 	border-bottom: 1px solid rgba(203, 166, 247, 0.15);
 	font-size: 15px;
 	font-weight: 400;
-	font-family: 'Segoe UI';
+	font-family: "Segoe UI";
 	padding: 8px;
 	color: var(--text);
 	background-color: rgba(17, 17, 27, 0.6);
@@ -142,7 +140,7 @@
 }
 .github-menu .footer .label {
 	font-size: 12px;
-	font-family: 'Segoe UI';
+	font-family: "Segoe UI";
 	color: var(--overlay2);
 }
 .github-menu .contents {
@@ -160,7 +158,7 @@
 .github-menu .contents .item .title,
 .github-menu .contents .item .description {
 	color: var(--overlay2);
-	font-family: 'Segoe UI';
+	font-family: "Segoe UI";
 }
 .github-menu .contents .item .title {
 	font-size: 14px;
@@ -184,19 +182,39 @@
 	color: var(--mauve);
 }
 /* Icon colors by type */
-.github-menu .contents .item .icon.issue.open { color: var(--green); }
-.github-menu .contents .item .icon.issue.closed { color: var(--red); }
-.github-menu .contents .item .icon.pullrequest.open { color: var(--green); }
-.github-menu .contents .item .icon.pullrequest.merged { color: var(--mauve); }
-.github-menu .contents .item .icon.pullrequest.closed { color: var(--red); }
-.github-menu .contents .item .icon.pullrequest.draft { color: var(--overlay1); }
-.github-menu .contents .item .icon.release { color: var(--peach); }
-.github-menu .contents .item .icon.discussion { color: var(--blue); }
-.github-menu .contents .item .icon.discussion.answered { color: var(--teal); }
-.github-menu .contents .item .icon.checksuite { color: var(--yellow); }
+.github-menu .contents .item .icon.issue.open {
+	color: var(--green);
+}
+.github-menu .contents .item .icon.issue.closed {
+	color: var(--red);
+}
+.github-menu .contents .item .icon.pullrequest.open {
+	color: var(--green);
+}
+.github-menu .contents .item .icon.pullrequest.merged {
+	color: var(--mauve);
+}
+.github-menu .contents .item .icon.pullrequest.closed {
+	color: var(--red);
+}
+.github-menu .contents .item .icon.pullrequest.draft {
+	color: var(--overlay1);
+}
+.github-menu .contents .item .icon.release {
+	color: var(--peach);
+}
+.github-menu .contents .item .icon.discussion {
+	color: var(--blue);
+}
+.github-menu .contents .item .icon.discussion.answered {
+	color: var(--teal);
+}
+.github-menu .contents .item .icon.checksuite {
+	color: var(--yellow);
+}
 .github-menu .contents .item .comment-count {
 	font-size: 11px;
-	font-family: 'Segoe UI';
+	font-family: "Segoe UI";
 	color: var(--overlay1);
 }
 .github-menu .contents .item .comment-icon {
@@ -229,6 +247,36 @@
 }
 .volume-slider::handle {
 	background-color: transparent;
+}
+
+.audio-menu .toggle-apps {
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	margin: 0 4px;
+	min-height: 20px;
+	min-width: 20px;
+	border-radius: 6px;
+}
+.audio-menu .toggle-apps:hover {
+	background-color: rgba(195, 159, 241, 0.14);
+}
+.audio-menu .apps-container {
+	padding: 8px;
+	margin-top: 20px;
+	border-radius: 8px;
+	background-color: var(--base);
+}
+.audio-menu .apps-container .app-volume .app-icon-container {
+	min-width: 40px;
+	min-height: 40px;
+	max-width: 40px;
+	max-height: 40px;
+	border-radius: 6px;
+	margin-right: 8px;
+}
+.audio-menu .apps-container .app-volume .app-icon-container:hover {
+	background-color: rgba(195, 159, 241, 0.14);
 }
 
 /***--------------------------------      • Microphone Menu •      ----------------------------------***/
@@ -270,7 +318,7 @@
 .power-menu-widget .label {
 	color: #eba0ac;
 	font-size: 16px;
-        padding: 0
+	padding: 0;
 }
 .power-menu-popup .button {
 	padding: 0px;
@@ -280,7 +328,6 @@
 	border-radius: 8px;
 	background-color: var(--base);
 	color: white;
-
 }
 .power-menu-popup .button.hover {
 	background-color: var(--surface1);
@@ -303,7 +350,6 @@
 .power-menu-popup .button.cancel .label {
 	color: var(--red);
 }
-
 
 /* --------------------------------------------------------------------------------------------------- */
 /* 6. Icons & Typography                                                                               */
@@ -333,7 +379,7 @@
 }
 .start-menu .icon {
 	font-size: 18px;
-	color: #89b4fa
+	color: #89b4fa;
 }
 .clock-widget .icon {
 	color: #cba6f7;
@@ -343,21 +389,41 @@
 
 /***---------------------------------      • Weather Icons •      ----------------------------------***/
 
-.weather-widget .icon.sunnyDay { color: var(--yellow); }
-.weather-widget .icon.clearNight { color: var(--lavender); }
-.weather-widget .icon.cloudyDay { color: var(--subtext0); }
-.weather-widget .icon.cloudyNight { color: var(--overlay1); }
+.weather-widget .icon.sunnyDay {
+	color: var(--yellow);
+}
+.weather-widget .icon.clearNight {
+	color: var(--lavender);
+}
+.weather-widget .icon.cloudyDay {
+	color: var(--subtext0);
+}
+.weather-widget .icon.cloudyNight {
+	color: var(--overlay1);
+}
 .weather-widget .icon.rainyDay,
-.weather-widget .icon.rainyNight { color: var(--sapphire); }
+.weather-widget .icon.rainyNight {
+	color: var(--sapphire);
+}
 .weather-widget .icon.snowyDay,
-.weather-widget .icon.snowyNight { color: var(--sky); }
+.weather-widget .icon.snowyNight {
+	color: var(--sky);
+}
 .weather-widget .icon.blizzardDay,
-.weather-widget .icon.blizzardNight { color: var(--blue); }
+.weather-widget .icon.blizzardNight {
+	color: var(--blue);
+}
 .weather-widget .icon.foggyDay,
-.weather-widget .icon.foggyNight { color: var(--overlay2); }
+.weather-widget .icon.foggyNight {
+	color: var(--overlay2);
+}
 .weather-widget .icon.thunderstormDay,
-.weather-widget .icon.thunderstormNight { color: var(--peach); }
-.weather-widget .icon.default { color: var(--mauve); }
+.weather-widget .icon.thunderstormNight {
+	color: var(--peach);
+}
+.weather-widget .icon.default {
+	color: var(--mauve);
+}
 
 /***----------------------------------      • Weather Card •      -----------------------------------***/
 
@@ -595,7 +661,7 @@
 }
 .media-widget .label {
 	color: var(--lavender);
-    padding-left: 5px;
+	padding: 0 10px;
 }
 
 /* Hide media widget buttons */
@@ -704,247 +770,394 @@
 }
 
 .wallpapers-widget {
-    padding: 0 10px;
+	padding: 0 10px;
 }
 
 .wallpapers-widget .icon {
 	color: #cba6f7;
 }
 
-
 /***----------------------------------      • Disk •      -----------------------------------***/
 
 .disk-widget {
-    padding: 0 6px 0 6px;
+	padding: 0 6px 0 6px;
 }
 .disk-group {
-    background-color:rgba(17, 17, 27, 0.4);
+	background-color: rgba(17, 17, 27, 0.4);
 }
 .disk-group-row {
-    min-width: 220px;
-    max-width: 220px;
-    max-height: 40px;
-    margin: 0;
-    padding: 0;
-    border-radius: 6px;
-    border: 1px solid rgba(128, 128, 128, 0);
+	min-width: 220px;
+	max-width: 220px;
+	max-height: 40px;
+	margin: 0;
+	padding: 0;
+	border-radius: 6px;
+	border: 1px solid rgba(128, 128, 128, 0);
 }
 .disk-group-row:hover {
-    background-color:rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.05);
+	border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.disk-group-label-bar{
-    max-height:8px;
-    border:0px solid rgba(128, 128, 128, 0);
-    background-color: rgba(137, 180, 250, 0.1);
-    border-radius: 4px;
+.disk-group-label-bar {
+	max-height: 8px;
+	border: 0px solid rgba(128, 128, 128, 0);
+	background-color: rgba(137, 180, 250, 0.1);
+	border-radius: 4px;
 }
-.disk-group-label-bar::chunk{
-    background-color: rgb(203, 166, 247);
-    border-radius: 4px;
+.disk-group-label-bar::chunk {
+	background-color: rgb(203, 166, 247);
+	border-radius: 4px;
 }
 .disk-group-label {
-    font-size: 10px;
+	font-size: 10px;
 }
 .disk-group-label-size {
-    font-size: 10px;
-    color: rgb(203, 166, 247);
+	font-size: 10px;
+	color: rgb(203, 166, 247);
 }
 .disk-widget .icon {
-  color: var(--mauve);
+	color: var(--mauve);
 }
-
 
 /***-----------------------------------      • Systray •      ---------------------------------------***/
 
 .systray {
-    background: transparent;
-    border: none;
-    margin: 0;
+	background: transparent;
+	border: none;
+	margin: 0;
 }
 .systray .unpinned-container {
-    background: transparent;
+	background: transparent;
 }
 .systray .pinned-container {
-    background: transparent;
+	background: transparent;
 }
 .systray .button {
-    border-radius: 4px;
-    padding: 2px;
+	border-radius: 4px;
+	padding: 2px;
 }
 .systray .button:hover {
-    background: rgba(255, 255, 255, 0.2);
+	background: rgba(255, 255, 255, 0.2);
 }
-.systray .button.dragging {}
+.systray .button.dragging {
+}
 .systray .button.drag-over {
-    background: rgba(255, 255, 255, 0.4);
+	background: rgba(255, 255, 255, 0.4);
 }
 .systray .pinned-container.drop-target {
-    background: rgba(255, 255, 255, 0.1);
+	background: rgba(255, 255, 255, 0.1);
 }
 .systray .unpinned-visibility-btn {
-    border-radius: 4px;
-    height: 20px;
-    width: 16px;
-    border: none;
-    outline: none;
-    color: var(--mauve);
+	border-radius: 4px;
+	height: 20px;
+	width: 16px;
+	border: none;
+	outline: none;
+	color: var(--mauve);
 }
 .systray .unpinned-visibility-btn:checked {
-    background: transparent;
+	background: transparent;
 }
 .systray .unpinned-visibility-btn:hover {
-    background: transparent;
+	background: transparent;
 }
 .systray-popup .button.drag-over {
-    background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgba(255, 255, 255, 0.2);
 }
-.systray-popup .button.dragging {}
+.systray-popup .button.dragging {
+}
 .systray .pinned-container.drop-target {
-    background-color: rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.1);
 }
 .systray-popup {
-    background-color: var(--mantle);
-    padding: 4px;
+	background-color: var(--mantle);
+	padding: 4px;
 }
 .systray-popup .button {
-    padding: 10px;
-    margin: 0;
-    border: 0;
-    border-radius: 6px;
+	padding: 10px;
+	margin: 0;
+	border: 0;
+	border-radius: 6px;
 }
 .systray-popup .button:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+	background-color: rgba(255, 255, 255, 0.05);
 }
 
 .cava-widget {
-    padding: 0;
-    margin: 0;
+	padding: 0;
+	margin: 0;
 }
 
 /* CPU GPU MEMORY Setting */
+.libre-monitor-widget {
+	padding: 0 4px 0 0;
+}
 .cpu-widget {
-    padding-right: 4;
+	padding-right: 4;
 }
 .gpu-widget {
-    padding-left: 0;
-    padding-right: 4;
+	padding-left: 0;
+	padding-right: 4;
 }
 .memory-widget {
-    padding-left: 0;
+	padding-left: 0;
+}
+.libre-monitor-widget .widget-container {
+	border-radius: 0;
 }
 .cpu-widget .widget-container {
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+	border-top-right-radius: 0;
 }
 .gpu-widget .widget-container {
-    border-radius: 0;
+	border-radius: 0;
 }
 .memory-widget .widget-container {
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-top-left-radius: 0;
 }
 .memory-widget .label {
-    min-width: 38px;
-    max-width: 38px;
+	min-width: 38px;
+	max-width: 38px;
 }
 .cpu-widget .label {
-    min-width: 38px;
-    max-width: 38px;
+	min-width: 38px;
+	max-width: 38px;
 }
+/*.libre-monitor-widget .label {
+  padding: 2px 2px 1px;
+}*/
 .gpu-widget .label {
-    min-width: 38px;
-    max-width: 38px;
+	min-width: 38px;
+	max-width: 38px;
 }
+.libre-monitor-widget .icon,
 .cpu-widget .icon {
-    color: var(--mauve);
-    margin-right: 4px;
+	color: var(--mauve);
+	margin-right: 4px;
+}
+.libre-monitor-widget .icon {
+	margin-left: 8px;
 }
 .gpu-widget .icon {
-    color: var(--mauve);
-    margin-right: 4px;
-    margin-left: 8px;
+	color: var(--mauve);
+	margin-right: 4px;
+	margin-left: 8px;
 }
 .memory-widget .icon {
-    color: var(--mauve);
-    margin-right: 4px;
-    margin-left: 8px;
+	color: var(--mauve);
+	margin-right: 4px;
+	margin-left: 8px;
 }
 
+/* Memory popup */
+.memory-popup {
+	background-color: var(--mantle);
+	min-width: 380px;
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+}
+.memory-popup .header {
+	background: var(--mantle);
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--og);
+	border-radius: 6px 6px 0 0;
+}
+.memory-popup .header .text {
+	font-size: 14px;
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	color: var(--og);
+	font-weight: 700;
+}
+.memory-popup .header .pin-btn {
+	font-size: 13px;
+	background: transparent;
+	font-family: "Segoe Fluent Icons";
+	border: none;
+	padding: 4px 6px;
+	color: var(--subtext1);
+}
+.memory-popup .header .pin-btn:hover {
+	color: var(--text);
+	background: rgba(137, 180, 250, 0.08);
+	border-radius: 4px;
+}
+.memory-popup .header .pin-btn.pinned {
+	color: var(--og);
+}
+.memory-popup .graph-container,
+.memory-popup .stats {
+	background: var(--base);
+	padding: 14px;
+}
+.memory-popup .graph-container {
+	min-height: 64px;
+	padding: 7px 14px;
+}
+.memory-popup .memory-graph {
+	color: var(--blue);
+	background: transparent;
+	border-radius: 6px;
+}
+.memory-popup .memory-graph-grid {
+	color: transparent;
+}
+.memory-popup .graph-title {
+	font-size: 11px;
+	color: var(--subtext0);
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	padding: 6px 14px 4px;
+	font-weight: 700;
+}
+.memory-popup .stats {
+	border-top: 1px solid var(--surface1);
+	border-radius: 0 0 6px 6px;
+}
+.memory-popup .stats .stat-item {
+	background-color: var(--surface0);
+	border: 1px solid var(--surface1);
+	border-radius: 6px;
+	padding: 8px 10px;
+	margin: 6px 4px;
+}
+.memory-popup .stats .stat-label {
+	font-size: 11px;
+	color: var(--subtext1);
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	font-weight: 400;
+	padding: 4px 0 2px;
+}
+.memory-popup .stats .stat-value {
+	font-size: 13px;
+	font-weight: 700;
+	color: var(--text);
+	font-family: "JetBrainsMono NFP", "Segoe UI";
+	padding: 2px 0;
+}
+
+/* Libre hardware monitor */
+.libre-monitor-widget .widget-container .label {
+	color: var(--text);
+	font-size: 12px;
+	font-family: "JetBrainsMono NFP";
+	font-weight: 900;
+	background: transparent;
+}
+.libre-monitor-widget .widget-container .icon {
+	color: var(--mauve);
+	font-size: 16px;
+	background: transparent;
+}
+.libre-menu {
+	background: var(--mantle);
+	border: 1.5px solid var(--surface2);
+	border-radius: 6px;
+	padding: 10px 12px 6px;
+	min-width: 260px;
+	max-width: 340px;
+}
+.libre-menu .header {
+	font-size: 15px;
+	font-weight: 700;
+	color: var(--og);
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	padding: 4px 0;
+	margin: 4px 0;
+	letter-spacing: 0.5px;
+}
+.libre-menu .sensor-item {
+	background-color: var(--surface0);
+	padding: 3px 8px;
+	border-radius: 5px;
+	border: 1px solid var(--surface1);
+	margin-bottom: 2px;
+}
+.libre-menu .sensor-name {
+	font-size: 12px;
+	font-weight: 700;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	color: var(--text);
+}
+.libre-menu .sensor-value {
+	font-size: 13px;
+	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
+	font-weight: 900;
+	color: var(--og);
+}
 
 /* WIFI Setting */
 .wifi-widget {
-    padding: 0 10px;
+	padding: 0 10px;
 }
 .wifi-widget .label {
-    color: var(--text);
+	color: var(--text);
 }
-.wifi-widget .icon{
-    color: var(--mauve) !important;
-    margin: 1px 2px 0 0;
+.wifi-widget .icon {
+	color: var(--mauve) !important;
+	margin: 1px 2px 0 0;
 }
 
 .wifi-menu {
-    background-color: var(--mantle);
-    min-width: 375px;
-    max-height: 375px;
+	background-color: var(--mantle);
+	min-width: 375px;
+	max-height: 375px;
 }
 
 .wifi-menu .progress-bar {
-    max-height: 2px;
-    color: var(--mauve);
+	max-height: 2px;
+	color: var(--mauve);
 }
 
 .wifi-menu .header,
 .wifi-menu .footer {
-    font-family: 'Segoe UI';
-    background-color: rgba(17, 17, 27, 0.6);
-    color: var(--text);
+	font-family: "Segoe UI";
+	background-color: rgba(17, 17, 27, 0.6);
+	color: var(--text);
 }
 
 .wifi-menu .header {
-    font-size: 14px;
-    font-weight: 600;
-    padding: 12px;
-    border-bottom: 1px solid rgba(203, 166, 247, 0.15);
+	font-size: 14px;
+	font-weight: 600;
+	padding: 12px;
+	border-bottom: 1px solid rgba(203, 166, 247, 0.15);
 }
 
 .wifi-menu .error-message {
-    font-family: 'Segoe UI';
-    font-size: 14px;
-    font-weight: 600;
-    padding: 12px;
-    color: var(--text);
-    background-color: rgba(243, 139, 168, 0.25);
-    border-bottom: 1px solid rgba(243, 139, 168, 0.35);
+	font-family: "Segoe UI";
+	font-size: 14px;
+	font-weight: 600;
+	padding: 12px;
+	color: var(--text);
+	background-color: rgba(243, 139, 168, 0.25);
+	border-bottom: 1px solid rgba(243, 139, 168, 0.35);
 }
 
 .wifi-menu .wifi-list {
-    background-color: transparent;
-    margin-right: 3px;
+	background-color: transparent;
+	margin-right: 3px;
 }
 
 .wifi-menu .wifi-item {
-    min-height: 35px;
-    padding: 4px 12px;
-    margin: 2px 4px;
-    border-radius: 6px;
+	min-height: 35px;
+	padding: 4px 12px;
+	margin: 2px 4px;
+	border-radius: 6px;
 }
 
 .wifi-menu .wifi-item:hover {
-    background-color: rgba(203, 166, 247, 0.08);
+	background-color: rgba(203, 166, 247, 0.08);
 }
 
-.wifi-menu .wifi-item[active=true] {
-    background-color: rgba(203, 166, 247, 0.14);
-    min-height: 80px;
+.wifi-menu .wifi-item[active="true"] {
+	background-color: rgba(203, 166, 247, 0.14);
+	min-height: 80px;
 }
 
 .wifi-menu .wifi-item .icon {
-    font-family: 'Segoe Fluent Icons';
-    font-size: 26px;
-    margin-right: 10px;
-    color: var(--mauve);
+	font-family: "Segoe Fluent Icons";
+	font-size: 26px;
+	margin-right: 10px;
+	color: var(--mauve);
 }
 
 .wifi-menu .wifi-item .name,
@@ -952,597 +1165,598 @@
 .wifi-menu .wifi-item .status,
 .wifi-menu .wifi-item .strength,
 .wifi-menu .footer .settings-button {
-    font-family: 'Segoe UI';
-    font-size: 14px;
-    color: var(--text);
+	font-family: "Segoe UI";
+	font-size: 14px;
+	color: var(--text);
 }
 
 .wifi-menu .wifi-item .status,
 .wifi-menu .wifi-item .strength {
-    color: var(--subtext0);
+	color: var(--subtext0);
 }
 
 .wifi-menu .wifi-item .password {
-    background-color: transparent;
+	background-color: transparent;
 }
 
 .wifi-menu .wifi-item .controls-container {
-    padding-top: 8px;
+	padding-top: 8px;
 }
 
 .wifi-menu .wifi-item .connect {
-    background-color: rgba(203, 166, 247, 0.15);
-    color: var(--text);
-    padding: 4px 30px;
-    border-radius: 4px;
-    border: 1px solid rgba(203, 166, 247, 0.3);
-    font-size: 14px;
+	background-color: rgba(203, 166, 247, 0.15);
+	color: var(--text);
+	padding: 4px 30px;
+	border-radius: 4px;
+	border: 1px solid rgba(203, 166, 247, 0.3);
+	font-size: 14px;
 }
 
 .wifi-menu .wifi-item .connect:hover {
-    background-color: rgba(203, 166, 247, 0.22);
+	background-color: rgba(203, 166, 247, 0.22);
 }
 
 .wifi-menu .wifi-item .connect:pressed {
-    background-color: rgba(203, 166, 247, 0.3);
+	background-color: rgba(203, 166, 247, 0.3);
 }
 
 .wifi-menu .footer {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 12px;
-    color: var(--subtext0);
-    border-top: 1px solid rgba(203, 166, 247, 0.15);
+	font-size: 12px;
+	font-weight: 600;
+	padding: 12px;
+	color: var(--subtext0);
+	border-top: 1px solid rgba(203, 166, 247, 0.15);
 }
 
 .wifi-menu .footer .settings-button,
 .wifi-menu .footer .refresh-icon {
-    background-color: transparent;
-    border: none;
-    min-width: 26px;
-    min-height: 26px;
+	background-color: transparent;
+	border: none;
+	min-width: 26px;
+	min-height: 26px;
 }
 
 .wifi-menu .footer .refresh-icon {
-    font-family: 'Segoe Fluent Icons';
-    color: var(--mauve);
+	font-family: "Segoe Fluent Icons";
+	color: var(--mauve);
 }
 
 .wifi-menu .footer .settings-button:hover,
 .wifi-menu .footer .refresh-icon:hover {
-    background-color: rgba(203, 166, 247, 0.1);
-    border-radius: 4px;
+	background-color: rgba(203, 166, 247, 0.1);
+	border-radius: 4px;
 }
-
 
 /***-----------------------------      • Notifications Widget •      --------------------------------***/
 
 .notification-widget .icon {
-    font-size: 12px;
-    color: var(--mauve);
+	font-size: 12px;
+	color: var(--mauve);
 }
 .notification-widget .label {
-    color: var(--mauve);
+	color: var(--mauve);
 }
 .notification-widget .icon.new-notification {
-    color: var(--mauve);
+	color: var(--mauve);
 }
 .notification-widget .label.new-notification {
-    color: var(--text);
+	color: var(--text);
 }
 
 .update-check-widget {
-    padding: 0 0px 0 0px;
+	padding: 0 0px 0 0px;
 }
 .update-check-widget .icon {
-    font-size: 16px;
+	font-size: 16px;
 }
 .update-check-widget .widget-container.winget,
 .update-check-widget .widget-container.windows {
-    background: var(--mauve);
-    margin: 0px 0px 0px 0px;
-    border-radius: 10px;
-    border: 0px solid var(--sapphire);
+	background: var(--mauve);
+	margin: 0px 0px 0px 0px;
+	border-radius: 10px;
+	border: 0px solid var(--sapphire);
 }
 .update-check-widget .widget-container.winget .icon,
 .update-check-widget .widget-container.windows .icon {
-    color: var(--base);
-    margin: 0 2px 0 6px;
+	color: var(--base);
+	margin: 0 2px 0 6px;
 }
 .update-check-widget .widget-container.winget .label,
 .update-check-widget .widget-container.windows .label {
-    margin: 0 6px 0 1px;
-    color: var(--base);
-    font-weight: 900;
-    font-size: 14px;
+	margin: 0 6px 0 1px;
+	color: var(--base);
+	font-weight: 900;
+	font-size: 14px;
 }
-
-
-
 
 .widget {
-   border-radius: 8px;
-    margin: 8px 4px;
-    background-color: var(--surface0);
+	border-radius: 8px;
+	margin: 8px 4px;
+	background-color: var(--surface0);
 }
-
 
 .todo-widget {
-    padding: 0 10px;
+	padding: 0 10px;
 }
 .todo-widget .label {
-    color: var(--text);
+	color: var(--text);
 }
 .todo-widget .icon {
-    color: var(--mauve);
+	color: var(--mauve);
 }
 /* Todo Menu */
 .todo-menu {
-    background-color: var(--mantle);
-    min-width: 460px;
-    max-width: 460px;
-    min-height: 500px;
-    max-height: 500px;
+	background-color: var(--mantle);
+	min-width: 460px;
+	max-width: 460px;
+	min-height: 500px;
+	max-height: 500px;
 }
 .todo-menu .header {
-    margin: 16px 10px;
+	margin: 16px 10px;
 }
 .todo-menu .header .add-task-button,
 .todo-menu .header .tab-buttons {
-    border: none;
-    border-radius: 13px;
-    color: var(--text);
-    padding: 4px 8px;
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0;
-    font-family: 'Segoe UI', 'JetBrainsMono NFP';
+	border: none;
+	border-radius: 13px;
+	color: var(--text);
+	padding: 4px 8px;
+	font-size: 14px;
+	font-weight: 600;
+	margin: 0;
+	font-family: "Segoe UI", "JetBrainsMono NFP";
 }
 .todo-menu .header .tab-buttons {
-    margin: 0;
-    font-size: 12px;
-    background-color: transparent;
-    color: var(--subtext0);
+	margin: 0;
+	font-size: 12px;
+	background-color: transparent;
+	color: var(--subtext0);
 }
 .todo-menu .header .add-task-button:hover {
-    background-color: rgba(203, 166, 247, 0.2);
+	background-color: rgba(203, 166, 247, 0.2);
 }
 .todo-menu .header .tab-buttons.in-progress:checked,
 .todo-menu .header .tab-buttons.completed:checked {
-    color: var(--mauve);
-    background-color: rgba(203, 166, 247, 0.12);
-    border-radius: 13px;
+	color: var(--mauve);
+	background-color: rgba(203, 166, 247, 0.12);
+	border-radius: 13px;
 }
 .todo-menu .header .tab-buttons.sort {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--text);
-    border-radius: 10px;
-    min-height: 20px;
-    min-width: 20px;
-    max-width: 20px;
-    max-height: 20px;
-    padding: 0;
-    margin: 0 8px 0 8px;
-    font-family: 'JetBrainsMono NFP';
+	background-color: rgba(255, 255, 255, 0.1);
+	color: var(--text);
+	border-radius: 10px;
+	min-height: 20px;
+	min-width: 20px;
+	max-width: 20px;
+	max-height: 20px;
+	padding: 0;
+	margin: 0 8px 0 8px;
+	font-family: "JetBrainsMono NFP";
 }
 .todo-menu .header .tab-buttons.sort:pressed {
-    background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgba(255, 255, 255, 0.2);
 }
 .todo-menu .no-tasks {
-    font-family: 'Segoe UI';
-    font-size: 18px;
-    color: var(--overlay1);
-    font-weight: 400;
-    margin-top: 16px;
+	font-family: "Segoe UI";
+	font-size: 18px;
+	color: var(--overlay1);
+	font-weight: 400;
+	margin-top: 16px;
 }
 .todo-menu .no-tasks-icon {
-    font-size: 80px;
-    color: var(--overlay1);
-    font-family: "JetBrainsMono NFP";
-    margin-top: 64px;
-    font-weight: 400;
+	font-size: 80px;
+	color: var(--overlay1);
+	font-family: "JetBrainsMono NFP";
+	margin-top: 64px;
+	font-weight: 400;
 }
 /* Task items */
 .todo-menu .task-item {
-    background-color: rgba(49, 50, 68, 0.5);
-    border-radius: 8px;
-    margin: 0 12px 8px 12px;
-    border: 1px solid rgba(203, 166, 247, 0.15);
-    padding: 8px 0;
+	background-color: rgba(49, 50, 68, 0.5);
+	border-radius: 8px;
+	margin: 0 12px 8px 12px;
+	border: 1px solid rgba(203, 166, 247, 0.15);
+	padding: 8px 0;
 }
 .todo-menu .task-item.expanded {
-    background-color: rgba(203, 166, 247, 0.08);
-    border: 1px solid rgba(203, 166, 247, 0.3);
+	background-color: rgba(203, 166, 247, 0.08);
+	border: 1px solid rgba(203, 166, 247, 0.3);
 }
 .todo-menu .task-item.drop-highlight,
 .todo-menu .task-item.drop-highlight:hover,
 .todo-menu .task-item.drop-highlight:focus {
-    background-color: rgba(137, 180, 250, 0.15);
-    border: 1px solid var(--blue);
+	background-color: rgba(137, 180, 250, 0.15);
+	border: 1px solid var(--blue);
 }
 .todo-menu .task-item .title {
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 600;
-    font-family: 'Segoe UI';
-    padding: 0 8px 8px 8px;
-    margin-top: 6px;
+	color: var(--text);
+	font-size: 13px;
+	font-weight: 600;
+	font-family: "Segoe UI";
+	padding: 0 8px 8px 8px;
+	margin-top: 6px;
 }
 .todo-menu .task-item.completed .title,
 .todo-menu .task-item.completed .description {
-    text-decoration: line-through;
-    color: var(--overlay0);
+	text-decoration: line-through;
+	color: var(--overlay0);
 }
 .todo-menu .task-item .description {
-    color: var(--subtext1);
-    font-size: 12px;
-    font-weight: 600;
-    padding: 0 8px 8px 8px;
-    font-family: 'Segoe UI';
+	color: var(--subtext1);
+	font-size: 12px;
+	font-weight: 600;
+	padding: 0 8px 8px 8px;
+	font-family: "Segoe UI";
 }
 .todo-menu .task-checkbox {
-    background-color: transparent;
-    border: none;
-    margin-left: 12px;
-    margin-top: 5px;
-    font-size: 18px;
-    color: var(--text);
-    font-family: 'JetBrainsMono NFP';
+	background-color: transparent;
+	border: none;
+	margin-left: 12px;
+	margin-top: 5px;
+	font-size: 18px;
+	color: var(--text);
+	font-family: "JetBrainsMono NFP";
 }
 .todo-menu .task-checkbox:checked {
-    color: var(--overlay0);
+	color: var(--overlay0);
 }
 /* Task info row */
 .todo-menu .task-info-row {
-    margin-left: 8px;
-    margin-bottom: 8px;
+	margin-left: 8px;
+	margin-bottom: 8px;
 }
 .todo-menu .task-info-row .date-text,
 .todo-menu .task-info-row .category-text {
-    font-family: 'Segoe UI';
-    font-weight: 600;
-    color: var(--overlay1);
-    font-size: 13px;
-    margin-right: 12px;
+	font-family: "Segoe UI";
+	font-weight: 600;
+	color: var(--overlay1);
+	font-size: 13px;
+	margin-right: 12px;
 }
 .todo-menu .task-info-row .date-icon,
 .todo-menu .task-info-row .category-icon {
-    font-weight: 400;
-    color: var(--overlay2);
-    font-size: 14px;
-    font-family: 'JetBrainsMono NFP';
-    margin-top: 1px;
+	font-weight: 400;
+	color: var(--overlay2);
+	font-size: 14px;
+	font-family: "JetBrainsMono NFP";
+	margin-top: 1px;
 }
 .todo-menu .task-info-row .category-text.important,
-.todo-menu .task-info-row .category-icon.important { color: var(--red); }
+.todo-menu .task-info-row .category-icon.important {
+	color: var(--red);
+}
 .todo-menu .task-info-row .category-text.urgent,
-.todo-menu .task-info-row .category-icon.urgent { color: var(--peach); }
+.todo-menu .task-info-row .category-icon.urgent {
+	color: var(--peach);
+}
 .todo-menu .task-info-row .category-text.soon,
-.todo-menu .task-info-row .category-icon.soon { color: var(--teal); }
+.todo-menu .task-info-row .category-icon.soon {
+	color: var(--teal);
+}
 .todo-menu .task-info-row .category-text.today,
-.todo-menu .task-info-row .category-icon.today { color: var(--yellow); }
+.todo-menu .task-info-row .category-icon.today {
+	color: var(--yellow);
+}
 .todo-menu .task-info-row .edit-task-button {
-    background-color: rgba(203, 166, 247, 0.15);
-    color: var(--mauve);
-    font-family: 'Segoe UI';
-    font-weight: 600;
-    font-size: 12px;
-    padding: 0 8px;
-    border-radius: 10px;
-    min-height: 20px;
-    max-height: 20px;
-    margin-right: 4px;
+	background-color: rgba(203, 166, 247, 0.15);
+	color: var(--mauve);
+	font-family: "Segoe UI";
+	font-weight: 600;
+	font-size: 12px;
+	padding: 0 8px;
+	border-radius: 10px;
+	min-height: 20px;
+	max-height: 20px;
+	margin-right: 4px;
 }
 .todo-menu .task-info-row .delete-task-button {
-    background-color: var(--surface2);
-    color: var(--crust);
-    font-family: 'Segoe UI';
-    font-weight: 600;
-    font-size: 12px;
-    padding: 0 8px;
-    border-radius: 10px;
-    min-height: 20px;
-    max-height: 20px;
-    margin-right: 8px;
+	background-color: var(--surface2);
+	color: var(--crust);
+	font-family: "Segoe UI";
+	font-weight: 600;
+	font-size: 12px;
+	padding: 0 8px;
+	border-radius: 10px;
+	min-height: 20px;
+	max-height: 20px;
+	margin-right: 8px;
 }
 .todo-menu .scroll-area {
-    background: transparent;
-    border: none;
-    border-radius: 0;
+	background: transparent;
+	border: none;
+	border-radius: 0;
 }
 /* App dialog */
 .todo-menu .app-dialog {
-    font-family: 'Segoe UI';
-    background-color: var(--mantle);
+	font-family: "Segoe UI";
+	background-color: var(--mantle);
 }
 .todo-menu .app-dialog .buttons-container {
-    background-color: var(--crust);
-    margin-top: 16px;
-    border-top: 1px solid var(--surface0);
-    max-height: 80px;
-    min-height: 80px;
-    padding: 0 20px;
+	background-color: var(--crust);
+	margin-top: 16px;
+	border-top: 1px solid var(--surface0);
+	max-height: 80px;
+	min-height: 80px;
+	padding: 0 20px;
 }
 .todo-menu .app-dialog .title-field,
 .todo-menu .app-dialog .desc-field {
-    background-color: var(--base);
-    border: 1px solid var(--surface1);
-    border-radius: 4px;
-    padding: 0 6px;
-    font-family: 'Segoe UI';
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    margin: 10px 0 5px 0;
-    min-height: 30px;
+	background-color: var(--base);
+	border: 1px solid var(--surface1);
+	border-radius: 4px;
+	padding: 0 6px;
+	font-family: "Segoe UI";
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text);
+	margin: 10px 0 5px 0;
+	min-height: 30px;
 }
 .todo-menu .app-dialog .desc-field {
-    max-height: 60px;
+	max-height: 60px;
 }
 .todo-menu .app-dialog .title-field:focus,
 .todo-menu .app-dialog .desc-field:focus {
-    border-bottom-color: var(--mauve);
+	border-bottom-color: var(--mauve);
 }
 .todo-menu .app-dialog .button {
-    background-color: var(--surface0);
-    border: none;
-    border-radius: 4px;
-    font-family: 'Segoe UI';
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-    min-width: 80px;
-    padding: 0 6px;
-    margin: 10px 0 5px 6px;
-    min-height: 28px;
-    outline: none;
+	background-color: var(--surface0);
+	border: none;
+	border-radius: 4px;
+	font-family: "Segoe UI";
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--text);
+	min-width: 80px;
+	padding: 0 6px;
+	margin: 10px 0 5px 6px;
+	min-height: 28px;
+	outline: none;
 }
 .todo-menu .app-dialog .buttons-container .button {
-    margin: 10px 0 5px 0;
-    font-size: 13px;
+	margin: 10px 0 5px 0;
+	font-size: 13px;
 }
 .todo-menu .app-dialog .button:focus,
 .todo-menu .app-dialog .button:hover {
-    background-color: var(--surface1);
+	background-color: var(--surface1);
 }
 .todo-menu .app-dialog .button:pressed {
-    background-color: var(--surface0);
+	background-color: var(--surface0);
 }
 .todo-menu .app-dialog .button.add {
-    background-color: var(--mauve);
-    color: var(--crust);
+	background-color: var(--mauve);
+	color: var(--crust);
 }
 .todo-menu .app-dialog .button.add:focus,
 .todo-menu .app-dialog .button.add:hover {
-    background-color: var(--lavender);
-    color: var(--crust);
+	background-color: var(--lavender);
+	color: var(--crust);
 }
 .todo-menu .app-dialog .button.add:pressed {
-    background-color: var(--mauve);
+	background-color: var(--mauve);
 }
 .todo-menu .app-dialog .warning-message {
-    background-color: rgba(243, 139, 168, 0.08);
-    border: 1px solid rgba(243, 139, 168, 0.3);
-    border-radius: 4px;
-    color: var(--red);
-    font-family: 'Segoe UI';
-    font-size: 12px;
-    font-weight: 600;
-    padding: 8px 12px;
-    margin: 4px 0;
+	background-color: rgba(243, 139, 168, 0.08);
+	border: 1px solid rgba(243, 139, 168, 0.3);
+	border-radius: 4px;
+	color: var(--red);
+	font-family: "Segoe UI";
+	font-size: 12px;
+	font-weight: 600;
+	padding: 8px 12px;
+	margin: 4px 0;
 }
 .todo-menu .app-dialog .category-button {
-    background-color: var(--surface0);
-    border: none;
-    border-radius: 4px;
-    font-family: 'Segoe UI';
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--subtext0);
-    padding: 0 6px;
-    margin-top: 8px;
-    min-height: 24px;
-    outline: none;
+	background-color: var(--surface0);
+	border: none;
+	border-radius: 4px;
+	font-family: "Segoe UI";
+	font-size: 11px;
+	font-weight: 700;
+	color: var(--subtext0);
+	padding: 0 6px;
+	margin-top: 8px;
+	min-height: 24px;
+	outline: none;
 }
 .todo-menu .app-dialog .category-button:checked {
-    background-color: rgba(203, 166, 247, 0.2);
-    color: var(--mauve);
+	background-color: rgba(203, 166, 247, 0.2);
+	color: var(--mauve);
 }
 
 .notes-widget {
-    padding: 0 10px;
+	padding: 0 10px;
 }
 .notes-widget .label {
-   font-size: 14px;
-   color: var(--text);
+	font-size: 14px;
+	color: var(--text);
 }
 .notes-widget .icon {
-    font-size: 16px;
-    color: rgb(203, 166, 247);
+	font-size: 16px;
+	color: rgb(203, 166, 247);
 }
 /* Notes Widget Menu */
 .notes-menu {
-    min-width: 400px;
-    max-width: 400px;
-    background-color: #1e1e2e;
+	min-width: 400px;
+	max-width: 400px;
+	background-color: #1e1e2e;
 }
 .notes-menu .note-item {
-    background-color:transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	background-color: transparent;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .notes-menu .note-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+	background-color: rgba(255, 255, 255, 0.1);
 }
 .notes-menu .note-item .icon {
-    font-size: 16px;
-    padding: 0 4px;
-    color: rgb(203, 166, 247);
+	font-size: 16px;
+	padding: 0 4px;
+	color: rgb(203, 166, 247);
 }
 .notes-menu .delete-button {
-    color: #ff6b6b;
-    background: transparent;
-    border: none;
-    font-size: 8px;
-    padding: 7px 8px;
-    border-radius: 3px;
+	color: #ff6b6b;
+	background: transparent;
+	border: none;
+	font-size: 8px;
+	padding: 7px 8px;
+	border-radius: 3px;
 }
 .notes-menu .delete-button:hover {
-    background-color: rgba(128, 128, 128, 0.5);
+	background-color: rgba(128, 128, 128, 0.5);
 }
 .notes-menu .note-item .title {
-    font-size: 13px;
-    font-family: 'Segoe UI';
+	font-size: 13px;
+	font-family: "Segoe UI";
 }
 .notes-menu .note-item .date {
-    font-size: 12px;
-    font-family: 'Segoe UI';
-    color: rgba(255, 255, 255, 0.4);
+	font-size: 12px;
+	font-family: "Segoe UI";
+	color: rgba(255, 255, 255, 0.4);
 }
 .notes-menu .empty-list {
-    font-family: 'Segoe UI';
-    color: rgb(203, 166, 247);
-    font-size: 24px;
-    font-weight: 600;
-    padding: 10px 0 20px 0;
+	font-family: "Segoe UI";
+	color: rgb(203, 166, 247);
+	font-size: 24px;
+	font-weight: 600;
+	padding: 10px 0 20px 0;
 }
 .notes-menu .add-button,
 .notes-menu .cancel-button {
-    padding: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-radius: 4px;
-    color: white;
-    font-family: 'Segoe UI';
+	padding: 8px;
+	background-color: rgba(255, 255, 255, 0.1);
+	border: none;
+	border-radius: 4px;
+	color: white;
+	font-family: "Segoe UI";
 }
 .notes-menu .cancel-button {
-    margin-left: 4px;
+	margin-left: 4px;
 }
 .notes-menu .add-button:hover,
 .notes-menu .cancel-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+	background-color: rgba(255, 255, 255, 0.2);
 }
 .notes-menu .scroll-area {
-    background: transparent;
-    border: none;
-    border-radius:0;
+	background: transparent;
+	border: none;
+	border-radius: 0;
 }
 .notes-menu .note-input {
-    background-color:rgba(17, 17, 27, 0.2);
-    border: 1px solid rgb(203, 166, 247);
-    font-family: 'Segoe UI';
-    font-size: 14px;
-    max-height: 30px;
-    padding: 4px;
-    border-radius: 6px;
+	background-color: rgba(17, 17, 27, 0.2);
+	border: 1px solid rgb(203, 166, 247);
+	font-family: "Segoe UI";
+	font-size: 14px;
+	max-height: 30px;
+	padding: 4px;
+	border-radius: 6px;
 }
 .note-input:focus {
-    border: 1px solid rgb(203, 166, 247);
+	border: 1px solid rgb(203, 166, 247);
 }
 
 .media-menu {
-    min-width: 420px;
-    max-width: 420px;
-    background-color: #1e1e2e;
+	min-width: 420px;
+	max-width: 420px;
+	background-color: #1e1e2e;
 	border-radius: 8px;
 }
 .media-menu .title,
 .media-menu .artist,
 .media-menu .source {
-    font-size: 14px;
-    font-weight: 600;
-    margin-left: 10px;
-    font-family: 'Segoe UI';
+	font-size: 14px;
+	font-weight: 600;
+	margin-left: 10px;
+	font-family: "Segoe UI";
 }
 .media-menu .artist {
-    font-size: 13px;
-    color: var(--mauve);
-    margin-top: 0px;
-    margin-bottom: 8px;
+	font-size: 13px;
+	color: var(--mauve);
+	margin-top: 0px;
+	margin-bottom: 8px;
 }
 .media-menu .source {
-    font-size: 11px;
-    color: #000;
-    font-weight: normal;
-    border-radius: 3px;
-    background-color: #bac2de;
-    padding: 2px 4px;
-
+	font-size: 11px;
+	color: #000;
+	font-weight: normal;
+	border-radius: 3px;
+	background-color: #bac2de;
+	padding: 2px 4px;
 }
 /* The source class name is the same as what you see in the media widget; just replace spaces with dashes and convert it to lowercase.
 Example: "Windows Media" becomes "windows-media" */
 .media-menu .source.firefox {
-    background-color: #ff583b;
-    color: #ffffff;
+	background-color: #ff583b;
+	color: #ffffff;
 }
 .media-menu .source.spotify {
-    background-color: #199143;
-    color: #ffffff;
+	background-color: #199143;
+	color: #ffffff;
 }
 .media-menu .source.edge {
-    background-color: #0078d4;
-    color: #ffffff;
+	background-color: #0078d4;
+	color: #ffffff;
 }
 .media-menu .source.windows-media {
-    background-color: #0078d4;
-    color: #ffffff;
+	background-color: #0078d4;
+	color: #ffffff;
 }
 
 .media-menu .btn {
-    font-family: "Segoe Fluent Icons";
-    font-size: 18px;
-    font-weight: 400;
-    margin: 10px 2px 0px 2px;
-    min-width: 40px;
-    max-width: 40px;
-    min-height: 40px;
-    max-height: 40px;
-    border-radius: 20px;
-	color: var(--overlay0) ;
+	font-family: "Segoe Fluent Icons";
+	font-size: 18px;
+	font-weight: 400;
+	margin: 10px 2px 0px 2px;
+	min-width: 40px;
+	max-width: 40px;
+	min-height: 40px;
+	max-height: 40px;
+	border-radius: 20px;
+	color: var(--overlay0);
 }
 .media-menu .btn.prev {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 .media-menu .btn:hover {
-    color: var(--overlay2);
+	color: var(--overlay2);
 }
 .media-menu .btn.play {
-    font-size: 24px
+	font-size: 24px;
 }
 .media-menu .btn.disabled:hover,
 .media-menu .btn.disabled {
-    color: #4e525c;
-    background-color: rgba(0, 0, 0, 0);
+	color: #4e525c;
+	background-color: rgba(0, 0, 0, 0);
 }
 
 .media-menu .playback-time {
-    font-size: 13px;
-    font-family: 'Segoe UI';
-    color: var(--mauve);
-    margin-top: 20px;
-    min-width: 100px;
+	font-size: 13px;
+	font-family: "Segoe UI";
+	color: var(--mauve);
+	margin-top: 20px;
+	min-width: 100px;
 }
 .media-menu .progress-slider {
-    height: 10px;
-    margin: 5px 4px;
-    border-radius: 3px;
+	height: 10px;
+	margin: 5px 4px;
+	border-radius: 3px;
 }
 .media-menu .progress-slider::groove {
-    background: transparent;
-    height: 2px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.1);
-
+	background: transparent;
+	height: 2px;
+	border-radius: 3px;
+	background: rgba(255, 255, 255, 0.1);
 }
 .media-menu .progress-slider::groove:hover {
-    background: transparent;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(255, 255, 255, 0.2);
+	background: transparent;
+	height: 6px;
+	border-radius: 3px;
+	background: rgba(255, 255, 255, 0.2);
 }
 .media-menu .progress-slider::sub-page {
-    background: var(--mauve);
-    border-radius: 3px;
-    height: 4px;
+	background: var(--mauve);
+	border-radius: 3px;
+	height: 4px;
 }
 
 /* --------------------------------------------------------------------------------------------------- */
@@ -1550,19 +1764,19 @@ Example: "Windows Media" becomes "windows-media" */
 /* --------------------------------------------------------------------------------------------------- */
 
 .tooltip {
-    background-color: var(--base);
-    border: 1px solid var(--surface0);
-    border-radius: 8px;
-    color: var(--text);
-    padding: 6px 12px;
-    font-size: 12px;
-    font-family: "JetBrainsMono NFP";
-    font-weight: 900;
-    margin-top: 4px;
+	background-color: var(--base);
+	border: 1px solid var(--surface0);
+	border-radius: 8px;
+	color: var(--text);
+	padding: 6px 12px;
+	font-size: 12px;
+	font-family: "JetBrainsMono NFP";
+	font-weight: 900;
+	margin-top: 4px;
 }
 
 .dark.tooltip {
-    background-color: var(--base);
-    border: 1px solid var(--surface0);
-    color: var(--text);
+	background-color: var(--base);
+	border: 1px solid var(--surface0);
+	color: var(--text);
 }
