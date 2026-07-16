@@ -52,7 +52,7 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-15T10:44:38Z"
+last_updated = "2026-07-16T22:23:49Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -88,15 +88,15 @@ NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes
 NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\03b1cdac8af3a530\bin\node.exe'
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 CODEX_HOME = 'C:\Users\mikel\.codex'
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,cf732b4a285497bfd7e75a2ac14879bce9ae644eb4e1babeb17bb6a840dfc9bd"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7abc8b22abade944bcd80135500416c7aee60c0e94290c7d644b54428a0013ab,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.707.72221"
+BROWSER_USE_CODEX_APP_VERSION = "26.707.91948"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-ac022647-c2d6-4c08-b0c0-2708edfc57e9'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\3135b80b111fd431\codex.exe'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-383181cd-a8bd-4f6e-845a-ea7aa252e51e'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\494ae9d46ab9b3eb\codex.exe'
 
 [windows]
 sandbox = "elevated"

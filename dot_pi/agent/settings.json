@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.80.6",
-  "defaultProvider": "tunnel-agent-cliproxy",
-  "defaultModel": "gpt-5.6-sol",
+  "lastChangelogVersion": "0.80.7",
+  "defaultProvider": "tunnel-agent-cliproxy-anthropic",
+  "defaultModel": "claude-sonnet-5",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -26,7 +26,8 @@
     "npm:pi-codex-goal",
     "npm:@narumitw/pi-statusline",
     "npm:pi-lens",
-    "npm:pi-messenger"
+    "npm:pi-messenger",
+    "npm:pi-intercom"
   ],
   "powerline": {
     "preset": "default",
@@ -36,5 +37,73 @@
     "npm"
   ],
   "hideThinkingBlock": false,
-  "theme": "dark"
+  "theme": "dark",
+  "subagents": {
+    "defaultModel": "tunnel-agent-cliproxy/gpt-5.6-sol",
+    "modelScope": {
+      "enforce": true,
+      "allow": [
+        "tunnel-agent-cliproxy/*",
+        "tunnel-agent-cliproxy-anthropic/*"
+      ]
+    },
+    "agentOverrides": {
+      "scout": {
+        "model": "tunnel-agent-cliproxy/gpt-5.4-mini",
+        "thinking": "low",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy/gpt-5.6-luna"
+        ]
+      },
+      "researcher": {
+        "model": "tunnel-agent-cliproxy/gpt-5.6-terra",
+        "thinking": "high",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy-anthropic/claude-sonnet-5"
+        ]
+      },
+      "context-builder": {
+        "model": "tunnel-agent-cliproxy/gpt-5.6-terra",
+        "thinking": "high",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy/gpt-5.6-sol"
+        ]
+      },
+      "planner": {
+        "model": "tunnel-agent-cliproxy/gpt-5.6-sol",
+        "thinking": "max",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy-anthropic/claude-fable-5"
+        ]
+      },
+      "worker": {
+        "model": "tunnel-agent-cliproxy/gpt-5.6-sol",
+        "thinking": "high",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy-anthropic/claude-fable-5"
+        ]
+      },
+      "reviewer": {
+        "model": "tunnel-agent-cliproxy-anthropic/claude-fable-5",
+        "thinking": "high",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy/gpt-5.6-sol"
+        ]
+      },
+      "oracle": {
+        "model": "tunnel-agent-cliproxy-anthropic/claude-opus-4-8",
+        "thinking": "max",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy/gpt-5.6-sol"
+        ]
+      },
+      "delegate": {
+        "model": "tunnel-agent-cliproxy/gpt-5.6-terra",
+        "thinking": "medium",
+        "fallbackModels": [
+          "tunnel-agent-cliproxy-anthropic/claude-sonnet-5"
+        ]
+      }
+    }
+  }
 }

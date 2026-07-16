@@ -1,0 +1,46 @@
+{
+  "asyncByDefault": true,
+  "asyncWidget": true,
+  "toolDescriptionMode": "compact",
+  "waitTool": {
+    "enabled": true
+  },
+  "maxSubagentDepth": 2,
+  "globalConcurrencyLimit": 8,
+  "parallel": {
+    "maxTasks": 8,
+    "concurrency": 4
+  },
+  "chain": {
+    "dynamicFanout": {
+      "maxItems": 16
+    }
+  },
+  "control": {
+    "enabled": true,
+    "needsAttentionAfterMs": 180000,
+    "failedToolAttemptsBeforeAttention": 3,
+    "notifyOn": [
+      "needs_attention"
+    ],
+    "notifyChannels": [
+      "event",
+      "async"
+    ]
+  },
+  "completionBatch": {
+    "enabled": true,
+    "debounceMs": 750,
+    "maxWaitMs": 2500,
+    "stragglerDebounceMs": 300,
+    "stragglerMaxWaitMs": 1000,
+    "stragglerWindowMs": 3000
+  },
+  "intercomBridge": {
+    "mode": "fork-only"
+  },
+  "proactiveSkillSubagents": false,
+  "scheduledRuns": {
+    "enabled": false
+  }
+}

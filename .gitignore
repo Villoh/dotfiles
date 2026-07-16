@@ -71,3 +71,4 @@ dot_config/ytm-player/*
 !dot_config/ytm-player/themes/
 # Local Pi runtime state
 .atl/
+.pi-subagents/

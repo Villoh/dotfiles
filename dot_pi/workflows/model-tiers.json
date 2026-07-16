@@ -1,0 +1,7 @@
+{
+  "tiers": {
+    "small": "tunnel-agent-cliproxy/gpt-5.4-mini:low",
+    "medium": "tunnel-agent-cliproxy/gpt-5.6-terra:high",
+    "big": "tunnel-agent-cliproxy/gpt-5.6-sol:max"
+  }
+}

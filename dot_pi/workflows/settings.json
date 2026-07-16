@@ -1,0 +1,11 @@
+{
+  "keywordTriggerEnabled": true,
+  "keywordTriggerWord": "workflow",
+  "defaultAgentTimeoutMs": null,
+  "defaultConcurrency": 8,
+  "defaultAgentRetries": 1,
+  "progressPanelMode": "detailed",
+  "progressPanelMaxAgents": 12,
+  "persistAgentSessions": false,
+  "deliveredResultMaxChars": 1200
+}

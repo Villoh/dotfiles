@@ -69,6 +69,10 @@ scoop/
 !.claude/RTK.md
 !.claude/CLAUDE.md
 .pi/agent/auth.json
+.pi/workflows/runs/**
+.omp/agent/agent.db
+.omp/agent/sessions/**
+.omp/agent/logs/**
 .pi/agent/sessions/**
 .pi/agent/git/**
 .pi/agent/skills/**

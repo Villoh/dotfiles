@@ -1,0 +1,179 @@
+# Terminal palettes for dark and light backgrounds.
+theme:
+  # Palette used when terminal reports a dark background.
+  dark: dark-catppuccin
+  # Palette used when terminal reports a light background.
+  light: light
+
+# Use Nerd Font glyphs for status icons and interface symbols.
+symbolPreset: nerd
+
+# Assign a model and reasoning effort to each built-in OMP role.
+modelRoles:
+  # Main interactive coding and general-purpose work.
+  default: tunnel-agent-cliproxy/gpt-5.6-sol:high
+  # Fast, inexpensive model for lightweight operations.
+  smol: tunnel-agent-cliproxy/gpt-5.4-mini:low
+  # Deep analysis when quality matters more than latency.
+  slow: tunnel-agent-cliproxy-anthropic/claude-opus-4-8:max
+  # Architecture and implementation planning with maximum reasoning.
+  plan: tunnel-agent-cliproxy/gpt-5.6-sol:max
+  # Fast model for commit messages and changelog work.
+  commit: tunnel-agent-cliproxy-anthropic/claude-haiku-4-5-20251001:low
+  # Default model for task agents and delegated implementation.
+  task: tunnel-agent-cliproxy/gpt-5.6-sol:high
+  # Independent high-quality review of completed turns.
+  advisor: tunnel-agent-cliproxy-anthropic/claude-opus-4-8:max
+
+# Restrict model selectors and cycling to this curated set.
+enabledModels:
+  # Small OpenAI model for quick tasks.
+  - tunnel-agent-cliproxy/gpt-5.4-mini
+  # Previous flagship retained as an alternative.
+  - tunnel-agent-cliproxy/gpt-5.5
+  # Fastest and cheapest GPT-5.6 tier.
+  - tunnel-agent-cliproxy/gpt-5.6-luna
+  # Highest-capability GPT-5.6 tier.
+  - tunnel-agent-cliproxy/gpt-5.6-sol
+  # Balanced GPT-5.6 tier.
+  - tunnel-agent-cliproxy/gpt-5.6-terra
+  # Specialized automated code-review model.
+  - tunnel-agent-cliproxy/codex-auto-review
+  # Fast Anthropic model.
+  - tunnel-agent-cliproxy-anthropic/claude-haiku-4-5-20251001
+  # Balanced Anthropic model.
+  - tunnel-agent-cliproxy-anthropic/claude-sonnet-5
+  # Highest-capability Claude model for long-running agents.
+  - tunnel-agent-cliproxy-anthropic/claude-fable-5
+  # High-capability Anthropic model.
+  - tunnel-agent-cliproxy-anthropic/claude-opus-4-8
+
+# Provider preference when a canonical model has multiple variants.
+modelProviderOrder:
+  # Prefer OpenAI-compatible proxy variants.
+  - tunnel-agent-cliproxy
+  # Fall back to Anthropic-compatible proxy variants.
+  - tunnel-agent-cliproxy-anthropic
+
+# Order used when cycling models by role from the TUI.
+cycleOrder:
+  # Fast model first.
+  - smol
+  # Main model second.
+  - default
+  # Deep-reasoning model third.
+  - slow
+
+# Deliver one steering message per model turn.
+steeringMode: one-at-a-time
+# Deliver one queued follow-up after each completed turn.
+followUpMode: one-at-a-time
+# Interrupt the active tool call when a steering message arrives.
+interruptMode: immediate
+
+tools:
+  # Run tool calls without interactive approval prompts.
+  approvalMode: yolo
+  # Disable dynamic discovery of tools and MCP tools from disk.
+  discoveryMode: "off"
+
+# Reduce conversation context before reaching model limits.
+compaction:
+  # Enable automatic context compaction.
+  enabled: true
+  # Allow compaction between tool-loop model requests.
+  midTurnEnabled: true
+  # Use structured snapshot-based compaction.
+  strategy: snapcompact
+  # Drop older file reads when newer reads supersede them.
+  supersedeReads: true
+  # Remove low-value context found by compaction heuristics.
+  dropUseless: true
+
+# Promote to a larger-context model before compaction when configured.
+contextPromotion:
+  enabled: true
+
+# Control image preparation before model requests.
+images:
+  # Resize oversized images to provider-compatible dimensions.
+  autoResize: true
+  # Allow images to be sent to vision-capable models.
+  blockImages: false
+
+# Configure streamed response rendering and context visibility.
+display:
+  # Smooth token rendering instead of showing uneven chunks.
+  smoothStreaming: true
+  # Show token usage information in the interface.
+  showTokenUsage: true
+  # Collapse compacted conversation sections in the transcript.
+  collapseCompacted: true
+
+# Configure the persistent TUI status line.
+statusLine:
+  # Show the full status-line segment set.
+  preset: full
+  # Separate segments with thin Powerline glyphs.
+  separator: powerline-thin
+  # Tint the editor border with the current session color.
+  sessionAccent: true
+  # Use configured status-line background colors.
+  transparent: false
+  # Display the full reasoning-effort label.
+  compactThinkingLevel: false
+  # Show hook execution status messages.
+  showHookStatus: true
+
+# Configure terminal user-interface rendering.
+tui:
+  # Render Mermaid diagrams when supported.
+  renderMermaid: true
+  # Enable hyperlinks only when terminal support is detected.
+  hyperlinks: auto
+  # Keep standard vertical spacing between interface elements.
+  tight: false
+
+# Configure terminal-specific output features.
+terminal:
+  # Render images inline when supported.
+  showImages: true
+  # Hide additional terminal progress indicators.
+  showProgress: false
+
+# Configure behavior shown when OMP starts.
+startup:
+  # Keep normal startup notices visible.
+  quiet: false
+  # Skip the startup splash animation.
+  showSplash: false
+  # Do not rerun the onboarding wizard.
+  setupWizard: false
+  # Check for available OMP updates during startup.
+  checkUpdate: true
+
+# Notify when a model turn finishes.
+completion:
+  notify: on
+
+# Show a recap after the configured period of inactivity.
+recap:
+  # Enable idle session recaps.
+  enabled: true
+  # Wait four minutes before showing the recap.
+  idleSeconds: 240
+
+# Enable discovery and loading of agent skills.
+skills:
+  enabled: true
+
+# Enable Exa Websets support when Exa handles web search.
+exa:
+  enableWebsets: true
+
+# Let OMP automatically select an available web-search provider.
+providers:
+  webSearch: auto
+
+# Record completion of the current setup schema version.
+setupVersion: 1
