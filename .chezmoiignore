@@ -24,10 +24,7 @@ scoop/
 .bash_profile
 .bash_logout
 .profile{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_hyprland) }}.config/hypr/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_waybar) }}.config/waybar/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_swaync) }}.config/swaync/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_swayosd) }}.config/swayosd/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/hypr.old/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_kitty) }}.config/kitty/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_ghostty) }}.config/ghostty/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
