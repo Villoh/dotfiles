@@ -14,6 +14,7 @@ mkdir -p "${BACKUP_DIR}"
 
 save_existing_backup() {
     local path="$1"
+    mkdir -p "$(dirname "$path")"
     [ -f "$path" ] && cp "$path" "${path}.bak"
 }
 
@@ -21,9 +22,9 @@ save_existing_backup() {
 
 backup_pacman() {
     echo -e "${GREEN}📦 Pacman packages (explicit):${NC}"
-    save_existing_backup "${BACKUP_DIR}/pacman.txt"
-    pacman -Qqe > "${BACKUP_DIR}/pacman.txt"
-    echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/pacman.txt") packages saved to pacman.txt${NC}\n"
+    save_existing_backup "${BACKUP_DIR}/pacman/pacman.txt"
+    pacman -Qqe > "${BACKUP_DIR}/pacman/pacman.txt"
+    echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/pacman/pacman.txt") packages saved to pacman/pacman.txt${NC}\n"
 }
 
 backup_aur() {
@@ -58,9 +59,9 @@ backup_uv() {
 backup_bun() {
     if command -v bun >/dev/null 2>&1; then
         echo -e "${GREEN}🍞 Bun global packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/bun-global.txt"
-        bun pm ls -g 2>/dev/null | tail -n +2 | awk '{print $2}' | sed 's/@[^@]*$//' > "${BACKUP_DIR}/bun-global.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/bun-global.txt") packages saved to bun-global.txt${NC}\n"
+        save_existing_backup "${BACKUP_DIR}/node/bun-packages.txt"
+        bun pm ls -g 2>/dev/null | tail -n +2 | awk '{print $2}' | sed 's/@[^@]*$//' > "${BACKUP_DIR}/node/bun-packages.txt"
+        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/node/bun-packages.txt") packages saved to node/bun-packages.txt${NC}\n"
     else
         echo -e "${YELLOW}⚠️  Bun not installed, skipping${NC}\n"
     fi
@@ -69,9 +70,9 @@ backup_bun() {
 backup_npm() {
     if command -v npm >/dev/null 2>&1; then
         echo -e "${GREEN}📦 npm global packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/npm-global.txt"
-        npm ls -g --depth=0 --json 2>/dev/null | jq -r '.dependencies | keys[]' > "${BACKUP_DIR}/npm-global.txt" || echo "" > "${BACKUP_DIR}/npm-global.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/npm-global.txt") packages saved to npm-global.txt${NC}\n"
+        save_existing_backup "${BACKUP_DIR}/node/npm-packages.txt"
+        npm ls -g --depth=0 --json 2>/dev/null | jq -r '.dependencies | keys[]' > "${BACKUP_DIR}/node/npm-packages.txt" || echo "" > "${BACKUP_DIR}/node/npm-packages.txt"
+        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/node/npm-packages.txt") packages saved to node/npm-packages.txt${NC}\n"
     else
         echo -e "${YELLOW}⚠️  npm not installed, skipping${NC}\n"
     fi
@@ -80,9 +81,9 @@ backup_npm() {
 backup_pnpm() {
     if command -v pnpm >/dev/null 2>&1; then
         echo -e "${GREEN}📦 pnpm global packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/pnpm-global.txt"
-        pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' > "${BACKUP_DIR}/pnpm-global.txt" || echo "" > "${BACKUP_DIR}/pnpm-global.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/pnpm-global.txt") packages saved to pnpm-global.txt${NC}\n"
+        save_existing_backup "${BACKUP_DIR}/node/pnpm-packages.txt"
+        pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' > "${BACKUP_DIR}/node/pnpm-packages.txt" || echo "" > "${BACKUP_DIR}/node/pnpm-packages.txt"
+        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/node/pnpm-packages.txt") packages saved to node/pnpm-packages.txt${NC}\n"
     else
         echo -e "${YELLOW}⚠️  pnpm not installed, skipping${NC}\n"
     fi
@@ -113,7 +114,7 @@ backup_brew() {
 backup_cargo() {
     if command -v cargo >/dev/null 2>&1; then
         echo -e "${GREEN}📦 Cargo packages (crates.io + git):${NC}"
-        save_existing_backup "${BACKUP_DIR}/cargo.txt"
+        save_existing_backup "${BACKUP_DIR}/cargo/cargo.txt"
         {
             cargo install --list 2>/dev/null \
                 | grep -E '^[a-z0-9_-]+\s+v' \
@@ -123,8 +124,8 @@ backup_cargo() {
                 | grep -E '^[a-z0-9_-]+.*https://' \
                 | grep -oE 'https://[^#)]+' \
                 | sed 's/\.git$//'
-        } | sort > "${BACKUP_DIR}/cargo.txt" || echo "" > "${BACKUP_DIR}/cargo.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/cargo.txt") packages saved to cargo.txt${NC}\n"
+        } | sort > "${BACKUP_DIR}/cargo/cargo.txt" || echo "" > "${BACKUP_DIR}/cargo/cargo.txt"
+        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/cargo/cargo.txt") packages saved to cargo/cargo.txt${NC}\n"
         echo -e "  ${YELLOW}ℹ  cargo-minimal.txt is manually maintained — not overwritten${NC}\n"
     else
         echo -e "${YELLOW}⚠️  cargo not installed, skipping${NC}\n"

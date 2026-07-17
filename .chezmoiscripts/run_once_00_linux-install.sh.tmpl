@@ -103,7 +103,7 @@ else
 fi
 
 # -- pacman / AUR --------------------------------------------------------------
-if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
+if [ -f "$PKG_DIR/pacman/pacman_filtered.txt" ]; then
     log_section "pacman / AUR"
     while IFS= read -r pkg; do
         [[ -z "$pkg" ]] && continue
@@ -113,7 +113,7 @@ if [ -f "$PKG_DIR/pacman_filtered.txt" ]; then
         else
             try_install "$AUR_HELPER: $pkg" "$AUR_HELPER" -S --needed --noconfirm "$pkg"
         fi
-    done < <(grep -v '^\s*$' "$PKG_DIR/pacman_filtered.txt")
+    done < <(grep -v '^\s*$' "$PKG_DIR/pacman/pacman_filtered.txt")
 fi
 
 # -- flatpak -------------------------------------------------------------------
@@ -131,7 +131,7 @@ if [ -f "$PKG_DIR/flatpak.txt" ]; then
 fi
 
 # -- npm -----------------------------------------------------------------------
-if [ -f "$PKG_DIR/npm-global.txt" ]; then
+if [ -f "$PKG_DIR/node/npm-packages.txt" ]; then
     log_section "npm"
     npm_installed=$(npm list -g --depth=0 2>/dev/null)
     while IFS= read -r pkg; do
@@ -143,11 +143,11 @@ if [ -f "$PKG_DIR/npm-global.txt" ]; then
         else
             try_install "npm: $pkg" npm install -g "$pkg"
         fi
-    done < "$PKG_DIR/npm-global.txt"
+    done < "$PKG_DIR/node/npm-packages.txt"
 fi
 
 # -- bun -----------------------------------------------------------------------
-if [ -f "$PKG_DIR/bun-global.txt" ]; then
+if [ -f "$PKG_DIR/node/bun-packages.txt" ]; then
     log_section "bun"
     bun_installed=$(bun pm ls -g 2>/dev/null)
     while IFS= read -r pkg; do
@@ -159,7 +159,7 @@ if [ -f "$PKG_DIR/bun-global.txt" ]; then
         else
             try_install "bun: $pkg" bun add -g "$pkg"
         fi
-    done < "$PKG_DIR/bun-global.txt"
+    done < "$PKG_DIR/node/bun-packages.txt"
 fi
 
 # -- uv tools ------------------------------------------------------------------
@@ -214,7 +214,7 @@ fi
 
 # -- cargo (crates.io + git) --------------------------------------------------
 if command -v cargo &>/dev/null; then
-    for profile in "$PKG_DIR/cargo-minimal.txt" "$PKG_DIR/cargo.txt"; do
+    for profile in "$PKG_DIR/cargo/cargo-minimal.txt" "$PKG_DIR/cargo/cargo.txt"; do
         [ -f "$profile" ] && CARGO_FILE="$profile" && break
     done
     if [ -n "${CARGO_FILE:-}" ]; then

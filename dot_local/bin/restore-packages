@@ -6,17 +6,17 @@
 set -e
 
 DEFAULT_DIR="$(chezmoi source-path)/packages/linux"
-DEFAULT_PACMAN="$DEFAULT_DIR/pacman.txt"
+DEFAULT_PACMAN="$DEFAULT_DIR/pacman/pacman.txt"
 DEFAULT_AUR="$DEFAULT_DIR/aur.txt"
 DEFAULT_FLATPAK="$DEFAULT_DIR/flatpak.txt"
 DEFAULT_BREW="$DEFAULT_DIR/brew.txt"
 DEFAULT_UV="$DEFAULT_DIR/uv-tools.txt"
-DEFAULT_BUN="$DEFAULT_DIR/bun-global.txt"
-DEFAULT_NPM="$DEFAULT_DIR/npm-global.txt"
-DEFAULT_PNPM="$DEFAULT_DIR/pnpm-global.txt"
+DEFAULT_BUN="$DEFAULT_DIR/node/bun-packages.txt"
+DEFAULT_NPM="$DEFAULT_DIR/node/npm-packages.txt"
+DEFAULT_PNPM="$DEFAULT_DIR/node/pnpm-packages.txt"
 DEFAULT_BIN="$DEFAULT_DIR/bin-packages.txt"
-DEFAULT_CARGO="$DEFAULT_DIR/cargo.txt"
-DEFAULT_CARGO_MINIMAL="$DEFAULT_DIR/cargo-minimal.txt"
+DEFAULT_CARGO="$DEFAULT_DIR/cargo/cargo.txt"
+DEFAULT_CARGO_MINIMAL="$DEFAULT_DIR/cargo/cargo-minimal.txt"
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
@@ -322,9 +322,9 @@ install_cargo_packages() {
 
     local file
     if [[ "$profile_choice" == minimal* ]]; then
-        file=$(get_file_location "cargo-minimal.txt" "📦" "$DEFAULT_CARGO_MINIMAL")
+        file=$(get_file_location "cargo/cargo-minimal.txt" "📦" "$DEFAULT_CARGO_MINIMAL")
     else
-        file=$(get_file_location "cargo.txt" "📦" "$DEFAULT_CARGO")
+        file=$(get_file_location "cargo/cargo.txt" "📦" "$DEFAULT_CARGO")
     fi
 
     [ ! -f "$file" ] && _warn_missing "$file" && return 1
@@ -396,7 +396,7 @@ gum style \
 while IFS= read -r manager; do
     case "$manager" in
         *pacman*)
-            file=$(get_file_location "pacman.txt"     "📦" "$DEFAULT_PACMAN")
+            file=$(get_file_location "pacman/pacman.txt"     "📦" "$DEFAULT_PACMAN")
             install_pacman_packages "$file" ;;
         *aur*)
             file=$(get_file_location "aur.txt"        "🔧" "$DEFAULT_AUR")
@@ -411,13 +411,13 @@ while IFS= read -r manager; do
             file=$(get_file_location "uv-tools.txt"   "🐍" "$DEFAULT_UV")
             install_uv_tools "$file" ;;
         *bun*)
-            file=$(get_file_location "bun-global.txt" "🍞" "$DEFAULT_BUN")
+            file=$(get_file_location "node/bun-packages.txt" "🍞" "$DEFAULT_BUN")
             install_bun_packages "$file" ;;
         *pnpm*)
-            file=$(get_file_location "pnpm-global.txt" "📦" "$DEFAULT_PNPM")
+            file=$(get_file_location "node/pnpm-packages.txt" "📦" "$DEFAULT_PNPM")
             install_pnpm_packages "$file" ;;
         *npm*)
-            file=$(get_file_location "npm-global.txt" "📦" "$DEFAULT_NPM")
+            file=$(get_file_location "node/npm-packages.txt" "📦" "$DEFAULT_NPM")
             install_npm_packages "$file" ;;
         *bin*)
             file=$(get_file_location "bin-packages.txt" "🗃️ " "$DEFAULT_BIN")
