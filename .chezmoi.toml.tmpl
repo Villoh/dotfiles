@@ -43,8 +43,6 @@ mode = "symlink"
     {{ if not $isWindows -}}
     enable_zsh        = true
     enable_bash       = true
-    enable_kitty      = true
-    enable_ghostty    = true
     enable_aerc       = true
     enable_nchat      = true
     enable_freetube   = true
@@ -54,8 +52,6 @@ mode = "symlink"
     {{- else }}
     enable_zsh        = false
     enable_bash       = false
-    enable_kitty      = false
-    enable_ghostty    = false
     enable_aerc       = false
     enable_nchat      = false
     enable_freetube   = false

@@ -25,8 +25,6 @@ scoop/
 .bash_logout
 .profile{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/hypr.old/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_kitty) }}.config/kitty/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_ghostty) }}.config/ghostty/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}.config/nchat/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
