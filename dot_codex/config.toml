@@ -52,7 +52,7 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-16T22:23:49Z"
+last_updated = "2026-07-17T08:57:11Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -62,6 +62,11 @@ last_revision = "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"
 source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-07-16T23:23:42Z"
+source_type = "local"
+source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+
 [plugins."visualize@openai-bundled"]
 enabled = true
 
@@ -69,6 +74,21 @@ enabled = true
 enabled = true
 
 [plugins."caveman@caveman"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."template-creator@openai-primary-runtime"]
 enabled = true
 
 [plugins."browser@openai-bundled"]
@@ -95,7 +115,7 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunct
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
 BROWSER_USE_CODEX_APP_VERSION = "26.707.91948"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-383181cd-a8bd-4f6e-845a-ea7aa252e51e'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-eea5c7b3-60c0-4422-9382-29349d93951d'
 CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\494ae9d46ab9b3eb\codex.exe'
 
 [windows]
@@ -126,4 +146,7 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects.'c:\users\mikel\documents\codex\2026-07-14\headroomlabs-ai-headroom-https-github-com']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-17\new-chat']
 trust_level = "trusted"
