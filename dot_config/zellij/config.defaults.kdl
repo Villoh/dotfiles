@@ -1,0 +1,159 @@
+// =============================================================================
+// Zellij - OPTION B: stock Zellij defaults (no custom keybinds block)
+// =============================================================================
+// Philosophy: use Zellij's built-in "normal" preset as-is (Ctrl p -> pane mode,
+// Ctrl t -> tab mode, Ctrl n -> resize mode, Ctrl o -> session mode, etc).
+//
+// This is the standard, most-documented Zellij experience. Known trade-off:
+// it collides with common Neovim bindings — Ctrl-o (jumplist), Ctrl-p (fuzzy
+// finder), Ctrl-n (insert-mode completion). If those collisions bite you in
+// practice, the built-in "Unlock-first" (non-colliding) preset is the official
+// fix — see the commented block at the bottom of this file to enable it.
+// =============================================================================
+
+default_shell "pwsh"
+default_layout "work"
+pane_frames false
+scroll_buffer_size 10000
+copy_on_select false
+mouse_mode true
+mirror_session false
+show_startup_tips false
+on_force_close "detach"
+
+theme "catppuccin-mocha"
+
+// No `keybinds { }` block here on purpose — Zellij falls back to its built-in
+// default keymap (the "normal" preset) automatically.
+
+// -----------------------------------------------------------------------------
+// OPTIONAL: switch to the official "Unlock-first" (non-colliding) preset
+// instead of the plain defaults. This requires an explicit "Ctrl g" unlock
+// before ANY Zellij binding (including Ctrl p/t/n/o) becomes active, which is
+// the officially supported nvim-safe variant of Option B.
+//
+// Two ways to enable it:
+//
+// (A) Via the UI (recommended — official, generates the full preset for you):
+//     1. Inside a running Zellij session: press "Ctrl o" then "c"
+//        (opens the built-in Configuration plugin)
+//     2. Select "Unlock-First (non-colliding)"
+//     3. Choose to apply it "permanently" — Zellij rewrites this config.kdl
+//        with the complete, official keybinds block itself (covers nuances
+//        like the "tmux" mode and shared_except wiring that a hand-written
+//        block below might miss).
+//
+// (B) Manually (uncomment below — a hand-rolled approximation of the entry
+//     points only; sub-modes keep using the defaults already active):
+// -----------------------------------------------------------------------------
+// keybinds clear-defaults=true {
+//     locked {
+//         bind "Ctrl g" { SwitchToMode "Normal"; }
+//     }
+//     normal {
+//         bind "Ctrl g" { SwitchToMode "Locked"; }
+//         bind "Ctrl p" { SwitchToMode "Pane"; }
+//         bind "Ctrl t" { SwitchToMode "Tab"; }
+//         bind "Ctrl n" { SwitchToMode "Resize"; }
+//         bind "Ctrl h" { SwitchToMode "Move"; }
+//         bind "Ctrl s" { SwitchToMode "Scroll"; }
+//         bind "Ctrl o" { SwitchToMode "Session"; }
+//         bind "Ctrl q" { Quit; }
+//     }
+//     // pane / tab / resize / move / scroll / session sub-modes keep their
+//     // own default bindings automatically (clear-defaults only clears the
+//     // top-level entry points you redefine above, not the rest).
+// }
+
+// =============================================================================
+// PLUGINS - aliases used in layouts (unchanged from the main config)
+// =============================================================================
+plugins {
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+
+    zjstatus location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+        color_rosewater "#f5e0dc"
+        color_flamingo  "#f2cdcd"
+        color_pink      "#f5c2e7"
+        color_mauve     "#cba6f7"
+        color_red       "#f38ba8"
+        color_maroon    "#eba0ac"
+        color_peach     "#fab387"
+        color_yellow    "#f9e2af"
+        color_green     "#a6e3a1"
+        color_teal      "#94e2d5"
+        color_sky       "#89dceb"
+        color_sapphire  "#74c7ec"
+        color_blue      "#89b4fa"
+        color_lavender  "#b4befe"
+        color_text      "#cdd6f4"
+        color_subtext1  "#bac2de"
+        color_subtext0  "#a6adc8"
+        color_overlay2  "#9399b2"
+        color_overlay1  "#7f849c"
+        color_overlay0  "#6c7086"
+        color_surface2  "#585b70"
+        color_surface1  "#45475a"
+        color_surface0  "#313244"
+        color_base      "#1e1e2e"
+        color_mantle    "#181825"
+        color_crust     "#11111b"
+
+        format_left "#[bg=$surface0,fg=$blue]#[bg=$blue,fg=$crust,bold] {session} {mode} {tabs}"
+        format_center "{notifications}"
+        format_right "#[bg=$surface0,fg=$mauve]#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust]󰃭 #[bg=$surface1,fg=$mauve,bold] {datetime}#[bg=$surface0,fg=$surface1]"
+        format_space " "
+        format_hide_on_overlength "true"
+        format_precedence "lrc"
+        border_enabled "false"
+        border_char "─"
+        border_format "#[bg=$surface0]{char}"
+        border_position "top"
+        hide_frame_for_single_pane "false"
+        mode_normal "#[bg=$green,fg=$crust,bold] NORMAL#[bg=$surface0,fg=$green]"
+        mode_tmux "#[bg=$mauve,fg=$crust,bold] TMUX#[bg=$surface0,fg=$mauve]"
+        mode_locked "#[bg=$red,fg=$crust,bold] LOCKED  #[bg=$surface0,fg=$red]"
+        mode_pane "#[bg=$teal,fg=$crust,bold] PANE#[bg=$surface0,fg=teal]"
+        mode_tab "#[bg=$teal,fg=$crust,bold] TAB#[bg=$surface0,fg=$teal]"
+        mode_scroll "#[bg=$flamingo,fg=$crust,bold] SCROLL#[bg=$surface0,fg=$flamingo]"
+        mode_enter_search "#[bg=$flamingo,fg=$crust,bold] ENT-SEARCH#[bg=$surfaco,fg=$flamingo]"
+        mode_search "#[bg=$flamingo,fg=$crust,bold] SEARCHARCH#[bg=$surfac0,fg=$flamingo]"
+        mode_resize "#[bg=$yellow,fg=$crust,bold] RESIZE#[bg=$surfac0,fg=$yellow]"
+        mode_rename_tab "#[bg=$yellow,fg=$crust,bold] RENAME-TAB#[bg=$surface0,fg=$yellow]"
+        mode_rename_pane "#[bg=$yellow,fg=$crust,bold] RENAME-PANE#[bg=$surface0,fg=$yellow]"
+        mode_move "#[bg=$yellow,fg=$crust,bold] MOVE#[bg=$surface0,fg=$yellow]"
+        mode_session "#[bg=$pink,fg=$crust,bold] SESSION#[bg=$surface0,fg=$pink]"
+        mode_prompt "#[bg=$pink,fg=$crust,bold] PROMPT#[bg=$surface0,fg=$pink]"
+        tab_normal "#[bg=$surface0,fg=$overlay0]#[bg=$overlay0,fg=$crust,bold]{index} #[bg=$surface1,fg=$overlay0,bold] {name}{floating_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_normal_fullscreen "#[bg=$surface0,fg=$overlay0]#[bg=$overlay0,fg=$crust,bold]{index} #[bg=$surface1,fg=$overlay0,bold] {name}{fullscreen_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_normal_sync "#[bg=$surface0,fg=$overlay0]#[bg=$overlay0,fg=$crust,bold]{index} #[bg=$surface1,fg=$overlay0,bold] {name}{sync_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_active "#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust,bold]{index} #[bg=$surface1,fg=$mauve,bold] {name}{floating_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_active_fullscreen "#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust,bold]{index} #[bg=$surface1,fg=$mauve,bold] {name}{fullscreen_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_active_sync "#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust,bold]{index} #[bg=$surface1,fg=$mauve,bold] {name}{sync_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_separator "#[bg=$surface0] "
+        tab_sync_indicator " "
+        tab_fullscreen_indicator " 󰊓"
+        tab_floating_indicator " 󰹙"
+        notification_format_unread "#[bg=surface0,fg=$yellow]#[bg=$yellow,fg=$crust] #[bg=$surface1,fg=$yellow] {message}#[bg=$surface0,fg=$yellow]"
+        notification_format_no_notifications ""
+        notification_show_interval "10"
+
+        datetime "{format}"
+        datetime_format "%A, %B %d %H:%M %p"
+        datetime_timezone "Europe/Madrid"
+    }
+}
+
+load_plugins {
+    "file:~/.config/zellij/plugins/zellij_forgot.wasm"
+}

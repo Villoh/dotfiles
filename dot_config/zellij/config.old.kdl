@@ -1,0 +1,319 @@
+// =============================================================================
+// Zellij - Windows Configuration
+// =============================================================================
+// Path: %USERPROFILE%/.config\zellij\config.kdl
+// Docs: https://zellij.dev/documentation/
+// =============================================================================
+
+default_shell "pwsh"
+default_mode "normal"
+default_layout "work" // use "work" for zjstatus + no frames
+pane_frames false
+scroll_buffer_size 10000
+copy_on_select false
+mouse_mode true
+mirror_session false
+show_startup_tips false
+on_force_close "detach"
+
+// =============================================================================
+// THEME - Catppuccin Mocha
+// =============================================================================
+theme "catppuccin-mocha"
+
+// =============================================================================
+// KEYBINDINGS
+// =============================================================================
+keybinds {
+
+    // -------------------------------------------------------------------------
+    // Locked — passthrough, Ctrl+g to return to normal
+    // -------------------------------------------------------------------------
+    locked {
+        bind "Ctrl g" { SwitchToMode "Normal"; }
+    }
+
+    // -------------------------------------------------------------------------
+    // Normal — Ctrl+g to lock, mode switches; Alt binds via shared_among below
+    // -------------------------------------------------------------------------
+    normal {
+        bind "Ctrl g" { SwitchToMode "Locked"; }
+        bind "Alt s"  { SwitchToMode "Scroll"; }
+        bind "Alt m"  { SwitchToMode "Move"; }
+    }
+
+    // -------------------------------------------------------------------------
+    // Alt binds active in BOTH normal and locked
+    // -------------------------------------------------------------------------
+    shared_among "normal" "locked" {
+
+        // Pane focus — MoveFocusOrTab jumps tab when at the edge
+        bind "Alt h" "Alt Left"  { MoveFocusOrTab "Left"; }
+        bind "Alt j" "Alt Down"  { MoveFocus "Down"; }
+        bind "Alt k" "Alt Up"    { MoveFocus "Up"; }
+        bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
+
+        // Pane management
+        bind "Alt n"         { NewPane "stacked"; }
+        bind "Alt d"         { NewPane "Down"; }
+        bind "Alt e"         { NewPane "Right"; }
+        bind "Alt x"         { CloseFocus; }
+        bind "Alt z"         { ToggleFocusFullscreen; }
+        bind "Alt f"         { ToggleFloatingPanes; }
+
+        // Resize
+        bind "Alt +" "Alt =" { Resize "Increase"; }
+        bind "Alt -"         { Resize "Decrease"; }
+        bind "Alt Shift h"   { Resize "Increase Left"; }
+        bind "Alt Shift j"   { Resize "Increase Down"; }
+        bind "Alt Shift k"   { Resize "Increase Up"; }
+        bind "Alt Shift l"   { Resize "Increase Right"; }
+
+        // Tabs
+        bind "Alt t"         { NewTab; }
+        bind "Alt ,"  "Ctrl Shift Tab" { GoToPreviousTab; }
+        bind "Alt ."  "Ctrl Tab"      { GoToNextTab; }
+        bind "Alt 1"         { GoToTab 1; }
+        bind "Alt 2"         { GoToTab 2; }
+        bind "Alt 3"         { GoToTab 3; }
+        bind "Alt 4"         { GoToTab 4; }
+        bind "Alt 5"         { GoToTab 5; }
+        bind "Alt 6"         { GoToTab 6; }
+        bind "Alt 7"         { GoToTab 7; }
+        bind "Alt 8"         { GoToTab 8; }
+        bind "Alt 9"         { GoToTab 9; }
+        bind "Alt Shift t"   { CloseTab; }
+        bind "Alt r"         { SwitchToMode "RenameTab"; TabNameInput 0; }
+        bind "Alt Shift r"   { SwitchToMode "RenamePane"; PaneNameInput 0; }
+        bind "Alt i"         { MoveTab "Left"; }
+        bind "Alt o"         { MoveTab "Right"; }
+
+        // Layouts
+        bind "Alt ["         { PreviousSwapLayout; }
+        bind "Alt ]"         { NextSwapLayout; }
+
+        // Session
+        bind "Alt w" {
+            LaunchOrFocusPlugin "zellij:session-manager" {
+                floating true
+                move_to_focused_tab true
+            }
+        }
+        bind "Alt Shift d"   { Detach; }
+        bind "Ctrl q"        { Quit; }
+
+        // Help
+        bind "Alt y" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij_forgot.wasm" {
+                floating true
+                move_to_focused_tab true
+                LOAD_ZELLIJ_BINDINGS "true"
+                "lock / unlock"         "Ctrl g"
+                "focus left"            "Alt h / Alt ←"
+                "focus down"            "Alt j / Alt ↓"
+                "focus up"              "Alt k / Alt ↑"
+                "focus right"           "Alt l / Alt →"
+                "new pane (stacked)"    "Alt n"
+                "split down"            "Alt d"
+                "split right"           "Alt e"
+                "close pane"            "Alt x"
+                "toggle fullscreen"     "Alt z"
+                "toggle floating"       "Alt f"
+                "resize +"              "Alt + / Alt ="
+                "resize -"              "Alt -"
+                "resize left"           "Alt Shift h"
+                "resize down"           "Alt Shift j"
+                "resize up"             "Alt Shift k"
+                "resize right"          "Alt Shift l"
+                "new tab"               "Alt t"
+                "prev tab"              "Alt ,"
+                "next tab"              "Alt ."
+                "go to tab 1-9"         "Alt 1-9"
+                "close tab"             "Alt Shift t"
+                "rename tab"            "Alt r"
+                "move tab left"         "Alt i"
+                "move tab right"        "Alt o"
+                "prev layout"           "Alt ["
+                "next layout"           "Alt ]"
+                "scroll / search mode"  "Alt s  (f=search, e=editscrollback)"
+                "move mode"             "Alt m  (n/Tab=move, p=backwards)"
+                "session manager"       "Alt w"
+                "detach"                "Alt Shift d"
+                "quit"                  "Alt Shift q"
+            }
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Scroll mode — s/Esc/q to exit, f to search, e to edit scrollback
+    // -------------------------------------------------------------------------
+    scroll {
+        bind "Esc" "q" "s"           { SwitchToMode "Normal"; }
+        bind "j" "Down"              { ScrollDown; }
+        bind "k" "Up"                { ScrollUp; }
+        bind "d"                     { HalfPageScrollDown; }
+        bind "u"                     { HalfPageScrollUp; }
+        bind "l" "PageDown" "Ctrl f" { PageScrollDown; }
+        bind "h" "PageUp"   "Ctrl b" { PageScrollUp; }
+        bind "g"                     { ScrollToTop; }
+        bind "G"                     { ScrollToBottom; }
+        bind "Ctrl c"                { ScrollToBottom; SwitchToMode "Locked"; }
+        bind "f"                     { SwitchToMode "EnterSearch"; SearchInput 0; }
+        bind "e"                     { EditScrollback; SwitchToMode "Locked"; }
+    }
+
+    // -------------------------------------------------------------------------
+    // Search mode — n/p to navigate, c/o/w to toggle options
+    // -------------------------------------------------------------------------
+    entersearch {
+        bind "Enter"        { SwitchToMode "Search"; }
+        bind "Esc" "Ctrl c" { SwitchToMode "Scroll"; }
+    }
+
+    search {
+        bind "Esc" "q" { SwitchToMode "Normal"; }
+        bind "n"       { Search "down"; }
+        bind "p"       { Search "up"; }
+        bind "c"       { SearchToggleOption "CaseSensitivity"; }
+        bind "o"       { SearchToggleOption "WholeWord"; }
+        bind "w"       { SearchToggleOption "Wrap"; }
+    }
+
+    // -------------------------------------------------------------------------
+    // Move mode — hjkl to move panes, n/Tab to cycle, m/Esc to exit
+    // -------------------------------------------------------------------------
+    move {
+        bind "Esc" "Enter" "m" { SwitchToMode "Normal"; }
+        bind "h" "Left"        { MovePane "Left"; }
+        bind "j" "Down"        { MovePane "Down"; }
+        bind "k" "Up"          { MovePane "Up"; }
+        bind "l" "Right"       { MovePane "Right"; }
+        bind "n" "Tab"         { MovePane; }
+        bind "p"               { MovePaneBackwards; }
+        bind ","               { MoveTab "Left"; }
+        bind "."               { MoveTab "Right"; }
+    }
+
+    // -------------------------------------------------------------------------
+    // Rename modes — Enter to confirm, Esc to cancel, Ctrl+c to locked
+    // -------------------------------------------------------------------------
+    renametab {
+        bind "Enter"  { SwitchToMode "Normal"; }
+        bind "Esc"    { UndoRenameTab; SwitchToMode "Normal"; }
+        bind "Ctrl c" { SwitchToMode "Locked"; }
+    }
+
+    renamepane {
+        bind "Enter"  { SwitchToMode "Normal"; }
+        bind "Esc"    { UndoRenamePane; SwitchToMode "Normal"; }
+        bind "Ctrl c" { SwitchToMode "Locked"; }
+    }
+
+}
+
+// =============================================================================
+// PLUGINS - aliases used in layouts
+// =============================================================================
+plugins {
+    // Good practise: use aliases for plugins instead of direct reference in layout
+
+    // -----------------------
+    // built-in plugins
+    // -----------------------
+    tab-bar location="zellij:tab-bar"
+    status-bar location="zellij:status-bar"
+    strider location="zellij:strider"
+    compact-bar location="zellij:compact-bar"
+    session-manager location="zellij:session-manager"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+
+    // -----------------------
+    // extra plugins
+    // -----------------------
+
+
+    // zjstatus A nice status bar
+    // https://github.com/dj95/zjstatus
+    zjstatus location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+        // -- Catppuccin Mocha palette --
+        color_rosewater "#f5e0dc"
+        color_flamingo  "#f2cdcd"
+        color_pink      "#f5c2e7"
+        color_mauve     "#cba6f7"
+        color_red       "#f38ba8"
+        color_maroon    "#eba0ac"
+        color_peach     "#fab387"
+        color_yellow    "#f9e2af"
+        color_green     "#a6e3a1"
+        color_teal      "#94e2d5"
+        color_sky       "#89dceb"
+        color_sapphire  "#74c7ec"
+        color_blue      "#89b4fa"
+        color_lavender  "#b4befe"
+        color_text      "#cdd6f4"
+        color_subtext1  "#bac2de"
+        color_subtext0  "#a6adc8"
+        color_overlay2  "#9399b2"
+        color_overlay1  "#7f849c"
+        color_overlay0  "#6c7086"
+        color_surface2  "#585b70"
+        color_surface1  "#45475a"
+        color_surface0  "#313244"
+        color_base      "#1e1e2e"
+        color_mantle    "#181825"
+        color_crust     "#11111b"
+
+        format_left "#[bg=$surface0,fg=$blue]#[bg=$blue,fg=$crust,bold] {session} {mode} {tabs}"
+        format_center "{notifications}"
+        format_right "#[bg=$surface0,fg=$mauve]#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust]󰃭 #[bg=$surface1,fg=$mauve,bold] {datetime}#[bg=$surface0,fg=$surface1]"
+        format_space " "
+        format_hide_on_overlength "true"
+        format_precedence "lrc"
+        border_enabled "false"
+        border_char "─"
+        border_format "#[bg=$surface0]{char}"
+        border_position "top"
+        hide_frame_for_single_pane "false"
+        mode_normal "#[bg=$green,fg=$crust,bold] NORMAL#[bg=$surface0,fg=$green]"
+        mode_tmux "#[bg=$mauve,fg=$crust,bold] TMUX#[bg=$surface0,fg=$mauve]"
+        mode_locked "#[bg=$red,fg=$crust,bold] LOCKED  #[bg=$surface0,fg=$red]"
+        mode_pane "#[bg=$teal,fg=$crust,bold] PANE#[bg=$surface0,fg=teal]"
+        mode_tab "#[bg=$teal,fg=$crust,bold] TAB#[bg=$surface0,fg=$teal]"
+        mode_scroll "#[bg=$flamingo,fg=$crust,bold] SCROLL#[bg=$surface0,fg=$flamingo]"
+        mode_enter_search "#[bg=$flamingo,fg=$crust,bold] ENT-SEARCH#[bg=$surfaco,fg=$flamingo]"
+        mode_search "#[bg=$flamingo,fg=$crust,bold] SEARCHARCH#[bg=$surfac0,fg=$flamingo]"
+        mode_resize "#[bg=$yellow,fg=$crust,bold] RESIZE#[bg=$surfac0,fg=$yellow]"
+        mode_rename_tab "#[bg=$yellow,fg=$crust,bold] RENAME-TAB#[bg=$surface0,fg=$yellow]"
+        mode_rename_pane "#[bg=$yellow,fg=$crust,bold] RENAME-PANE#[bg=$surface0,fg=$yellow]"
+        mode_move "#[bg=$yellow,fg=$crust,bold] MOVE#[bg=$surface0,fg=$yellow]"
+        mode_session "#[bg=$pink,fg=$crust,bold] SESSION#[bg=$surface0,fg=$pink]"
+        mode_prompt "#[bg=$pink,fg=$crust,bold] PROMPT#[bg=$surface0,fg=$pink]"
+        tab_normal "#[bg=$surface0,fg=$overlay0]#[bg=$overlay0,fg=$crust,bold]{index} #[bg=$surface1,fg=$overlay0,bold] {name}{floating_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_normal_fullscreen "#[bg=$surface0,fg=$overlay0]#[bg=$overlay0,fg=$crust,bold]{index} #[bg=$surface1,fg=$overlay0,bold] {name}{fullscreen_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_normal_sync "#[bg=$surface0,fg=$overlay0]#[bg=$overlay0,fg=$crust,bold]{index} #[bg=$surface1,fg=$overlay0,bold] {name}{sync_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_active "#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust,bold]{index} #[bg=$surface1,fg=$mauve,bold] {name}{floating_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_active_fullscreen "#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust,bold]{index} #[bg=$surface1,fg=$mauve,bold] {name}{fullscreen_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_active_sync "#[bg=$surface0,fg=$mauve]#[bg=$mauve,fg=$crust,bold]{index} #[bg=$surface1,fg=$mauve,bold] {name}{sync_indicator}#[bg=$surface0,fg=$surface1]"
+        tab_separator "#[bg=$surface0] "
+        tab_sync_indicator " "
+        tab_fullscreen_indicator " 󰊓"
+        tab_floating_indicator " 󰹙"
+        notification_format_unread "#[bg=surface0,fg=$yellow]#[bg=$yellow,fg=$crust] #[bg=$surface1,fg=$yellow] {message}#[bg=$surface0,fg=$yellow]"
+        notification_format_no_notifications ""
+        notification_show_interval "10"
+
+        datetime "{format}"
+        datetime_format "%A, %B %d %H:%M %p"
+        datetime_timezone "Europe/Madrid"
+    }
+}
+
+// Pre-load plugins at session start so WASM is compiled once (avoids slow first launch)
+load_plugins {
+    "file:~/.config/zellij/plugins/zellij_forgot.wasm"
+}

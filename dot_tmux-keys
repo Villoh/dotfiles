@@ -1,123 +1,85 @@
 HELP VIEWER
 ===========
-- Alt+y / Ctrl+a y open this file in less.
+- Ctrl+g y opens this file in less.
 - Press / to search, n/N for next/previous match, q to quit.
 
-TMUX / PSMUX HYBRID KEYBINDS
-===========================
+TMUX / PSMUX LOCK/UNLOCK KEYBINDS (mirrors the Zellij lock/unlock config)
+==========================================================================
 
-This cheatsheet shows both:
-- the hybrid no-prefix binds we added to feel closer to zellij
-- the important tmux/psmux defaults you are still inheriting behind Prefix
+Prefix is Ctrl+g — the same gate key used in the Zellij lock/unlock config,
+for identical muscle memory across both tools. Unlike the old hybrid layer,
+there is no separate "no-prefix Alt layer" here except one deliberate
+exception: Alt+hjkl for pane focus (same exception made in Zellij).
+
+tmux's own prefix mechanism already reverts to passthrough after one
+keystroke natively — you never "stay" in a captured state, no lock toggle
+needed for one-shot actions.
 
 Friendly help
 -------------
-Alt+y                    Open this cheatsheet
-Ctrl+a y                 Open this cheatsheet
-Ctrl+a Y                 Show raw tmux/psmux key table
-Ctrl+a ?                 Show raw tmux/psmux key table
+Ctrl+g y                 Open this cheatsheet
+Ctrl+g Y                 Show raw tmux/psmux key table
 
-No-prefix binds (zellij-style layer)
-------------------------------------
-Focus panes
+No-prefix exception (Alt, mirrors Zellij's one exception)
+----------------------------------------------------------
 Alt+h/j/k/l              Focus pane left/down/up/right
 Alt+Left/Down/Up/Right   Focus pane left/down/up/right
 
+Everything else below requires Ctrl+g first.
+
+Panes behind prefix (Ctrl+g)
+-----------------------------
+Focus / selection
+Ctrl+g h/j/k/l           Focus pane left/down/up/right (repeatable via repeat-time)
+
 Pane management
-Alt+n                    Smart split on the longest axis
-Alt+d                    Split below
-Alt+e                    Split right
-Alt+x                    Close pane
-Alt+z                    Toggle pane zoom
-Alt+f                    Popup shell
+Ctrl+g n                 New pane, smart split on the longest axis
+Ctrl+g d                 New pane, split down
+Ctrl+g r                 New pane, split right
+                         (no "stacked" bind — tmux has no stacked-pane layout)
+Ctrl+g x                 Close pane (asks y/n confirmation)
+Ctrl+g z                 Toggle pane zoom/fullscreen
+Ctrl+g f                 Floating-ish popup shell
+Ctrl+g c                 Rename pane (sets pane title, prompts for text)
 
-Windows
-Alt+, / Alt+.            Previous / next window
-Alt+1..9                 Go to window 1..9 when the host terminal passes them
-Alt+F1..F9               Fallback window 1..9 for hosts that steal Alt+1..9
+Resize — sticky table (Ctrl+g then +, -, or =)
+------------------------------------------------
+Ctrl+g + / - / =         Enter the Resize table
+  h/j/k/l or arrows        Resize left/down/up/right by 3, repeats without prefix
+  Esc / Enter / q          Exit back to normal typing
 
-Layouts / help
-Alt+[ / Alt+]            Previous / next layout
-Alt+s                    Enter copy mode
-Alt+w                    Chooser
-Alt+y                    Open this cheatsheet
+Move — sticky table (Ctrl+g m)
+---------------------------------
+Ctrl+g m                 Enter the Move table
+  h/j/k/l or arrows        Swap focused pane with the one in that direction
+  Esc / Enter / m          Exit back to normal typing
 
-Prefix basics (Ctrl+a)
-----------------------
-Ctrl+a Ctrl+a            Send Ctrl+a to the program inside the pane
-Ctrl+a :                 Command prompt
-Ctrl+a ?                 Raw key table
-Ctrl+a y                 Friendly cheatsheet
-Ctrl+a Y                 Raw key table
+Tabs (tmux windows) behind prefix
+------------------------------------
+Ctrl+g t                 New tab/window
+Ctrl+g ,                 Previous tab
+Ctrl+g .                 Next tab
+Ctrl+g 1..9              Go to tab 1..9
+Ctrl+g Shift+t           Close tab/window
+Ctrl+g Shift+r           Rename tab/window (prompts for text)
+Ctrl+g i                 Move tab left
+Ctrl+g o                 Move tab right
 
-Windows behind prefix
----------------------
-Ctrl+a c                 New window (canonical tmux)
-Ctrl+a t                 New window (zellij-style alias)
-Ctrl+a n                 Next window
-Ctrl+a p                 Previous window
-Ctrl+a w                 Window chooser
-Ctrl+a g                 Chooser alias
-Ctrl+a 0..9              Go to window 0..9
-Ctrl+a ,                 Rename window (canonical tmux)
-Ctrl+a r                 Rename window (alias)
-Ctrl+a &                 Kill current window
-Ctrl+a i / o             Move window left / right
-Ctrl+a Space             Next layout
-Ctrl+a Alt+1             Layout: even-horizontal
-Ctrl+a Alt+2             Layout: even-vertical
-Ctrl+a Alt+3             Layout: main-horizontal
-Ctrl+a Alt+4             Layout: main-vertical
-Ctrl+a Alt+5             Layout: tiled
+Layouts behind prefix
+------------------------
+Ctrl+g [                 Previous layout
+Ctrl+g ]                 Next layout
 
 Session / client behind prefix
 ------------------------------
-Ctrl+a d                 Detach client
-Ctrl+a s                 Session chooser
-Ctrl+a (                 Previous session
-Ctrl+a )                 Next session
-Ctrl+a $                 Rename session
-Ctrl+a Ctrl+q            Kill current tmux/psmux session (with confirmation)
+Ctrl+g w                 Session manager (choose-tree)
+Ctrl+g Shift+d           Detach client
+Ctrl+g Ctrl+s            Enter copy-mode (scroll/search)
+Ctrl+g Ctrl+q            Kill current session (WITH confirmation — a real dialog,
+                         which the Zellij side does not have natively)
 
-Panes behind prefix
--------------------
-Focus / selection
-Ctrl+a h/j/k/l           Focus pane left/down/up/right
-Ctrl+a Left/Down/Up/Right
-                         Focus pane left/down/up/right
-Ctrl+a o                 Select next pane
-Ctrl+a ;                 Jump to previously active pane
-Ctrl+a q                 Show pane numbers
-
-Pane management
-Ctrl+a "                 Split below
-Ctrl+a %                 Split right
-Ctrl+a x                 Close pane
-Ctrl+a z                 Toggle pane zoom
-Ctrl+a { / }             Move pane backward / forward
-Ctrl+a !                 Break pane into its own window
-Ctrl+a f                 Popup shell
-Ctrl+a m                 Show pane/window move hint
-
-Resize behind prefix
---------------------
-Ctrl+a H/J/K/L           Resize left/down/up/right by 5
-Ctrl+a Shift+Left/Down/Up/Right
-                         Resize left/down/up/right by 5
-Ctrl+a Alt+Left/Down/Up/Right
-                         Inherited tmux resize by 5
-Ctrl+a Ctrl+Left/Down/Up/Right
-                         Inherited tmux fine resize by 1
-
-Copy / paste / buffers
-----------------------
-Ctrl+a [                 Enter copy mode
-Ctrl+a ]                 Paste latest buffer
-Ctrl+a =                 Choose buffer interactively
-Ctrl+a #                 List buffers
-
-Copy mode (vi)
---------------
+Copy mode (vi) — entered via Ctrl+g Ctrl+s
+--------------------------------------------
 Movement
 h j k l                  Left / down / up / right
 w b e                    Word motions
@@ -140,11 +102,32 @@ y / Enter                Copy and exit
 o                        Swap cursor/anchor ends
 Esc / q                  Exit copy mode
 
+Zellij <-> tmux parity (both use Ctrl+g as the gate)
+--------------------------------------------------------
+h/j/k/l        focus pane            (also Alt+hjkl, no prefix, both tools)
+n/d/r          new pane (default/down/right) — no "s" stacked equiv in tmux
+x              close pane (tmux confirms y/n; Zellij does not)
+z              fullscreen/zoom
+f              floating-ish popup shell
+c              rename pane
++/-/=          enter sticky Resize table
+m              enter sticky Move table
+t              new tab
+,/.            prev/next tab
+1-9            go to tab N
+Shift+t        close tab
+Shift+r        rename tab
+i/o            move tab left/right
+[/]            prev/next layout
+w              session manager
+Shift+d        detach
+Ctrl+s         scroll/copy-mode
+Ctrl+q         quit (tmux confirms; Zellij needs the zj-quit plugin for that)
+y/Y            cheatsheet / raw keylist
+
 Notes
 -----
-- Prefix is Ctrl+a.
-- The hybrid layer is intentionally incomplete: tmux defaults remain available behind Prefix.
-- Some Alt combinations can be intercepted by WezTerm or Windows Terminal.
-  If Alt+1..9 does not work, use Alt+F1..F9 or Ctrl+a 1..9.
-- psmux currently folds Alt+Shift+letter onto Alt+letter in your setup.
-  For resize, use Prefix+H/J/K/L or Prefix+Shift+Arrow.
+- Prefix is Ctrl+g (changed from Ctrl+b/Ctrl+a in older setups).
+- Some Alt combinations can still be intercepted by WezTerm or Windows Terminal;
+  if Alt+hjkl misbehaves, use Ctrl+g h/j/k/l instead.
+- tmux does not support stacked panes like Zellij; use split down/right instead.
