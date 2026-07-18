@@ -49,7 +49,7 @@ backup_uv() {
     if command -v uv >/dev/null 2>&1; then
         echo -e "${GREEN}🐍 uv tools:${NC}"
         save_existing_backup "${BACKUP_DIR}/uv-tools.txt"
-        uv tool list 2>/dev/null | grep -v '^\s' | awk '{print $1}' > "${BACKUP_DIR}/uv-tools.txt" || echo "" > "${BACKUP_DIR}/uv-tools.txt"
+        uv tool list 2>/dev/null | grep -v '^\s*-' | awk '{print $1}' > "${BACKUP_DIR}/uv-tools.txt" || echo "" > "${BACKUP_DIR}/uv-tools.txt"
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/uv-tools.txt") tools saved to uv-tools.txt${NC}\n"
     else
         echo -e "${YELLOW}⚠️  uv not installed, skipping${NC}\n"
