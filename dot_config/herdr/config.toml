@@ -1,0 +1,122 @@
+onboarding = false
+# =============================================================================
+# Herdr - lock/unlock-style scheme, mirrored from the Zellij/tmux Ctrl-g setup
+# =============================================================================
+# Docs: https://herdr.dev/docs/keyboard/  https://herdr.dev/docs/configuration/
+#
+# NOTE on path: herdr docs state the Windows config path is
+# %APPDATA%\herdr\config.toml, not %USERPROFILE%\.config\herdr\config.toml.
+# This file lives under dot_config/herdr/ to match this repo's existing
+# convention (used for zellij too) — if herdr doesn't pick it up on Windows,
+# either set HERDR_CONFIG_PATH or move it to %APPDATA%\herdr\config.toml.
+#
+# Philosophy: prefix = "ctrl+g", same gate key as Zellij and tmux in this repo.
+# Herdr's own prefix mechanism is already single-shot/native (like tmux) — no
+# manual re-lock chaining needed. Only entries that differ from herdr's
+# built-in defaults are listed below; everything else keeps herdr's default.
+# =============================================================================
+
+[keys]
+prefix = "ctrl+g"
+
+# --- pane focus ----------------------------------------------------------------
+# Also bound to ctrl+alt+hjkl with no prefix — herdr's own vetted-safe direct
+# chord family (unlike plain Alt, ctrl+alt survives every terminal/OS combo
+# herdr tested). This mirrors the one no-prefix exception kept in Zellij/tmux.
+focus_pane_left = ["prefix+h", "ctrl+alt+h", "ctrl+alt+left"]
+focus_pane_down = ["prefix+j", "ctrl+alt+j", "ctrl+alt+down"]
+focus_pane_up = ["prefix+k", "ctrl+alt+k", "ctrl+alt+up"]
+focus_pane_right = ["prefix+l", "ctrl+alt+l", "ctrl+alt+right"]
+
+# --- pane creation ---------------------------------------------------------------
+# Matches Zellij/tmux d=down, r=right. Herdr has no generic/"smart" split
+# direction action — only these two explicit directions exist.
+split_horizontal = [
+  "prefix+d",
+  "prefix+minus",
+  "prefix+quote",
+] # stacked (down). prefix+minus is herdr's own default; prefix+quote mirrors tmux's " key
+split_vertical = [
+  "prefix+r",
+  "prefix+v",
+  "prefix+percent",
+] # side-by-side (right). prefix+v is herdr's own default; prefix+percent mirrors tmux's % key
+
+# close_pane = "prefix+x"   # already herdr's default, matches x=close everywhere
+# zoom       = "prefix+z"   # already herdr's default, matches z=fullscreen/zoom
+
+# --- resize ------------------------------------------------------------------------
+# Herdr's resize is already a native sticky mode (unlike the hand-built Zellij
+# KDL / tmux key-table versions) — just rebind the entry keys off "r" (used
+# above for split-right) onto +/- to match the Zellij/tmux entry keys.
+resize_mode = "prefix+ctrl+r" # mnemonic: Ctrl r = Resize; plus/minus freed for split aliases
+
+# --- swap panes (herdr's "move" equivalent) ---------------------------------------
+# swap_pane_left/down/up/right already default to prefix+shift+h/j/k/l — no
+# modal "Move mode" needed here, herdr does direct one-shot swaps per
+# direction. Left as-is, no override needed.
+
+# --- rename pane -------------------------------------------------------------------
+# Matches Zellij/tmux "t" (mnemonic: Title). Herdr's default is shift+p.
+rename_pane = "prefix+t"
+
+# --- copy/scroll mode --------------------------------------------------------------
+# Matches the Zellij/tmux Ctrl-s entry convention. Herdr's default is "[".
+copy_mode = "prefix+ctrl+s"
+
+# edit_scrollback = "prefix+e"   # already herdr's default, left as-is
+
+# --- tabs ----------------------------------------------------------------------------
+# new_tab/previous_tab/next_tab/switch_tab already default to c/p/n/1..9 —
+# these already match this repo's Zellij/tmux conventions exactly, no changes.
+close_tab = "prefix+shift+t" # matches Zellij/tmux Shift+t = close tab
+# (herdr's own default is shift+x; overridden)
+rename_tab = "prefix+shift+r" # matches Zellij/tmux Shift+r = rename tab
+# (herdr's own default is shift+t; overridden)
+
+# --- workspace / session -------------------------------------------------------------
+# Left as herdr's own defaults — these map to a concept (Workspaces) that has
+# no direct 1:1 equivalent in the Zellij/tmux scheme in this repo, so herdr's
+# own internally-consistent mnemonics are kept rather than forced to match:
+#   workspace_picker = "prefix+w"   (already matches this repo's w=session/manager)
+#   goto              = "prefix+g"   (cross-workspace navigator, no conflict)
+#   detach            = "prefix+q"   (herdr's own top-priority default; herdr has
+#                                     no "kill session" concept to reuse Ctrl-q for
+#                                     — it's a client/server daemon, not a process
+#                                     you quit — so Shift+d parity was not forced
+#                                     here to avoid colliding with herdr's own
+#                                     close_workspace default on shift+d)
+#   new_workspace     = "prefix+shift+n"  (default, untouched)
+#   rename_workspace  = "prefix+shift+w"  (default, untouched)
+#   close_workspace   = "prefix+shift+d"  (default, untouched)
+
+# =============================================================================
+# Zellij/tmux <-> Herdr parity cheat sheet (all three use Ctrl-g as the gate)
+# =============================================================================
+# Matching across all three tools:
+# h/j/k/l        focus pane        (also ctrl+alt+hjkl / Alt+hjkl no-prefix)
+# d/r            new pane down/right   (also minus/v [herdr defaults] and quote/percent [tmux-style] aliases)
+# x              close pane
+# z              fullscreen/zoom
+# t              rename pane
+# c              new tab
+# n/p            next/previous tab (herdr default; alias in tmux; Zellij also has it)
+# Shift+t        close tab
+# Shift+r        rename tab
+# Ctrl+s         scroll/copy-mode entry
+# w              session/workspace manager
+#
+# Diverging by design (no equivalent, or different architecture):
+# s (smart split)    exists in Zellij/tmux only — herdr has no generic split action
+# e (stacked pane)   Zellij-only — neither tmux nor herdr have stacked panes
+# Shift+d (detach)   Zellij/tmux convention — herdr uses plain "q" instead
+#                    (and herdr's Shift+d is "close workspace", a different action)
+# Ctrl+q (quit)      Zellij/tmux only — herdr has no kill-session concept
+# Shift+hjkl (move)  in Zellij/tmux this enters a sticky Move mode; in herdr
+#                    it's already direct one-shot swap_pane_* actions, no mode
+
+[ui.toast]
+delivery = "system"
+
+[ui]
+show_agent_labels_on_pane_borders = false

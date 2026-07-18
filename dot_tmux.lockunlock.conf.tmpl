@@ -10,7 +10,7 @@
 # no manual re-lock chaining needed, this is tmux's native single-shot design
 # (the exact behavior we had to hand-build in Zellij's KDL).
 #
-# The only no-prefix exception kept: Alt+hjkl for pane focus (same one
+# The only no-prefix exception kept: Ctrl+Alt+hjkl for pane focus (same one
 # deliberate exception made in the Zellij config, for low-collision-risk
 # high-frequency navigation).
 # =============================================================================
@@ -58,15 +58,17 @@ unbind-key C-b
 set -g prefix C-g
 bind-key C-g send-prefix
 
-# --- no-prefix exception: Alt+hjkl pane focus (mirrors the Zellij exception) -
-bind-key -n M-h    if-shell -F '#{pane_at_left}'  'previous-window' 'select-pane -L'
-bind-key -n M-Left if-shell -F '#{pane_at_left}'  'previous-window' 'select-pane -L'
-bind-key -n M-j    select-pane -D
-bind-key -n M-Down select-pane -D
-bind-key -n M-k    select-pane -U
-bind-key -n M-Up   select-pane -U
-bind-key -n M-l    if-shell -F '#{pane_at_right}' 'next-window'     'select-pane -R'
-bind-key -n M-Right if-shell -F '#{pane_at_right}' 'next-window'    'select-pane -R'
+# --- no-prefix exception: Ctrl+Alt+hjkl pane focus (mirrors the Zellij one) -
+# Ctrl+Alt (not plain Alt) per herdr's own vetted-safe recommendation: the
+# only modifier family left untouched by every terminal/OS combination tested.
+bind-key -n C-M-h    if-shell -F '#{pane_at_left}'  'previous-window' 'select-pane -L'
+bind-key -n C-M-Left if-shell -F '#{pane_at_left}'  'previous-window' 'select-pane -L'
+bind-key -n C-M-j    select-pane -D
+bind-key -n C-M-Down select-pane -D
+bind-key -n C-M-k    select-pane -U
+bind-key -n C-M-Up   select-pane -U
+bind-key -n C-M-l    if-shell -F '#{pane_at_right}' 'next-window'     'select-pane -R'
+bind-key -n C-M-Right if-shell -F '#{pane_at_right}' 'next-window'    'select-pane -R'
 
 # =============================================================================
 # Everything below is behind the prefix (Ctrl g + key). tmux auto-returns to
@@ -79,28 +81,37 @@ bind-key -r j select-pane -D
 bind-key -r k select-pane -U
 bind-key -r l select-pane -R
 
-# --- pane creation (mirrors Zellij: n/d/r, no "stacked" equivalent in tmux) --
-bind-key n if-shell -F '#{>=:#{pane_width},#{pane_height}}' \
+# --- pane creation (mirrors Zellij: s/d/r, no "stacked" layout equivalent) --
+bind-key s if-shell -F '#{>=:#{pane_width},#{pane_height}}' \
     'split-window -h -c "#{pane_current_path}"' \
-    'split-window -v -c "#{pane_current_path}"'
+    'split-window -v -c "#{pane_current_path}"'   # smart split (auto axis)
 bind-key d split-window -v -c "#{pane_current_path}"   # down
 bind-key r split-window -h -c "#{pane_current_path}"   # right
-# no "s" (stacked) bind — tmux has no stacked-pane layout equivalent.
-# tmux's native prefix+s (choose-tree sessions) is left untouched below.
+
+# tmux-vanilla split aliases, rebound to also follow cwd like d/r above
+unbind-key '"'
+bind-key '"' split-window -v -c "#{pane_current_path}"   # down (tmux default key)
+unbind-key '%'
+bind-key '%' split-window -h -c "#{pane_current_path}"   # right (tmux default key)
+
+# herdr-style split aliases (herdr's own defaults: prefix+minus / prefix+v)
+bind-key -  split-window -v -c "#{pane_current_path}"   # down (herdr default key)
+bind-key v  split-window -h -c "#{pane_current_path}"   # right (herdr default key)
+# tmux's native prefix+s (choose-tree sessions) is overridden above by smart
+# split; session tree is still reachable via "w" below.
 
 bind-key x confirm-before -p "kill-pane #P? (y/n)" kill-pane   # close pane
 bind-key z resize-pane -Z                                       # fullscreen/zoom
 bind-key f display-popup -d "#{pane_current_path}" -E "#{default-shell}"  # floating-ish popup
 
 # --- rename pane (tmux has no true pane rename; sets the pane title) --------
-bind-key c command-prompt -p "pane title:" "select-pane -T '%%'"
+bind-key t command-prompt -p "pane title:" "select-pane -T '%%'"   # mnemonic: Title
 
 # --- resize: sticky key-table, tmux repeat-time equivalent, timeout-free ----
 # (uses a persistent table: each bound action re-enters the table so you can
 # keep resizing without repeating the prefix, exit with Esc/Enter/q)
-bind-key -T prefix -N "enter resize table" '+' switch-client -T resize
-bind-key -T prefix -N "enter resize table" '=' switch-client -T resize
-bind-key -T prefix -N "enter resize table" '-' switch-client -T resize
+# Mnemonic: Ctrl r = Resize. +/-/= freed for split-down/right aliases.
+bind-key -T prefix -N "enter resize table" C-r switch-client -T resize
 bind-key -T resize h      resize-pane -L 3 \; switch-client -T resize
 bind-key -T resize Left   resize-pane -L 3 \; switch-client -T resize
 bind-key -T resize j      resize-pane -D 3 \; switch-client -T resize
@@ -128,11 +139,15 @@ bind-key -T move Enter switch-client -T prefix
 bind-key -T move m     switch-client -T prefix
 
 # --- tabs (tmux windows) ------------------------------------------------------
-bind-key t new-window -c "#{pane_current_path}"   # new tab
+bind-key c new-window -c "#{pane_current_path}"   # new tab (tmux-canonical letter)
 unbind-key ,
 bind-key , previous-window
 unbind-key .
 bind-key . next-window
+unbind-key p
+bind-key p previous-window   # alias, matches tmux-vanilla n/p
+unbind-key n
+bind-key n next-window       # alias, matches tmux-vanilla n/p
 # 1-9: tmux's native default select-window bindings already work as-is
 # (base-index 1 above makes them line up with Zellij's GoToTab 1-9)
 
@@ -174,19 +189,16 @@ run '~/.tmux/plugins/tpm/tpm'
 # =============================================================================
 # Zellij <-> tmux key parity cheat sheet (both use Ctrl-g as the gate)
 # =============================================================================
-# h/j/k/l        -> focus pane            (also Alt+hjkl, no prefix, both tools)
-# n/d/r          -> new pane (default/down/right) — no "s" stacked equiv in tmux
+# Keys that MATCH Zellij exactly:
+# h/j/k/l        -> focus pane            (also Ctrl+Alt+hjkl, no prefix, both tools)
+# d/r            -> new pane down/right
 # x              -> close pane (tmux asks y/n natively; Zellij does not)
 # z              -> fullscreen/zoom
 # f              -> floating-ish popup shell
-# c              -> rename pane (sets pane title in tmux)
 # +/-/=          -> enter sticky Resize table   (hjkl to resize, Esc/Enter/q exit)
 # m              -> enter sticky Move table     (hjkl to swap pane, Esc/Enter/m exit)
-# t              -> new tab/window
-# ,/.            -> prev/next tab
 # 1-9            -> go to tab N
 # Shift+t        -> close tab/window
-# Shift+r        -> rename tab/window
 # i/o            -> move tab left/right
 # [/]            -> prev/next layout
 # w              -> session manager (choose-tree)
@@ -194,3 +206,11 @@ run '~/.tmux/plugins/tpm/tpm'
 # Ctrl-s         -> scroll/copy-mode
 # Ctrl-q         -> quit (WITH confirm-before — better than Zellij here)
 # y/Y            -> cheatsheet / raw keylist
+#
+# Keys that DIVERGE from Zellij on purpose (tmux-specific choices):
+# s              -> new pane, smart split (Zellij uses "s" for stacked instead)
+# c              -> new tab/window          (Zellij uses "c" for rename pane)
+# t              -> rename pane             (Zellij uses "t" for new tab)
+# n/p            -> next/previous tab, ALIAS alongside ,/. (tmux-vanilla mnemonic;
+#                   Zellij has no equivalent alias, only ,/.)
+# Shift+r        -> rename tab/window (unchanged, still matches Zellij)

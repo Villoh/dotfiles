@@ -9,7 +9,9 @@ TMUX / PSMUX LOCK/UNLOCK KEYBINDS (mirrors the Zellij lock/unlock config)
 Prefix is Ctrl+g — the same gate key used in the Zellij lock/unlock config,
 for identical muscle memory across both tools. Unlike the old hybrid layer,
 there is no separate "no-prefix Alt layer" here except one deliberate
-exception: Alt+hjkl for pane focus (same exception made in Zellij).
+exception: Ctrl+Alt+hjkl for pane focus (same exception made in Zellij).
+Ctrl+Alt (not plain Alt) per herdr's own vetted-safe recommendation: the
+only modifier family left untouched by every terminal/OS combination tested.
 
 tmux's own prefix mechanism already reverts to passthrough after one
 keystroke natively — you never "stay" in a captured state, no lock toggle
@@ -20,10 +22,10 @@ Friendly help
 Ctrl+g y                 Open this cheatsheet
 Ctrl+g Y                 Show raw tmux/psmux key table
 
-No-prefix exception (Alt, mirrors Zellij's one exception)
-----------------------------------------------------------
-Alt+h/j/k/l              Focus pane left/down/up/right
-Alt+Left/Down/Up/Right   Focus pane left/down/up/right
+No-prefix exception (Ctrl+Alt, mirrors Zellij's one exception)
+-------------------------------------------------------------------
+Ctrl+Alt+h/j/k/l              Focus pane left/down/up/right
+Ctrl+Alt+Left/Down/Up/Right   Focus pane left/down/up/right
 
 Everything else below requires Ctrl+g first.
 
@@ -33,18 +35,18 @@ Focus / selection
 Ctrl+g h/j/k/l           Focus pane left/down/up/right (repeatable via repeat-time)
 
 Pane management
-Ctrl+g n                 New pane, smart split on the longest axis
-Ctrl+g d                 New pane, split down
-Ctrl+g r                 New pane, split right
+Ctrl+g s                 New pane, smart split on the longest axis
+Ctrl+g d                 New pane, split down (also Ctrl+g " [tmux default] and Ctrl+g - [herdr default])
+Ctrl+g r                 New pane, split right (also Ctrl+g % [tmux default] and Ctrl+g v [herdr default])
                          (no "stacked" bind — tmux has no stacked-pane layout)
 Ctrl+g x                 Close pane (asks y/n confirmation)
 Ctrl+g z                 Toggle pane zoom/fullscreen
 Ctrl+g f                 Floating-ish popup shell
-Ctrl+g c                 Rename pane (sets pane title, prompts for text)
+Ctrl+g t                 Rename pane (sets pane title, prompts for text; mnemonic: Title)
 
-Resize — sticky table (Ctrl+g then +, -, or =)
+Resize — sticky table (Ctrl+g then Ctrl+r)
 ------------------------------------------------
-Ctrl+g + / - / =         Enter the Resize table
+Ctrl+g Ctrl+r            Enter the Resize table (mnemonic: r = Resize)
   h/j/k/l or arrows        Resize left/down/up/right by 3, repeats without prefix
   Esc / Enter / q          Exit back to normal typing
 
@@ -56,9 +58,9 @@ Ctrl+g m                 Enter the Move table
 
 Tabs (tmux windows) behind prefix
 ------------------------------------
-Ctrl+g t                 New tab/window
-Ctrl+g ,                 Previous tab
-Ctrl+g .                 Next tab
+Ctrl+g c                 New tab/window (tmux-vanilla mnemonic: Create)
+Ctrl+g ,  / Ctrl+g p     Previous tab (two aliases)
+Ctrl+g .  / Ctrl+g n     Next tab (two aliases, tmux-vanilla n/p mnemonic)
 Ctrl+g 1..9              Go to tab 1..9
 Ctrl+g Shift+t           Close tab/window
 Ctrl+g Shift+r           Rename tab/window (prompts for text)
@@ -104,16 +106,14 @@ Esc / q                  Exit copy mode
 
 Zellij <-> tmux parity (both use Ctrl+g as the gate)
 --------------------------------------------------------
-h/j/k/l        focus pane            (also Alt+hjkl, no prefix, both tools)
-n/d/r          new pane (default/down/right) — no "s" stacked equiv in tmux
+Matching Zellij exactly:
+h/j/k/l        focus pane            (also Ctrl+Alt+hjkl, no prefix, both tools)
+d/r            new pane down/right
 x              close pane (tmux confirms y/n; Zellij does not)
 z              fullscreen/zoom
 f              floating-ish popup shell
-c              rename pane
-+/-/=          enter sticky Resize table
+Ctrl+r         enter sticky Resize table
 m              enter sticky Move table
-t              new tab
-,/.            prev/next tab
 1-9            go to tab N
 Shift+t        close tab
 Shift+r        rename tab
@@ -125,9 +125,16 @@ Ctrl+s         scroll/copy-mode
 Ctrl+q         quit (tmux confirms; Zellij needs the zj-quit plugin for that)
 y/Y            cheatsheet / raw keylist
 
+Diverging on purpose (tmux-specific choices):
+s              new pane smart split   (Zellij uses "s" for stacked instead)
+c              new tab/window         (Zellij uses "c" for rename pane)
+t              rename pane            (Zellij uses "t" for new tab)
+n/p            next/previous tab, ALIAS alongside ,/. (tmux-vanilla mnemonic)
+
 Notes
 -----
 - Prefix is Ctrl+g (changed from Ctrl+b/Ctrl+a in older setups).
-- Some Alt combinations can still be intercepted by WezTerm or Windows Terminal;
-  if Alt+hjkl misbehaves, use Ctrl+g h/j/k/l instead.
+- Ctrl+Alt combinations are the safest cross-terminal/cross-OS family (herdr's
+  own vetted recommendation); if Ctrl+Alt+hjkl still misbehaves in some host
+  terminal, use Ctrl+g h/j/k/l instead.
 - tmux does not support stacked panes like Zellij; use split down/right instead.

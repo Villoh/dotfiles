@@ -83,6 +83,18 @@ AGENTS.md
 INSTALL.md
 LICENSE
 README.md
+.config/zellij/config.old.kdl
+.config/zellij/config.lockunlock.kdl
+.config/zellij/config.defaults.kdl
+.config/zellij/config.kdl.bak
+.tmux.lockunlock.conf
+.tmux.conf.tmpl.bak
+
+# ── herdr — %APPDATA%\herdr is a junction to dot_config/herdr/; only config.toml
+# is config, the rest is runtime state (sockets, session, logs) written live ──
+.config/herdr/herdr.sock
+.config/herdr/herdr-client.sock
+.config/herdr/session.json
 
 # ── Runtime / cache — never tracked ───────────────────────────────────────────
 **/.git/**

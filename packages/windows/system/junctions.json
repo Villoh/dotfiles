@@ -12,5 +12,7 @@
   { "src": "dot_config\\ytm-player",                        "dst": "%APPDATA%\\ytm-player",                                                                                   "type": "junction" },
   { "src": "dot_config\\gitui",                            "dst": "%APPDATA%\\gitui",                                                                                "type": "junction" },
   { "src": "dot_config\\opencode",                          "dst": "%APPDATA%\\opencode",                                                                              "type": "junction" },
-  { "src": "dot_config\\alacritty",                         "dst": "%APPDATA%\\alacritty",                                                                             "type": "junction" }
+  { "src": "dot_config\\alacritty",                         "dst": "%APPDATA%\\alacritty",                                                                             "type": "junction" },
+  { "src": "dot_config\\herdr",                         "dst": "%APPDATA%\\herdr",                                                                     "type": "junction" }
+
 ]

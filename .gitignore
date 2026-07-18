@@ -69,6 +69,11 @@ AppData/Roaming/Rainmeter/Layouts/@Backup/
 dot_config/ytm-player/*
 !dot_config/ytm-player/config.toml
 !dot_config/ytm-player/themes/
+
+# herdr — %APPDATA%\herdr is a junction to this dir; only config.toml is config,
+# the rest (sockets, session state, logs) is runtime state written live by herdr
+dot_config/herdr/*
+!dot_config/herdr/config.toml
 # Local Pi runtime state
 .atl/
 .pi-subagents/

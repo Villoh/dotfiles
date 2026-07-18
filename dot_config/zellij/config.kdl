@@ -12,7 +12,7 @@
 // This mirrors tmux: prefix + key, single-shot, back to normal typing.
 //
 // Trade-off vs the Alt version: repeated actions (e.g. moving focus 3 times)
-// need Ctrl g each time. Frequent navigation is less fluid than Alt+hjkl,
+// need Ctrl g each time. Frequent navigation is less fluid than Ctrl+Alt+hjkl,
 // but there is ZERO collision surface with Neovim/shell bindings.
 // =============================================================================
 // Path: %USERPROFILE%/.config\zellij\config.kdl
@@ -42,16 +42,17 @@ keybinds {
     }
 
     // -------------------------------------------------------------------------
-    // Alt+hjkl — the ONE deliberate exception to "no Alt". Always active in
-    // both Locked and Normal (no Ctrl g needed), for fast repeated pane focus
-    // navigation. Low collision risk with shell/nvim (unlike the old full Alt
-    // scheme). NewPane/etc. stay Ctrl-g gated only — not added here.
+    // Ctrl+Alt+hjkl — the ONE deliberate exception to "no Alt". Always active
+    // in both Locked and Normal (no Ctrl g needed), for fast repeated pane
+    // focus navigation. Ctrl+Alt (not plain Alt) per herdr's own vetted-safe
+    // recommendation: the only modifier family untouched by every terminal/OS
+    // combination tested. NewPane/etc. stay Ctrl-g gated only — not added here.
     // -------------------------------------------------------------------------
     shared_among "normal" "locked" {
-        bind "Alt h" "Alt Left"  { MoveFocusOrTab "Left"; }
-        bind "Alt j" "Alt Down"  { MoveFocus "Down"; }
-        bind "Alt k" "Alt Up"    { MoveFocus "Up"; }
-        bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
+        bind "Ctrl Alt h" "Ctrl Alt Left"  { MoveFocusOrTab "Left"; }
+        bind "Ctrl Alt j" "Ctrl Alt Down"  { MoveFocus "Down"; }
+        bind "Ctrl Alt k" "Ctrl Alt Up"    { MoveFocus "Up"; }
+        bind "Ctrl Alt l" "Ctrl Alt Right" { MoveFocusOrTab "Right"; }
     }
 
     // -------------------------------------------------------------------------
@@ -69,23 +70,27 @@ keybinds {
         bind "k" "Up"    { MoveFocus "Up";         SwitchToMode "Locked"; }
         bind "l" "Right" { MoveFocusOrTab "Right"; SwitchToMode "Locked"; }
 
-        // Pane management
-        bind "n" { NewPane;               SwitchToMode "Locked"; }
-        bind "d" { NewPane "Down";        SwitchToMode "Locked"; }
-        bind "r" { NewPane "Right";       SwitchToMode "Locked"; }
-        bind "s" { NewPane "stacked";     SwitchToMode "Locked"; }
+        // Pane management (s/d/r match tmux; e=stacked is Zellij-only, tmux
+        // has no stacked-pane layout equivalent). Also aliased to tmux's own
+        // default split keys ("/%%) and herdr's own default split keys (-/v).
+        bind "s" { NewPane;               SwitchToMode "Locked"; }
+        bind "d" "\"" "-" { NewPane "Down";        SwitchToMode "Locked"; }
+        bind "r" "%" "v"  { NewPane "Right";       SwitchToMode "Locked"; }
+        bind "e" { NewPane "stacked";     SwitchToMode "Locked"; }
         bind "x" { CloseFocus;            SwitchToMode "Locked"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Locked"; }
         bind "f" { ToggleFloatingPanes;   SwitchToMode "Locked"; }
 
         // Resize — enters sticky Resize mode (tmux repeat-time equivalent,
-        // but without a timeout: stay until you explicitly exit).
-        bind "+" "=" "-" { SwitchToMode "Resize"; }
+        // but without a timeout: stay until you explicitly exit). Mnemonic:
+        // Ctrl r = Resize. "+"/"-"/"=" freed for split-down/right aliases.
+        bind "Ctrl r" { SwitchToMode "Resize"; }
 
-        // Tabs
-        bind "t"       { NewTab;             SwitchToMode "Locked"; }
-        bind ","       { GoToPreviousTab;    SwitchToMode "Locked"; }
-        bind "."       { GoToNextTab;        SwitchToMode "Locked"; }
+        // Tabs (c matches tmux's new-tab letter; n/p are extra aliases for
+        // next/previous, matching tmux-vanilla n/p mnemonic, alongside ,/.)
+        bind "c"       { NewTab;             SwitchToMode "Locked"; }
+        bind "," "p"   { GoToPreviousTab;    SwitchToMode "Locked"; }
+        bind "." "n"   { GoToNextTab;        SwitchToMode "Locked"; }
         bind "1"       { GoToTab 1;          SwitchToMode "Locked"; }
         bind "2"       { GoToTab 2;          SwitchToMode "Locked"; }
         bind "3"       { GoToTab 3;          SwitchToMode "Locked"; }
@@ -97,7 +102,7 @@ keybinds {
         bind "9"       { GoToTab 9;          SwitchToMode "Locked"; }
         bind "Shift t" { CloseTab;           SwitchToMode "Locked"; }
         bind "Shift r" { SwitchToMode "RenameTab"; TabNameInput 0; }
-        bind "c"       { SwitchToMode "RenamePane"; PaneNameInput 0; }
+        bind "t"       { SwitchToMode "RenamePane"; PaneNameInput 0; }   // mnemonic: Title, matches tmux
         bind "i"       { MoveTab "Left";  SwitchToMode "Locked"; }
         bind "o"       { MoveTab "Right"; SwitchToMode "Locked"; }
 
@@ -127,22 +132,22 @@ keybinds {
                 move_to_focused_tab true
                 LOAD_ZELLIJ_BINDINGS "true"
                 "prefix"                "Ctrl g (single-shot, auto re-locks)"
-                "focus left/down/up/right" "Ctrl g+h/j/k/l  OR  Alt+h/j/k/l (no prefix)"
-                "new pane (default dir)" "n"
-                "split down"            "d"
-                "split right"           "r"
-                "new pane (stacked)"    "s"
+                "focus left/down/up/right" "Ctrl g+h/j/k/l  OR  Ctrl+Alt+h/j/k/l (no prefix)"
+                "new pane (default dir)" "s"
+                "split down"            "d  (also \" and - aliases)"
+                "split right"           "r  (also % and v aliases)"
+                "new pane (stacked)"    "e  (Zellij-only, no tmux equivalent)"
                 "close pane"            "x"
                 "toggle fullscreen"     "z"
                 "toggle floating"       "f"
-                "resize +/-"            "+ / -"
+                "resize mode"           "Ctrl r"
                 "resize dir"            "Shift h/j/k/l"
-                "new tab"               "t"
-                "prev/next tab"         ", / ."
+                "new tab"               "c"
+                "prev/next tab"         ", / .  (also p / n aliases)"
                 "go to tab 1-9"         "1-9"
                 "close tab"             "Shift t"
                 "rename tab"            "Shift r"
-                "rename pane"           "c"
+                "rename pane"           "t"
                 "move tab left/right"   "i / o"
                 "prev/next layout"      "[ / ]"
                 "session manager"       "w"
