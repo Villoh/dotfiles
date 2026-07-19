@@ -41,6 +41,7 @@ bars:
           "github",
           "wallpaper",
           "update_check",
+          "scoop_update",
           "cpu",
           "gpu",
           "memory",
@@ -554,6 +555,29 @@ widgets:
           "\udb82\udd25", # Icon for 41-80% strength
           "\udb82\udd28", # Icon for 81-100% strength
         ]
+  scoop_update:
+    type: "yasb.custom.CustomWidget"
+    options:
+      label: "<span>\uf0ab</span>{data[count]}"
+      label_alt: "Scoop: {data[count]} updates"
+      label_placeholder: "<span>\uf0ab</span>"
+      class_name: "scoop-update-widget"
+      tooltip: true
+      tooltip_label: "{data[tooltip]}"
+      exec_options:
+        run_cmd: >-
+          pwsh -NoProfile -ExecutionPolicy Bypass -File
+          C:\Users\mikel\.config\yasb\scripts\scoop_status.ps1
+        run_interval: 60000
+        return_format: "json"
+        hide_empty: true
+        use_shell: false
+      callbacks:
+        on_left: >-
+          exec cmd /c start pwsh -NoExit -ExecutionPolicy Bypass -File
+          C:\Users\mikel\.config\yasb\scripts\scoop_update.ps1
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
   update_check:
     type: "yasb.update_check.UpdateCheckWidget"
     options:
