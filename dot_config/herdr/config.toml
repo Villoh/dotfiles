@@ -75,20 +75,16 @@ rename_tab = "prefix+shift+r" # matches Zellij/tmux Shift+r = rename tab
 # (herdr's own default is shift+t; overridden)
 
 # --- workspace / session -------------------------------------------------------------
-# Left as herdr's own defaults — these map to a concept (Workspaces) that has
-# no direct 1:1 equivalent in the Zellij/tmux scheme in this repo, so herdr's
-# own internally-consistent mnemonics are kept rather than forced to match:
-#   workspace_picker = "prefix+w"   (already matches this repo's w=session/manager)
-#   goto              = "prefix+g"   (cross-workspace navigator, no conflict)
-#   detach            = "prefix+q"   (herdr's own top-priority default; herdr has
-#                                     no "kill session" concept to reuse Ctrl-q for
-#                                     — it's a client/server daemon, not a process
-#                                     you quit — so Shift+d parity was not forced
-#                                     here to avoid colliding with herdr's own
-#                                     close_workspace default on shift+d)
-#   new_workspace     = "prefix+shift+n"  (default, untouched)
-#   rename_workspace  = "prefix+shift+w"  (default, untouched)
-#   close_workspace   = "prefix+shift+d"  (default, untouched)
+# Core workspace actions keep herdr defaults. Optional actions have no built-in
+# bindings, so configure them explicitly instead of showing "unset" in help.
+open_worktree = "prefix+shift+o"
+remove_worktree = "prefix+alt+x"
+previous_workspace = "prefix+shift+left"
+next_workspace = "prefix+shift+right"
+switch_workspace = "prefix+shift+1..9"
+previous_agent = "prefix+alt+p"
+next_agent = "prefix+alt+n"
+focus_agent = "prefix+alt+1..9"
 
 # =============================================================================
 # Zellij/tmux <-> Herdr parity cheat sheet (all three use Ctrl-g as the gate)
