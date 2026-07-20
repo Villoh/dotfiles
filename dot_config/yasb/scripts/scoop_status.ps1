@@ -1,5 +1,24 @@
 $ErrorActionPreference = "SilentlyContinue"
 
+# Refresh bucket manifests via git every 3h so 'scoop status -l' (local, no network)
+# has current data. Keeps most polls instant while staying reasonably fresh.
+$scoopConfig = "$env:USERPROFILE\.config\scoop\config.json"
+$maxAge = New-TimeSpan -Hours 3
+if (Test-Path $scoopConfig) {
+    try {
+        $lastUpdate = [datetime](Get-Content $scoopConfig -Raw | ConvertFrom-Json).last_update
+        if ((Get-Date) - $lastUpdate -gt $maxAge) {
+            scoop update 6>$null 3>$null | Out-Null
+        }
+    }
+    catch {
+        scoop update 6>$null 3>$null | Out-Null
+    }
+}
+else {
+    scoop update 6>$null 3>$null | Out-Null
+}
+
 $outdated = scoop status -l 6>$null
 $apps = @($outdated | ForEach-Object {
         [PSCustomObject]@{
