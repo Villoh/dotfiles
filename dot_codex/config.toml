@@ -34,6 +34,7 @@ appearanceDarkCodeThemeId = "catppuccin"
 usePointerCursors = true
 show-context-window-usage = true
 notifications-turn-mode = "always"
+conversationDetailMode = "STEPS_PROSE"
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#cba6f7"
@@ -52,7 +53,7 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-17T08:57:11Z"
+last_updated = "2026-07-21T17:51:37Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -91,6 +92,9 @@ enabled = true
 [plugins."template-creator@openai-primary-runtime"]
 enabled = true
 
+[plugins."sites@openai-bundled"]
+enabled = true
+
 [plugins."browser@openai-bundled"]
 enabled = true
 
@@ -108,15 +112,15 @@ NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes
 NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\03b1cdac8af3a530\bin\node.exe'
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 CODEX_HOME = 'C:\Users\mikel\.codex'
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7abc8b22abade944bcd80135500416c7aee60c0e94290c7d644b54428a0013ab,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b03c76c1d0f3d4c81f89f58ff210ae6709fd1204d2c5a4fdffa0a7bdb961b96,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.707.91948"
+BROWSER_USE_CODEX_APP_VERSION = "26.715.61943"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-eea5c7b3-60c0-4422-9382-29349d93951d'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\494ae9d46ab9b3eb\codex.exe'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-53dfe867-980f-4c45-8852-401765ddca98'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\05b3ab7eada19011\codex.exe'
 
 [windows]
 sandbox = "elevated"
@@ -150,3 +154,11 @@ trust_level = "trusted"
 
 [projects.'c:\users\mikel\documents\codex\2026-07-17\new-chat']
 trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-21\d-ryzen-7-7735hs-vs']
+trust_level = "trusted"
+
+[shell_environment_policy.set]
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b03c76c1d0f3d4c81f89f58ff210ae6709fd1204d2c5a4fdffa0a7bdb961b96,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'

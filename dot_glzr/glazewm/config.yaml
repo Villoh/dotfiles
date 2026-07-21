@@ -375,7 +375,7 @@ keybindings:
     bindings: ["lwin+shift+w"]
   - commands: ["shell-exec explorer shell:AppsFolder\\Claude_pzs8sxrjxfjjc!Claude"]
     bindings: ["lwin+shift+i"]
-  - commands: ["shell-exec %LOCALAPPDATA%\\Logseq\\Logseq.exe"]
+  - commands: ["shell-exec %LOCALAPPDATA%\\Programs\\Obsidian\\Obsidian.exe"]
     bindings: ["lwin+shift+n"]
 
   # ---------------------------------------------------------------------------

@@ -24,10 +24,10 @@
     "npm:@quintinshaw/pi-dynamic-workflows",
     "npm:pi-rewind",
     "npm:pi-codex-goal",
-    "npm:@narumitw/pi-statusline",
     "npm:pi-lens",
     "npm:pi-messenger",
-    "npm:pi-intercom"
+    "npm:pi-intercom",
+    "npm:pi-cliproxy-usage"
   ],
   "powerline": {
     "preset": "default",

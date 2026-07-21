@@ -16,17 +16,27 @@ onboarding = false
 # built-in defaults are listed below; everything else keeps herdr's default.
 # =============================================================================
 
+[theme]
+# tmux: set -g @plugin 'catppuccin/tmux' (@catppuccin_flavor "mocha")
+name = "catppuccin"
+# Follow the host terminal's light/dark appearance.
+auto_switch = true
+dark_name = "catppuccin"        # mocha
+light_name = "catppuccin-latte"
+
 [keys]
 prefix = "ctrl+g"
 
 # --- pane focus ----------------------------------------------------------------
-# Also bound to ctrl+alt+hjkl with no prefix — herdr's own vetted-safe direct
-# chord family (unlike plain Alt, ctrl+alt survives every terminal/OS combo
-# herdr tested). This mirrors the one no-prefix exception kept in Zellij/tmux.
-focus_pane_left = ["prefix+h", "ctrl+alt+h", "ctrl+alt+left"]
-focus_pane_down = ["prefix+j", "ctrl+alt+j", "ctrl+alt+down"]
-focus_pane_up = ["prefix+k", "ctrl+alt+k", "ctrl+alt+up"]
-focus_pane_right = ["prefix+l", "ctrl+alt+l", "ctrl+alt+right"]
+# Also bound to ctrl+alt+arrows with no prefix — the one combo proven to fire
+# reliably on this terminal. Plain ctrl+h/j/k/l collides with Neovim defaults
+# (i_CTRL-H backspace, digraphs, redraw, etc.); alt+h/j/k/l and
+# ctrl+shift+h/j/k/l both turned out unreliable/conflicting too, so no
+# no-prefix letter alias is used — prefix+hjkl only for the letter form.
+focus_pane_left = ["prefix+h", "ctrl+alt+left"]
+focus_pane_down = ["prefix+j", "ctrl+alt+down"]
+focus_pane_up = ["prefix+k", "ctrl+alt+up"]
+focus_pane_right = ["prefix+l", "ctrl+alt+right"]
 
 # --- pane creation ---------------------------------------------------------------
 # Matches Zellij/tmux d=down, r=right. Herdr has no generic/"smart" split
@@ -67,9 +77,26 @@ copy_mode = "prefix+ctrl+s"
 # edit_scrollback = "prefix+e"   # already herdr's default, left as-is
 
 # --- tabs ----------------------------------------------------------------------------
-# new_tab/previous_tab/next_tab/switch_tab already default to c/p/n/1..9 —
-# these already match this repo's Zellij/tmux conventions exactly, no changes.
-close_tab = "prefix+shift+t" # matches Zellij/tmux Shift+t = close tab
+# new_tab already defaults to c — matches this repo's Zellij/tmux conventions
+# exactly, no changes.
+# previous_tab/next_tab keep their prefix+p/prefix+n defaults, plus a
+# no-prefix alt+shift+left/right exception. Alt+letter chords (and
+# ctrl+alt+[/]) are sent as a bare ESC followed by the char (ambiguous
+# "meta" encoding) — herdr's raw_input log shows it timing out waiting for
+# the rest and flushing a lone escape, so those never fire reliably. Arrow
+# keys work because they arrive as a complete CSI sequence with a modifier
+# bitmask (e.g. ESC[1;7D for ctrl+alt+left); digits work the same way
+# (ctrl+alt+1..9 below), which is why F-keys (same encoding, just less
+# comfortable) were tried before. alt+shift+left/right is a different
+# 2-modifier arrow combo than panes' ctrl+alt+left/right, so it shouldn't
+# collide — worth testing since 2-modifier arrows are the proven-reliable
+# class here (ctrl+alt+shift+left/right, a 3-modifier combo, already failed).
+previous_tab = ["prefix+p", "ctrl+shift+left"]
+next_tab = ["prefix+n", "ctrl+shift+right"]
+# switch_tab already defaults to prefix+1..9, plus the same no-prefix
+# ctrl+alt exception (jump straight to tab N, browser ctrl+1..9 style).
+switch_tab = ["prefix+1..9", "ctrl+alt+1..9"]
+close_tab = "prefix+shift+t"                  # matches Zellij/tmux Shift+t = close tab
 # (herdr's own default is shift+x; overridden)
 rename_tab = "prefix+shift+r" # matches Zellij/tmux Shift+r = rename tab
 # (herdr's own default is shift+t; overridden)
@@ -79,9 +106,16 @@ rename_tab = "prefix+shift+r" # matches Zellij/tmux Shift+r = rename tab
 # bindings, so configure them explicitly instead of showing "unset" in help.
 open_worktree = "prefix+shift+o"
 remove_worktree = "prefix+alt+x"
-previous_workspace = "prefix+shift+left"
-next_workspace = "prefix+shift+right"
+# Also bound to ctrl+shift+left/right with no prefix, same reasoning as tabs
+# above: a different 2-modifier arrow combo than panes' ctrl+alt+left/right.
+previous_workspace = ["prefix+shift+left", "ctrl+shift+up"]
+next_workspace = ["prefix+shift+right", "ctrl+shift+down"]
 switch_workspace = "prefix+shift+1..9"
+
+# --- misc --------------------------------------------------------------------------
+# Herdr's own default is prefix+shift+r, but that's already taken by
+# rename_tab above, so reload_config is moved to prefix+shift+c (mnemonic: Config).
+reload_config = "prefix+shift+c"
 previous_agent = "prefix+alt+p"
 next_agent = "prefix+alt+n"
 focus_agent = "prefix+alt+1..9"
@@ -116,3 +150,7 @@ delivery = "system"
 
 [ui]
 show_agent_labels_on_pane_borders = false
+agent_panel_sort = "spaces"
+
+[ui.sound]
+enabled = true
