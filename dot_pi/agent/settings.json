@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.80.10",
-  "defaultProvider": "tunnel-agent-cliproxy-anthropic",
-  "defaultModel": "claude-sonnet-5",
+  "defaultProvider": "tunnel-agent-cliproxy",
+  "defaultModel": "gpt-5.6-terra",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",

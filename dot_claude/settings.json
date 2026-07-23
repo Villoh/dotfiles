@@ -158,7 +158,8 @@
     "powershell-editor-services@claude-code-lsps": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "superpowers@superpowers-marketplace": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -201,6 +202,12 @@
       "source": {
         "source": "github",
         "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
       }
     }
   },

@@ -12,18 +12,18 @@ function Invoke-WindhawkRestore {
         return
     }
 
-    $sourceDir     = chezmoi source-path
-    $regFile       = Join-Path $sourceDir "packages\windows\system\windhawk\settings.reg"
-    $pfDir         = Join-Path $sourceDir "program_files\windhawk"
-    $profileDst    = "C:\ProgramData\Windhawk\userprofile.json"
-    $modsSrcDst    = "C:\ProgramData\Windhawk\ModsSource"
+    $sourceDir = chezmoi source-path
+    $regFile = Join-Path $sourceDir "packages\windows\system\windhawk\settings.reg"
+    $pfDir = Join-Path $sourceDir "program_files\windhawk"
+    $profileDst = "C:\ProgramData\Windhawk\userprofile.json"
+    $modsSrcDst = "C:\ProgramData\Windhawk\ModsSource"
 
     if (-not (Test-Path $regFile)) {
         Write-Warning "Registry file not found: $regFile"
         return
     }
 
-    $logFile   = "$env:TEMP\windhawk-restore.log"
+    $logFile = "$env:TEMP\windhawk-restore.log"
     $tmpScript = "$env:TEMP\windhawk-restore.ps1"
 
     @"
@@ -33,6 +33,9 @@ if (`$LASTEXITCODE -eq 0) {
 } else {
     Set-Content -Path "$logFile" -Value "ERROR: reg import failed (exit code `$LASTEXITCODE)"
 }
+Copy-Item "$pfDir\userprofile.json" "$profileDst" -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Force -Path "$modsSrcDst" | Out-Null
+Copy-Item "$pfDir\ModsSource\*.wh.cpp" "$modsSrcDst\" -Force -ErrorAction SilentlyContinue
 "@ | Set-Content $tmpScript
 
     Write-Host "[windhawk] Requesting elevation..." -ForegroundColor Cyan
@@ -43,19 +46,17 @@ if (`$LASTEXITCODE -eq 0) {
         Remove-Item $logFile
         if ($result -eq "OK") {
             Write-Host "[windhawk] Registry imported successfully." -ForegroundColor Green
-        } else {
+        }
+        else {
             Write-Host "[windhawk] $result" -ForegroundColor Red
         }
-    } else {
+    }
+    else {
         Write-Warning "No output received (UAC cancelled or import failed)"
     }
     Remove-Item $tmpScript -ErrorAction SilentlyContinue
-
-    # Restore userprofile.json and ModsSource (needed so Windhawk reads correct installed versions)
-    Copy-Item "$pfDir\userprofile.json" $profileDst -Force -ErrorAction SilentlyContinue
-    New-Item -ItemType Directory -Force -Path $modsSrcDst | Out-Null
-    Copy-Item "$pfDir\ModsSource\*.wh.cpp" "$modsSrcDst\" -Force -ErrorAction SilentlyContinue
     Write-Host "[windhawk] userprofile.json and ModsSource restored." -ForegroundColor Green
 }
 
 Set-Alias -Name restore-windhawk -Value Invoke-WindhawkRestore
+

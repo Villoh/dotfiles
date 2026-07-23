@@ -53,12 +53,12 @@ diffRemoved = "#f38ba8"
 skill = "#cba6f7"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-21T17:51:37Z"
+last_updated = "2026-07-22T10:38:08Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
 [marketplaces.caveman]
-last_updated = "2026-07-14T08:54:01Z"
+last_updated = "2026-07-22T08:12:30Z"
 last_revision = "0d95a81d35a9f2d123a5e9430d1cfc43d55f1bb0"
 source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
@@ -67,6 +67,12 @@ source = "https://github.com/JuliusBrussee/caveman.git"
 last_updated = "2026-07-16T23:23:42Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+
+[marketplaces.ponytail]
+last_updated = "2026-07-22T08:12:40Z"
+last_revision = "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"
+source_type = "git"
+source = "https://github.com/DietrichGebert/ponytail.git"
 
 [plugins."visualize@openai-bundled"]
 enabled = true
@@ -95,6 +101,9 @@ enabled = true
 [plugins."sites@openai-bundled"]
 enabled = true
 
+[plugins."ponytail@ponytail"]
+enabled = true
+
 [plugins."browser@openai-bundled"]
 enabled = true
 
@@ -112,15 +121,15 @@ NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes
 NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\03b1cdac8af3a530\bin\node.exe'
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 CODEX_HOME = 'C:\Users\mikel\.codex'
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b03c76c1d0f3d4c81f89f58ff210ae6709fd1204d2c5a4fdffa0a7bdb961b96,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "330cfa6875d3acd34ed3d321d03e97c0dd9ee3c1855467f2600215089f2d8279,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
-BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.715.61943"
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "public-beta"
+BROWSER_USE_CODEX_APP_VERSION = "26.715.31251"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-53dfe867-980f-4c45-8852-401765ddca98'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\05b3ab7eada19011\codex.exe'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-8d015607-df02-46db-a48b-2421a0eca782'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\5dee10576ec7a5b8\codex.exe'
 
 [windows]
 sandbox = "elevated"
@@ -160,5 +169,5 @@ trust_level = "trusted"
 
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "0b03c76c1d0f3d4c81f89f58ff210ae6709fd1204d2c5a4fdffa0a7bdb961b96,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "330cfa6875d3acd34ed3d321d03e97c0dd9ee3c1855467f2600215089f2d8279,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'

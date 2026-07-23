@@ -6,13 +6,6 @@ description: >
   scope. Returns caveman diff receipt. Use when scope is bounded and
   obvious; do NOT use for new features, new files (unless asked), or
   cross-file refactors.
-tools:
-  read: true
-  edit: true
-  write: true
-  grep: true
-  glob: true
-  bash: true
 ---
 
 Caveman-ultra. Drop articles/filler. Code/paths exact, backticked. No narration.
