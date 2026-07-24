@@ -57,7 +57,7 @@ bars:
           "volume",
           "microphone",
           "wifi",
-          # "systray",
+          "systray",
           "power_menu",
         ]
 widgets:
@@ -382,11 +382,11 @@ widgets:
     type: "yasb.systray.SystrayWidget"
     options:
       class_name: "systray"
-      label_collapsed: "▼"
-      label_expanded: "▶"
-      label_position: "left"
-      icon_size: 16
-      pin_click_modifier: "alt"
+      label_collapsed: "󰁊"
+      label_expanded: "󰁒"
+      label_position: "right"
+      icon_size: 14
+      pin_click_modifier: "ctrl"
       show_unpinned: true
       show_unpinned_button: true
       show_in_popup: true

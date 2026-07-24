@@ -1,0 +1,65 @@
+[models]
+default = "claude-opus-4-8"
+default_reasoning_effort = "medium"
+
+[model.claude-fable-5]
+model = "claude-fable-5"
+name = "Claude Fable 5 (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "messages"
+supports_reasoning_effort = true
+
+[model.claude-opus-4-8]
+model = "claude-opus-4-8"
+name = "Claude Opus 4.8 (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "messages"
+supports_reasoning_effort = true
+
+[model.claude-sonnet-5]
+model = "claude-sonnet-5"
+name = "Claude Sonnet 5 (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "messages"
+supports_reasoning_effort = true
+
+[model."gpt-5.5"]
+model = "gpt-5.5"
+name = "GPT-5.5 (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "chat_completions"
+supports_reasoning_effort = true
+
+[model."gpt-5.6-luna"]
+model = "gpt-5.6-luna"
+name = "GPT-5.6 Luna (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "chat_completions"
+supports_reasoning_effort = true
+
+[model."gpt-5.6-sol"]
+model = "gpt-5.6-sol"
+name = "GPT-5.6 Sol (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "chat_completions"
+supports_reasoning_effort = true
+
+[model."gpt-5.6-terra"]
+model = "gpt-5.6-terra"
+name = "GPT-5.6 Terra (Tunnel Agent)"
+base_url = "http://127.0.0.1:8317/v1"
+api_key = "no-key"
+api_backend = "chat_completions"
+supports_reasoning_effort = true
+
+[ui]
+max_thoughts_width = 120
+fork_secondary_model = "grok-build"
+yolo = false
+compact_mode = false

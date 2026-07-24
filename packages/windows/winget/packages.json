@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-07-14T11:13:00.326+02:00",
+  "CreationDate": "2026-07-24T12:47:23.011+02:00",
   "Sources": [
     {
       "Packages": [
@@ -38,16 +38,16 @@
           "PackageIdentifier": "ONLYOFFICE.DesktopEditors"
         },
         {
-          "PackageIdentifier": "IDRIX.VeraCrypt"
+          "PackageIdentifier": "namazso.PawnIO"
         },
         {
           "PackageIdentifier": "Microsoft.GameInput"
         },
         {
-          "PackageIdentifier": "Nilesoft.Shell"
+          "PackageIdentifier": "IDRIX.VeraCrypt"
         },
         {
-          "PackageIdentifier": "Iterate.Cyberduck"
+          "PackageIdentifier": "Nilesoft.Shell"
         },
         {
           "PackageIdentifier": "Apple.Bonjour"
@@ -56,10 +56,13 @@
           "PackageIdentifier": "karlstav.cava"
         },
         {
-          "PackageIdentifier": "Microsoft.PowerShell"
+          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
         },
         {
           "PackageIdentifier": "AmN.yasb"
+        },
+        {
+          "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
           "PackageIdentifier": "Oracle.JDK.17"
@@ -78,9 +81,6 @@
         },
         {
           "PackageIdentifier": "Nickvision.Parabolic"
-        },
-        {
-          "PackageIdentifier": "EpicGames.EpicGamesLauncher"
         },
         {
           "PackageIdentifier": "AppFlowy.AppFlowy"
@@ -122,10 +122,16 @@
           "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
         },
         {
+          "PackageIdentifier": "EpicGames.EpicOnlineServices"
+        },
+        {
           "PackageIdentifier": "HaiNguyen.Mechvibes"
         },
         {
           "PackageIdentifier": "StablyAI.Orca"
+        },
+        {
+          "PackageIdentifier": "Termius.Termius"
         },
         {
           "PackageIdentifier": "JohannesMillan.superProductivity"
@@ -167,16 +173,10 @@
           "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
         },
         {
-          "PackageIdentifier": "cjpais.Handy"
-        },
-        {
           "PackageIdentifier": "Jan.Jan"
         },
         {
           "PackageIdentifier": "Logitech.OnboardMemoryManager"
-        },
-        {
-          "PackageIdentifier": "Logseq.Logseq"
         },
         {
           "PackageIdentifier": "AnInsomniacy.MotrixNext"
@@ -201,6 +201,9 @@
         },
         {
           "PackageIdentifier": "JetBrains.Toolbox"
+        },
+        {
+          "PackageIdentifier": "Obsidian.Obsidian"
         },
         {
           "PackageIdentifier": "Perplexity.Perplexity"

@@ -34,29 +34,30 @@ function Invoke-BunUpgrade {
     if (-not (Get-Command bun -ErrorAction SilentlyContinue)) { Write-Warning "bun not found."; return }
 
     $outdated = @(bun outdated -g 2>$null | ForEach-Object {
-        $line = ($_ -replace '\x1b\[[0-9;]*m', '').Trim()
-        if (-not $line -or $line -match '^bun outdated ' -or $line -match '^\|[- ]+\|$' -or $line -match '^\|\s*Package\s*\|') {
-            return
-        }
+            $line = ($_ -replace '\x1b\[[0-9;]*m', '').Trim()
+            if (-not $line -or $line -match '^bun outdated ' -or $line -match '^\|[- ]+\|$' -or $line -match '^\|\s*Package\s*\|') {
+                return
+            }
 
-        $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
-        if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
-            $pkgName = $columns[0]
-            $current = $columns[1]
-            $update = $columns[2]
+            $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+            if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
+                $pkgName = $columns[0]
+                $current = $columns[1]
+                $update = $columns[2]
 
-            if ($current -ne $update) {
-                [PSCustomObject]@{
-                    Name = $pkgName
-                    Version = $update
+                if ($current -ne $update) {
+                    [PSCustomObject]@{
+                        Name    = $pkgName
+                        Version = $update
+                    }
                 }
             }
-        }
-    })
+        })
 
     if ($outdated.Count -eq 0) {
         Write-Host "bun: all global packages are up to date." -ForegroundColor Green
-    } else {
+    }
+    else {
         foreach ($pkg in $outdated) {
             bun add -g "$($pkg.Name)@$($pkg.Version)"
         }
@@ -68,20 +69,8 @@ Set-Alias -Name upgrade-bun    -Value Invoke-BunUpgrade
 function Invoke-PnpmUpgrade {
     if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) { Write-Warning "pnpm not found."; return }
 
-    $outdated = pnpm outdated -g --format json 2>$null | ConvertFrom-Json
-    if (-not $outdated) {
-        Write-Host "pnpm: all global packages are up to date." -ForegroundColor Green
-        return
-    }
-
-    # Install every outdated package in a single `pnpm add -g` call. Running one
-    # `pnpm add -g` per package rewrites the global manifest each time and, on
-    # Windows, races with an ENOENT reading the just-linked package.json, leaving
-    # only the last package registered globally.
-    $specs = @($outdated.PSObject.Properties.Name | ForEach-Object { "${_}@latest" })
-    if ($specs.Count -gt 0) {
-        pnpm add -g @specs
-    }
+    pnpm update -g --latest
+    if ($LASTEXITCODE -ne 0) { Write-Warning "pnpm global update failed (exit code $LASTEXITCODE)." }
 }
 Set-Alias -Name update-pnpm    -Value Invoke-PnpmUpgrade
 Set-Alias -Name upgrade-pnpm   -Value Invoke-PnpmUpgrade
@@ -122,3 +111,4 @@ winget install -e --id '$Id' --accept-package-agreements --accept-source-agreeme
     Write-Host "$Id reinstalled successfully." -ForegroundColor Green
 }
 Set-Alias -Name winget-reinstall -Value Invoke-WingetReinstall
+

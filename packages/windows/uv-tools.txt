@@ -1,11 +1,8 @@
 basedpyright
 graphifyy
 holded-tt
-jupyterlab
-nbpreview
 pre-commit
 pyright
-rich-cli
 specify-cli
 tinytuya
 trafilatura

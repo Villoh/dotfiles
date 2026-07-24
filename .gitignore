@@ -73,7 +73,7 @@ dot_config/ytm-player/*
 # herdr — %APPDATA%\herdr is a junction to this dir; only config.toml is config,
 # the rest (sockets, session state, logs) is runtime state written live by herdr
 dot_config/herdr/*
-!dot_config/herdr/config.toml
+!dot_config/herdr/config.toml.tmpl
 # Local Pi runtime state
 .atl/
 .pi-subagents/

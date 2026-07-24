@@ -18,7 +18,7 @@ model_reasoning_summary = "concise"
 # model_provider = "cliproxyapi"
 # openai_base_url = "http://127.0.0.1:8317/v1"
 
-notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\03b1cdac8af3a530\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
+notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\f8d2abcb7481383b\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
 [model_providers.cliproxyapi]
 name = "CLIProxyAPI (Tunnel Agent)"
 base_url = "http://127.0.0.1:8317/v1"
@@ -30,30 +30,30 @@ wire_api = "responses"
 [desktop]
 followUpQueueMode = "queue"
 appearanceTheme = "dark"
-appearanceDarkCodeThemeId = "catppuccin"
+appearanceDarkCodeThemeId = "vercel"
 usePointerCursors = true
 show-context-window-usage = true
 notifications-turn-mode = "always"
-conversationDetailMode = "STEPS_PROSE"
+conversationDetailMode = "STEPS_COMMANDS"
 
 [desktop.appearanceDarkChromeTheme]
-accent = "#cba6f7"
+accent = "#006efe"
 contrast = 50
-ink = "#cdd6f4"
+ink = "#ededed"
 opaqueWindows = true
-surface = "#1e1e2e"
+surface = "#000000"
 
 [desktop.appearanceDarkChromeTheme.fonts]
 code = '"Geist Mono", ui-monospace, "SFMono-Regular"'
 ui = "Geist, Inter"
 
 [desktop.appearanceDarkChromeTheme.semanticColors]
-diffAdded = "#a6e3a1"
-diffRemoved = "#f38ba8"
-skill = "#cba6f7"
+diffAdded = "#00AD3A"
+diffRemoved = "#F13342"
+skill = "#9540D5"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-22T10:38:08Z"
+last_updated = "2026-07-24T17:08:59Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -64,7 +64,7 @@ source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-16T23:23:42Z"
+last_updated = "2026-07-24T17:23:57Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
 
@@ -73,6 +73,12 @@ last_updated = "2026-07-22T08:12:40Z"
 last_revision = "16f29800fd2681bdf24f3eb4ccffe38be3baec6b"
 source_type = "git"
 source = "https://github.com/DietrichGebert/ponytail.git"
+
+[marketplaces.obsidian-skills]
+last_updated = "2026-07-23T21:35:33Z"
+last_revision = "a1dc48e68138490d522c04cbf5822214c6eb1202"
+source_type = "git"
+source = "https://github.com/kepano/obsidian-skills.git"
 
 [plugins."visualize@openai-bundled"]
 enabled = true
@@ -107,29 +113,35 @@ enabled = true
 [plugins."browser@openai-bundled"]
 enabled = true
 
+[plugins."obsidian@obsidian-skills"]
+enabled = true
+
+[plugins."chrome@openai-bundled"]
+enabled = true
+
 [features]
 js_repl = false
 
 [mcp_servers.node_repl]
 args = []
-command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\03b1cdac8af3a530\bin\node_repl.exe'
+command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node_repl.exe'
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\03b1cdac8af3a530\bin\node_modules'
-NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\03b1cdac8af3a530\bin\node.exe'
+NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node_modules'
+NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node.exe'
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 CODEX_HOME = 'C:\Users\mikel\.codex'
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "330cfa6875d3acd34ed3d321d03e97c0dd9ee3c1855467f2600215089f2d8279,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "3fdfe9a7ad39456da69c5e8fa7bbf7229ec2fe9de5f4cf2e476166bf30a08a7e,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
-BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "public-beta"
-BROWSER_USE_CODEX_APP_VERSION = "26.715.31251"
+BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
+BROWSER_USE_CODEX_APP_VERSION = "26.721.31836"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-8d015607-df02-46db-a48b-2421a0eca782'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\5dee10576ec7a5b8\codex.exe'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-ba11b7d4-3f44-4757-8c4e-f7e04b5e83d0'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\69066b736e1e17a4\codex.exe'
 
 [windows]
 sandbox = "elevated"
@@ -167,7 +179,10 @@ trust_level = "trusted"
 [projects.'c:\users\mikel\documents\codex\2026-07-21\d-ryzen-7-7735hs-vs']
 trust_level = "trusted"
 
+[projects.'c:\users\mikel\documents\codex\2026-07-24\chrome-plugin-chrome-openai-bundled-file']
+trust_level = "trusted"
+
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "330cfa6875d3acd34ed3d321d03e97c0dd9ee3c1855467f2600215089f2d8279,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "3fdfe9a7ad39456da69c5e8fa7bbf7229ec2fe9de5f4cf2e476166bf30a08a7e,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'

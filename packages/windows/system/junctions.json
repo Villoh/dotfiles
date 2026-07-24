@@ -13,6 +13,7 @@
   { "src": "dot_config\\gitui",                            "dst": "%APPDATA%\\gitui",                                                                                "type": "junction" },
   { "src": "dot_config\\opencode",                          "dst": "%APPDATA%\\opencode",                                                                              "type": "junction" },
   { "src": "dot_config\\alacritty",                         "dst": "%APPDATA%\\alacritty",                                                                             "type": "junction" },
-  { "src": "dot_config\\herdr",                         "dst": "%APPDATA%\\herdr",                                                                     "type": "junction" }
+  { "src": "dot_config\\herdr\\config.toml",           "dst": "%APPDATA%\\herdr\\config.toml",                                                        "type": "file" },
+  { "src": "dot_config\\uv",                            "dst": "%APPDATA%\\uv",                                                                        "type": "junction" }
 
 ]

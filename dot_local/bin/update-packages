@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+set -u
+
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+if ! command_exists gum; then
+    echo "gum not found. Install with: sudo pacman -S gum" >&2
+    exit 1
+fi
+
+choices=()
+if command_exists yay; then
+    choices+=("🔧 system + AUR (yay)")
+elif command_exists paru; then
+    choices+=("🔧 system + AUR (paru)")
+elif command_exists pacman; then
+    choices+=("📦 system (pacman)")
+fi
+command_exists flatpak && choices+=("📱 flatpak")
+command_exists brew && choices+=("🍺 brew")
+command_exists uv && choices+=("🐍 uv tools")
+command_exists npm && choices+=("📦 npm globals")
+command_exists pnpm && choices+=("📦 pnpm globals")
+command_exists bun && choices+=("🍞 bun globals")
+
+if ((${#choices[@]} == 0)); then
+    echo "No supported package manager found." >&2
+    exit 1
+fi
+
+gum style \
+    --foreground 75 \
+    --border-foreground 75 \
+    --border double \
+    --align center \
+    --width 60 \
+    --margin "1 2" \
+    --padding "2 4" \
+    '📦  UPDATE PACKAGES  📦' \
+    '' \
+    'Select package managers to update'
+
+selected=$(gum choose \
+    --no-limit \
+    --cursor.foreground="75" \
+    --selected.foreground="75" \
+    --header="SPACE=toggle  ENTER=update" \
+    --header.foreground="245" \
+    "${choices[@]}")
+
+[[ -z "$selected" ]] && { echo "No package manager selected."; exit 0; }
+
+failed=0
+run() {
+    local label=$1
+    shift
+    gum style --foreground 75 --bold "→ $label"
+    if "$@"; then
+        gum style --foreground 42 "  ✓ Done"
+    else
+        gum style --foreground 196 "  ✗ Failed"
+        failed=1
+    fi
+}
+
+while IFS= read -r choice; do
+    case "$choice" in
+        "🔧 system + AUR (yay)") run "System and AUR" yay -Syu ;;
+        "🔧 system + AUR (paru)") run "System and AUR" paru -Syu ;;
+        "📦 system (pacman)") run "System" sudo pacman -Syu ;;
+        "📱 flatpak") run "Flatpak" flatpak update -y ;;
+        "🍺 brew")
+            run "Homebrew metadata" brew update
+            run "Homebrew packages" brew upgrade
+            ;;
+        "🐍 uv tools") run "uv tools" uv tool upgrade --all ;;
+        "📦 npm globals") run "npm global packages" npm update -g ;;
+        "📦 pnpm globals") run "pnpm global packages" pnpm update -g --latest ;;
+        "🍞 bun globals") run "Bun global packages" bun update -g ;;
+    esac
+done <<< "$selected"
+
+if ((failed)); then
+    gum style --foreground 196 --border rounded --padding "1 2" "Update completed with errors."
+    exit 1
+fi
+
+gum style --foreground 42 --border rounded --padding "1 2" "Update completed."

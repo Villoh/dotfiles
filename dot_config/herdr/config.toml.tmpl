@@ -1,14 +1,16 @@
 onboarding = false
+
+{{ if eq .chezmoi.os "windows" -}}
+[terminal]
+default_shell = "pwsh.exe"
+{{ end }}
 # =============================================================================
 # Herdr - lock/unlock-style scheme, mirrored from the Zellij/tmux Ctrl-g setup
 # =============================================================================
 # Docs: https://herdr.dev/docs/keyboard/  https://herdr.dev/docs/configuration/
 #
-# NOTE on path: herdr docs state the Windows config path is
-# %APPDATA%\herdr\config.toml, not %USERPROFILE%\.config\herdr\config.toml.
-# This file lives under dot_config/herdr/ to match this repo's existing
-# convention (used for zellij too) — if herdr doesn't pick it up on Windows,
-# either set HERDR_CONFIG_PATH or move it to %APPDATA%\herdr\config.toml.
+# Chezmoi renders this to ~/.config/herdr/config.toml. On Windows, setup links
+# %APPDATA%\herdr\config.toml to that rendered file.
 #
 # Philosophy: prefix = "ctrl+g", same gate key as Zellij and tmux in this repo.
 # Herdr's own prefix mechanism is already single-shot/native (like tmux) — no

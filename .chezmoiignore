@@ -90,8 +90,7 @@ README.md
 .tmux.lockunlock.conf
 .tmux.conf.tmpl.bak
 
-# ── herdr — %APPDATA%\herdr is a junction to dot_config/herdr/; only config.toml
-# is config, the rest is runtime state (sockets, session, logs) written live ──
+# ── herdr runtime state (sockets, session, logs) — never deployed ──
 .config/herdr/herdr.sock
 .config/herdr/herdr-client.sock
 .config/herdr/session.json

@@ -1,7 +1,5 @@
 {
   "lastChangelogVersion": "0.80.10",
-  "defaultProvider": "tunnel-agent-cliproxy",
-  "defaultModel": "gpt-5.6-terra",
   "defaultThinkingLevel": "medium",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -27,7 +25,8 @@
     "npm:pi-lens",
     "npm:pi-messenger",
     "npm:pi-intercom",
-    "npm:pi-cliproxy-usage"
+    "..\\..\\development\\personal\\projects\\pi\\extensions\\pi-cliproxy-usage",
+    "npm:pi-cliproxyapi-provider"
   ],
   "powerline": {
     "preset": "default",
@@ -105,5 +104,7 @@
         ]
       }
     }
-  }
+  },
+  "defaultProvider": "cliproxyapi",
+  "defaultModel": "claude-opus-4-8"
 }

@@ -7,7 +7,7 @@ CachyOS (Arch-based) + Hyprland (Wayland compositor).
 ## dot_config — key apps
 
 | Path | Description |
-|------|-------------|
+| ------ | ------------- |
 | `hypr/hyprland.conf` | Hyprland main config. Includes: `animations.conf`, `keybindings.conf`, `monitors.conf`, `windowrules.conf`, `userprefs.conf`, `shaders.conf`, `pyprland.toml` |
 | `hypr/hypridle.conf` | Hypridle idle daemon config |
 | `hypr/hyprlock/` | Hyprlock screen locker. `catppuccin/` and `vivek-hyprlock-styles/` are git submodules |
@@ -32,7 +32,7 @@ CachyOS (Arch-based) + Hyprland (Wayland compositor).
 All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 
 | Script | Description |
-|--------|-------------|
+| -------- | ------------- |
 | `dotfiles-sync` | Sync: `chezmoi re-add` + git add/commit/push |
 | `backup-packages` | Export installed packages to `packages/linux/` (pacman, AUR, flatpak, npm, bun, uv) |
 | `restore-packages` | Reinstall packages from `packages/linux/` lists |
@@ -40,6 +40,7 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `secrets` | Manual secret refresh with `fzf`, backed by `packages/linux/system/secrets.json` |
 | `extract-claude-config` | Export Claude config docs to `other_config/claude/` |
 | `cleanup` | System cleanup (cache, logs, orphan packages) |
+| `update-packages` | Interactive Gum updater for system/AUR, Flatpak, Brew, uv, npm, pnpm, and Bun |
 | `plymouth-themes` | Install/switch Plymouth boot themes from `other_config/plymouth/themes/` |
 | `sddm-themes` | Install/switch SDDM login themes from `other_config/sddm/themes/` |
 | `cliphist.sh` | Cliphist clipboard history helper |
@@ -53,7 +54,7 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 ## Shell configs
 
 | File | Shell |
-|------|-------|
+| ------ | ------- |
 | `dot_bashrc`, `dot_bash_profile`, `dot_bash_logout` | Bash |
 | `dot_zshenv`, `dot_zprofile` | Zsh |
 | `dot_profile` | POSIX |
@@ -63,7 +64,7 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 Not deployed by chezmoi — installed manually via scripts.
 
 | Path | Description |
-|------|-------------|
+| ------ | ------------- |
 | `other_config/plymouth/themes/` | Boot splash themes (4 submodules). Managed by `plymouth-themes` script |
 | `other_config/sddm/themes/` | SDDM login themes (1 submodule). Managed by `sddm-themes` script |
 | `other_config/system/pacman/` | Pacman config reference |

@@ -1,11 +1,15 @@
+@devcontainers/cli
 @earendil-works/pi-coding-agent
 @filen/cli
 @fission-ai/openspec
 @gsd-build/sdk
+@jmfederico/pi-web
 @microck/moji
 @oh-my-pi/pi-coding-agent
 @vtsls/language-server
+agent-browser
 agent-skill-manager
+defuddle
 eslint
 happy
 ocx

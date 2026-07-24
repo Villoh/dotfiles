@@ -34,6 +34,9 @@ if (Test-Path "`$pkgDir\system\junctions.json") {
 
 foreach (`$j in `$junctions) {
     `$src    = "`$chezmoisrc\`$(`$j.src)"
+    if (-not (Test-Path `$src) -and (Test-Path "`$src.tmpl")) {
+        `$src = chezmoi target-path "`$src.tmpl"
+    }
     `$dst    = [System.Environment]::ExpandEnvironmentVariables(`$j.dst)
     `$parent = Split-Path `$dst
     if (`$parent -and -not (Test-Path `$parent)) { New-Item -ItemType Directory -Force -Path `$parent | Out-Null }
