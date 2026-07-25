@@ -78,5 +78,16 @@ element's id or label. The renderer additionally fails when it can detect
 layout problems, including missing stages, duplicate node IDs, nodes outside
 the readable diagram area, node overlap, labels colliding with nodes or other
 labels, labels wider than their node, unknown flow endpoints, missing flow
-labels, unreadably short flows, or stages that exceed the viewBox. Text width
+labels, unreadably short flows, flows crossing unrelated nodes (2px Clean Flow
+clearance), or stages that exceed the viewBox. Stage frames remain intentional
+pass-through containers. Text width
 is estimated CJK-aware: fullwidth glyphs count as two units.
+
+Set `meta.quality_profile` to `showcase` for polished delivery. Unrelated proper
+X crossings then fail with `composition/proper-crossing`; default `standard`
+keeps them as artifact-receipt warnings. Collinear stage corridors are outside
+the proper-X rule, but a separate gate warns in `standard` and fails in
+`showcase` when unrelated flows overlap for at least 8px. Shared semantic
+endpoints, point touches, and shorter overlaps remain valid. Showcase also
+rejects any route segment below 8px and any interior turn segment below 16px;
+ordinary 8–15px endpoint stubs remain valid.

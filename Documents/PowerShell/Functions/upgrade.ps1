@@ -6,6 +6,22 @@ function Invoke-AllUpgrade {
     Invoke-NodeUpgrade
     Invoke-UvUpgrade
 }
+
+function Invoke-SkillsUpgrade {
+    if (-not (Get-Command npx -ErrorAction SilentlyContinue)) { Write-Warning "npx not found."; return }
+
+    Write-Host "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Updating skills.sh skills..." -ForegroundColor Cyan
+    npx --yes skills update -g -y
+    if ($LASTEXITCODE -eq 0) { Write-Host "skills.sh skills updated." -ForegroundColor Green }
+    else { Write-Warning "skills.sh update failed (exit code $LASTEXITCODE)." }
+
+    Write-Host "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Updating Caveman for OpenCode..." -ForegroundColor Cyan
+    npx -y github:JuliusBrussee/caveman -- --only opencode --force --non-interactive
+    if ($LASTEXITCODE -eq 0) { Write-Host "Caveman updated." -ForegroundColor Green }
+    else { Write-Warning "Caveman update failed (exit code $LASTEXITCODE)." }
+}
+Set-Alias -Name update-skills  -Value Invoke-SkillsUpgrade
+Set-Alias -Name upgrade-skills -Value Invoke-SkillsUpgrade
 Set-Alias -Name upgrade-all       -Value Invoke-AllUpgrade
 Set-Alias -Name update-all        -Value Invoke-AllUpgrade
 
@@ -111,4 +127,6 @@ winget install -e --id '$Id' --accept-package-agreements --accept-source-agreeme
     Write-Host "$Id reinstalled successfully." -ForegroundColor Green
 }
 Set-Alias -Name winget-reinstall -Value Invoke-WingetReinstall
+
+
 

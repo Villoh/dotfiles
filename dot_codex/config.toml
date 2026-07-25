@@ -34,7 +34,7 @@ appearanceDarkCodeThemeId = "vercel"
 usePointerCursors = true
 show-context-window-usage = true
 notifications-turn-mode = "always"
-conversationDetailMode = "STEPS_COMMANDS"
+conversationDetailMode = "STEPS_PROSE"
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#006efe"

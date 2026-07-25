@@ -1,8 +1,9 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { esc, renderDefinitions, textUnits } from '../shared/utils.mjs';
-import { animateAttr, loadDiagram, writeDiagram, svgRootAttrs } from '../shared/cli.mjs';
-import { componentFill, arrowClassMap, rectsOverlap, asArray, isFinitePoint } from '../shared/geometry.mjs';
+import { esc, renderDefinitions, renderSemanticSigil, textUnits } from '../shared/utils.mjs';
+import { animateAttr, focusEdgeAttrs, focusNodeAttrs, focusNodeTitle, loadDiagram, writeDiagram, svgAccessibleText, svgRootAttrs } from '../shared/cli.mjs';
+import { throwDiagnosticProblems } from '../shared/diagnostics.mjs';
+import { componentFill, arrowClassMap, rectsOverlap, cleanFlowProblems, cleanCrossingProblems, cleanAmbiguousCorridorProblems, cleanBorderRunProblems, cleanRouteRhythmProblems, cleanLabelRouteClearanceProblems, routePointsValue, asArray, isFinitePoint } from '../shared/geometry.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const { diagram: sequence, template, outPath } = loadDiagram({
@@ -41,9 +42,32 @@ const participants = new Map(asArray(sequence.participants).map((participant, in
     ...participant,
     index,
     cx: participantX(index),
-    x: participantX(index) - layout.participantW / 2
+    x: participantX(index) - layout.participantW / 2,
+    y: layout.topY,
+    width: layout.participantW,
+    height: layout.participantH,
+    cy: layout.topY + layout.participantH / 2
   }
 ]));
+
+const compositionFrames = asArray(sequence.segments).map((segment, index) => ({
+  id: index,
+  label: segment.label,
+  kind: 'segment',
+  x: 48,
+  y: segment.from,
+  width: viewBox[0] - 96,
+  height: segment.to - segment.from,
+  radius: 10,
+}));
+
+function messagePath(message) {
+  return {
+    points: participants.has(message.from) && participants.has(message.to)
+      ? [[participants.get(message.from).cx, message.y], [participants.get(message.to).cx, message.y]]
+      : []
+  };
+}
 
 function validateSequence() {
   const problems = [];
@@ -86,6 +110,58 @@ function validateSequence() {
     }
   }
 
+  // Participant headers are opaque nodes. Lifelines, activation bars, and
+  // segment bands remain intentional pass-through geometry and are excluded.
+  problems.push(...cleanFlowProblems({
+    relations: sequence.messages,
+    endpointIds: new Set(participants.keys()),
+    obstacles: participants.values(),
+    pathFor: messagePath,
+    diagramType: 'sequence',
+    relationCollection: 'messages',
+    obstacleKind: 'participant header',
+    profile: sequence.meta?.quality_profile,
+    clearance: 0,
+    routeHint: 'move the message y below the participant headers or reorder participants'
+  }));
+  problems.push(...cleanCrossingProblems({
+    relations: sequence.messages,
+    endpointIds: new Set(participants.keys()),
+    pathFor: messagePath,
+    diagramType: 'sequence',
+    relationCollection: 'messages',
+    profile: sequence.meta?.quality_profile,
+    routeHint: 'separate the message y values; lifeline crossings remain allowed'
+  }));
+  problems.push(...cleanAmbiguousCorridorProblems({
+    relations: sequence.messages,
+    endpointIds: new Set(participants.keys()),
+    pathFor: messagePath,
+    diagramType: 'sequence',
+    relationCollection: 'messages',
+    profile: sequence.meta?.quality_profile,
+    routeHint: 'separate the message y values so unrelated messages do not visually merge'
+  }));
+  problems.push(...cleanBorderRunProblems({
+    relations: sequence.messages,
+    endpointIds: new Set(participants.keys()),
+    frames: compositionFrames,
+    pathFor: messagePath,
+    diagramType: 'sequence',
+    relationCollection: 'messages',
+    profile: sequence.meta?.quality_profile,
+    routeHint: 'move the message y so it crosses a segment boundary perpendicularly or stays clearly inside the segment'
+  }));
+  problems.push(...cleanRouteRhythmProblems({
+    relations: sequence.messages,
+    endpointIds: new Set(participants.keys()),
+    pathFor: messagePath,
+    diagramType: 'sequence',
+    relationCollection: 'messages',
+    profile: sequence.meta?.quality_profile,
+    routeHint: 'increase participant spacing or simplify message routing so every turn has room to read'
+  }));
+
   // Vertical crowding only matters when the arrows share horizontal space;
   // disjoint arrows may legitimately run in parallel rows.
   const placed = asArray(sequence.messages)
@@ -108,13 +184,14 @@ function validateSequence() {
   // Label masks can extend well past the arrow span, so check the actual
   // label rectangles too — tangent arrows with long labels still collide.
   const labelRects = asArray(sequence.messages)
-    .filter((m) => participants.has(m.from) && participants.has(m.to) && typeof m.y === 'number')
-    .map((m) => {
+    .map((m, messageIndex) => {
+      if (!participants.has(m.from) || !participants.has(m.to) || typeof m.y !== 'number') return null;
       const x1 = participants.get(m.from).cx;
       const x2 = participants.get(m.to).cx;
       const width = Math.max(34, textUnits(m.label) * 5.2 + 12);
-      return { label: m.label, x: (x1 + x2) / 2 - width / 2, y: m.y - 20, width, height: layout.labelH };
-    });
+      return { relation: m, relationIndex: messageIndex, label: m.label, x: (x1 + x2) / 2 - width / 2, y: m.y - 20, width, height: layout.labelH };
+    })
+    .filter(Boolean);
   for (let i = 0; i < labelRects.length; i += 1) {
     for (let j = i + 1; j < labelRects.length; j += 1) {
       if (rectsOverlap(labelRects[i], labelRects[j], -2)) {
@@ -122,6 +199,16 @@ function validateSequence() {
       }
     }
   }
+  problems.push(...cleanLabelRouteClearanceProblems({
+    relations: sequence.messages,
+    labels: labelRects,
+    endpointIds: new Set(participants.keys()),
+    pathFor: messagePath,
+    diagramType: 'sequence',
+    relationCollection: 'messages',
+    profile: sequence.meta?.quality_profile,
+    routeHint: 'spread the message y values, shorten the label, or reorder participants so the adjacent route stays visible'
+  }));
 
   for (const segment of asArray(sequence.segments)) {
     if (segment.to <= segment.from) {
@@ -144,24 +231,34 @@ function validateSequence() {
   }
 
   if (problems.length) {
-    throw new Error(`Sequence layout validation failed:\n- ${problems.join('\n- ')}`);
+    throwDiagnosticProblems('Sequence layout validation failed', problems, {
+      subject: { diagramType: 'sequence' },
+    });
   }
 }
 
 function renderParticipant(participant) {
   const fill = componentFill[participant.type] || 'c-external';
-  return `        <rect x="${participant.x}" y="${layout.topY}" width="${layout.participantW}" height="${layout.participantH}" rx="6" class="c-mask"/>
-        <rect x="${participant.x}" y="${layout.topY}" width="${layout.participantW}" height="${layout.participantH}" rx="6" class="${fill}"${animateAttr(sequence.meta, 'node', participant.index)} stroke-width="1.5"/>
-        <text x="${participant.cx}" y="${layout.topY + 22}" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">${esc(participant.label)}</text>
-        <text x="${participant.cx}" y="${layout.topY + 39}" class="t-muted" font-size="7" text-anchor="middle">${esc(participant.sublabel)}</text>`;
+  const hasSub = participant.sublabel != null && participant.sublabel !== '';
+  const sub = hasSub
+    ? `\n          <text data-detail="context" x="${participant.cx}" y="${layout.topY + 39}" class="t-muted" font-size="7" text-anchor="middle">${esc(participant.sublabel)}</text>`
+    : '';
+  const passport = { kind: participant.type, sublabel: participant.sublabel, context: 'Sequence participant' };
+  return `        <g ${focusNodeAttrs(participant.id, participant.label, passport)}>
+          ${focusNodeTitle(participant.label, passport)}
+          <rect x="${participant.x}" y="${layout.topY}" width="${layout.participantW}" height="${layout.participantH}" rx="6" class="c-mask"/>
+          <rect x="${participant.x}" y="${layout.topY}" width="${layout.participantW}" height="${layout.participantH}" rx="6" class="${fill}"${animateAttr(sequence.meta, 'node', participant.index)} stroke-width="1.5"/>
+          ${renderSemanticSigil(participant.type, { x: participant.x + 6, y: layout.topY + 6 })}
+          <text${hasSub ? ' data-detail-anchor' : ''} x="${participant.cx}" y="${layout.topY + 22}" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">${esc(participant.label)}</text>${sub}
+        </g>`;
 }
 
 function renderLifeline(participant) {
   return `        <path d="M ${participant.cx} ${layout.lifelineTop} L ${participant.cx} ${layout.lifelineBottom}" class="a-default" stroke-width="0.8" stroke-dasharray="3,7"/>`;
 }
 
-function renderSegment(segment) {
-  return `        <rect x="48" y="${segment.from}" width="${viewBox[0] - 96}" height="${segment.to - segment.from}" rx="10" class="c-lane" stroke-width="1"/>
+function renderSegment(segment, index) {
+  return `        <rect data-graph-role="structural-frame" data-composition-frame-kind="segment" data-composition-frame-id="${index}" x="48" y="${segment.from}" width="${viewBox[0] - 96}" height="${segment.to - segment.from}" rx="10" class="c-lane" stroke-width="1"/>
         <text x="62" y="${segment.from + 18}" class="t-dim" font-size="9" font-weight="600">${esc(segment.label)}</text>`;
 }
 
@@ -185,8 +282,10 @@ function messageLabel(message, x1, x2) {
       : message.variant === 'return'
         ? 't-muted'
         : 't-backend';
-  return `        <rect x="${center - labelW / 2}" y="${y - 10}" width="${labelW}" height="${layout.labelH}" rx="3" class="c-mask"/>
-        <text x="${center}" y="${y}" class="${accent}" font-size="9" text-anchor="middle">${esc(message.label)}</text>`;
+  return `        <g data-detail="context">
+          <rect x="${center - labelW / 2}" y="${y - 10}" width="${labelW}" height="${layout.labelH}" rx="3" class="c-mask"/>
+          <text x="${center}" y="${y}" class="${accent}" font-size="9" text-anchor="middle">${esc(message.label)}</text>
+        </g>`;
 }
 
 function renderMessage(message, index) {
@@ -199,10 +298,12 @@ function renderMessage(message, index) {
   const strokeWidth = message.variant === 'emphasis' ? 1.8 : 1.4;
   const dash = message.variant === 'return' ? ' stroke-dasharray="3,5"' : '';
   const note = message.note
-    ? `\n        <text x="${Math.min(start, end) + 12}" y="${message.y + 18}" class="t-dim" font-size="7">${esc(message.note)}</text>`
+    ? `\n        <text data-detail="fine" x="${Math.min(start, end) + 12}" y="${message.y + 18}" class="t-dim" font-size="7">${esc(message.note)}</text>`
     : '';
-  return `        <path d="M ${start} ${message.y} L ${end} ${message.y}" class="${cls}"${animateAttr(sequence.meta, 'edge', index)} stroke-width="${strokeWidth}"${dash} marker-end="url(#${marker})"/>
-${messageLabel(message, start, end)}${note}`;
+  return `        <g ${focusEdgeAttrs(message.from, message.to, message.label, index, message.id)}>
+          <path data-composition-edge-from="${esc(message.from)}" data-composition-edge-to="${esc(message.to)}"${message.id ? ` data-composition-edge-id="${esc(message.id)}"` : ''} data-composition-points="${routePointsValue([[start, message.y], [end, message.y]])}" d="M ${start} ${message.y} L ${end} ${message.y}" class="${cls}"${animateAttr(sequence.meta, 'edge', index)} stroke-width="${strokeWidth}"${dash} marker-end="url(#${marker})"/>
+${messageLabel(message, start, end)}${note}
+        </g>`;
 }
 
 function renderLegend() {
@@ -221,6 +322,7 @@ function renderLegend() {
 function renderSvg() {
   const participantList = [...participants.values()];
   return `      <svg viewBox="0 0 ${viewBox[0]} ${viewBox[1]}" ${svgRootAttrs(sequence.meta, 'sequence diagram')}>
+${svgAccessibleText(sequence.meta, 'sequence diagram')}
 ${renderDefinitions()}
 
         <!-- Background Grid -->
@@ -250,6 +352,7 @@ validateSequence();
 writeDiagram({
   outPath,
   template,
+  diagramType: 'sequence',
   meta: sequence.meta,
   footerLabel: 'Sequence diagram',
   svg: renderSvg(),

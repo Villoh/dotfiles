@@ -1,6 +1,6 @@
 // Golden-file harness for the archify renderers. No test framework needed:
-// renderers are deterministic, so fresh renders must match the checked-in
-// example HTML aside from platform checkout line endings. Also covers schema enforcement (negative cases),
+// renderers are deterministic, so fresh renders must match both checked-in
+// development and packaged example HTML aside from platform checkout line endings. Also covers schema enforcement (negative cases),
 // template freshness of the architecture-mode example, and version sync.
 //
 // Run from the skill folder: npm test
@@ -56,8 +56,11 @@ for (const [mode, input, golden] of GOLDEN) {
     render(mode, path.join(skillRoot, 'examples', input), out);
     const fresh = fs.readFileSync(out, 'utf8');
     const checked = fs.readFileSync(path.join(repoRoot, 'examples', golden), 'utf8');
+    const packaged = fs.readFileSync(path.join(skillRoot, 'examples', golden), 'utf8');
     check(`${mode}: ${golden}`, normalizeNewlines(fresh) === normalizeNewlines(checked),
       `fresh render differs from examples/${golden}; if the change is intentional, re-render the examples and commit them`);
+    check(`${mode}: packaged ${golden}`, normalizeNewlines(fresh) === normalizeNewlines(packaged),
+      `fresh render differs from archify/examples/${golden}; re-render the packaged examples and rebuild archify.zip`);
   } catch (err) {
     check(`${mode}: ${golden}`, false, String(err.stderr || err.message).slice(0, 300));
   }
@@ -119,8 +122,11 @@ const webApp = fs.readFileSync(path.join(repoRoot, 'examples/web-app.html'), 'ut
 // <style> and <script> blocks pass through applyTemplate untouched, so the
 // architecture-mode example must contain them verbatim or it has drifted.
 for (const tag of ['style', 'script']) {
-  const t = blocks(template, tag).filter((b) => !b.includes('[PROJECT NAME]'));
-  const w = blocks(webApp, tag).filter((b) => !b.includes('Sample Web App'));
+  // The guided-view JSON script is generated from meta.views; compare only
+  // template-owned executable scripts, not per-diagram data payloads.
+  const isTemplateOwned = (block) => !block.includes('type="application/json"');
+  const t = blocks(template, tag).filter((b) => !b.includes('[PROJECT NAME]') && isTemplateOwned(b));
+  const w = blocks(webApp, tag).filter((b) => !b.includes('Sample Web App') && isTemplateOwned(b));
   check(`web-app.html ${tag} blocks match template`,
     JSON.stringify(t) === JSON.stringify(w),
     'examples/web-app.html was generated from a stale template — re-derive it');

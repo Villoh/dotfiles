@@ -63,6 +63,8 @@ scoop/
 !.claude/settings.json
 !.claude/RTK.md
 !.claude/CLAUDE.md
+!.claude/rules/
+!.claude/rules/**
 .pi/agent/auth.json
 .pi/workflows/runs/**
 .omp/agent/agent.db
