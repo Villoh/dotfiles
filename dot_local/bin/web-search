@@ -1,0 +1,25 @@
+#!/bin/sh
+
+usage() {
+    echo "Usage: web-search <ddg|google|brave|wiki|github|stackoverflow|arch> <query>" >&2
+    exit 2
+}
+
+[ "$#" -ge 2 ] || usage
+engine=$1
+shift
+query=$*
+encoded=$(python3 -c 'import sys, urllib.parse; print(urllib.parse.quote_plus(sys.argv[1]))' "$query") || exit
+
+case "$engine" in
+    ddg)           url="https://lite.duckduckgo.com/lite/?q=$encoded" ;;
+    google)        url="https://www.google.com/search?q=$encoded" ;;
+    brave)         url="https://search.brave.com/search?q=$encoded" ;;
+    wiki)          url="https://es.wikipedia.org/wiki/Special:Search?search=$encoded" ;;
+    github)        url="https://github.com/search?q=$encoded" ;;
+    stackoverflow) url="https://stackoverflow.com/search?q=$encoded" ;;
+    arch)          url="https://wiki.archlinux.org/index.php?search=$encoded" ;;
+    *)             usage ;;
+esac
+
+exec w3m "$url"

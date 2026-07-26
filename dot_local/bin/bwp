@@ -1,5 +1,44 @@
-# ============================================================
-# Bitwarden CLI – zsh Functions
+#!/usr/bin/env bash
+set -o pipefail
+
+# Bitwarden Plus: shell-independent helpers around Bitwarden CLI.
+
+session_file="${XDG_RUNTIME_DIR:-/tmp}/bwp-${UID}.session"
+
+_save_session() {
+  local session="$1"
+  [ -n "$session" ] || return 1
+  umask 077
+  printf '%s\n' "$session" > "$session_file" && chmod 600 "$session_file"
+}
+
+_load_session() {
+  if [ -n "${BW_SESSION:-}" ]; then
+    printf '%s\n' "$BW_SESSION"
+  elif [ -r "$session_file" ]; then
+    cat "$session_file"
+  fi
+}
+
+# Route authenticated commands through session stored outside caller shell.
+bw() {
+  case "${1:-}" in
+    login|unlock)
+      command bw "$@"
+      ;;
+    *)
+      local session
+      session=$(_load_session)
+      if [ -n "$session" ]; then
+        BW_SESSION="$session" command bw "$@"
+      else
+        command bw "$@"
+      fi
+      ;;
+  esac
+}
+
+# Bitwarden CLI commands
 # ============================================================
 
 #region ── Session Management ──────────────────────────────
@@ -13,55 +52,52 @@ _bw_status() {
 # Unlock the vault and set the session key
 # If not logged in, runs bw login first automatically
 bwu() {
-  local status=$(_bw_status)
+  local status session
+  status=$(_bw_status)
   if [ "$status" = "unauthenticated" ]; then
     echo "Not logged in — running bw login first..."
-    export BW_SESSION=$(bw login --raw)
+    session=$(bw login --raw) || return
   else
-    export BW_SESSION=$(bw unlock --raw)
+    session=$(bw unlock --raw) || return
   fi
+  _save_session "$session"
+  echo "✓ Vault unlocked"
 }
 
 # Sync with the server and unlock in a single step
 # If not logged in, runs bw login first automatically
 bwstart() {
-  local status=$(_bw_status)
-  if [ "$status" = "unauthenticated" ]; then
-    echo "Not logged in — running bw login first..."
-    export BW_SESSION=$(bw login --raw)
-  else
-    export BW_SESSION=$(bw unlock --raw)
-  fi
-  bw sync
+  bwu && bw sync
 }
 
 # Log in to Bitwarden with the chosen authentication method
 # Saves the session key automatically after login
 # Usage:
-#   bwlogin            → login with email and password
-#   bwlogin --sso      → login via SSO
-#   bwlogin --apikey   → login via API Key
+#   bwp login            → login with email and password
+#   bwp login --sso      → login via SSO
+#   bwp login --apikey   → login via API Key
 bwlogin() {
-  case "$1" in
-    --sso)    export BW_SESSION=$(bw login --sso --raw) ;;
-    --apikey) export BW_SESSION=$(bw login --apikey --raw) ;;
-    *)        export BW_SESSION=$(bw login --raw) ;;
+  local session
+  case "${1:-}" in
+    --sso)    session=$(bw login --sso --raw) || return ;;
+    --apikey) session=$(bw login --apikey --raw) || return ;;
+    *)        session=$(bw login --raw) || return ;;
   esac
-  [ -n "$BW_SESSION" ] && echo "✓ Sesión iniciada correctamente"
+  _save_session "$session" && echo "✓ Session started"
 }
 
 # Manage the Bitwarden server configuration
 # Usage:
-#   bwconfig                              → show current server
-#   bwconfig "https://my-server.com"      → set server
-#   bwconfig "https://vault.bitwarden.eu" → EU server
-#   bwconfig --reset                      → restore official server
+#   bwp config                              → show current server
+#   bwp config "https://my-server.com"      → set server
+#   bwp config "https://vault.bitwarden.eu" → EU server
+#   bwp config --reset                      → restore official server
 bwconfig() {
   case "$1" in
     --reset)
       bw config server https://vault.bitwarden.com
       echo "✓ Server restored to vault.bitwarden.com"
-      echo "! Remember to run bwlogin again"
+      echo "! Remember to run 'bwp login' again"
       ;;
     "")
       echo "Current server: $(bw config server)"
@@ -69,14 +105,17 @@ bwconfig() {
     *)
       bw config server "$1"
       echo "✓ Server set to: $1"
-      echo "! Remember to run bwlogin again"
+      echo "! Remember to run 'bwp login' again"
       ;;
   esac
 }
 
-# Lock the vault and clear the session variable
+# Lock the vault and remove the runtime session
 bwlock() {
-  bw lock && unset BW_SESSION
+  bw lock
+  local status=$?
+  rm -f "$session_file"
+  return "$status"
 }
 
 # Sync the vault with the server
@@ -90,13 +129,13 @@ bwsync() {
 
 # List vault items with fzf support for bulk actions
 # Usage:
-#   bwls                              → list all items
-#   bwls --list-trash                 → list trashed items
-#   bwls --folder "id"                → list items in a folder
-#   bwls --trash                      → select with fzf and move to trash
-#   bwls --delete                     → select with fzf and delete permanently
-#   bwls --folder "id" --trash        → select items in folder with fzf and move to trash
-#   bwls --folder "id" --delete       → select items in folder with fzf and delete permanently
+#   bwp list                              → list all items
+#   bwp list --list-trash                 → list trashed items
+#   bwp list --folder "id"                → list items in a folder
+#   bwp list --trash                      → select with fzf and move to trash
+#   bwp list --delete                     → select with fzf and delete permanently
+#   bwp list --folder "id" --trash        → select items in folder with fzf and move to trash
+#   bwp list --folder "id" --delete       → select items in folder with fzf and delete permanently
 unalias bwls 2>/dev/null
 bwls() {
   local folderid="" action="" list_trash=0
@@ -147,22 +186,22 @@ bwls() {
 # Search items by name, user, URL or ID with support for actions
 # Filters can be combined with each other
 # Usage:
-#   bwfind --id "item-id"
-#   bwfind --id "item-id" --show
-#   bwfind --id "item-id" --copy
-#   bwfind --name "github"
-#   bwfind --user "you@email.com"
-#   bwfind --url "github.com"
-#   bwfind --name "github" --user "you@email.com"             → combined filters
-#   bwfind --name "github" --show                             → show all fields
-#   bwfind --name "github" --show password                    → show specific field
-#   bwfind --name "github" --show attachment                  → list item attachments
-#   bwfind --name "github" --copy                             → copy password to clipboard
-#   bwfind --name "github" --copy username                    → copy specific field
-#   bwfind --name "github" --copy attachment "name" "path"    → download attachment
-#   bwfind --name "github" --exposed                          → check for security breaches
-#   bwfind --name "github" --trash                            → move to trash with fzf
-#   bwfind --name "github" --delete                           → delete with fzf
+#   bwp find --id "item-id"
+#   bwp find --id "item-id" --show
+#   bwp find --id "item-id" --copy
+#   bwp find --name "github"
+#   bwp find --user "you@email.com"
+#   bwp find --url "github.com"
+#   bwp find --name "github" --user "you@email.com"             → combined filters
+#   bwp find --name "github" --show                             → show all fields
+#   bwp find --name "github" --show password                    → show specific field
+#   bwp find --name "github" --show attachment                  → list item attachments
+#   bwp find --name "github" --copy                             → copy password to clipboard
+#   bwp find --name "github" --copy username                    → copy specific field
+#   bwp find --name "github" --copy attachment "name" "path"    → download attachment
+#   bwp find --name "github" --exposed                          → check for security breaches
+#   bwp find --name "github" --trash                            → move to trash with fzf
+#   bwp find --name "github" --delete                           → delete with fzf
 bwfind() {
   local id="" name="" user="" url="" action="" field="" attachment_name="" attachment_output=""
 
@@ -212,7 +251,7 @@ bwfind() {
     # Build jq filter combining the provided criteria using --arg to avoid injection
     local filter='.[]'
     local jq_args=()
-    [ -n "$name" ] && filter+=' | select(.name | ascii_downcase | contains($name))' && jq_args+=(--arg name "${name:l}")
+    [ -n "$name" ] && filter+=' | select(.name | ascii_downcase | contains($name))' && jq_args+=(--arg name "${name,,}")
     [ -n "$user" ] && filter+=' | select(.login.username == $user)'                 && jq_args+=(--arg user "$user")
     [ -n "$url"  ] && filter+=' | select(.login.uris != null and (.login.uris[] | .uri | contains($url)))' && jq_args+=(--arg url "$url")
 
@@ -301,7 +340,7 @@ bwfind() {
 }
 
 # Show the full details of an item by ID in readable JSON
-# Usage: bwitem "id"
+# Usage: bwp item "id"
 bwitem() {
   if [ -z "$1" ]; then
     echo "✗ You must specify an ID"
@@ -317,15 +356,15 @@ bwitem() {
 # Edit an item, folder, collection or item-collections interactively
 # Shows current values as defaults — leave empty to keep the current value
 # Usage:
-#   bwedit item "id"             → edit a login item fields interactively
-#   bwedit folder "id"           → rename a folder
-#   bwedit org-collection "id"   → rename a collection
-#   bwedit item-collections "id" → edit collections an item belongs to
+#   bwp edit item "id"             → edit a login item fields interactively
+#   bwp edit folder "id"           → rename a folder
+#   bwp edit org-collection "id"   → rename a collection
+#   bwp edit item-collections "id" → edit collections an item belongs to
 bwedit() {
   local type="$1" id="$2"
 
   if [ -z "$type" ] || [ -z "$id" ]; then
-    echo "✗ Usage: bwedit (item|folder|org-collection|item-collections) \"id\""
+    echo "✗ Usage: bwp edit (item|folder|org-collection|item-collections) \"id\""
     return 1
   fi
 
@@ -338,11 +377,11 @@ bwedit() {
       local cur_uri=$(echo $current      | jq -r '.login.uris[0].uri // ""')
       local cur_notes=$(echo $current    | jq -r '.notes // ""')
 
-      read "name?Name [$cur_name]: "
-      read "username?Username [$cur_username]: "
-      read "password?Password (leave empty to keep, \"gen\" to generate): "
-      read "uri?URL [$cur_uri]: "
-      read "notes?Notes (leave empty to keep): "
+      read -r -p "Name [$cur_name]: " name
+      read -r -p "Username [$cur_username]: " username
+      read -r -p "Password (leave empty to keep, \"gen\" to generate): " password
+      read -r -p "URL [$cur_uri]: " uri
+      read -r -p "Notes (leave empty to keep): " notes
 
       if [ -z "$password" ]; then
         password="$cur_password"
@@ -374,7 +413,7 @@ bwedit() {
           local fname=$(echo "$updated" | jq -r ".fields[$i].name")
           local fvalue=$(echo "$updated" | jq -r ".fields[$i].value // \"\"")
           echo "  [$fname] = $fvalue"
-          read "newval?  New value for '$fname' (leave empty to keep): "
+          read -r -p "  New value for '$fname' (leave empty to keep): " newval
           if [ -n "$newval" ]; then
             updated=$(echo "$updated" | jq --argjson idx "$i" --arg val "$newval" '.fields[$idx].value = $val')
           fi
@@ -384,7 +423,7 @@ bwedit() {
 
       # Add new custom fields
       while true; do
-        read "newfield?Add field? (name=value, leave empty to finish): "
+        read -r -p "Add field? (name=value, leave empty to finish): " newfield
         [ -z "$newfield" ] && break
         if [[ "$newfield" == *=* ]]; then
           updated=$(echo "$updated" | jq \
@@ -401,7 +440,7 @@ bwedit() {
 
     folder)
       local cur_name=$(bw get folder "$id" | jq -r '.name')
-      read "fname?Folder name [$cur_name]: "
+      read -r -p "Folder name [$cur_name]: " fname
       fname=${fname:-$cur_name}
 
       bw get folder "$id" | jq --arg name "$fname" '.name = $name' | bw encode | bw edit folder "$id" > /dev/null && echo "✓ Folder renamed successfully"
@@ -410,7 +449,7 @@ bwedit() {
     org-collection)
       echo "Available organizations:"
       bw list organizations | jq -r '.[] | "\(.id) — \(.name)"'
-      read "orgid?Organization ID: "
+      read -r -p "Organization ID: " orgid
       if [ -z "$orgid" ]; then
         echo "✗ Organization ID is required"
         return 1
@@ -418,7 +457,7 @@ bwedit() {
 
       local current=$(bw get org-collection "$id" --organizationid "$orgid")
       local cur_name=$(echo $current | jq -r '.name')
-      read "cname?Collection name [$cur_name]: "
+      read -r -p "Collection name [$cur_name]: " cname
       cname=${cname:-$cur_name}
 
       echo $current | jq --arg name "$cname" '.name = $name' | bw encode | bw edit org-collection "$id" --organizationid "$orgid" > /dev/null && echo "✓ Collection renamed successfully"
@@ -428,7 +467,7 @@ bwedit() {
       echo "Available collections:"
       bw list org-collections | jq -r '.[] | "\(.id) — \(.name)"'
       echo "Enter collection IDs separated by spaces:"
-      read "collectionids?"
+      read -r collectionids
 
       local ids_json=$(echo $collectionids | tr ' ' '\n' | jq -R . | jq -s .)
       echo $ids_json | bw encode | bw edit item-collections "$id" > /dev/null && echo "✓ Item collections updated successfully"
@@ -443,8 +482,8 @@ bwedit() {
 
 # Move an item to a different folder interactively
 # Usage:
-#   bwmv "item-id"              → select destination folder with fzf
-#   bwmv "item-id" "folder-id"  → move directly to specified folder
+#   bwp move "item-id"              → select destination folder with fzf
+#   bwp move "item-id" "folder-id"  → move directly to specified folder
 bwmv() {
   local itemid="$1" folderid="$2"
 
@@ -467,11 +506,11 @@ bwmv() {
 
 # Manage vault attachments
 # Usage:
-#   bwattachment --all / -a                                       → list all attachments across all items
-#   bwattachment --itemid "id"                                    → list attachments of an item
-#   bwattachment --add --file "path" --itemid "id"                → add attachment to an item
-#   bwattachment --name "photo.jpg" --itemid "id"                 → download to current directory
-#   bwattachment --name "photo.jpg" --itemid "id" --output "path" → download to specific path
+#   bwp attachment --all / -a                                       → list all attachments across all items
+#   bwp attachment --itemid "id"                                    → list attachments of an item
+#   bwp attachment --add --file "path" --itemid "id"                → add attachment to an item
+#   bwp attachment --name "photo.jpg" --itemid "id"                 → download to current directory
+#   bwp attachment --name "photo.jpg" --itemid "id" --output "path" → download to specific path
 bwattachment() {
   local itemid="" name="" output="" file="" action=""
 
@@ -520,22 +559,22 @@ bwattachment() {
 #region ── Folders & Collections ──────────────────────────
 
 # Internal helper: creates a folder interactively
-# Do not call directly, use bwfolder --add or bwadd
+# Do not call directly, use bwp folder --add or bwp add
 _bwfolder_create() {
   local fname=""
   while [ -z "$fname" ]; do
-    read "fname?Folder name (required): "
+    read -r -p "Folder name (required): " fname
   done
   bw get template folder | jq --arg name "$fname" '.name = $name' | bw encode | bw create folder > /dev/null && echo "✓ Folder created"
 }
 
 # Manage vault folders
 # Usage:
-#   bwfolder --all / -a       → list all folders
-#   bwfolder "id"             → show folder details
-#   bwfolder --add            → create a folder interactively
-#   bwfolder --delete         → select with fzf and delete
-#   bwfolder "id" --delete    → delete specific folder directly
+#   bwp folder --all / -a       → list all folders
+#   bwp folder "id"             → show folder details
+#   bwp folder --add            → create a folder interactively
+#   bwp folder --delete         → select with fzf and delete
+#   bwp folder "id" --delete    → delete specific folder directly
 bwfolder() {
   local folderid="" action=""
 
@@ -573,11 +612,11 @@ bwfolder() {
 }
 
 # Internal helper: creates a collection interactively
-# Do not call directly, use bwcollection --add
+# Do not call directly, use bwp collection --add
 _bwcollection_create() {
   echo "Available organizations:" >&2
   bw list organizations | jq -r '.[] | "\(.id) — \(.name)"' >&2
-  read "orgid?Organization ID: "
+  read -r -p "Organization ID: " orgid
   if [ -z "$orgid" ]; then
     echo "✗ Organization ID is required"
     return 1
@@ -585,10 +624,10 @@ _bwcollection_create() {
 
   local cname=""
   while [ -z "$cname" ]; do
-    read "cname?Collection name (required): "
+    read -r -p "Collection name (required): " cname
   done
 
-  read "externalid?External ID (leave empty for none): "
+  read -r -p "External ID (leave empty for none): " externalid
 
   bw get template collection | jq \
     --arg org  "$orgid"      \
@@ -600,9 +639,9 @@ _bwcollection_create() {
 
 # Manage organization collections
 # Usage:
-#   bwcollection --all / -a   → list all collections
-#   bwcollection "id"         → show collection details
-#   bwcollection --add        → create a collection interactively
+#   bwp collection --all / -a   → list all collections
+#   bwp collection "id"         → show collection details
+#   bwp collection --add        → create a collection interactively
 bwcollection() {
   case "$1" in
     --all|-a) bw list org-collections | jq -r '.[] | "\(.id) — \(.name)"' ;;
@@ -623,8 +662,8 @@ bwcollection() {
 
 # Show available vault templates
 # Usage:
-#   bwtemplate --all / -a   → list all available templates
-#   bwtemplate "name"       → show a specific template
+#   bwp template --all / -a   → list all available templates
+#   bwp template "name"       → show a specific template
 bwtemplate() {
   local valid_templates=(item item.field item.login item.login.uri item.card item.identity item.securenote folder collection item-collections org-collection)
 
@@ -658,7 +697,7 @@ _bwadd_select_folder() {
   if [ "$count" -gt 0 ]; then
     echo "\nAvailable folders:" >&2
     echo $folders | jq -r 'to_entries[] | "\(.key + 1)) \(.value.name)"' >&2
-    read "foldernum?Folder number (leave empty for none): "
+    read -r -p "Folder number (leave empty for none): " foldernum
     if [ -n "$foldernum" ]; then
       echo $folders | jq -r ".[$foldernum - 1].id"
     fi
@@ -668,14 +707,14 @@ _bwadd_select_folder() {
 # Internal helper: creates a Login item (type=1)
 # Removes the totp field from the template to avoid creating an empty TOTP field
 _bwadd_login() {
-  read "uri?URL: "
-  read "username?Username: "
-  read "generate_password?Generate password? (y/n) [n]: "
+  read -r -p "URL: " uri
+  read -r -p "Username: " username
+  read -r -p "Generate password? (y/n) [n]: " generate_password
   if [ "$generate_password" = "y" ]; then
     password=$(_bwgen_interactive)
     echo "✓ Password generated" >&2
   else
-    read "password?Password (leave empty for blank): "
+    read -r -p "Password (leave empty for blank): " password
   fi
 
   bw get template item.login | jq \
@@ -687,12 +726,12 @@ _bwadd_login() {
 
 # Internal helper: creates a Card item (type=3)
 _bwadd_card() {
-  read "cardholder?Cardholder name: "
-  read "brand?Brand (visa/mastercard/amex/discover/diners/jcb/maestro/unionpay): "
-  read "number?Card number: "
-  read "expmonth?Expiration month (01-12): "
-  read "expyear?Expiration year: "
-  read "code?CVV: "
+  read -r -p "Cardholder name: " cardholder
+  read -r -p "Brand (visa/mastercard/amex/discover/diners/jcb/maestro/unionpay): " brand
+  read -r -p "Card number: " number
+  read -r -p "Expiration month (01-12): " expmonth
+  read -r -p "Expiration year: " expyear
+  read -r -p "CVV: " code
 
   bw get template item.card | jq \
     --arg ch  "$cardholder" \
@@ -706,23 +745,23 @@ _bwadd_card() {
 
 # Internal helper: creates an Identity item (type=4)
 _bwadd_identity() {
-  read "title?Title (Mr/Mrs/Ms/Dr): "
-  read "firstname?First name: "
-  read "middlename?Middle name: "
-  read "lastname?Last name: "
-  read "company?Company: "
-  read "email?Email: "
-  read "phone?Phone: "
-  read "address1?Address: "
-  read "address2?Address (line 2): "
-  read "city?City: "
-  read "state?State/Province: "
-  read "postalcode?Postal code: "
-  read "country?Country: "
-  read "username?Username: "
-  read "ssn?SSN: "
-  read "passport?Passport number: "
-  read "license?Driver's license number: "
+  read -r -p "Title (Mr/Mrs/Ms/Dr): " title
+  read -r -p "First name: " firstname
+  read -r -p "Middle name: " middlename
+  read -r -p "Last name: " lastname
+  read -r -p "Company: " company
+  read -r -p "Email: " email
+  read -r -p "Phone: " phone
+  read -r -p "Address: " address1
+  read -r -p "Address (line 2): " address2
+  read -r -p "City: " city
+  read -r -p "State/Province: " state
+  read -r -p "Postal code: " postalcode
+  read -r -p "Country: " country
+  read -r -p "Username: " username
+  read -r -p "SSN: " ssn
+  read -r -p "Passport number: " passport
+  read -r -p "Driver's license number: " license
 
   bw get template item.identity | jq \
     --arg title  "$title"      \
@@ -752,9 +791,9 @@ _bwadd_identity() {
 # Internal helper: creates an SSH Key item (type=5)
 # No official template available, built manually
 _bwadd_sshkey() {
-  read "privatekey?Private key: "
-  read "publickey?Public key: "
-  read "fingerprint?Fingerprint: "
+  read -r -p "Private key: " privatekey
+  read -r -p "Public key: " publickey
+  read -r -p "Fingerprint: " fingerprint
 
   jq -n \
     --arg priv "$privatekey"  \
@@ -765,7 +804,7 @@ _bwadd_sshkey() {
 
 # Add a new item or folder interactively
 # Supports all item types: login, securenote, card, identity, sshkey, folder
-# Usage: bwadd
+# Usage: bwp add
 bwadd() {
   echo "Available types:"
   echo "  1) Login"
@@ -774,7 +813,7 @@ bwadd() {
   echo "  4) Identity"
   echo "  5) SSH Key"
   echo "  6) Folder"
-  read "type?Type [1]: "
+  read -r -p "Type [1]: " type
   type=${type:-1}
 
   if [ "$type" = "6" ]; then
@@ -784,10 +823,10 @@ bwadd() {
 
   local name=""
   while [ -z "$name" ]; do
-    read "name?Item name (required): "
+    read -r -p "Item name (required): " name
   done
 
-  read "notes?Notes: "
+  read -r -p "Notes: " notes
 
   local subobject subfield
   case "$type" in
@@ -814,7 +853,7 @@ bwadd() {
 
   # Add custom fields
   while true; do
-    read "newfield?Add field? (name=value, leave empty to finish): "
+    read -r -p "Add field? (name=value, leave empty to finish): " newfield
     [ -z "$newfield" ] && break
     if [[ "$newfield" == *=* ]]; then
       item=$(echo "$item" | jq \
@@ -834,48 +873,48 @@ bwadd() {
 #region ── Generate ────────────────────────────────────────
 
 # Internal helper: generates a password/passphrase interactively and returns it via stdout
-# Do not call directly, use bwgen or bwadd
+# Do not call directly, use bwp generate or bwp add
 _bwgen_interactive() {
   local -a args
 
-  read "type?Type (password/passphrase) [password]: "
+  read -r -p "Type (password/passphrase) [password]: " type
   type=${type:-password}
 
   if [ "$type" = "passphrase" ]; then
-    read "words?Number of words [3]: "
+    read -r -p "Number of words [3]: " words
     args+=(-p --words ${words:-3})
 
-    read "separator?Separator [_]: "
+    read -r -p "Separator [_]: " separator
     args+=(--separator ${separator:-_})
 
-    read "capitalize?Capitalize? (y/n) [n]: "
+    read -r -p "Capitalize? (y/n) [n]: " capitalize
     [ "$capitalize" = "y" ] && args+=(-c)
 
-    read "includenumber?Include number? (y/n) [n]: "
+    read -r -p "Include number? (y/n) [n]: " includenumber
     [ "$includenumber" = "y" ] && args+=(--includeNumber)
   else
-    read "length?Length [25]: "
+    read -r -p "Length [25]: " length
     args+=(--length ${length:-25})
 
-    read "uppercase?Uppercase? (y/n) [y]: "
+    read -r -p "Uppercase? (y/n) [y]: " uppercase
     [ "${uppercase:-y}" = "y" ] && args+=(-u)
 
-    read "lowercase?Lowercase? (y/n) [y]: "
+    read -r -p "Lowercase? (y/n) [y]: " lowercase
     [ "${lowercase:-y}" = "y" ] && args+=(-l)
 
-    read "numbers?Numbers? (y/n) [y]: "
+    read -r -p "Numbers? (y/n) [y]: " numbers
     [ "${numbers:-y}" = "y" ] && args+=(-n)
 
-    read "special?Special characters? (y/n) [y]: "
+    read -r -p "Special characters? (y/n) [y]: " special
     [ "${special:-y}" = "y" ] && args+=(-s)
 
-    read "ambiguous?Avoid ambiguous characters? (y/n) [n]: "
+    read -r -p "Avoid ambiguous characters? (y/n) [n]: " ambiguous
     [ "$ambiguous" = "y" ] && args+=(--ambiguous)
 
-    read "minnumber?Minimum numbers [0]: "
+    read -r -p "Minimum numbers [0]: " minnumber
     [ -n "$minnumber" ] && [ "$minnumber" -gt 0 ] && args+=(--minNumber "$minnumber")
 
-    read "minspecial?Minimum special characters [0]: "
+    read -r -p "Minimum special characters [0]: " minspecial
     [ -n "$minspecial" ] && [ "$minspecial" -gt 0 ] && args+=(--minSpecial "$minspecial")
   fi
 
@@ -883,7 +922,7 @@ _bwgen_interactive() {
 }
 
 # Generate a password/passphrase interactively and copy it to the clipboard
-# Usage: bwgen
+# Usage: bwp generate
 bwgen() {
   local generated=$(_bwgen_interactive)
   echo "$generated" | wl-copy
@@ -895,13 +934,13 @@ bwgen() {
 #region ── Delete & Restore ────────────────────────────────
 
 # Move an item to the trash by ID (auto-deleted after 30 days)
-# Usage: bwtrash "id"
+# Usage: bwp trash "id"
 bwtrash() {
   bw delete item "$1" && echo "✓ Item moved to trash"
 }
 
 # Permanently delete an item or folder by ID
-# Usage: bwdelete "id" / bwdelete item "id" / bwdelete folder "id"
+# Usage: bwp delete "id" / bwp delete item "id" / bwp delete folder "id"
 bwdelete() {
   if [ "$1" = "folder" ]; then
     bw delete folder "$2" && echo "✓ Folder deleted"
@@ -919,9 +958,50 @@ bwempty() {
 }
 
 # Restore an item from the trash before it is auto-deleted
-# Usage: bwrestore "id"
+# Usage: bwp restore "id"
 bwrestore() {
   bw restore item "$1" && echo "✓ Item restored"
 }
 
 #endregion
+
+_usage() {
+  cat <<'EOF'
+Usage: bwp <command> [arguments]
+
+Session:
+  unlock, start, login, lock, sync, status
+
+Vault:
+  list, find, item, edit, move, attachment
+  folder, collection, template, add, generate
+  config, trash, delete, empty, restore
+EOF
+}
+
+case "${1:-}" in
+  unlock)     shift; bwu "$@" ;;
+  start)      shift; bwstart "$@" ;;
+  login)      shift; bwlogin "$@" ;;
+  lock)       shift; bwlock "$@" ;;
+  sync)       shift; bwsync "$@" ;;
+  status)     shift; _bw_status "$@" ;;
+  config)     shift; bwconfig "$@" ;;
+  list|ls)    shift; bwls "$@" ;;
+  find)       shift; bwfind "$@" ;;
+  item)       shift; bwitem "$@" ;;
+  edit)       shift; bwedit "$@" ;;
+  move|mv)    shift; bwmv "$@" ;;
+  attachment) shift; bwattachment "$@" ;;
+  folder)     shift; bwfolder "$@" ;;
+  collection) shift; bwcollection "$@" ;;
+  template)   shift; bwtemplate "$@" ;;
+  add)        shift; bwadd "$@" ;;
+  generate|gen) shift; bwgen "$@" ;;
+  trash)      shift; bwtrash "$@" ;;
+  delete)     shift; bwdelete "$@" ;;
+  empty)      shift; bwempty "$@" ;;
+  restore)    shift; bwrestore "$@" ;;
+  help|-h|--help|"") _usage ;;
+  *) echo "Unknown command: $1" >&2; _usage >&2; exit 2 ;;
+esac

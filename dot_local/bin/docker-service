@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "${1:-}" in
+    start|stop)
+        exec sudo systemctl "$1" docker.service
+        ;;
+    status)
+        exec systemctl status docker.service
+        ;;
+    *)
+        echo "Usage: docker-service <start|stop|status>" >&2
+        exit 2
+        ;;
+esac

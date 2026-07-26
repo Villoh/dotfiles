@@ -17,7 +17,7 @@ CachyOS (Arch-based) + Hyprland (Wayland compositor).
 | `kitty/` | Kitty terminal |
 | `ghostty/` | Ghostty terminal |
 | `dot_tmux.conf.tmpl` | Tmux multiplexer (`~/.tmux.conf`) |
-| `zsh/` | Zsh functions, aliases, completions. `functions/bitwarden.zsh` holds sensitive helpers |
+| `zsh/` | Zsh-specific functions, aliases, and completions |
 | `cliphist/` | Cliphist clipboard history |
 | `aerc/` | Aerc terminal email client. `aerc.template.conf` is the base template |
 | `nchat/` | Terminal chat client |
@@ -38,6 +38,9 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `restore-packages` | Reinstall packages from `packages/linux/` lists |
 | `list-packages` | List currently installed packages |
 | `secrets` | Manual secret refresh with `fzf`, backed by `packages/linux/system/secrets.json` |
+| `bwp` | Bitwarden Plus CLI helpers with shell-independent runtime session |
+| `web-search` | Search DDG, Google, Brave, Wikipedia, GitHub, Stack Overflow, or Arch Wiki with `w3m` |
+| `docker-service` | Start, stop, or inspect Docker systemd service |
 | `extract-claude-config` | Export Claude config docs to `other_config/claude/` |
 | `cleanup` | System cleanup (cache, logs, orphan packages) |
 | `update-packages` | Interactive Gum updater for system/AUR, Flatpak, Brew, uv, npm, pnpm, and Bun |
