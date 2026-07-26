@@ -35,6 +35,7 @@ usePointerCursors = true
 show-context-window-usage = true
 notifications-turn-mode = "always"
 conversationDetailMode = "STEPS_PROSE"
+selected-avatar-id = "null-signal"
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#006efe"
@@ -53,7 +54,7 @@ diffRemoved = "#F13342"
 skill = "#9540D5"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-24T17:08:59Z"
+last_updated = "2026-07-26T09:05:27Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -121,6 +122,7 @@ enabled = true
 
 [features]
 js_repl = false
+memories = true
 
 [mcp_servers.node_repl]
 args = []
@@ -133,14 +135,14 @@ NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes
 NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node.exe'
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 CODEX_HOME = 'C:\Users\mikel\.codex'
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "3fdfe9a7ad39456da69c5e8fa7bbf7229ec2fe9de5f4cf2e476166bf30a08a7e,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.721.31836"
+BROWSER_USE_CODEX_APP_VERSION = "26.721.41059"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-ba11b7d4-3f44-4757-8c4e-f7e04b5e83d0'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-6b6d3b51-2ea2-4b7c-ae20-941f672532c8'
 CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\69066b736e1e17a4\codex.exe'
 
 [windows]
@@ -182,7 +184,32 @@ trust_level = "trusted"
 [projects.'c:\users\mikel\documents\codex\2026-07-24\chrome-plugin-chrome-openai-bundled-file']
 trust_level = "trusted"
 
+[projects.'c:\users\mikel\documents\codex\2026-07-26\realtime-voice-chat']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-26\realtime-voice-chat-2']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-26\realtime-voice-chat-3']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-26\realtime-voice-chat-4']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-26\sites-plugin-sites-openai-bundled-create']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\.codex\.chatgpt-projects\g-p-6a0b3fc53cbc8191b679a6e704ef5ead']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-26\realtime-voice-chat-5']
+trust_level = "trusted"
+
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "3fdfe9a7ad39456da69c5e8fa7bbf7229ec2fe9de5f4cf2e476166bf30a08a7e,7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
+
+[memories]
+generate_memories = true
+use_memories = true
