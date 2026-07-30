@@ -43,7 +43,42 @@ export PATH="${ASDF_DATA_DIR}/shims:$PATH"
 # Homebrew completions
 fpath=("/home/linuxbrew/.linuxbrew/share/zsh/site-functions" $fpath)
 
+function clear-pip() {
+    local _output package
+    local -a packages
+
+    if ! command -v python >/dev/null || ! python -m pip --version >/dev/null 2>&1; then
+        print -u2 'python with pip not found in PATH.'
+        return 1
+    fi
+
+    _output=$(python -m pip list --disable-pip-version-check --format=json |
+        python -c 'import json, sys; print("\n".join(p["name"] for p in json.load(sys.stdin) if p["name"].lower() != "pip"))') || return 1
+    while IFS= read -r package; do
+        [[ -n $package ]] && packages+=("$package")
+    done <<< "$_output"
+
+    if (( ${#packages[@]} == 0 )) || [[ -z ${packages[1]} ]]; then
+        print 'Only pip remains.'
+        return 0
+    fi
+
+    if [[ ! -t 0 ]]; then
+        print -u2 'Interactive terminal required. Run this command directly.'
+        return 1
+    fi
+
+    if ! read -q "reply?Uninstall ${#packages[@]} package(s), preserving pip? [y/N] "; then
+        print
+        return 0
+    fi
+    print
+
+    python -m pip uninstall --disable-pip-version-check -y "${packages[@]}"
+}
+
 # Aliases
+alias npm='socket npm'
 alias zed='zeditor'
 alias claudex='CLAUDE_CODE_SUBAGENT_MODEL=gpt-5.6-sol \
   CLAUDE_CODE_ALWAYS_ENABLE_EFFORT=1 \

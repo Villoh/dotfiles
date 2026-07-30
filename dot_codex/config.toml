@@ -54,7 +54,7 @@ diffRemoved = "#F13342"
 skill = "#9540D5"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-26T09:05:27Z"
+last_updated = "2026-07-28T06:24:54Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -65,7 +65,7 @@ source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-24T17:23:57Z"
+last_updated = "2026-07-27T22:23:20Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
 
@@ -142,7 +142,7 @@ NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunct
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
 BROWSER_USE_CODEX_APP_VERSION = "26.721.41059"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-6b6d3b51-2ea2-4b7c-ae20-941f672532c8'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-7339d16c-e556-495e-ac4f-5c57b9ae281b'
 CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\69066b736e1e17a4\codex.exe'
 
 [windows]
@@ -205,6 +205,21 @@ trust_level = "trusted"
 [projects.'c:\users\mikel\documents\codex\2026-07-26\realtime-voice-chat-5']
 trust_level = "trusted"
 
+[projects.'c:\users\mikel\documents\codex\2026-07-27\ancaferro-mynetwork-https-github-com-ancaferro']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-27\ancaferro-mynetwork-https-github-com-ancaferro-2']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-27\ancaferro-mynetwork-https-github-com-ancaferro-3']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-27\quiero-que-hagas-un-cartel-como']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-07-28\niri-codex-text-link-https-github']
+trust_level = "trusted"
+
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
@@ -213,3 +228,29 @@ NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 [memories]
 generate_memories = true
 use_memories = true
+
+[hooks.state]
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:pre_tool_use:0:0']
+trusted_hash = "sha256:ad2fe642abc2dd074e1d8928e97710a378c5f4ea45db58d98fcfb991106fd7c7"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:permission_request:0:0']
+trusted_hash = "sha256:2d1ab8921233b0da93c721125e435e08f9f9a13405ea3b97e51f951b2cca65f1"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:post_tool_use:0:0']
+trusted_hash = "sha256:1fc1b30cae773787193c61e5df55ffb364a33c9b24748769906e68c1fb03275d"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:session_start:1:0']
+trusted_hash = "sha256:e70ada83c2482b9c882da05b5004ddebad7c8048e785fb680d72fc7d3cbd432d"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:user_prompt_submit:0:0']
+trusted_hash = "sha256:b2cfa71a90b9d25c97ce7c7e8933831d972984ca18347acfe46b6d5834f338d8"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:subagent_start:0:0']
+trusted_hash = "sha256:b261922b36429a99151c93d0d8a8ba14ac72ae8453a9d012406ff5da6a500b4a"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:subagent_stop:0:0']
+trusted_hash = "sha256:18b3d1c3f8d80c18ea97c3696498cfccad966cb6e5c03b6d3991e1bc0f7ee177"
+
+[hooks.state.'C:\Users\mikel\.codex\hooks.json:stop:0:0']
+trusted_hash = "sha256:443d12a38d27eb6590b4789fc45f19d0d32a297fb40884c041a3a8d60afe4fb8"
