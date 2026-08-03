@@ -2,6 +2,7 @@
 
 function Invoke-HarnessUpgrade {
     Invoke-SkillsUpgrade
+    Invoke-Context7Upgrade
     Invoke-CavemanUpgrade
     Invoke-HeadroomUpgrade
     Invoke-SerenaUpgrade
@@ -14,6 +15,14 @@ function Invoke-SkillsUpgrade {
     npx --yes skills update -g -y
     if ($LASTEXITCODE -eq 0) { Write-Host "skills.sh skills updated." -ForegroundColor Green }
     else { Write-Warning "skills.sh update failed (exit code $LASTEXITCODE)." }
+}
+
+function Invoke-Context7Upgrade {
+    if (-not (Get-Command ctx7 -ErrorAction SilentlyContinue)) { Write-Warning "ctx7 not found; skipping Context7."; return }
+    Write-Host "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Updating Context7 for coding agents..." -ForegroundColor Cyan
+    ctx7 setup --cli --opencode --claude --codex --yes
+    if ($LASTEXITCODE -eq 0) { Write-Host "Context7 configured for coding agents." -ForegroundColor Green }
+    else { Write-Warning "Context7 setup failed (exit code $LASTEXITCODE)." }
 }
 
 function Invoke-CavemanUpgrade {
@@ -48,6 +57,8 @@ function Invoke-SerenaUpgrade {
 
 Set-Alias -Name update-serena  -Value Invoke-SerenaUpgrade
 Set-Alias -Name upgrade-serena -Value Invoke-SerenaUpgrade
+Set-Alias -Name update-context7 -Value Invoke-Context7Upgrade
+Set-Alias -Name upgrade-context7 -Value Invoke-Context7Upgrade
 Set-Alias -Name update-caveman  -Value Invoke-CavemanUpgrade
 Set-Alias -Name upgrade-caveman -Value Invoke-CavemanUpgrade
 Set-Alias -Name update-headroom  -Value Invoke-HeadroomUpgrade
@@ -56,5 +67,8 @@ Set-Alias -Name update-skills  -Value Invoke-SkillsUpgrade
 Set-Alias -Name upgrade-skills -Value Invoke-SkillsUpgrade
 Set-Alias -Name update-harness  -Value Invoke-HarnessUpgrade
 Set-Alias -Name upgrade-harness -Value Invoke-HarnessUpgrade
+
+
+
 
 

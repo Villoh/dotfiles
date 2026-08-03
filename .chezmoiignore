@@ -65,6 +65,8 @@ scoop/
 !.claude/CLAUDE.md
 !.claude/rules/
 !.claude/rules/**
+!.claude/skills/
+!.claude/skills/**
 .pi/agent/auth.json
 .pi/workflows/runs/**
 .omp/agent/agent.db

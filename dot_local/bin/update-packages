@@ -3,6 +3,61 @@ set -u
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
+run_harness_step() {
+    local label=$1
+    shift
+    printf '→ %s\n' "$label"
+    if "$@"; then
+        printf '  ✓ Done\n'
+    else
+        printf '  ✗ Failed\n' >&2
+        harness_failed=1
+    fi
+}
+
+run_harness() {
+    local harness_failed=0
+
+    if command_exists npx; then
+        run_harness_step 'skills.sh skills' npx --yes skills update -g -y
+        run_harness_step 'Caveman for OpenCode' npx -y github:JuliusBrussee/caveman -- --only opencode --force --non-interactive
+    else
+        printf '→ Skipping skills.sh and Caveman: npx not found\n' >&2
+    fi
+
+    if command_exists ctx7; then
+        run_harness_step 'Context7 CLI skills' ctx7 setup --cli --opencode --claude --codex --yes
+    else
+        printf '→ Skipping Context7: ctx7 not found\n' >&2
+    fi
+
+    if command_exists uv; then
+        run_harness_step 'headroom (ast-grep-cli 0.44.1 excluded)' uv tool install 'headroom-ai[all]' --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1' --python 3.13 --force
+        run_harness_step 'serena' uv tool upgrade serena-agent
+    else
+        printf '→ Skipping headroom and serena: uv not found\n' >&2
+    fi
+
+    return "$harness_failed"
+}
+
+case "${1:-}" in
+    --harness)
+        [[ $# -eq 1 ]] || { echo 'Usage: update-packages --harness' >&2; exit 2; }
+        run_harness
+        exit $?
+        ;;
+    -h|--help)
+        echo 'Usage: update-packages [--harness]'
+        exit 0
+        ;;
+    '') ;;
+    *)
+        echo "Unknown option: $1" >&2
+        exit 2
+        ;;
+esac
+
 if ! command_exists gum; then
     echo "gum not found. Install with: sudo pacman -S gum" >&2
     exit 1
@@ -24,6 +79,7 @@ command_exists pnpm && choices+=("📦 pnpm globals")
 command_exists bun && choices+=("🍞 bun globals")
 command_exists npx && choices+=("🎯 skills.sh")
 command_exists npx && choices+=("🦴 caveman (opencode)")
+command_exists ctx7 && choices+=("📚 Context7 (CLI skills)")
 command_exists uv && choices+=("🗜️  headroom")
 command_exists uv && choices+=("🧭 serena")
 
@@ -83,6 +139,7 @@ while IFS= read -r choice; do
         "🍞 bun globals") run "Bun global packages" bun update -g ;;
         "🎯 skills.sh") run "skills.sh skills" npx --yes skills update -g -y ;;
         "🦴 caveman (opencode)") run "Caveman for OpenCode" npx -y github:JuliusBrussee/caveman -- --only opencode --force --non-interactive ;;
+        "📚 Context7 (CLI skills)") run "Context7 CLI skills" ctx7 setup --cli --opencode --claude --codex --yes ;;
         # NOTE: do NOT use `headroom update` / plain `uv tool upgrade headroom-ai`.
         # The published wheel metadata omits the ast-grep-cli !=0.44.1 exclusion
         # (headroom issue #2462), so a plain re-resolve pulls the compromised

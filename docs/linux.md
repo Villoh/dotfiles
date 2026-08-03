@@ -43,7 +43,7 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `docker-service` | Start, stop, or inspect Docker systemd service |
 | `extract-claude-config` | Export Claude config docs to `other_config/claude/` |
 | `cleanup` | System cleanup (cache, logs, orphan packages) |
-| `update-packages` | Interactive Gum updater for system/AUR, Flatpak, Brew, uv, npm, pnpm, and Bun |
+| `update-packages` | Interactive Gum updater for system/AUR, Flatpak, Brew, uv, npm, pnpm, and Bun. `--harness` updates coding-agent tools noninteractively. |
 | `plymouth-themes` | Install/switch Plymouth boot themes from `other_config/plymouth/themes/` |
 | `sddm-themes` | Install/switch SDDM login themes from `other_config/sddm/themes/` |
 | `cliphist.sh` | Cliphist clipboard history helper |

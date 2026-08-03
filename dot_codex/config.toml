@@ -18,7 +18,7 @@ model_reasoning_summary = "concise"
 # model_provider = "cliproxyapi"
 # openai_base_url = "http://127.0.0.1:8317/v1"
 
-notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\f8d2abcb7481383b\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
+notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\fb8898c05a62885e\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
 [model_providers.cliproxyapi]
 name = "CLIProxyAPI (Tunnel Agent)"
 base_url = "http://127.0.0.1:8317/v1"
@@ -34,7 +34,7 @@ appearanceDarkCodeThemeId = "vercel"
 usePointerCursors = true
 show-context-window-usage = true
 notifications-turn-mode = "always"
-conversationDetailMode = "STEPS_PROSE"
+conversationDetailMode = "STEPS_COMMANDS"
 selected-avatar-id = "null-signal"
 
 [desktop.appearanceDarkChromeTheme]
@@ -54,7 +54,7 @@ diffRemoved = "#F13342"
 skill = "#9540D5"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-07-28T06:24:54Z"
+last_updated = "2026-08-02T17:52:57Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
 
@@ -65,7 +65,7 @@ source_type = "git"
 source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-07-27T22:23:20Z"
+last_updated = "2026-08-02T19:23:35Z"
 source_type = "local"
 source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
 
@@ -123,27 +123,28 @@ enabled = true
 [features]
 js_repl = false
 memories = true
+default_mode_request_user_input = true
 
 [mcp_servers.node_repl]
 args = []
-command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node_repl.exe'
+command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\fb8898c05a62885e\bin\node_repl.exe'
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node_modules'
-NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\f8d2abcb7481383b\bin\node.exe'
+NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\fb8898c05a62885e\bin\node_modules'
+NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\fb8898c05a62885e\bin\node.exe'
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 CODEX_HOME = 'C:\Users\mikel\.codex'
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "c5e8b73f10ecc47ad1be38f14ba6b79cd3af06fcd86637f7b6b857ae209a686e,f204d340535055781952b10ed396de20b842f00a19e430852f7e121ad1ce91f6"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.721.41059"
+BROWSER_USE_CODEX_APP_VERSION = "26.727.51351"
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-7339d16c-e556-495e-ac4f-5c57b9ae281b'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\69066b736e1e17a4\codex.exe'
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-9495ad86-bc5a-4b80-9256-bafb666ad6fd'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\d7e8094cfb76a267\codex.exe'
 
 [windows]
 sandbox = "elevated"
@@ -220,9 +221,12 @@ trust_level = "trusted"
 [projects.'c:\users\mikel\documents\codex\2026-07-28\niri-codex-text-link-https-github']
 trust_level = "trusted"
 
+[projects.'c:\users\mikel\documents\codex\2026-08-02\pod']
+trust_level = "trusted"
+
 [shell_environment_policy.set]
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "7ed52dae165c3bc22b6d24f282e2c1fbc87f6949fbbe037767a7418d8f517f01,e13fd947e846d3d306e9249dd3c73d14931b6494803dbafb16cef85e6add9506"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "c5e8b73f10ecc47ad1be38f14ba6b79cd3af06fcd86637f7b6b857ae209a686e,f204d340535055781952b10ed396de20b842f00a19e430852f7e121ad1ce91f6"
 NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex'
 
 [memories]

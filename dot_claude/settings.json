@@ -161,7 +161,8 @@
     "typescript-lsp@claude-plugins-official": true,
     "ponytail@ponytail": true,
     "obsidian@obsidian-skills": true,
-    "mattpocock-skills@claude-plugins-official": true
+    "mattpocock-skills@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {

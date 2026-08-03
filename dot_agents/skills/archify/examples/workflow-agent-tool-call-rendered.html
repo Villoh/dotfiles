@@ -4543,7 +4543,7 @@
     </div>
 
     <!-- Main Diagram -->
-    <div class="diagram-container" data-detail-level="map">
+    <div class="diagram-container" data-detail-level="read">
       <svg viewBox="0 0 720 900" role="img" aria-labelledby="archify-diagram-title archify-diagram-description" data-animation="trace" data-preset="signal-flow" data-quality-profile="showcase">
         <title id="archify-diagram-title">Agent Tool Call Workflow</title>
         <desc id="archify-diagram-description">Renderer-driven workflow prototype with lanes, anchored nodes, and orthogonal edges</desc>
@@ -4666,7 +4666,7 @@
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(260 215) scale(0.6875)">
             <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
-          <text data-detail-anchor x="300" y="230" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Agent Planner</text>
+          <text data-detail-anchor x="300" y="230" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">Agent Planner</text>
           <text data-detail="context" x="300" y="247" class="t-muted" font-size="8" text-anchor="middle">plan next step</text>
         <text data-detail="fine" x="300" y="265" class="t-backend" font-size="7" text-anchor="middle">context aware</text>
         </g>
@@ -4690,7 +4690,7 @@
             <path d="M8 2.2 13 4v3.5c0 3.1-1.8 5.4-5 6.5-3.2-1.1-5-3.4-5-6.5V4Z"/>
             <path d="m5.8 8 1.5 1.5 3-3"/>
           </g>
-          <text data-detail-anchor x="430" y="354" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Approval Gate</text>
+          <text data-detail-anchor x="430" y="354" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">Approval Gate</text>
           <text data-detail="context" x="430" y="371" class="t-muted" font-size="8" text-anchor="middle">scope + consent</text>
         <text data-detail="fine" x="430" y="389" class="t-security" font-size="7" text-anchor="middle">block risky ops</text>
         </g>
@@ -4732,7 +4732,7 @@
             <circle cx="7" cy="11.5" r="1" class="sigil-fill"/>
           </g>
           <text data-detail-anchor x="500" y="602" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Tool Call</text>
-          <text data-detail="context" x="500" y="619" class="t-muted" font-size="8" text-anchor="middle">shell / browser / MCP</text>
+          <text data-detail="context" x="500" y="619" class="t-muted" font-size="6.6" text-anchor="middle">shell / browser / MCP</text>
         <text data-detail="fine" x="500" y="637" class="t-messagebus" font-size="7" text-anchor="middle">structured result</text>
         </g>
 
@@ -4755,7 +4755,7 @@
             <ellipse cx="8" cy="4" rx="5" ry="2"/>
             <path d="M3 4v8c0 1.1 2.2 2 5 2s5-.9 5-2V4M3 8c0 1.1 2.2 2 5 2s5-.9 5-2"/>
           </g>
-          <text data-detail-anchor x="220" y="734" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Context Store</text>
+          <text data-detail-anchor x="220" y="734" class="t-primary" font-size="10.7" font-weight="600" text-anchor="middle">Context Store</text>
           <text data-detail="context" x="220" y="751" class="t-muted" font-size="8" text-anchor="middle">repo + memory</text>
         </g>
 
@@ -5048,7 +5048,7 @@
 
     <!-- Footer -->
     <p class="footer">
-      Workflow diagram &bull; Built with Archify<span class="no-print"> &bull; <a class="artifact-start-link" href="https://tt-a1i.github.io/archify/start.html?type=workflow" target="_blank" rel="noopener noreferrer">Create yours &nearr;</a> &bull; Hover to trace &bull; <kbd>R</kbd> route &bull; Click to focus &bull; <kbd>+</kbd>/<kbd>&minus;</kbd> zoom &bull; <kbd>M</kbd> radar &bull; <kbd>[</kbd>/<kbd>]</kbd> views &bull; <kbd>P</kbd> play story &bull; <kbd>T</kbd> theme &bull; <kbd>E</kbd> export</span>
+      Workflow diagram &bull; Built with Archify<span class="no-print"> &bull; <a class="artifact-start-link" href="https://tt-a1i.github.io/archify/start.html?type=workflow&amp;source=artifact" target="_blank" rel="noopener noreferrer">Create yours &nearr;</a> &bull; Hover to trace &bull; <kbd>R</kbd> route &bull; Click to focus &bull; <kbd>+</kbd>/<kbd>&minus;</kbd> zoom &bull; <kbd>M</kbd> radar &bull; <kbd>[</kbd>/<kbd>]</kbd> views &bull; <kbd>P</kbd> play story &bull; <kbd>T</kbd> theme &bull; <kbd>E</kbd> export</span>
     </p>
   </div>
 
@@ -10297,7 +10297,7 @@
       function detailLevel() {
         if (state.mode === 'semantic') return 'full';
         if (state.scale >= 1.75) return 'full';
-        if (state.scale >= 1.25) return 'read';
+        if (state.scale >= 1) return 'read';
         return 'map';
       }
       function renderControls() {
