@@ -19,7 +19,6 @@ CachyOS (Arch-based) + Hyprland (Wayland compositor).
 | `dot_tmux.conf.tmpl` | Tmux multiplexer (`~/.tmux.conf`) |
 | `zsh/` | Zsh-specific functions, aliases, and completions |
 | `cliphist/` | Cliphist clipboard history |
-| `aerc/` | Aerc terminal email client. `aerc.template.conf` is the base template |
 | `nchat/` | Terminal chat client |
 | `FreeTube/` | FreeTube YouTube frontend (settings are `.db`, gitignored) |
 | `fastfetch/` | System info display config |
