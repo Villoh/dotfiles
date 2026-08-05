@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers/blob/main/kanagawa.svg"><img src=".github/assets/kanagawa.svg" width="100" alt="Kanagawa logo"/></a>
-  <h1>dotfiles — <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers">Kanagawa Dragon</a> edition</h1>
+  <h1>dotfiles — Kanagawa Dragon</a> edition</h1>
   <p>Personal Kanagawa Dragon dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
   <p>
     <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=C5C9C5&label=Last%20Commit&labelColor=1D1C19&color=8992A7"/></a>&nbsp;&nbsp;
