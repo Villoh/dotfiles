@@ -21,12 +21,12 @@
     @overlay2: #8992a7;
     @overlay1: #8992a7;
     @overlay0: #8992a7;
-    @surface2: #393836;
-    @surface1: #282727;
-    @surface0: #1d1c19;
+    @surface2: #625e5a;
+    @surface1: #393836;
+    @surface0: #282727;
     @base: #0d0c0c;
-    @mantle: #0d0c0c;
-    @crust: #0d0c0c;
+    @mantle: #12120f;
+    @crust: #1d1c19;
     @contrastColor: #c5c9c5;
     @inverse-theme: dragon;
     @lastMoveColor: #c4b28a;
@@ -177,6 +177,8 @@
   }
 
   .hslify(@color) {
-    @raw: e(%("%s, %s%, %s%", hue(@color), saturation(@color), lightness(@color)));
+    @raw: e(
+      %("%s, %s%, %s%", hue(@color), saturation(@color), lightness(@color))
+    );
   }
 }
