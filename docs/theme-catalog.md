@@ -86,6 +86,7 @@ implementation progress.
 - [x] **Flow Launcher** — Kanagawa Dragon XAML theme created and selected.
 - [x] **Ditto** — Kanagawa Dragon XML theme created for Win+V clipboard.
 - [x] **Nilesoft Shell** — context-menu theme migrated to Kanagawa Dragon.
+- [x] **Stylus** — 134 browser userstyles migrated to a shared Kanagawa Dragon LESS/CSS palette.
 - [ ] Confirm whether legacy Hyprlock theme tree is still deployed.
 
 ### Final cleanup
@@ -124,6 +125,12 @@ implementation progress.
 
 No current `waybar`, `kitty`, or `ghostty` theme surface was found in tracked
 configuration. Do not create replacements for them.
+
+### Browser customization
+
+| Application | Files | Current state | Migration work |
+| --- | --- | --- | --- |
+| Stylus | `other_config/stylus/stylus.json`; `kanagawa-lib.less`; `kanagawa-variables.css` | 134 installed userstyles use shared Kanagawa Dragon palette; source remains reference-only | Reload/import updated styles in Stylus |
 
 ### Windows
 

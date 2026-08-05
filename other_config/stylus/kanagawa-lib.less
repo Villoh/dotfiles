@@ -1,0 +1,182 @@
+/* Kanagawa Dragon palette compatible with Catppuccin userstyle mixins. */
+@kanagawa: {
+  @dragon: {
+    @rosewater: #c4746e;
+    @flamingo: #c4746e;
+    @pink: #c4746e;
+    @mauve: #8992a7;
+    @red: #c4746e;
+    @maroon: #c4746e;
+    @peach: #c4746e;
+    @yellow: #c4b28a;
+    @green: #8a9a7b;
+    @teal: #8ba4b0;
+    @sky: #8ba4b0;
+    @sapphire: #8ba4b0;
+    @blue: #8ba4b0;
+    @lavender: #8992a7;
+    @text: #c5c9c5;
+    @subtext1: #8a9a7b;
+    @subtext0: #8a9a7b;
+    @overlay2: #8992a7;
+    @overlay1: #8992a7;
+    @overlay0: #8992a7;
+    @surface2: #393836;
+    @surface1: #282727;
+    @surface0: #1d1c19;
+    @base: #0d0c0c;
+    @mantle: #0d0c0c;
+    @crust: #0d0c0c;
+    @contrastColor: #c5c9c5;
+    @inverse-theme: dragon;
+    @lastMoveColor: #c4b28a;
+    @checkColor: #c4746e;
+    @highlightColor1: #8ba4b0;
+    @highlightColor2: #8992a7;
+    @highlightColor3: #8a9a7b;
+    @highlightColor4: #c4b28a;
+  };
+};
+
+@kanagawa-filters: {
+  @dragon: {
+    @rosewater: none;
+    @flamingo: none;
+    @pink: none;
+    @mauve: none;
+    @red: none;
+    @maroon: none;
+    @peach: none;
+    @yellow: none;
+    @green: none;
+    @teal: none;
+    @sky: none;
+    @sapphire: none;
+    @blue: none;
+    @lavender: none;
+    @text: none;
+    @subtext1: none;
+    @subtext0: none;
+    @overlay2: none;
+    @overlay1: none;
+    @overlay0: none;
+    @surface2: none;
+    @surface1: none;
+    @surface0: none;
+    @base: none;
+    @mantle: none;
+    @crust: none;
+  };
+};
+
+#lib() {
+  .palette() {
+    @rosewater: @kanagawa[@@flavor][@rosewater];
+    @flamingo: @kanagawa[@@flavor][@flamingo];
+    @pink: @kanagawa[@@flavor][@pink];
+    @mauve: @kanagawa[@@flavor][@mauve];
+    @red: @kanagawa[@@flavor][@red];
+    @maroon: @kanagawa[@@flavor][@maroon];
+    @peach: @kanagawa[@@flavor][@peach];
+    @yellow: @kanagawa[@@flavor][@yellow];
+    @green: @kanagawa[@@flavor][@green];
+    @teal: @kanagawa[@@flavor][@teal];
+    @sky: @kanagawa[@@flavor][@sky];
+    @sapphire: @kanagawa[@@flavor][@sapphire];
+    @blue: @kanagawa[@@flavor][@blue];
+    @lavender: @kanagawa[@@flavor][@lavender];
+    @text: @kanagawa[@@flavor][@text];
+    @subtext1: @kanagawa[@@flavor][@subtext1];
+    @subtext0: @kanagawa[@@flavor][@subtext0];
+    @overlay2: @kanagawa[@@flavor][@overlay2];
+    @overlay1: @kanagawa[@@flavor][@overlay1];
+    @overlay0: @kanagawa[@@flavor][@overlay0];
+    @surface2: @kanagawa[@@flavor][@surface2];
+    @surface1: @kanagawa[@@flavor][@surface1];
+    @surface0: @kanagawa[@@flavor][@surface0];
+    @base: @kanagawa[@@flavor][@base];
+    @mantle: @kanagawa[@@flavor][@mantle];
+    @crust: @kanagawa[@@flavor][@crust];
+    @accent: @kanagawa[@@flavor][@@accentColor];
+
+    @rosewater-filter: @kanagawa-filters[@@flavor][@rosewater];
+    @flamingo-filter: @kanagawa-filters[@@flavor][@flamingo];
+    @pink-filter: @kanagawa-filters[@@flavor][@pink];
+    @mauve-filter: @kanagawa-filters[@@flavor][@mauve];
+    @red-filter: @kanagawa-filters[@@flavor][@red];
+    @maroon-filter: @kanagawa-filters[@@flavor][@maroon];
+    @peach-filter: @kanagawa-filters[@@flavor][@peach];
+    @yellow-filter: @kanagawa-filters[@@flavor][@yellow];
+    @green-filter: @kanagawa-filters[@@flavor][@green];
+    @teal-filter: @kanagawa-filters[@@flavor][@teal];
+    @sky-filter: @kanagawa-filters[@@flavor][@sky];
+    @sapphire-filter: @kanagawa-filters[@@flavor][@sapphire];
+    @blue-filter: @kanagawa-filters[@@flavor][@blue];
+    @lavender-filter: @kanagawa-filters[@@flavor][@lavender];
+    @text-filter: @kanagawa-filters[@@flavor][@text];
+    @subtext1-filter: @kanagawa-filters[@@flavor][@subtext1];
+    @subtext0-filter: @kanagawa-filters[@@flavor][@subtext0];
+    @overlay2-filter: @kanagawa-filters[@@flavor][@overlay2];
+    @overlay1-filter: @kanagawa-filters[@@flavor][@overlay1];
+    @overlay0-filter: @kanagawa-filters[@@flavor][@overlay0];
+    @surface2-filter: @kanagawa-filters[@@flavor][@surface2];
+    @surface1-filter: @kanagawa-filters[@@flavor][@surface1];
+    @surface0-filter: @kanagawa-filters[@@flavor][@surface0];
+    @base-filter: @kanagawa-filters[@@flavor][@base];
+    @mantle-filter: @kanagawa-filters[@@flavor][@mantle];
+    @crust-filter: @kanagawa-filters[@@flavor][@crust];
+    @accent-filter: @kanagawa-filters[@@flavor][@@accentColor];
+  }
+
+  .defaults() {
+    color-scheme: dark;
+
+    ::selection {
+      background-color: fade(@accent, 30%);
+    }
+
+    input,
+    textarea {
+      &::placeholder {
+        color: @subtext0 !important;
+      }
+    }
+  }
+
+  .css-variables() {
+    --ctp-rosewater: @rosewater;
+    --ctp-flamingo: @flamingo;
+    --ctp-pink: @pink;
+    --ctp-mauve: @mauve;
+    --ctp-red: @red;
+    --ctp-maroon: @maroon;
+    --ctp-peach: @peach;
+    --ctp-yellow: @yellow;
+    --ctp-green: @green;
+    --ctp-teal: @teal;
+    --ctp-sky: @sky;
+    --ctp-sapphire: @sapphire;
+    --ctp-blue: @blue;
+    --ctp-lavender: @lavender;
+    --ctp-text: @text;
+    --ctp-subtext1: @subtext1;
+    --ctp-subtext0: @subtext0;
+    --ctp-overlay2: @overlay2;
+    --ctp-overlay1: @overlay1;
+    --ctp-overlay0: @overlay0;
+    --ctp-surface2: @surface2;
+    --ctp-surface1: @surface1;
+    --ctp-surface0: @surface0;
+    --ctp-base: @base;
+    --ctp-mantle: @mantle;
+    --ctp-crust: @crust;
+  }
+
+  .rgbify(@color) {
+    @rgb: red(@color), green(@color), blue(@color);
+  }
+
+  .hslify(@color) {
+    @raw: e(%("%s, %s%, %s%", hue(@color), saturation(@color), lightness(@color)));
+  }
+}
