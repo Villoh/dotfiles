@@ -6,7 +6,7 @@ theme
 
 	background
 	{
-		color = #1e1e2e
+		color = #0d0c0c
 		opacity = 100
 		// effect = 2
 	}
@@ -19,16 +19,16 @@ theme
 
 		text
 		{
-			normal = #cdd6f4
-			select = #cdd6f4
-			normal-disabled = #a6adc8
-			select-disabled = #a6adc8
+			normal = #c5c9c5
+			select = #c5c9c5
+			normal-disabled = #8a9a7b
+			select-disabled = #8a9a7b
 		}
 
 		back
 		{
-			select = #45475a
-			select-disabled = #313244
+			select = #1d1c19
+			select-disabled = #0d0c0c
 		}
 	}
 
@@ -44,7 +44,7 @@ theme
 	{
 		enabled = true
 		size = 1
-		color = #cba6f7
+		color = #8992a7
 		opacity = 100
 		radius = 2
 	}
@@ -54,26 +54,26 @@ theme
 		enabled = true
 		size = 5
 		opacity = 5
-		color = #11111b
+		color = #0d0c0c
 	}
 
 	separator
 	{
 		size = 1
-		color = #313244
+		color = #1d1c19
 	}
 
 	symbol
 	{
-		normal = #cba6f7
-		select = #cba6f7
-		normal-disabled = #a6adc8
-		select-disabled = #a6adc8
+		normal = #8992a7
+		select = #8ba4b0
+		normal-disabled = #8a9a7b
+		select-disabled = #8a9a7b
 	}
 
 	image
 	{
 		enabled = true
-		color = [#cdd6f4, #cba6f7, #1e1e2e]
+		color = [#c5c9c5, #8992a7, #0d0c0c]
 	}
 }

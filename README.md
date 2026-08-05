@@ -1,12 +1,12 @@
 <div align="center">
-  <img src=".github/assets/catppuccin-logo.png" width="100"/>
-  <h1>dotfiles — <a href="https://catppuccin.com">catppuccin</a> edition</h1>
-  <p>Personal dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
+  <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers/blob/main/kanagawa.svg"><img src=".github/assets/kanagawa.svg" width="100" alt="Kanagawa logo"/></a>
+  <h1>dotfiles — <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers">Kanagawa Dragon</a> edition</h1>
+  <p>Personal Kanagawa Dragon dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
   <p>
-    <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=EBA0AC&label=Last%20Commit&labelColor=302D41&color=EBA0AC"/></a>&nbsp;&nbsp;
-    <a href="https://github.com/Villoh/dotfiles"><img src="https://img.shields.io/github/repo-size/Villoh/dotfiles?style=for-the-badge&logo=files&logoColor=F9E2AF&label=Size&labelColor=302D41&color=F9E2AF" alt="Repo Size"/></a>&nbsp;&nbsp;
-    <a href="https://github.com/Villoh/dotfiles/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Villoh/dotfiles?style=for-the-badge&logoColor=CBA6F7&labelColor=302D41&color=CBA6F7" alt="License"/></a>&nbsp;&nbsp;
-    <a href="https://github.com/Villoh/dotfiles/stargazers"><img alt="Stargazers" src="https://img.shields.io/github/stars/Villoh/dotfiles?style=for-the-badge&logo=starship&logoColor=B7BDF8&labelColor=302D41&color=B7BDF8"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=C5C9C5&label=Last%20Commit&labelColor=1D1C19&color=8992A7"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles"><img src="https://img.shields.io/github/repo-size/Villoh/dotfiles?style=for-the-badge&logo=files&logoColor=C5C9C5&label=Size&labelColor=1D1C19&color=C4B28A" alt="Repo Size"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Villoh/dotfiles?style=for-the-badge&logoColor=C5C9C5&labelColor=1D1C19&color=C4746E" alt="License"/></a>&nbsp;&nbsp;
+    <a href="https://github.com/Villoh/dotfiles/stargazers"><img alt="Stargazers" src="https://img.shields.io/github/stars/Villoh/dotfiles?style=for-the-badge&logo=starship&logoColor=C5C9C5&labelColor=1D1C19&color=8BA4B0"/></a>&nbsp;&nbsp;
   </p>
   <a href="#preview"><kbd>&nbsp;<br>&nbsp;Preview&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="INSTALL.md"><kbd>&nbsp;<br>&nbsp;Install&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
@@ -33,6 +33,7 @@
 
 ## Overview
 
+- **Theme:** Kanagawa Dragon across active Windows and Linux surfaces; Kanagawa Wave is used where Windows requires a native theme fallback
 - **Manager:** chezmoi with `mode = "symlink"` — every managed file is a symlink to the chezmoi source, so edits take effect immediately without re-adding
 - **Secrets scanning:** gitleaks via pre-commit hook
 - **Submodules:** sddm and plymouth themes (run `git submodule update --init --recursive` after cloning)
@@ -40,7 +41,7 @@
 ### Windows
 
 | Category | Tool | Config |
-|----------|------|--------|
+| ---------- | ------ | -------- |
 | Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) | [⚙️](dot_glzr/) |
 | Status Bar | [YASB](https://github.com/amnweb/yasb) | [⚙️](dot_config/yasb/) |
 | Shell | PowerShell 7 | [⚙️](Documents/PowerShell/) |
@@ -61,7 +62,7 @@
 > My Linux setup is built on top of [HyDE](https://github.com/HyDE-Project/HyDE). If you're interested in a full Hyprland desktop setup, check it out first.
 
 | Category | Tool | Config |
-|----------|------|--------|
+| ---------- | ------ | -------- |
 | Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) | [⚙️](dot_config/hypr/) |
 | Status Bar | [Waybar](https://github.com/Alexays/Waybar) | [⚙️](dot_config/waybar/) |
 | Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) | [⚙️](dot_config/swaync/) |
@@ -83,11 +84,10 @@
 
 See the full installation guide: **[INSTALL.md](INSTALL.md)**
 
-
 ## Wallpapers
 
-- [orangci/walls-catppuccin-mocha](https://github.com/orangci/walls-catppuccin-mocha)
-- [zhichaoh/catppuccin-wallpapers](https://github.com/zhichaoh/catppuccin-wallpapers)
+- [Gurjaka/Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers)
+- Active desktop wallpaper: `Pictures/Wallpapers/main-wallpaper.png`
 
 ## Credits
 
@@ -98,21 +98,16 @@ Windows setup inspired by and borrowed from:
 - [ChrisTitusTech/powershell-profile](https://github.com/ChrisTitusTech/powershell-profile)
 - [SleepyCatHey/Ultimate-Win11-Setup](https://github.com/SleepyCatHey/Ultimate-Win11-Setup)
 
-Themes and cursors:
+Theme and wallpaper reference:
 
-- [Catppuccin Cursors](https://www.deviantart.com/niivu/art/Catppuccin-Cursors-921387705) by niivu
-- [Catppuccin for Windows 11](https://www.deviantart.com/niivu/art/Catppuccin-for-Windows-11-1076249390) by niivu
-
-YASB themes:
-
-- Comfyppuccin Reimagined by [AlmiWasFound](https://github.com/AlmiWasFound)
+- [Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers) by Gurjaka
 
 ## PowerShell functions
 
 Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/PowerShell/Functions/) on every shell session:
 
 | Command | Description |
-|---------|-------------|
+| --------- | ------------- |
 | `restore-windhawk` | Import Windhawk settings from registry — close Windhawk first |
 | `setup-wsl` | Install a WSL distro (fzf picker), configure locale and packages (Arch-specific) |
 | `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |

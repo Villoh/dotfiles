@@ -7,7 +7,7 @@ $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $logFile    = "$env:TEMP\chezmoi-cursors-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
 $tmpScript  = "$env:TEMP\chezmoi-cursors.ps1"
 
-@"
+$cursorScript = @"
 `$chezmoisrc = "$chezmoisrc"
 `$logFile    = "$logFile"
 `$ok = 0; `$skip = 0; `$fail = 0
@@ -33,7 +33,8 @@ Get-ChildItem "`$chezmoisrc\program_files\windows\cursors" -Recurse -Filter "ins
 }
 
 Log "--" "-- elevated summary: `$ok OK  `$skip skipped  `$fail failed --"
-"@ | Set-Content $tmpScript
+"@
+$cursorScript | Set-Content $tmpScript
 
 Write-Host "[windows-cursors] Requesting elevation..." -ForegroundColor Cyan
 Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
@@ -59,26 +60,18 @@ $cursorsPath = "HKCU:\Control Panel\Cursors"
 
 $schemeValue = (Get-ItemProperty -Path $schemesPath -Name $schemeName -ErrorAction SilentlyContinue).$schemeName
 if (-not $schemeValue) {
-    Write-Warning "[windows-cursors] Scheme '$schemeName' not found in registry — was installation successful?"
+    Write-Warning "[windows-cursors] Scheme '$schemeName' not found in registry; was installation successful?"
 } else {
     $cursorNames = @("Arrow","Help","AppStarting","Wait","Crosshair","IBeam","NWPen","No","SizeNS","SizeWE","SizeNWSE","SizeSWNE","SizeAll","UpArrow","Hand","Pin","Person")
     $cursorPaths = $schemeValue -split ","
 
-    Set-ItemProperty -Path $cursorsPath -Name "" -Value $schemeName
+    Set-Item -Path $cursorsPath -Value $schemeName
 
     for ($i = 0; $i -lt $cursorPaths.Count -and $i -lt $cursorNames.Count; $i++) {
         Set-ItemProperty -Path $cursorsPath -Name $cursorNames[$i] -Value $cursorPaths[$i]
     }
 
-    Add-Type -TypeDefinition @"
-using System;
-using System.Runtime.InteropServices;
-public class CursorUtil {
-    [DllImport("user32.dll", SetLastError = true)]
-    public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
-}
-"@
-    [CursorUtil]::SystemParametersInfo(0x0057, 0, [IntPtr]::Zero, 0x03) | Out-Null
+    rundll32.exe user32.dll,UpdatePerUserSystemParameters
     Write-Host "[windows-cursors] Applied scheme '$schemeName'" -ForegroundColor Green
 }
 

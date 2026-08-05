@@ -13,32 +13,23 @@ local act     = wezterm.action
 -- HELPERS
 -- =============================================================================
 
---- Returns the Catppuccin colour scheme name based on the current OS appearance.
---- Automatically switches between Mocha (dark) and Latte (light) when the system
---- theme changes — no manual toggle needed.
----
----@param  appearance string  Value from wezterm.gui.get_appearance()
----@return string             Colour scheme name registered in WezTerm
-local function scheme_for_appearance(appearance)
-  if appearance:find "Dark" then
-    return "Catppuccin Mocha"
-  else
-    return "Catppuccin Latte"
-  end
-end
-
---- Catppuccin Mocha palette — used to style the tab bar without relying
---- on the built-in fancy tab bar, giving us full control over its colours.
-local mocha = {
-  base    = "#1e1e2e",
-  mantle  = "#181825",
-  crust   = "#11111b",
-  text    = "#cdd6f4",
-  subtext = "#a6adc8",
-  surface = "#313244",
-  overlay = "#6c7086",
-  blue    = "#89b4fa",
-  mauve   = "#cba6f7",
+--- Kanagawa Dragon palette.
+local dragon = {
+  background = "#0d0c0c",
+  base       = "#1d1c19",
+  surface    = "#282727",
+  surface_alt = "#393836",
+  border     = "#625e5a",
+  text       = "#c5c9c5",
+  muted      = "#a6a69c",
+  blue       = "#8ba4b0",
+  cyan       = "#8ea4a2",
+  green      = "#8a9a7b",
+  yellow     = "#c4b28a",
+  orange     = "#b6927b",
+  red        = "#c4746e",
+  violet     = "#8992a7",
+  pink       = "#a292a3",
 }
 
 -- =============================================================================
@@ -50,21 +41,38 @@ local mocha = {
 local config = wezterm.config_builder and wezterm.config_builder() or {}
 
 -- =============================================================================
--- THEME — Catppuccin (auto dark / light)
+-- THEME — Kanagawa Dragon
 -- =============================================================================
 
-config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
+config.color_schemes = {
+  ["Kanagawa Dragon"] = {
+    background = dragon.background,
+    foreground = dragon.text,
+    cursor_bg = dragon.text,
+    cursor_fg = dragon.background,
+    selection_bg = dragon.surface_alt,
+    selection_fg = dragon.text,
+    ansi = {
+      dragon.background, dragon.red, dragon.green, dragon.yellow,
+      dragon.blue, dragon.pink, dragon.cyan, dragon.muted,
+    },
+    brights = {
+      dragon.border, dragon.red, dragon.green, dragon.yellow,
+      dragon.blue, dragon.violet, dragon.cyan, dragon.text,
+    },
+  },
+}
 
--- Override tab bar colours to match Catppuccin Mocha regardless of the active
--- scheme (avoids a jarring mismatch when the scheme is Latte).
+config.color_scheme = "Kanagawa Dragon"
+
 config.colors = {
   tab_bar = {
-    background       = mocha.crust,
-    active_tab       = { bg_color = mocha.base,   fg_color = mocha.blue,    intensity = "Bold" },
-    inactive_tab     = { bg_color = mocha.mantle, fg_color = mocha.subtext  },
-    inactive_tab_hover = { bg_color = mocha.surface, fg_color = mocha.text  },
-    new_tab          = { bg_color = mocha.crust,  fg_color = mocha.overlay  },
-    new_tab_hover    = { bg_color = mocha.surface, fg_color = mocha.text    },
+    background         = dragon.background,
+    active_tab         = { bg_color = dragon.base,    fg_color = dragon.blue,   intensity = "Bold" },
+    inactive_tab       = { bg_color = dragon.surface, fg_color = dragon.muted  },
+    inactive_tab_hover = { bg_color = dragon.surface_alt, fg_color = dragon.text },
+    new_tab            = { bg_color = dragon.background, fg_color = dragon.border },
+    new_tab_hover      = { bg_color = dragon.surface_alt, fg_color = dragon.text },
   },
 }
 

@@ -237,7 +237,7 @@
     {
         "defaults": 
         {
-            "colorScheme": "catppuccin-mocha",
+            "colorScheme": "Kanagawa Dragon",
             "font": 
             {
                 "face": "CaskaydiaCove Nerd Font"
@@ -271,7 +271,7 @@
                 "source": "Windows.Terminal.PowershellCore"
             },
             {
-                "colorScheme": "Catppuccin Mocha",
+                "colorScheme": "Kanagawa Dragon",
                 "commandline": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\"",
                 "elevate": true,
                 "guid": "{e855660d-7a78-4616-b7a4-426dc6e48698}",
@@ -309,69 +309,46 @@
     "schemes": 
     [
         {
-            "background": "#1E1E2E",
-            "black": "#45475A",
-            "blue": "#89B4FA",
-            "brightBlack": "#585B70",
-            "brightBlue": "#89B4FA",
-            "brightCyan": "#94E2D5",
-            "brightGreen": "#A6E3A1",
-            "brightPurple": "#F5C2E7",
-            "brightRed": "#F38BA8",
-            "brightWhite": "#A6ADC8",
-            "brightYellow": "#F9E2AF",
-            "cursorColor": "#F5E0DC",
-            "cyan": "#94E2D5",
-            "foreground": "#CDD6F4",
-            "green": "#A6E3A1",
-            "name": "Catppuccin Mocha",
-            "purple": "#F5C2E7",
-            "red": "#F38BA8",
-            "selectionBackground": "#585B70",
-            "white": "#BAC2DE",
-            "yellow": "#F9E2AF"
-        },
-        {
-            "background": "#1E1E2E",
-            "black": "#45475A",
-            "blue": "#89B4FA",
-            "brightBlack": "#585B70",
-            "brightBlue": "#89B4FA",
-            "brightCyan": "#94E2D5",
-            "brightGreen": "#A6E3A1",
-            "brightPurple": "#F5C2E7",
-            "brightRed": "#F38BA8",
-            "brightWhite": "#A6ADC8",
-            "brightYellow": "#F9E2AF",
-            "cursorColor": "#F5E0DC",
-            "cyan": "#94E2D5",
-            "foreground": "#CDD6F4",
-            "green": "#A6E3A1",
-            "name": "catppuccin-mocha",
-            "purple": "#F5C2E7",
-            "red": "#F38BA8",
-            "selectionBackground": "#585B70",
-            "white": "#BAC2DE",
-            "yellow": "#F9E2AF"
+            "background": "#0D0C0C",
+            "black": "#0D0C0C",
+            "blue": "#8BA4B0",
+            "brightBlack": "#625E5A",
+            "brightBlue": "#7FB4CA",
+            "brightCyan": "#8EA4A2",
+            "brightGreen": "#87A987",
+            "brightPurple": "#8992A7",
+            "brightRed": "#C4746E",
+            "brightWhite": "#C5C9C5",
+            "brightYellow": "#C4B28A",
+            "cursorColor": "#C5C9C5",
+            "cyan": "#8EA4A2",
+            "foreground": "#C5C9C5",
+            "green": "#8A9A7B",
+            "name": "Kanagawa Dragon",
+            "purple": "#A292A3",
+            "red": "#C4746E",
+            "selectionBackground": "#393836",
+            "white": "#A6A69C",
+            "yellow": "#C4B28A"
         }
     ],
     "showTabsInTitlebar": true,
-    "theme": "Catppuccin Mocha",
+    "theme": "Kanagawa Dragon",
     "themes": 
     [
         {
-            "name": "Catppuccin Mocha",
+            "name": "Kanagawa Dragon",
             "tab": 
             {
-                "background": "#1E1E2EFF",
+                "background": "#1D1C19FF",
                 "iconStyle": "default",
                 "showCloseButton": "always",
                 "unfocusedBackground": null
             },
             "tabRow": 
             {
-                "background": "#181825FF",
-                "unfocusedBackground": "#11111BFF"
+                "background": "#282727FF",
+                "unfocusedBackground": "#0D0C0CFF"
             },
             "window": 
             {

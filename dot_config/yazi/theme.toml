@@ -1,2 +1,13 @@
 [flavor]
-dark = "catppuccin-mocha"
+dark = "kanagawa-dragon"
+
+# Keep git signs on the canonical Kanagawa Dragon palette.
+[git]
+unknown = { fg = "#a6a69c" }
+modified = { fg = "#b6927b" }
+added = { fg = "#8a9a7b" }
+untracked = { fg = "#8ea4a2" }
+ignored = { fg = "#625e5a" }
+deleted = { fg = "#c4746e", bold = true }
+updated = { fg = "#8ba4b0" }
+clean = { fg = "#8a9a7b" }

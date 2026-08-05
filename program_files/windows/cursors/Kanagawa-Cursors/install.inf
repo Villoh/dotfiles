@@ -1,0 +1,51 @@
+; Windows installer for the Kanagawa cursor scheme.
+; Right-click this file and choose Install to register the cursor scheme.
+
+[Version]
+signature="$CHICAGO$"
+
+[DefaultInstall]
+CopyFiles = Scheme.Cur
+AddReg = Scheme.Reg
+
+[DestinationDirs]
+Scheme.Cur = 10,"%CUR_DIR%"
+
+[Scheme.Reg]
+HKCU,"Control Panel\Cursors\Schemes","%SCHEME_NAME%",,"%10%\%CUR_DIR%\%pointer%,%10%\%CUR_DIR%\%help%,%10%\%CUR_DIR%\%work%,%10%\%CUR_DIR%\%busy%,%10%\%CUR_DIR%\%cross%,%10%\%CUR_DIR%\%text%,%10%\%CUR_DIR%\%hand%,%10%\%CUR_DIR%\%unavailable%,%10%\%CUR_DIR%\%vert%,%10%\%CUR_DIR%\%horz%,%10%\%CUR_DIR%\%dgn1%,%10%\%CUR_DIR%\%dgn2%,%10%\%CUR_DIR%\%move%,%10%\%CUR_DIR%\%alternate%,%10%\%CUR_DIR%\%link%"
+
+[Scheme.Cur]
+"install.inf"
+"arrow.cur"
+"helpsel.cur"
+"busy.ani"
+"wait.ani"
+"cross.cur"
+"ibeam.cur"
+"link.cur"
+"unavail.cur"
+"ns.cur"
+"ew.cur"
+"nwse.cur"
+"nesw.cur"
+"move.cur"
+"pen.cur"
+
+[Strings]
+CUR_DIR = "Cursors\Kanagawa-Cursors"
+SCHEME_NAME = "Kanagawa-Cursors"
+cross = "cross.cur"
+pointer = "arrow.cur"
+move = "move.cur"
+help = "helpsel.cur"
+unavailable = "unavail.cur"
+hand = "link.cur"
+link = "link.cur"
+work = "busy.ani"
+busy = "wait.ani"
+dgn2 = "nesw.cur"
+dgn1 = "nwse.cur"
+horz = "ew.cur"
+vert = "ns.cur"
+text = "ibeam.cur"
+alternate = "pen.cur"

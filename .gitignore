@@ -68,6 +68,7 @@ AppData/Roaming/Rainmeter/Layouts/@Backup/
 # ytm-player — only config.toml and themes/ are config, rest is runtime state
 dot_config/ytm-player/*
 !dot_config/ytm-player/config.toml
+!dot_config/ytm-player/theme.toml
 !dot_config/ytm-player/themes/
 
 # herdr — %APPDATA%\herdr is a junction to this dir; only config.toml is config,

@@ -92,13 +92,13 @@ widgets:
       notification_dot:
         enabled: true
         corner: "bottom_left"
-        color: "#cba6f7"
+        color: "#8992a7"
         margin: [1, 1]
       menu:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#cba6f7"
+        border_color: "#8992a7"
         alignment: "left"
         direction: "down"
         show_categories: true
@@ -130,9 +130,9 @@ widgets:
       bar_height: 12
       gradient: 1
       reverse: 0
-      foreground: "#cba6f7"
-      gradient_color_1: "#cba6f7"
-      gradient_color_2: "#B4BEFE"
+      foreground: "#8992a7"
+      gradient_color_1: "#8992a7"
+      gradient_color_2: "#8992a7"
       bars_number: 8
       bar_spacing: 2
       bar_width: 5
@@ -194,7 +194,7 @@ widgets:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#cba6f7"
+        border_color: "#8992a7"
         alignment: "right"
         direction: "down"
         offset_top: 6
@@ -253,7 +253,7 @@ widgets:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#cba6f7"
+        border_color: "#8992a7"
         alignment: "right"
         direction: "down"
         icon_size: 48
@@ -263,13 +263,13 @@ widgets:
         hourly_icon_size: 24
         icon_smoothing: true
         temp_line_width: 2
-        current_line_color: "#cba6f7"
+        current_line_color: "#8992a7"
         current_line_width: 1
         current_line_style: "dot"
         hourly_gradient:
           enabled: true
-          top_color: "#cba6f7"
-          bottom_color: "#1e1e2e"
+          top_color: "#8992a7"
+          bottom_color: "#0d0c0c"
         hourly_forecast_buttons:
           enabled: true
           default_view: "temperature"
@@ -291,7 +291,7 @@ widgets:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#45475a"
+        border_color: "#393836"
         alignment: "right"
         direction: "down"
         distance: 6
@@ -371,7 +371,7 @@ widgets:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#45475a"
+        border_color: "#393836"
         alignment: "right"
         direction: "down"
       callbacks:
@@ -400,7 +400,7 @@ widgets:
         blur: true
         round_corners: true
         round_corners_type: "normal"
-        border_color: "#45475a"
+        border_color: "#393836"
         alignment: "right"
         direction: "down"
         offset_top: 6

@@ -1,0 +1,45 @@
+color-link default "#c5c9c5,#0d0c0c"
+color-link comment "#625e5a"
+color-link selection "#c5c9c5,#393836"
+color-link hlsearch "#8a9a7b"
+
+color-link identifier "#8ba4b0"
+color-link identifier.class "#8ba4b0"
+color-link identifier.var "#8ba4b0"
+
+color-link constant "#b6927b"
+color-link constant.number "#b6927b"
+color-link constant.string "#8a9a7b"
+
+color-link symbol "#8992a7"
+color-link symbol.brackets "#c4b28a"
+color-link symbol.tag "#8ba4b0"
+
+color-link type "#8ba4b0"
+color-link type.keyword "#c4b28a"
+
+color-link special "#8992a7"
+color-link statement "#8992a7"
+color-link preproc "#b6927b"
+
+color-link underlined "#8ba4b0"
+color-link error "bold #c4746e"
+color-link todo "bold #c4b28a"
+
+color-link diff-added "#8a9a7b"
+color-link diff-modified "#c4b28a"
+color-link diff-deleted "#c4746e"
+
+color-link gutter-error "#c4746e"
+color-link gutter-warning "#c4b28a"
+
+color-link scrollbar "#625e5a"
+color-link statusline "#c5c9c5,#1d1c19"
+color-link tabbar "#c5c9c5,#1d1c19"
+color-link indent-char "#393836"
+color-link line-number "#625e5a"
+color-link current-line-number "#8ba4b0"
+
+color-link cursor-line "#282727,#c5c9c5"
+color-link color-column "#1d1c19"
+color-link type.extended "default"

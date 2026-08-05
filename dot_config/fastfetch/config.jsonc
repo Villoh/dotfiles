@@ -4,15 +4,15 @@
     "type": "file",
     "source": "C:/Users/Mikel/.config/fastfetch/ascii.txt",
     "color": {
-      "1": "#F5E0DC",
-      "2": "#F2CDCD",
-      "3": "#F5C2E7",
-      "4": "#CBA6F7",
-      "5": "#FAB387",
-      "6": "#F9E2AF",
-      "7": "#A6E3A1",
-      "8": "#94E2D5",
-      "9": "#89DCEB"
+      "1": "#8BA4B0",
+      "2": "#7FB4CA",
+      "3": "#8EA4A2",
+      "4": "#8A9A7B",
+      "5": "#B6927B",
+      "6": "#C4B28A",
+      "7": "#C4746E",
+      "8": "#A6A69C",
+      "9": "#C5C9C5"
     },
     "padding": {
       "top": 1,
@@ -27,37 +27,37 @@
     {
       "type": "title",
       "color": {
-        "user": "#CBA6F7",
-        "at": "#CDD6F4",
-        "host": "#89B4FA"
+        "user": "#8BA4B0",
+        "at": "#A6A69C",
+        "host": "#7FB4CA"
       }
     },
     "break",
     {
       "type": "os",
       "key": "",
-      "keyColor": "#89DCEB"
+      "keyColor": "#8EA4A2"
     },
     {
       "type": "cpu",
       "key": "",
-      "keyColor": "#F5C2E7"
+      "keyColor": "#8A9A7B"
     },
     {
       "type": "board",
       "key": "󰚗",
-      "keyColor": "#FAB387"
+      "keyColor": "#B6927B"
     },
     {
       "type": "memory",
       "key": "",
-      "keyColor": "#A6E3A1",
+      "keyColor": "#C4B28A",
       "format": "{used} / {total} ({percentage})"
     },
     {
       "type": "disk",
       "key": "",
-      "keyColor": "#94E2D5"
+      "keyColor": "#8BA4B0"
     },
     "break",
     {

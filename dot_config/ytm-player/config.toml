@@ -13,10 +13,12 @@ seek_step = 5
 gapless = true
 api_timeout = 15
 resume_on_launch = true
-
 history_min_listen_seconds = 0
+sync_history_to_ytmusic = true
+
 [yt_dlp]
 cookies_file = ""
+ca_bundle = ""
 remote_components = ""
 js_runtimes = ""
 
@@ -32,9 +34,8 @@ prefetch_next = true
 location = ""
 
 [ui]
-theme = "catppuccin-mocha"
+theme = "tokyo-night"
 album_art = true
-border_style = "rounded"
 progress_style = "block"
 sidebar_width = 30
 col_index = 4
@@ -62,6 +63,7 @@ transliteration = false
 
 [discord]
 enabled = true
+client_id = ""
 
 [lastfm]
 enabled = false

@@ -3,32 +3,32 @@
 /* -------------------------------------------------------------------------------------------------- */
 
 :root {
-	--rosewater: rgb(245, 224, 220);
-	--flamingo: rgb(242, 205, 205);
-	--pink: rgb(245, 194, 231);
-	--mauve: rgb(203, 166, 247);
-	--red: rgb(243, 139, 168);
-	--maroon: rgb(235, 160, 172);
-	--peach: rgb(250, 179, 135);
-	--yellow: rgb(249, 226, 175);
-	--green: rgb(166, 227, 161);
-	--teal: rgb(148, 226, 213);
-	--sky: rgb(137, 220, 235);
-	--sapphire: rgb(116, 199, 236);
-	--blue: rgb(137, 180, 250);
-	--lavender: rgb(180, 190, 254);
-	--text: rgb(205, 214, 244);
-	--subtext1: rgb(186, 194, 222);
-	--subtext0: rgb(166, 173, 200);
-	--overlay2: rgb(147, 153, 178);
-	--overlay1: rgb(127, 132, 156);
-	--overlay0: rgb(108, 112, 134);
-	--surface2: rgb(88, 91, 112);
-	--surface1: rgb(69, 71, 90);
-	--surface0: rgb(40, 41, 54);
-	--base: rgb(30, 30, 46);
-	--mantle: rgb(24, 24, 37);
-	--crust: rgb(17, 17, 27);
+	--dragon-pale: rgb(196, 178, 138);
+	--dragon-soft-red: rgb(197, 201, 197);
+	--dragon-pink: rgb(137, 146, 167);
+	--dragon-violet: rgb(137, 146, 167);
+	--dragon-red: rgb(196, 116, 110);
+	--dragon-red-muted: rgb(196, 116, 110);
+	--dragon-orange: rgb(182, 146, 123);
+	--dragon-yellow: rgb(196, 178, 138);
+	--dragon-green: rgb(138, 154, 123);
+	--dragon-teal: rgb(139, 164, 176);
+	--dragon-blue-soft: rgb(139, 164, 176);
+	--dragon-blue: rgb(139, 164, 176);
+	--dragon-blue: rgb(139, 164, 176);
+	--dragon-violet-soft: rgb(137, 146, 167);
+	--dragon-text: rgb(197, 201, 197);
+	--dragon-text-muted: rgb(197, 201, 197);
+	--dragon-gray: rgb(98, 94, 90);
+	--dragon-gray: rgb(98, 94, 90);
+	--dragon-gray-mid: rgb(98, 94, 90);
+	--dragon-gray-dark: rgb(98, 94, 90);
+	--dragon-surface-2: rgb(57, 56, 54);
+	--dragon-surface-1: rgb(57, 56, 54);
+	--dragon-surface: rgb(40, 39, 36);
+	--dragon-base: rgb(13, 12, 12);
+	--dragon-mantle: rgb(18, 18, 15);
+	--dragon-crust: rgb(13, 12, 12);
 }
 
 /* -------------------------------------------------------------------------------------------------- */
@@ -37,7 +37,7 @@
 
 * {
 	font-size: 12px;
-	color: #cdd6f4;
+	color: #c5c9c5;
 	font-weight: 900;
 	font-family: "JetBrainsMono NFP";
 	margin: 0;
@@ -46,7 +46,7 @@
 .yasb-bar {
 	padding: 0 8px;
 	margin: 0;
-	background-color: #1e1e2e;
+	background-color: #0d0c0c;
 	border-radius: 15px;
 }
 
@@ -68,7 +68,7 @@
 /* -------------------------------------------------------------------------------------------------- */
 
 .glazewm-workspaces .widget-container {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	margin: 3px 0px 3px 0px;
 	border-radius: 8px;
 }
@@ -83,14 +83,14 @@
 	margin: 0;
 }
 .glazewm-workspaces .offline-status {
-	color: rgb(205, 214, 244);
+	color: rgb(197, 201, 197);
 	font-size: 12px;
 	padding: 0 4px;
 	font-weight: 900;
 }
 .glazewm-workspaces .ws-btn {
 	border: none;
-	background-color: var(--surface2);
+	background-color: var(--dragon-surface-2);
 	margin: 0px 4px;
 	padding: 0;
 	color: rgba(0, 0, 0, 0);
@@ -99,12 +99,12 @@
 	width: 10px;
 }
 .glazewm-workspaces .ws-btn.populated {
-	background-color: var(--surface2);
+	background-color: var(--dragon-surface-2);
 }
 .glazewm-workspaces .ws-btn.active_populated,
 .glazewm-workspaces .ws-btn.active_empty {
 	color: rgba(0, 68, 255, 0);
-	background-color: var(--mauve);
+	background-color: var(--dragon-violet);
 	width: 28px;
 	height: 10px;
 	border-radius: 5px;
@@ -113,35 +113,35 @@
 /***----------------------------------      • GitHub Widget •      ----------------------------------***/
 
 .github-widget .label {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .github-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .github-menu {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	max-height: 500px;
 	min-height: 500px;
 	min-width: 420px;
 }
 .github-menu .header {
-	border-bottom: 1px solid rgba(203, 166, 247, 0.15);
+	border-bottom: 1px solid rgba(137, 146, 167, 0.15);
 	font-size: 15px;
 	font-weight: 400;
 	font-family: "Segoe UI";
 	padding: 8px;
-	color: var(--text);
-	background-color: rgba(17, 17, 27, 0.6);
+	color: var(--dragon-text);
+	background-color: rgba(13, 12, 12, 0.6);
 }
 .github-menu .footer {
-	border-top: 1px solid rgba(203, 166, 247, 0.15);
+	border-top: 1px solid rgba(137, 146, 167, 0.15);
 	padding: 4px 8px 6px 8px;
-	background-color: rgba(17, 17, 27, 0.6);
+	background-color: rgba(13, 12, 12, 0.6);
 }
 .github-menu .footer .label {
 	font-size: 12px;
 	font-family: "Segoe UI";
-	color: var(--overlay2);
+	color: var(--dragon-gray);
 }
 .github-menu .contents {
 	background-color: transparent;
@@ -149,15 +149,15 @@
 .github-menu .contents .item {
 	min-height: 40px;
 	padding: 6px 0;
-	border-bottom: 1px solid rgba(203, 166, 247, 0.08);
+	border-bottom: 1px solid rgba(137, 146, 167, 0.08);
 }
 .github-menu .contents .item:hover {
-	background-color: rgba(203, 166, 247, 0.05);
+	background-color: rgba(137, 146, 167, 0.05);
 	border-bottom: 1px solid transparent;
 }
 .github-menu .contents .item .title,
 .github-menu .contents .item .description {
-	color: var(--overlay2);
+	color: var(--dragon-gray);
 	font-family: "Segoe UI";
 }
 .github-menu .contents .item .title {
@@ -170,65 +170,65 @@
 }
 .github-menu .contents .item.new .title,
 .github-menu .contents .item.new .description {
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .github-menu .contents .item .icon {
 	font-size: 16px;
 	padding-left: 8px;
 	padding-right: 4px;
-	color: var(--overlay2);
+	color: var(--dragon-gray);
 }
 .github-menu .contents .item.new .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 /* Icon colors by type */
 .github-menu .contents .item .icon.issue.open {
-	color: var(--green);
+	color: var(--dragon-green);
 }
 .github-menu .contents .item .icon.issue.closed {
-	color: var(--red);
+	color: var(--dragon-red);
 }
 .github-menu .contents .item .icon.pullrequest.open {
-	color: var(--green);
+	color: var(--dragon-green);
 }
 .github-menu .contents .item .icon.pullrequest.merged {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .github-menu .contents .item .icon.pullrequest.closed {
-	color: var(--red);
+	color: var(--dragon-red);
 }
 .github-menu .contents .item .icon.pullrequest.draft {
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 }
 .github-menu .contents .item .icon.release {
-	color: var(--peach);
+	color: var(--dragon-orange);
 }
 .github-menu .contents .item .icon.discussion {
-	color: var(--blue);
+	color: var(--dragon-blue);
 }
 .github-menu .contents .item .icon.discussion.answered {
-	color: var(--teal);
+	color: var(--dragon-teal);
 }
 .github-menu .contents .item .icon.checksuite {
-	color: var(--yellow);
+	color: var(--dragon-yellow);
 }
 .github-menu .contents .item .comment-count {
 	font-size: 11px;
 	font-family: "Segoe UI";
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 }
 .github-menu .contents .item .comment-icon {
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 	font-size: 12px;
 }
 
 /***---------------------------------      • Audio Widget •      ----------------------------------***/
 
 .audio-menu {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 }
 .audio-container .device {
-	background-color: var(--base);
+	background-color: var(--dragon-base);
 	border: none;
 	padding: 6px 8px 6px 4px;
 	margin: 2px 0;
@@ -236,10 +236,10 @@
 	border-radius: 4px;
 }
 .audio-container .device.selected {
-	background-color: var(--crust);
+	background-color: var(--dragon-crust);
 }
 .audio-container .device:hover {
-	background-color: var(--base);
+	background-color: var(--dragon-base);
 }
 
 .volume-slider::groove {
@@ -259,13 +259,13 @@
 	border-radius: 6px;
 }
 .audio-menu .toggle-apps:hover {
-	background-color: rgba(195, 159, 241, 0.14);
+	background-color: rgba(137, 146, 167, 0.14);
 }
 .audio-menu .apps-container {
 	padding: 8px;
 	margin-top: 20px;
 	border-radius: 8px;
-	background-color: var(--base);
+	background-color: var(--dragon-base);
 }
 .audio-menu .apps-container .app-volume .app-icon-container {
 	min-width: 40px;
@@ -276,13 +276,13 @@
 	margin-right: 8px;
 }
 .audio-menu .apps-container .app-volume .app-icon-container:hover {
-	background-color: rgba(195, 159, 241, 0.14);
+	background-color: rgba(137, 146, 167, 0.14);
 }
 
 /***--------------------------------      • Microphone Menu •      ----------------------------------***/
 
 .microphone-menu {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 }
 .microphone-menu .microphone-container .device {
 	background-color: transparent;
@@ -311,12 +311,12 @@
 /***-------------------------------      • Power Menu Widget •      --------------------------------***/
 
 .power-menu-popup {
-	background: var(--crust);
+	background: var(--dragon-crust);
 	border-radius: 8px;
 }
 
 .power-menu-widget .label {
-	color: #eba0ac;
+	color: #c4746e;
 	font-size: 16px;
 	padding: 0;
 }
@@ -326,29 +326,29 @@
 	width: 250px;
 	height: 175px;
 	border-radius: 8px;
-	background-color: var(--base);
+	background-color: var(--dragon-base);
 	color: white;
 }
 .power-menu-popup .button.hover {
-	background-color: var(--surface1);
+	background-color: var(--dragon-surface-1);
 }
 .power-menu-popup .button .label {
 	margin-bottom: 0px;
 	font-size: 16px;
 	font-weight: 600;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .power-menu-popup .button .icon {
 	font-size: 55px;
 	padding-top: 25px;
 	padding-right: 10px;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .power-menu-popup .button.cancel .icon {
-	color: var(--red);
+	color: var(--dragon-red);
 }
 .power-menu-popup .button.cancel .label {
-	color: var(--red);
+	color: var(--dragon-red);
 }
 
 /* --------------------------------------------------------------------------------------------------- */
@@ -359,30 +359,30 @@
 	font-size: 16px;
 }
 .volume-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin: 1px 2px 0 0;
 }
 .volume-widget .widget-container {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 	border-radius: 8px;
 }
 .microphone-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin: 1px 2px 0 0;
 }
 .microphone-widget .widget-container {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 	border-radius: 8px;
 }
 .microphone-widget .icon.muted {
-	color: var(--red);
+	color: var(--dragon-red);
 }
 .start-menu .icon {
 	font-size: 18px;
-	color: #89b4fa;
+	color: #8ba4b0;
 }
 .clock-widget .icon {
-	color: #cba6f7;
+	color: #8992a7;
 	font-size: 14px;
 	margin-right: 7px;
 }
@@ -390,51 +390,51 @@
 /***---------------------------------      • Weather Icons •      ----------------------------------***/
 
 .weather-widget .icon.sunnyDay {
-	color: var(--yellow);
+	color: var(--dragon-yellow);
 }
 .weather-widget .icon.clearNight {
-	color: var(--lavender);
+	color: var(--dragon-violet-soft);
 }
 .weather-widget .icon.cloudyDay {
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 }
 .weather-widget .icon.cloudyNight {
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 }
 .weather-widget .icon.rainyDay,
 .weather-widget .icon.rainyNight {
-	color: var(--sapphire);
+	color: var(--dragon-blue);
 }
 .weather-widget .icon.snowyDay,
 .weather-widget .icon.snowyNight {
-	color: var(--sky);
+	color: var(--dragon-blue-soft);
 }
 .weather-widget .icon.blizzardDay,
 .weather-widget .icon.blizzardNight {
-	color: var(--blue);
+	color: var(--dragon-blue);
 }
 .weather-widget .icon.foggyDay,
 .weather-widget .icon.foggyNight {
-	color: var(--overlay2);
+	color: var(--dragon-gray);
 }
 .weather-widget .icon.thunderstormDay,
 .weather-widget .icon.thunderstormNight {
-	color: var(--peach);
+	color: var(--dragon-orange);
 }
 .weather-widget .icon.default {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 
 /***----------------------------------      • Weather Card •      -----------------------------------***/
 
 .weather-card {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 }
 .weather-card-today {
-	border: 1px solid var(--surface0);
+	border: 1px solid var(--dragon-surface);
 	border-radius: 8px;
-	background-color: var(--base);
-	color: var(--text);
+	background-color: var(--dragon-base);
+	color: var(--dragon-text);
 }
 .weather-card-today .label {
 	font-size: 12px;
@@ -446,30 +446,30 @@
 .weather-card-today .label.alert {
 	font-size: 12px;
 	font-weight: 700;
-	background-color: rgba(249, 226, 175, 0.05);
-	border: 1px solid rgba(249, 226, 175, 0.15);
-	color: rgba(249, 226, 175, 0.85);
+	background-color: rgba(196, 178, 138, 0.05);
+	border: 1px solid rgba(196, 178, 138, 0.15);
+	color: rgba(196, 178, 138, 0.85);
 	border-radius: 6px;
 	padding: 5px 0;
 }
 .weather-card-day {
-	border: 1px solid var(--surface1);
+	border: 1px solid var(--dragon-surface-1);
 	border-radius: 8px;
-	background-color: var(--base);
+	background-color: var(--dragon-base);
 }
 .weather-card-day.active {
-	background-color: var(--surface0);
-	border: 1px solid var(--surface2);
+	background-color: var(--dragon-surface);
+	border: 1px solid var(--dragon-surface-2);
 }
 .weather-card-day:hover {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 }
 .weather-card-day .label {
 	font-size: 12px;
 }
 .weather-card .hourly-container {
-	border: 1px solid var(--surface0);
-	background-color: var(--base);
+	border: 1px solid var(--dragon-surface);
+	background-color: var(--dragon-base);
 	border-radius: 8px;
 	min-height: 150px;
 }
@@ -478,20 +478,20 @@
 	font-weight: bold;
 }
 .weather-card .hourly-data.temperature {
-	background-color: #cba6f7;
+	background-color: #8992a7;
 }
 .weather-card .hourly-data.rain {
-	background-color: #74c7ec;
+	background-color: #8ba4b0;
 }
 .weather-card .hourly-data.snow {
-	background-color: #89dceb;
+	background-color: #8ba4b0;
 }
 .weather-card .hourly-data .hourly-rain-animation {
-	color: rgba(116, 199, 236, 40);
+	color: rgba(139, 164, 176, 40);
 	background-color: rgba(0, 0, 0, 0.1);
 }
 .weather-card .hourly-data .hourly-snow-animation {
-	color: rgba(137, 220, 235, 150);
+	color: rgba(139, 164, 176, 150);
 	background-color: rgba(0, 0, 0, 0.1);
 }
 .weather-card .hourly-data-buttons {
@@ -504,13 +504,13 @@
 	max-width: 24px;
 	max-height: 24px;
 	font-size: 14px;
-	color: rgba(205, 214, 244, 0.3);
+	color: rgba(197, 201, 197, 0.3);
 	border: 1px solid transparent;
 }
 .weather-card .hourly-data-button.active {
-	color: var(--mauve);
-	background-color: rgba(203, 166, 247, 0.15);
-	border: 1px solid rgba(203, 166, 247, 0.3);
+	color: var(--dragon-violet);
+	background-color: rgba(137, 146, 167, 0.15);
+	border: 1px solid rgba(137, 146, 167, 0.3);
 }
 
 /***---------------------------------      • Open Meteo Icons •      ----------------------------------***/
@@ -520,67 +520,67 @@
 }
 .open-meteo-widget .icon {
 	font-size: 18px;
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .open-meteo-widget .label {
-	color: var(--text);
+	color: var(--dragon-text);
 	padding-left: 4px;
 }
 
 /***----------------------------------      • Open Meteo Card •      -----------------------------------***/
 
 .open-meteo-card {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	min-width: 500px;
 }
 .open-meteo-card-today .label {
 	font-size: 13px;
 	font-weight: 400;
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 }
 .open-meteo-card-today .label.location {
 	font-size: 32px;
 	font-weight: 700;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .open-meteo-card-today .label.sunrisesunset {
 	font-size: 18px;
 	font-weight: 600;
-	color: var(--yellow);
+	color: var(--dragon-yellow);
 }
 .open-meteo-card-today .label.sunrisesunset-icon {
 	font-size: 18px;
-	color: var(--yellow);
+	color: var(--dragon-yellow);
 	font-family: "JetBrainsMono NFP";
 }
 .open-meteo-card-day {
-	border: 1px solid rgba(203, 166, 247, 0.15);
+	border: 1px solid rgba(137, 146, 167, 0.15);
 	border-radius: 8px;
 	background-color: transparent;
 	padding: 4px;
 	min-width: 70px;
 }
 .open-meteo-card-day .day-name {
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 	font-size: 12px;
 	font-weight: 600;
 }
 .open-meteo-card-day .day-temp-max {
 	font-weight: 700;
 	font-size: 16px;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .open-meteo-card-day .day-temp-min {
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 	font-weight: 400;
 	font-size: 13px;
 }
 .open-meteo-card-day.active {
-	background-color: rgba(203, 166, 247, 0.08);
-	border: 1px solid rgba(203, 166, 247, 0.25);
+	background-color: rgba(137, 146, 167, 0.08);
+	border: 1px solid rgba(137, 146, 167, 0.25);
 }
 .open-meteo-card-day:hover {
-	background-color: rgba(203, 166, 247, 0.05);
+	background-color: rgba(137, 146, 167, 0.05);
 }
 .open-meteo-card .hourly-container {
 	border: none;
@@ -592,20 +592,20 @@
 	font-weight: 700;
 }
 .open-meteo-card .hourly-data.temperature {
-	background-color: var(--mauve);
+	background-color: var(--dragon-violet);
 }
 .open-meteo-card .hourly-data.rain {
-	background-color: var(--sapphire);
+	background-color: var(--dragon-blue);
 }
 .open-meteo-card .hourly-data.snow {
-	background-color: var(--sky);
+	background-color: var(--dragon-blue-soft);
 }
 .open-meteo-card .hourly-data .hourly-rain-animation {
-	color: rgba(116, 199, 236, 40);
+	color: rgba(139, 164, 176, 40);
 	background-color: rgba(0, 0, 0, 0);
 }
 .open-meteo-card .hourly-data .hourly-snow-animation {
-	color: rgba(137, 220, 235, 150);
+	color: rgba(139, 164, 176, 150);
 	background-color: rgba(0, 0, 0, 0);
 }
 .open-meteo-card .hourly-data-buttons {
@@ -619,38 +619,38 @@
 	max-width: 24px;
 	max-height: 24px;
 	font-size: 14px;
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 	border: 1px solid transparent;
 }
 .open-meteo-card .hourly-data-button.active {
-	color: var(--mauve);
-	background-color: rgba(203, 166, 247, 0.15);
-	border: 1px solid rgba(203, 166, 247, 0.3);
+	color: var(--dragon-violet);
+	background-color: rgba(137, 146, 167, 0.15);
+	border: 1px solid rgba(137, 146, 167, 0.3);
 }
 .open-meteo-card .search-input {
 	padding: 8px 12px;
-	border: 1px solid var(--surface2);
+	border: 1px solid var(--dragon-surface-2);
 	border-radius: 6px;
-	background-color: rgba(17, 17, 27, 0.2);
-	color: var(--text);
+	background-color: rgba(13, 12, 12, 0.2);
+	color: var(--dragon-text);
 	font-size: 14px;
 }
 .open-meteo-card .search-input:focus {
-	border: 1px solid var(--blue);
-	background-color: rgba(17, 17, 27, 0.4);
+	border: 1px solid var(--dragon-blue);
+	background-color: rgba(13, 12, 12, 0.4);
 }
 .open-meteo-card .search-results {
 	border: 1px solid transparent;
 	border-radius: 6px;
 	background-color: transparent;
-	color: var(--subtext1);
+	color: var(--dragon-text-muted);
 	font-size: 13px;
 }
 .open-meteo-card .search-results::item {
 	padding: 6px;
 }
 .open-meteo-card .search-results::item:hover {
-	background-color: rgba(203, 166, 247, 0.08);
+	background-color: rgba(137, 146, 167, 0.08);
 }
 
 /* Media Widget */
@@ -660,7 +660,7 @@
 	margin-left: 0;
 }
 .media-widget .label {
-	color: var(--lavender);
+	color: var(--dragon-violet-soft);
 	padding: 0 10px;
 }
 
@@ -671,12 +671,12 @@
 }
 
 .calendar {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 }
 .calendar .calendar-table,
 .calendar .calendar-table::item {
-	background-color: rgba(17, 17, 27, 0);
-	color: var(--overlay1);
+	background-color: rgba(13, 12, 12, 0);
+	color: var(--dragon-gray-mid);
 	margin: 0;
 	padding: 0;
 	border: none;
@@ -684,8 +684,8 @@
 }
 
 .calendar .calendar-table::item:selected {
-	color: #4c4f69;
-	background: var(--mauve);
+	color: #0d0c0c;
+	background: var(--dragon-violet);
 	border-radius: 8px;
 }
 .calendar .day-label {
@@ -695,7 +695,7 @@
 .calendar .month-label,
 .calendar .date-label {
 	font-size: 16px;
-	color: var(--text);
+	color: var(--dragon-text);
 	font-weight: 700;
 	min-width: 180px;
 	max-width: 180px;
@@ -707,12 +707,12 @@
 .calendar .date-label {
 	font-size: 88px;
 	font-weight: 900;
-	color: var(--text);
+	color: var(--dragon-text);
 	margin-top: -20px;
 }
 
 .home-menu {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	border-radius: 8px;
 	padding: 0;
 	margin-left: 0px;
@@ -723,19 +723,19 @@
 	font-weight: 600;
 }
 .home-menu .menu-item:hover {
-	background-color: #cba6f4;
-	color: #181825;
+	background-color: #8992a7;
+	color: #12120f;
 	margin: 4px 6px;
 	border-radius: 4px;
 }
 .home-menu .separator {
 	max-height: 1px;
-	background-color: #45475a;
+	background-color: #393836;
 	margin: 0 8px;
 }
 
 .wallpapers-gallery-window {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	border: 2px;
 	margin: 0;
 }
@@ -759,8 +759,8 @@
 }
 
 .wallpapers-gallery-buttons {
-	background-color: var(--base);
-	color: var(--text);
+	background-color: var(--dragon-base);
+	color: var(--dragon-text);
 	border: none;
 	font-size: 16px;
 	padding: 8px 0px;
@@ -774,7 +774,7 @@
 }
 
 .wallpapers-widget .icon {
-	color: #cba6f7;
+	color: #8992a7;
 }
 
 /***----------------------------------      • Disk •      -----------------------------------***/
@@ -783,7 +783,7 @@
 	padding: 0 6px 0 6px;
 }
 .disk-group {
-	background-color: rgba(17, 17, 27, 0.4);
+	background-color: rgba(13, 12, 12, 0.4);
 }
 .disk-group-row {
 	min-width: 220px;
@@ -801,11 +801,11 @@
 .disk-group-label-bar {
 	max-height: 8px;
 	border: 0px solid rgba(128, 128, 128, 0);
-	background-color: rgba(137, 180, 250, 0.1);
+	background-color: rgba(139, 164, 176, 0.1);
 	border-radius: 4px;
 }
 .disk-group-label-bar::chunk {
-	background-color: rgb(203, 166, 247);
+	background-color: rgb(137, 146, 167);
 	border-radius: 4px;
 }
 .disk-group-label {
@@ -813,10 +813,10 @@
 }
 .disk-group-label-size {
 	font-size: 10px;
-	color: rgb(203, 166, 247);
+	color: rgb(137, 146, 167);
 }
 .disk-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 
 /***-----------------------------------      • Systray •      ---------------------------------------***/
@@ -853,7 +853,7 @@
 	width: 16px;
 	border: none;
 	outline: none;
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .systray .unpinned-visibility-btn:checked {
 	background: transparent;
@@ -870,7 +870,7 @@
 	background-color: rgba(255, 255, 255, 0.1);
 }
 .systray-popup {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	padding: 4px;
 }
 .systray-popup .button {
@@ -933,32 +933,32 @@
 }
 .libre-monitor-widget .icon,
 .cpu-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin-right: 4px;
 }
 .libre-monitor-widget .icon {
 	margin-left: 8px;
 }
 .gpu-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin-right: 4px;
 	margin-left: 8px;
 }
 .memory-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin-right: 4px;
 	margin-left: 8px;
 }
 
 /* Memory popup */
 .memory-popup {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	min-width: 380px;
-	border: 1.5px solid var(--surface2);
+	border: 1.5px solid var(--dragon-surface-2);
 	border-radius: 6px;
 }
 .memory-popup .header {
-	background: var(--mantle);
+	background: var(--dragon-mantle);
 	padding: 10px 14px;
 	border-bottom: 1px solid var(--og);
 	border-radius: 6px 6px 0 0;
@@ -975,11 +975,11 @@
 	font-family: "Segoe Fluent Icons";
 	border: none;
 	padding: 4px 6px;
-	color: var(--subtext1);
+	color: var(--dragon-text-muted);
 }
 .memory-popup .header .pin-btn:hover {
-	color: var(--text);
-	background: rgba(137, 180, 250, 0.08);
+	color: var(--dragon-text);
+	background: rgba(139, 164, 176, 0.08);
 	border-radius: 4px;
 }
 .memory-popup .header .pin-btn.pinned {
@@ -987,7 +987,7 @@
 }
 .memory-popup .graph-container,
 .memory-popup .stats {
-	background: var(--base);
+	background: var(--dragon-base);
 	padding: 14px;
 }
 .memory-popup .graph-container {
@@ -995,7 +995,7 @@
 	padding: 7px 14px;
 }
 .memory-popup .memory-graph {
-	color: var(--blue);
+	color: var(--dragon-blue);
 	background: transparent;
 	border-radius: 6px;
 }
@@ -1004,25 +1004,25 @@
 }
 .memory-popup .graph-title {
 	font-size: 11px;
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 	font-family: "JetBrainsMono NFP", "Segoe UI";
 	padding: 6px 14px 4px;
 	font-weight: 700;
 }
 .memory-popup .stats {
-	border-top: 1px solid var(--surface1);
+	border-top: 1px solid var(--dragon-surface-1);
 	border-radius: 0 0 6px 6px;
 }
 .memory-popup .stats .stat-item {
-	background-color: var(--surface0);
-	border: 1px solid var(--surface1);
+	background-color: var(--dragon-surface);
+	border: 1px solid var(--dragon-surface-1);
 	border-radius: 6px;
 	padding: 8px 10px;
 	margin: 6px 4px;
 }
 .memory-popup .stats .stat-label {
 	font-size: 11px;
-	color: var(--subtext1);
+	color: var(--dragon-text-muted);
 	font-family: "JetBrainsMono NFP", "Segoe UI";
 	font-weight: 400;
 	padding: 4px 0 2px;
@@ -1030,27 +1030,27 @@
 .memory-popup .stats .stat-value {
 	font-size: 13px;
 	font-weight: 700;
-	color: var(--text);
+	color: var(--dragon-text);
 	font-family: "JetBrainsMono NFP", "Segoe UI";
 	padding: 2px 0;
 }
 
 /* Libre hardware monitor */
 .libre-monitor-widget .widget-container .label {
-	color: var(--text);
+	color: var(--dragon-text);
 	font-size: 12px;
 	font-family: "JetBrainsMono NFP";
 	font-weight: 900;
 	background: transparent;
 }
 .libre-monitor-widget .widget-container .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	font-size: 16px;
 	background: transparent;
 }
 .libre-menu {
-	background: var(--mantle);
-	border: 1.5px solid var(--surface2);
+	background: var(--dragon-mantle);
+	border: 1.5px solid var(--dragon-surface-2);
 	border-radius: 6px;
 	padding: 10px 12px 6px;
 	min-width: 260px;
@@ -1066,17 +1066,17 @@
 	letter-spacing: 0.5px;
 }
 .libre-menu .sensor-item {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 	padding: 3px 8px;
 	border-radius: 5px;
-	border: 1px solid var(--surface1);
+	border: 1px solid var(--dragon-surface-1);
 	margin-bottom: 2px;
 }
 .libre-menu .sensor-name {
 	font-size: 12px;
 	font-weight: 700;
 	font-family: "JetBrainsMono NFP", "Segoe UI", sans-serif;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .libre-menu .sensor-value {
 	font-size: 13px;
@@ -1090,36 +1090,36 @@
 	padding: 0 10px;
 }
 .wifi-widget .label {
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .wifi-widget .icon {
-	color: var(--mauve) !important;
+	color: var(--dragon-violet) !important;
 	margin: 1px 2px 0 0;
 }
 
 .wifi-menu {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	min-width: 375px;
 	max-height: 375px;
 }
 
 .wifi-menu .progress-bar {
 	max-height: 2px;
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 
 .wifi-menu .header,
 .wifi-menu .footer {
 	font-family: "Segoe UI";
-	background-color: rgba(17, 17, 27, 0.6);
-	color: var(--text);
+	background-color: rgba(13, 12, 12, 0.6);
+	color: var(--dragon-text);
 }
 
 .wifi-menu .header {
 	font-size: 14px;
 	font-weight: 600;
 	padding: 12px;
-	border-bottom: 1px solid rgba(203, 166, 247, 0.15);
+	border-bottom: 1px solid rgba(137, 146, 167, 0.15);
 }
 
 .wifi-menu .error-message {
@@ -1127,9 +1127,9 @@
 	font-size: 14px;
 	font-weight: 600;
 	padding: 12px;
-	color: var(--text);
-	background-color: rgba(243, 139, 168, 0.25);
-	border-bottom: 1px solid rgba(243, 139, 168, 0.35);
+	color: var(--dragon-text);
+	background-color: rgba(196, 116, 110, 0.25);
+	border-bottom: 1px solid rgba(196, 116, 110, 0.35);
 }
 
 .wifi-menu .wifi-list {
@@ -1145,11 +1145,11 @@
 }
 
 .wifi-menu .wifi-item:hover {
-	background-color: rgba(203, 166, 247, 0.08);
+	background-color: rgba(137, 146, 167, 0.08);
 }
 
 .wifi-menu .wifi-item[active="true"] {
-	background-color: rgba(203, 166, 247, 0.14);
+	background-color: rgba(137, 146, 167, 0.14);
 	min-height: 80px;
 }
 
@@ -1157,7 +1157,7 @@
 	font-family: "Segoe Fluent Icons";
 	font-size: 26px;
 	margin-right: 10px;
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 
 .wifi-menu .wifi-item .name,
@@ -1167,12 +1167,12 @@
 .wifi-menu .footer .settings-button {
 	font-family: "Segoe UI";
 	font-size: 14px;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 
 .wifi-menu .wifi-item .status,
 .wifi-menu .wifi-item .strength {
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 }
 
 .wifi-menu .wifi-item .password {
@@ -1184,28 +1184,28 @@
 }
 
 .wifi-menu .wifi-item .connect {
-	background-color: rgba(203, 166, 247, 0.15);
-	color: var(--text);
+	background-color: rgba(137, 146, 167, 0.15);
+	color: var(--dragon-text);
 	padding: 4px 30px;
 	border-radius: 4px;
-	border: 1px solid rgba(203, 166, 247, 0.3);
+	border: 1px solid rgba(137, 146, 167, 0.3);
 	font-size: 14px;
 }
 
 .wifi-menu .wifi-item .connect:hover {
-	background-color: rgba(203, 166, 247, 0.22);
+	background-color: rgba(137, 146, 167, 0.22);
 }
 
 .wifi-menu .wifi-item .connect:pressed {
-	background-color: rgba(203, 166, 247, 0.3);
+	background-color: rgba(137, 146, 167, 0.3);
 }
 
 .wifi-menu .footer {
 	font-size: 12px;
 	font-weight: 600;
 	padding: 12px;
-	color: var(--subtext0);
-	border-top: 1px solid rgba(203, 166, 247, 0.15);
+	color: var(--dragon-gray);
+	border-top: 1px solid rgba(137, 146, 167, 0.15);
 }
 
 .wifi-menu .footer .settings-button,
@@ -1218,12 +1218,12 @@
 
 .wifi-menu .footer .refresh-icon {
 	font-family: "Segoe Fluent Icons";
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 
 .wifi-menu .footer .settings-button:hover,
 .wifi-menu .footer .refresh-icon:hover {
-	background-color: rgba(203, 166, 247, 0.1);
+	background-color: rgba(137, 146, 167, 0.1);
 	border-radius: 4px;
 }
 
@@ -1231,16 +1231,16 @@
 
 .notification-widget .icon {
 	font-size: 12px;
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .notification-widget .label {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .notification-widget .icon.new-notification {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 .notification-widget .label.new-notification {
-	color: var(--text);
+	color: var(--dragon-text);
 }
 
 .update-check-widget {
@@ -1251,20 +1251,20 @@
 }
 .update-check-widget .widget-container.winget,
 .update-check-widget .widget-container.windows {
-	background: var(--mauve);
+	background: var(--dragon-violet);
 	margin: 0px 0px 0px 0px;
 	border-radius: 10px;
-	border: 0px solid var(--sapphire);
+	border: 0px solid var(--dragon-blue);
 }
 .update-check-widget .widget-container.winget .icon,
 .update-check-widget .widget-container.windows .icon {
-	color: var(--base);
+	color: var(--dragon-base);
 	margin: 0 2px 0 6px;
 }
 .update-check-widget .widget-container.winget .label,
 .update-check-widget .widget-container.windows .label {
 	margin: 0 6px 0 1px;
-	color: var(--base);
+	color: var(--dragon-base);
 	font-weight: 900;
 	font-size: 14px;
 }
@@ -1272,21 +1272,21 @@
 .widget {
 	border-radius: 8px;
 	margin: 8px 4px;
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 }
 
 .todo-widget {
 	padding: 0 10px;
 }
 .todo-widget .label {
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .todo-widget .icon {
-	color: var(--mauve);
+	color: var(--dragon-violet);
 }
 /* Todo Menu */
 .todo-menu {
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 	min-width: 460px;
 	max-width: 460px;
 	min-height: 500px;
@@ -1299,7 +1299,7 @@
 .todo-menu .header .tab-buttons {
 	border: none;
 	border-radius: 13px;
-	color: var(--text);
+	color: var(--dragon-text);
 	padding: 4px 8px;
 	font-size: 14px;
 	font-weight: 600;
@@ -1310,20 +1310,20 @@
 	margin: 0;
 	font-size: 12px;
 	background-color: transparent;
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 }
 .todo-menu .header .add-task-button:hover {
-	background-color: rgba(203, 166, 247, 0.2);
+	background-color: rgba(137, 146, 167, 0.2);
 }
 .todo-menu .header .tab-buttons.in-progress:checked,
 .todo-menu .header .tab-buttons.completed:checked {
-	color: var(--mauve);
-	background-color: rgba(203, 166, 247, 0.12);
+	color: var(--dragon-violet);
+	background-color: rgba(137, 146, 167, 0.12);
 	border-radius: 13px;
 }
 .todo-menu .header .tab-buttons.sort {
 	background-color: rgba(255, 255, 255, 0.1);
-	color: var(--text);
+	color: var(--dragon-text);
 	border-radius: 10px;
 	min-height: 20px;
 	min-width: 20px;
@@ -1339,13 +1339,13 @@
 .todo-menu .no-tasks {
 	font-family: "Segoe UI";
 	font-size: 18px;
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 	font-weight: 400;
 	margin-top: 16px;
 }
 .todo-menu .no-tasks-icon {
 	font-size: 80px;
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 	font-family: "JetBrainsMono NFP";
 	margin-top: 64px;
 	font-weight: 400;
@@ -1355,21 +1355,21 @@
 	background-color: rgba(49, 50, 68, 0.5);
 	border-radius: 8px;
 	margin: 0 12px 8px 12px;
-	border: 1px solid rgba(203, 166, 247, 0.15);
+	border: 1px solid rgba(137, 146, 167, 0.15);
 	padding: 8px 0;
 }
 .todo-menu .task-item.expanded {
-	background-color: rgba(203, 166, 247, 0.08);
-	border: 1px solid rgba(203, 166, 247, 0.3);
+	background-color: rgba(137, 146, 167, 0.08);
+	border: 1px solid rgba(137, 146, 167, 0.3);
 }
 .todo-menu .task-item.drop-highlight,
 .todo-menu .task-item.drop-highlight:hover,
 .todo-menu .task-item.drop-highlight:focus {
-	background-color: rgba(137, 180, 250, 0.15);
-	border: 1px solid var(--blue);
+	background-color: rgba(139, 164, 176, 0.15);
+	border: 1px solid var(--dragon-blue);
 }
 .todo-menu .task-item .title {
-	color: var(--text);
+	color: var(--dragon-text);
 	font-size: 13px;
 	font-weight: 600;
 	font-family: "Segoe UI";
@@ -1379,10 +1379,10 @@
 .todo-menu .task-item.completed .title,
 .todo-menu .task-item.completed .description {
 	text-decoration: line-through;
-	color: var(--overlay0);
+	color: var(--dragon-gray-dark);
 }
 .todo-menu .task-item .description {
-	color: var(--subtext1);
+	color: var(--dragon-text-muted);
 	font-size: 12px;
 	font-weight: 600;
 	padding: 0 8px 8px 8px;
@@ -1394,11 +1394,11 @@
 	margin-left: 12px;
 	margin-top: 5px;
 	font-size: 18px;
-	color: var(--text);
+	color: var(--dragon-text);
 	font-family: "JetBrainsMono NFP";
 }
 .todo-menu .task-checkbox:checked {
-	color: var(--overlay0);
+	color: var(--dragon-gray-dark);
 }
 /* Task info row */
 .todo-menu .task-info-row {
@@ -1409,37 +1409,37 @@
 .todo-menu .task-info-row .category-text {
 	font-family: "Segoe UI";
 	font-weight: 600;
-	color: var(--overlay1);
+	color: var(--dragon-gray-mid);
 	font-size: 13px;
 	margin-right: 12px;
 }
 .todo-menu .task-info-row .date-icon,
 .todo-menu .task-info-row .category-icon {
 	font-weight: 400;
-	color: var(--overlay2);
+	color: var(--dragon-gray);
 	font-size: 14px;
 	font-family: "JetBrainsMono NFP";
 	margin-top: 1px;
 }
 .todo-menu .task-info-row .category-text.important,
 .todo-menu .task-info-row .category-icon.important {
-	color: var(--red);
+	color: var(--dragon-red);
 }
 .todo-menu .task-info-row .category-text.urgent,
 .todo-menu .task-info-row .category-icon.urgent {
-	color: var(--peach);
+	color: var(--dragon-orange);
 }
 .todo-menu .task-info-row .category-text.soon,
 .todo-menu .task-info-row .category-icon.soon {
-	color: var(--teal);
+	color: var(--dragon-teal);
 }
 .todo-menu .task-info-row .category-text.today,
 .todo-menu .task-info-row .category-icon.today {
-	color: var(--yellow);
+	color: var(--dragon-yellow);
 }
 .todo-menu .task-info-row .edit-task-button {
-	background-color: rgba(203, 166, 247, 0.15);
-	color: var(--mauve);
+	background-color: rgba(137, 146, 167, 0.15);
+	color: var(--dragon-violet);
 	font-family: "Segoe UI";
 	font-weight: 600;
 	font-size: 12px;
@@ -1450,8 +1450,8 @@
 	margin-right: 4px;
 }
 .todo-menu .task-info-row .delete-task-button {
-	background-color: var(--surface2);
-	color: var(--crust);
+	background-color: var(--dragon-surface-2);
+	color: var(--dragon-crust);
 	font-family: "Segoe UI";
 	font-weight: 600;
 	font-size: 12px;
@@ -1469,26 +1469,26 @@
 /* App dialog */
 .todo-menu .app-dialog {
 	font-family: "Segoe UI";
-	background-color: var(--mantle);
+	background-color: var(--dragon-mantle);
 }
 .todo-menu .app-dialog .buttons-container {
-	background-color: var(--crust);
+	background-color: var(--dragon-crust);
 	margin-top: 16px;
-	border-top: 1px solid var(--surface0);
+	border-top: 1px solid var(--dragon-surface);
 	max-height: 80px;
 	min-height: 80px;
 	padding: 0 20px;
 }
 .todo-menu .app-dialog .title-field,
 .todo-menu .app-dialog .desc-field {
-	background-color: var(--base);
-	border: 1px solid var(--surface1);
+	background-color: var(--dragon-base);
+	border: 1px solid var(--dragon-surface-1);
 	border-radius: 4px;
 	padding: 0 6px;
 	font-family: "Segoe UI";
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--text);
+	color: var(--dragon-text);
 	margin: 10px 0 5px 0;
 	min-height: 30px;
 }
@@ -1497,16 +1497,16 @@
 }
 .todo-menu .app-dialog .title-field:focus,
 .todo-menu .app-dialog .desc-field:focus {
-	border-bottom-color: var(--mauve);
+	border-bottom-color: var(--dragon-violet);
 }
 .todo-menu .app-dialog .button {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 	border: none;
 	border-radius: 4px;
 	font-family: "Segoe UI";
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--text);
+	color: var(--dragon-text);
 	min-width: 80px;
 	padding: 0 6px;
 	margin: 10px 0 5px 6px;
@@ -1519,28 +1519,28 @@
 }
 .todo-menu .app-dialog .button:focus,
 .todo-menu .app-dialog .button:hover {
-	background-color: var(--surface1);
+	background-color: var(--dragon-surface-1);
 }
 .todo-menu .app-dialog .button:pressed {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 }
 .todo-menu .app-dialog .button.add {
-	background-color: var(--mauve);
-	color: var(--crust);
+	background-color: var(--dragon-violet);
+	color: var(--dragon-crust);
 }
 .todo-menu .app-dialog .button.add:focus,
 .todo-menu .app-dialog .button.add:hover {
-	background-color: var(--lavender);
-	color: var(--crust);
+	background-color: var(--dragon-violet-soft);
+	color: var(--dragon-crust);
 }
 .todo-menu .app-dialog .button.add:pressed {
-	background-color: var(--mauve);
+	background-color: var(--dragon-violet);
 }
 .todo-menu .app-dialog .warning-message {
-	background-color: rgba(243, 139, 168, 0.08);
-	border: 1px solid rgba(243, 139, 168, 0.3);
+	background-color: rgba(196, 116, 110, 0.08);
+	border: 1px solid rgba(196, 116, 110, 0.3);
 	border-radius: 4px;
-	color: var(--red);
+	color: var(--dragon-red);
 	font-family: "Segoe UI";
 	font-size: 12px;
 	font-weight: 600;
@@ -1548,21 +1548,21 @@
 	margin: 4px 0;
 }
 .todo-menu .app-dialog .category-button {
-	background-color: var(--surface0);
+	background-color: var(--dragon-surface);
 	border: none;
 	border-radius: 4px;
 	font-family: "Segoe UI";
 	font-size: 11px;
 	font-weight: 700;
-	color: var(--subtext0);
+	color: var(--dragon-gray);
 	padding: 0 6px;
 	margin-top: 8px;
 	min-height: 24px;
 	outline: none;
 }
 .todo-menu .app-dialog .category-button:checked {
-	background-color: rgba(203, 166, 247, 0.2);
-	color: var(--mauve);
+	background-color: rgba(137, 146, 167, 0.2);
+	color: var(--dragon-violet);
 }
 
 .notes-widget {
@@ -1570,17 +1570,17 @@
 }
 .notes-widget .label {
 	font-size: 14px;
-	color: var(--text);
+	color: var(--dragon-text);
 }
 .notes-widget .icon {
 	font-size: 16px;
-	color: rgb(203, 166, 247);
+	color: rgb(137, 146, 167);
 }
 /* Notes Widget Menu */
 .notes-menu {
 	min-width: 400px;
 	max-width: 400px;
-	background-color: #1e1e2e;
+	background-color: #0d0c0c;
 }
 .notes-menu .note-item {
 	background-color: transparent;
@@ -1592,7 +1592,7 @@
 .notes-menu .note-item .icon {
 	font-size: 16px;
 	padding: 0 4px;
-	color: rgb(203, 166, 247);
+	color: rgb(137, 146, 167);
 }
 .notes-menu .delete-button {
 	color: #ff6b6b;
@@ -1616,7 +1616,7 @@
 }
 .notes-menu .empty-list {
 	font-family: "Segoe UI";
-	color: rgb(203, 166, 247);
+	color: rgb(137, 146, 167);
 	font-size: 24px;
 	font-weight: 600;
 	padding: 10px 0 20px 0;
@@ -1643,8 +1643,8 @@
 	border-radius: 0;
 }
 .notes-menu .note-input {
-	background-color: rgba(17, 17, 27, 0.2);
-	border: 1px solid rgb(203, 166, 247);
+	background-color: rgba(13, 12, 12, 0.2);
+	border: 1px solid rgb(137, 146, 167);
 	font-family: "Segoe UI";
 	font-size: 14px;
 	max-height: 30px;
@@ -1652,13 +1652,13 @@
 	border-radius: 6px;
 }
 .note-input:focus {
-	border: 1px solid rgb(203, 166, 247);
+	border: 1px solid rgb(137, 146, 167);
 }
 
 .media-menu {
 	min-width: 420px;
 	max-width: 420px;
-	background-color: #1e1e2e;
+	background-color: #0d0c0c;
 	border-radius: 8px;
 }
 .media-menu .title,
@@ -1671,7 +1671,7 @@
 }
 .media-menu .artist {
 	font-size: 13px;
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin-top: 0px;
 	margin-bottom: 8px;
 }
@@ -1680,7 +1680,7 @@
 	color: #000;
 	font-weight: normal;
 	border-radius: 3px;
-	background-color: #bac2de;
+	background-color: #c5c9c5;
 	padding: 2px 4px;
 }
 /* The source class name is the same as what you see in the media widget; just replace spaces with dashes and convert it to lowercase.
@@ -1712,13 +1712,13 @@ Example: "Windows Media" becomes "windows-media" */
 	min-height: 40px;
 	max-height: 40px;
 	border-radius: 20px;
-	color: var(--overlay0);
+	color: var(--dragon-gray-dark);
 }
 .media-menu .btn.prev {
 	margin-left: 10px;
 }
 .media-menu .btn:hover {
-	color: var(--overlay2);
+	color: var(--dragon-gray);
 }
 .media-menu .btn.play {
 	font-size: 24px;
@@ -1732,7 +1732,7 @@ Example: "Windows Media" becomes "windows-media" */
 .media-menu .playback-time {
 	font-size: 13px;
 	font-family: "Segoe UI";
-	color: var(--mauve);
+	color: var(--dragon-violet);
 	margin-top: 20px;
 	min-width: 100px;
 }
@@ -1754,7 +1754,7 @@ Example: "Windows Media" becomes "windows-media" */
 	background: rgba(255, 255, 255, 0.2);
 }
 .media-menu .progress-slider::sub-page {
-	background: var(--mauve);
+	background: var(--dragon-violet);
 	border-radius: 3px;
 	height: 4px;
 }
@@ -1764,10 +1764,10 @@ Example: "Windows Media" becomes "windows-media" */
 /* --------------------------------------------------------------------------------------------------- */
 
 .tooltip {
-	background-color: var(--base);
-	border: 1px solid var(--surface0);
+	background-color: var(--dragon-base);
+	border: 1px solid var(--dragon-surface);
 	border-radius: 8px;
-	color: var(--text);
+	color: var(--dragon-text);
 	padding: 6px 12px;
 	font-size: 12px;
 	font-family: "JetBrainsMono NFP";
@@ -1776,7 +1776,7 @@ Example: "Windows Media" becomes "windows-media" */
 }
 
 .dark.tooltip {
-	background-color: var(--base);
-	border: 1px solid var(--surface0);
-	color: var(--text);
+	background-color: var(--dragon-base);
+	border: 1px solid var(--dragon-surface);
+	color: var(--dragon-text);
 }

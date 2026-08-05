@@ -1,0 +1,66 @@
+/* Kanagawa Dragon overrides for System24. */
+:root {
+	--text-0: #0d0c0c;
+	--text-1: #c5c9c5;
+	--text-2: #c5c9c5;
+	--text-3: #c5c9c5;
+	--text-4: #8ba4b0;
+	--text-5: #625e5a;
+
+	--bg-1: #393836;
+	--bg-2: #282727;
+	--bg-3: #1d1c19;
+	--bg-4: #0d0c0c;
+	--hover: #39383666;
+	--active: #39383699;
+	--active-2: #625e5aaa;
+	--message-hover: var(--hover);
+
+	--accent-1: #8ba4b0;
+	--accent-2: #8ba4b0;
+	--accent-3: #8992a7;
+	--accent-4: #c4b28a;
+	--accent-5: #b6927b;
+	--accent-new: #c4746e;
+
+	--online: #8a9a7b;
+	--dnd: #c4746e;
+	--idle: #c4b28a;
+	--streaming: #8992a7;
+	--offline: #625e5a;
+
+	--border-light: #393836;
+	--border: #282727;
+	--border-hover: #8ba4b0;
+	--button-border: #393836;
+
+	--red-1: #d9958f;
+	--red-2: #c4746e;
+	--red-3: #a85450;
+	--red-4: #8f4542;
+	--red-5: #713834;
+
+	--green-1: #a7b394;
+	--green-2: #8a9a7b;
+	--green-3: #708361;
+	--green-4: #5d704f;
+	--green-5: #4a5b40;
+
+	--blue-1: #a5b8c0;
+	--blue-2: #8ba4b0;
+	--blue-3: #708e9b;
+	--blue-4: #5b7886;
+	--blue-5: #48626f;
+
+	--yellow-1: #d8cda9;
+	--yellow-2: #c4b28a;
+	--yellow-3: #a9956f;
+	--yellow-4: #8d7c5b;
+	--yellow-5: #706247;
+
+	--purple-1: #b1b6c6;
+	--purple-2: #8992a7;
+	--purple-3: #70798f;
+	--purple-4: #5b6376;
+	--purple-5: #484f61;
+}

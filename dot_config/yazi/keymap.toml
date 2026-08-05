@@ -12,8 +12,15 @@ prepend_keymap = [
   { on = "<A-j>", run = "arrow 5", desc = "Move cursor down half page" },
   { on = [
     "s",
-  ], run = "plugin searchjump --autocd", desc = "Flash" },
+  ], run = "plugin searchjump -- autocd", desc = "Flash" },
   { on = "S", run = "search --via=fd", desc = "Search files by name using fd" },
+  { on = "l", run = "plugin smart-enter", desc = "Enter directory or open file" },
+  { on = "+", run = "plugin zoom 1", desc = "Zoom in preview" },
+  { on = "-", run = "plugin zoom -1", desc = "Zoom out preview" },
+  { on = [
+    ".",
+    "s",
+  ], run = "plugin what-size", desc = "Calculate selection or directory size" },
   { on = [
     "<C-y>",
   ], run = 'shell -- for path in "$@"; do echo "file://$path"; done | wl-copy -t text/uri-list', desc = "Copy to clipboard" },
@@ -26,7 +33,10 @@ prepend_keymap = [
   { on = "L", run = "tab_switch 1 --relative", desc = "Switch to the next tab" },
   { on = "<", run = "tab_swap -1", desc = "Swap current tab with previous tab" },
   { on = ">", run = "tab_swap 1", desc = "Swap current tab with next tab" },
-  { on = [ "c", "a" ], run = "plugin ouch", desc = "Archive selected files" }
+  { on = [
+    "c",
+    "a",
+  ], run = "plugin ouch", desc = "Archive selected files" },
 ]
 
 append_keymap = [

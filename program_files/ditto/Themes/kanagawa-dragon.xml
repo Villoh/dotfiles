@@ -1,0 +1,55 @@
+<Ditto_Theme_File Version="3" Author="chezmoi" Notes="Kanagawa Dragon">
+
+	<!-- Caption: dark mantle, Dragon violet accent, Dragon warning/error states. -->
+	<CaptionLeft>RGB(18, 18, 15)</CaptionLeft>
+	<CaptionRight>RGB(137, 146, 167)</CaptionRight>
+
+	<CaptionLeftTopMost>RGB(18, 18, 15)</CaptionLeftTopMost>
+	<CaptionRightTopMost>RGB(139, 164, 176)</CaptionRightTopMost>
+
+	<CaptionLeftNotConnected>RGB(196, 116, 110)</CaptionLeftNotConnected>
+	<CaptionRightNotConnected>RGB(196, 116, 110)</CaptionRightNotConnected>
+
+	<CaptionTextColor>RGB(197, 201, 197)</CaptionTextColor>
+
+	<!-- Alternating rows: Dragon black and surface. -->
+	<ListBoxEvenRowsBG>RGB(13, 12, 12)</ListBoxEvenRowsBG>
+	<ListBoxOddRowsBG>RGB(29, 28, 25)</ListBoxOddRowsBG>
+
+	<ListBoxEvenRowsText>RGB(197, 201, 197)</ListBoxEvenRowsText>
+	<ListBoxOddRowsText>RGB(197, 201, 197)</ListBoxOddRowsText>
+
+	<!-- Selection: Dragon gray background, violet text. -->
+	<ListBoxSelectedBG>RGB(57, 56, 54)</ListBoxSelectedBG>
+	<ListBoxSelectedNoFocusBG>RGB(40, 39, 36)</ListBoxSelectedNoFocusBG>
+
+	<ListBoxSelectedText>RGB(137, 146, 167)</ListBoxSelectedText>
+	<ListBoxSelectedNoFocusText>RGB(98, 94, 90)</ListBoxSelectedNoFocusText>
+
+	<!-- Borders: Dragon gray default, yellow for active/topmost, red for errors. -->
+	<Border>RGB(57, 56, 54)</Border>
+	<BorderTopMost>RGB(196, 178, 138)</BorderTopMost>
+	<BorderNotConnected>RGB(196, 116, 110)</BorderNotConnected>
+
+	<!-- Group tree: dark mantle background, violet group labels. -->
+	<GroupTreeBG>RGB(18, 18, 15)</GroupTreeBG>
+	<GroupTreeText>RGB(137, 146, 167)</GroupTreeText>
+
+	<CaptionSize>20</CaptionSize>
+	<CaptionFontSize>18</CaptionFontSize>
+
+	<DescriptionWindowBG>RGB(13, 12, 12)</DescriptionWindowBG>
+	<DescriptionWindowText>RGB(197, 201, 197)</DescriptionWindowText>
+
+	<MainWindowBG>RGB(13, 12, 12)</MainWindowBG>
+
+	<!-- Green for a pasted clip: success indicator. -->
+	<ClipPastedColor>RGB(138, 154, 123)</ClipPastedColor>
+
+	<!-- Search: black background, Dragon text, violet border, yellow highlight. -->
+	<SearchTextBoxFocusBG>RGB(13, 12, 12)</SearchTextBoxFocusBG>
+	<SearchTextBoxFocusText>RGB(197, 201, 197)</SearchTextBoxFocusText>
+	<SearchTextBoxFocusBorder>RGB(137, 146, 167)</SearchTextBoxFocusBorder>
+	<SearchTextHighlight>RGB(196, 178, 138)</SearchTextHighlight>
+
+</Ditto_Theme_File>

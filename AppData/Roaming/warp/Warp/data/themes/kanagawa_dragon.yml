@@ -1,0 +1,26 @@
+background: "#0d0c0c"
+cursor:
+  top: "#c4b28a"
+  bottom: "#8992a7"
+accent: "#8ba4b0"
+foreground: "#c5c9c5"
+details: darker
+terminal_colors:
+  normal:
+    black: "#1d1c19"
+    red: "#c4746e"
+    green: "#8a9a7b"
+    yellow: "#c4b28a"
+    blue: "#8ba4b0"
+    magenta: "#8992a7"
+    cyan: "#8ba4b0"
+    white: "#c5c9c5"
+  bright:
+    black: "#625e5a"
+    red: "#c4746e"
+    green: "#8a9a7b"
+    yellow: "#c4b28a"
+    blue: "#8ba4b0"
+    magenta: "#8992a7"
+    cyan: "#8ba4b0"
+    white: "#c5c9c5"
