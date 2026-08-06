@@ -35,7 +35,7 @@ if (Test-Path "`$pkgDir\system\junctions.json") {
 foreach (`$j in `$junctions) {
     `$src    = "`$chezmoisrc\`$(`$j.src)"
     if (-not (Test-Path `$src) -and (Test-Path "`$src.tmpl")) {
-        `$src = chezmoi target-path "`$src.tmpl"
+        `$src = (chezmoi target-path "`$src.tmpl").Replace('/', '\')
     }
     `$dst    = [System.Environment]::ExpandEnvironmentVariables(`$j.dst)
     `$parent = Split-Path `$dst
@@ -44,9 +44,15 @@ foreach (`$j in `$junctions) {
     if (`$j.type -eq "copy") {
         TryRun "copy: `$dst" { Copy-Item "`$src" "`$dst" -Force }
     } elseif (`$j.type -eq "file") {
-        TryRun "symlink: `$dst" { cmd /c mklink "`$dst" "`$src" | Out-Null }
+        TryRun "symlink: `$dst" {
+            cmd /c mklink "`$dst" "`$src" | Out-Null
+            if (`$LASTEXITCODE -ne 0) { throw "mklink exited with code `$LASTEXITCODE" }
+        }
     } else {
-        TryRun "junction: `$dst" { cmd /c mklink /J "`$dst" "`$src" | Out-Null }
+        TryRun "junction: `$dst" {
+            cmd /c mklink /J "`$dst" "`$src" | Out-Null
+            if (`$LASTEXITCODE -ne 0) { throw "mklink exited with code `$LASTEXITCODE" }
+        }
     }
 }
 
