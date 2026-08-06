@@ -14,6 +14,7 @@
   { "src": "dot_config\\opencode",                          "dst": "%APPDATA%\\opencode",                                                                              "type": "junction" },
   { "src": "dot_config\\alacritty",                         "dst": "%APPDATA%\\alacritty",                                                                             "type": "junction" },
   { "src": "dot_config\\herdr\\config.toml",           "dst": "%APPDATA%\\herdr\\config.toml",                                                        "type": "file" },
-  { "src": "dot_config\\uv",                            "dst": "%APPDATA%\\uv",                                                                        "type": "junction" }
+  { "src": "dot_config\\uv",                            "dst": "%APPDATA%\\uv",                                                                        "type": "junction" },
+  { "src": "dot_gnupg\\gpg-agent.conf",                 "dst": "%APPDATA%\\gnupg\\gpg-agent.conf",                                                   "type": "file" }
 
 ]
