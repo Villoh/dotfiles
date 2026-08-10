@@ -25,7 +25,6 @@
 ### Windows
 
 ![desktop](.github/assets/desktop.png)
-![terminal](.github/assets/terminal.png)
 
 ### Linux
 
