@@ -97,10 +97,6 @@ Windows setup inspired by and borrowed from:
 - [ChrisTitusTech/powershell-profile](https://github.com/ChrisTitusTech/powershell-profile)
 - [SleepyCatHey/Ultimate-Win11-Setup](https://github.com/SleepyCatHey/Ultimate-Win11-Setup)
 
-Theme and wallpaper reference:
-
-- [Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers) by Gurjaka
-
 ## PowerShell functions
 
 Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/PowerShell/Functions/) on every shell session:
