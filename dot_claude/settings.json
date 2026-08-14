@@ -162,7 +162,9 @@
     "ponytail@ponytail": true,
     "obsidian@obsidian-skills": true,
     "mattpocock-skills@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "interfaces@interfaces": true,
+    "vercel-plugin@vercel": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -217,6 +219,12 @@
       "source": {
         "source": "github",
         "repo": "kepano/obsidian-skills"
+      }
+    },
+    "interfaces": {
+      "source": {
+        "source": "github",
+        "repo": "jakubkrehel/skills"
       }
     }
   },

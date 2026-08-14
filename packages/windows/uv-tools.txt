@@ -1,8 +1,12 @@
 basedpyright
+goopdl
 graphifyy
+headroom-ai
 holded-tt
+morphe-builder
 pre-commit
 pyright
+serena-agent
 specify-cli
 tinytuya
 trafilatura

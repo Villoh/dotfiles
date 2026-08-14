@@ -35,9 +35,9 @@ dot_config/opencode/node_modules/
 dot_config/opencode/bun.lock
 dot_config/opencode/package.json
 
-# Local agent skills not meant for git
-dot_agents/skills/jira-scrum-cards-acli/
-dot_agents/skills/jira-scrum-cards-mcp/
+# Agent skill contents are restored from dot_skill-lock.json
+dot_agents/skills/
+dot_agents/skills.disabled/
 
 # Superpowers planning artifacts and specs
 docs/superpowers/

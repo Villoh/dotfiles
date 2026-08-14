@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 # Bitwarden CLI - PowerShell Functions
 # Converted from zsh. Sin dependencia de jq (PowerShell nativo).
 #
@@ -15,7 +15,7 @@
 
 # Forzar UTF-8 para que el output del CLI de bw se interprete correctamente
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$OutputEncoding           = [System.Text.Encoding]::UTF8
+$OutputEncoding = [System.Text.Encoding]::UTF8
 
 #region ── Helpers JSON ────────────────────────────────────────────────────────
 
@@ -48,7 +48,7 @@ function _bw_encode {
         }
 
         # Base64 en UTF-8 puro, sin depender del encoding del pipe de Windows
-        $bytes   = [System.Text.Encoding]::UTF8.GetBytes($json)
+        $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
         $encoded = [Convert]::ToBase64String($bytes)
         Write-Output $encoded
     }
@@ -63,7 +63,8 @@ function _bw_pretty {
     process {
         if ($Object -is [string]) {
             $Object | ConvertFrom-Json -Depth 10 | ConvertTo-Json -Depth 10
-        } else {
+        }
+        else {
             $Object | ConvertTo-Json -Depth 10
         }
     }
@@ -87,13 +88,14 @@ function _bw_select {
         [Parameter(ValueFromPipeline)][string[]]$InputLines,
         [switch]$Multi
     )
-    begin   { $all = @() }
+    begin { $all = @() }
     process { $all += $InputLines }
     end {
         if (Get-Command fzf -ErrorAction SilentlyContinue) {
             if ($Multi) { $all | fzf --multi }
-            else        { $all | fzf }
-        } else {
+            else { $all | fzf }
+        }
+        else {
             $title = if ($Multi) { 'Selecciona uno o varios items (Ctrl+Click para multi)' } else { 'Selecciona un item' }
             $selected = $all | Out-GridView -Title $title -PassThru
             $selected
@@ -125,7 +127,8 @@ function bwu {
     if ($status -eq 'unauthenticated') {
         Write-Host 'Not logged in - running bw login first...'
         $env:BW_SESSION = bw login --raw
-    } else {
+    }
+    else {
         $env:BW_SESSION = bw unlock --raw
     }
 }
@@ -140,7 +143,8 @@ function bwstart {
     if ($status -eq 'unauthenticated') {
         Write-Host 'Not logged in - running bw login first...'
         $env:BW_SESSION = bw login --raw
-    } else {
+    }
+    else {
         $env:BW_SESSION = bw unlock --raw
     }
     bw sync
@@ -167,9 +171,11 @@ function bwlogin {
 
     if ($Sso) {
         $env:BW_SESSION = bw login --sso --raw
-    } elseif ($ApiKey) {
+    }
+    elseif ($ApiKey) {
         $env:BW_SESSION = bw login --apikey --raw
-    } else {
+    }
+    else {
         $env:BW_SESSION = bw login --raw
     }
 
@@ -271,8 +277,8 @@ function _bwcollection_create {
 
     $template = bw get template collection | ConvertFrom-Json
     $template.organizationId = $orgid
-    $template.name           = $cname
-    $template.externalId     = if ($externalid) { $externalid } else { $null }
+    $template.name = $cname
+    $template.externalId = if ($externalid) { $externalid } else { $null }
 
     $template | _bw_encode | bw create org-collection --organizationid $orgid | Out-Null
     Write-Host 'OK Collection created'
@@ -311,22 +317,24 @@ function _bwadd_select_folder {
     [PSCustomObject] Sub-objeto login.
 #>
 function _bwadd_login {
-    $uri      = Read-Host 'URL'
+    $uri = Read-Host 'URL'
     $username = Read-Host 'Username'
     $generatePassword = Read-Host 'Generate password? (y/n) [n]'
     if ($generatePassword -eq 'y') {
         $password = _bwgen_interactive
         Write-Host 'OK Password generated'
-    } else {
+    }
+    else {
         $password = Read-Host 'Password (leave empty for blank)'
     }
 
-    $login          = bw get template item.login | ConvertFrom-Json
+    $login = bw get template item.login | ConvertFrom-Json
     $login.username = $username
     $login.password = $password
-    $login.uris     = if ($uri) {
-                          @([PSCustomObject]@{ match = $null; uri = $uri })
-                      } else { @() }
+    $login.uris = if ($uri) {
+        @([PSCustomObject]@{ match = $null; uri = $uri })
+    }
+    else { @() }
     # La plantilla incluye totp como null; eliminamos la propiedad para que
     # ConvertTo-Json no la serialice y Bitwarden no cree el campo TOTP
     $login.PSObject.Properties.Remove('totp')
@@ -340,13 +348,13 @@ function _bwadd_login {
     [PSCustomObject] Sub-objeto card.
 #>
 function _bwadd_card {
-    $card                = bw get template item.card | ConvertFrom-Json
+    $card = bw get template item.card | ConvertFrom-Json
     $card.cardholderName = Read-Host 'Cardholder name'
-    $card.brand          = Read-Host 'Brand (visa/mastercard/amex/discover/diners/jcb/maestro/unionpay)'
-    $card.number         = Read-Host 'Card number'
-    $card.expMonth       = Read-Host 'Expiration month (01-12)'
-    $card.expYear        = Read-Host 'Expiration year'
-    $card.code           = Read-Host 'CVV'
+    $card.brand = Read-Host 'Brand (visa/mastercard/amex/discover/diners/jcb/maestro/unionpay)'
+    $card.number = Read-Host 'Card number'
+    $card.expMonth = Read-Host 'Expiration month (01-12)'
+    $card.expYear = Read-Host 'Expiration year'
+    $card.code = Read-Host 'CVV'
     return $card
 }
 
@@ -357,24 +365,24 @@ function _bwadd_card {
     [PSCustomObject] Sub-objeto identity.
 #>
 function _bwadd_identity {
-    $id                = bw get template item.identity | ConvertFrom-Json
-    $id.title          = Read-Host 'Title (Mr/Mrs/Ms/Dr)'
-    $id.firstName      = Read-Host 'First name'
-    $id.middleName     = Read-Host 'Middle name'
-    $id.lastName       = Read-Host 'Last name'
-    $id.company        = Read-Host 'Company'
-    $id.email          = Read-Host 'Email'
-    $id.phone          = Read-Host 'Phone'
-    $id.address1       = Read-Host 'Address'
-    $id.address2       = Read-Host 'Address (line 2)'
-    $id.city           = Read-Host 'City'
-    $id.state          = Read-Host 'State/Province'
-    $id.postalCode     = Read-Host 'Postal code'
-    $id.country        = Read-Host 'Country'
-    $id.username       = Read-Host 'Username'
-    $id.ssn            = Read-Host 'SSN'
+    $id = bw get template item.identity | ConvertFrom-Json
+    $id.title = Read-Host 'Title (Mr/Mrs/Ms/Dr)'
+    $id.firstName = Read-Host 'First name'
+    $id.middleName = Read-Host 'Middle name'
+    $id.lastName = Read-Host 'Last name'
+    $id.company = Read-Host 'Company'
+    $id.email = Read-Host 'Email'
+    $id.phone = Read-Host 'Phone'
+    $id.address1 = Read-Host 'Address'
+    $id.address2 = Read-Host 'Address (line 2)'
+    $id.city = Read-Host 'City'
+    $id.state = Read-Host 'State/Province'
+    $id.postalCode = Read-Host 'Postal code'
+    $id.country = Read-Host 'Country'
+    $id.username = Read-Host 'Username'
+    $id.ssn = Read-Host 'SSN'
     $id.passportNumber = Read-Host 'Passport number'
-    $id.licenseNumber  = Read-Host "Driver's license number"
+    $id.licenseNumber = Read-Host "Driver's license number"
     return $id
 }
 
@@ -408,31 +416,32 @@ function _bwgen_interactive {
 
     if ($type -eq 'passphrase') {
         $words = Read-Host 'Number of words [3]'
-        $sep   = Read-Host 'Separator [_]'
-        $cap   = Read-Host 'Capitalize? (y/n) [n]'
-        $incn  = Read-Host 'Include number? (y/n) [n]'
+        $sep = Read-Host 'Separator [_]'
+        $cap = Read-Host 'Capitalize? (y/n) [n]'
+        $incn = Read-Host 'Include number? (y/n) [n]'
 
         $genArgs += '-p', '--words', $(if ($words) { $words } else { '3' })
         $genArgs += '--separator', $(if ($sep) { $sep } else { '_' })
-        if ($cap  -eq 'y') { $genArgs += '-c' }
+        if ($cap -eq 'y') { $genArgs += '-c' }
         if ($incn -eq 'y') { $genArgs += '--includeNumber' }
-    } else {
-        $len    = Read-Host 'Length [25]'
-        $upper  = Read-Host 'Uppercase? (y/n) [y]'
-        $lower  = Read-Host 'Lowercase? (y/n) [y]'
-        $nums   = Read-Host 'Numbers? (y/n) [y]'
-        $spec   = Read-Host 'Special characters? (y/n) [y]'
-        $amb    = Read-Host 'Avoid ambiguous? (y/n) [n]'
+    }
+    else {
+        $len = Read-Host 'Length [25]'
+        $upper = Read-Host 'Uppercase? (y/n) [y]'
+        $lower = Read-Host 'Lowercase? (y/n) [y]'
+        $nums = Read-Host 'Numbers? (y/n) [y]'
+        $spec = Read-Host 'Special characters? (y/n) [y]'
+        $amb = Read-Host 'Avoid ambiguous? (y/n) [n]'
         $minnum = Read-Host 'Minimum numbers [0]'
         $minspc = Read-Host 'Minimum special [0]'
 
         $genArgs += '--length', $(if ($len) { $len } else { '25' })
         if ($upper -ne 'n') { $genArgs += '-u' }
         if ($lower -ne 'n') { $genArgs += '-l' }
-        if ($nums  -ne 'n') { $genArgs += '-n' }
-        if ($spec  -ne 'n') { $genArgs += '-s' }
-        if ($amb   -eq 'y') { $genArgs += '--ambiguous' }
-        if ($minnum -and [int]$minnum -gt 0) { $genArgs += '--minNumber',  $minnum }
+        if ($nums -ne 'n') { $genArgs += '-n' }
+        if ($spec -ne 'n') { $genArgs += '-s' }
+        if ($amb -eq 'y') { $genArgs += '--ambiguous' }
+        if ($minnum -and [int]$minnum -gt 0) { $genArgs += '--minNumber', $minnum }
         if ($minspc -and [int]$minspc -gt 0) { $genArgs += '--minSpecial', $minspc }
     }
 
@@ -480,7 +489,8 @@ function bwls {
 
     $raw = if ($Folder) {
         bw list items --folderid $Folder | ConvertFrom-Json
-    } else {
+    }
+    else {
         bw list items | ConvertFrom-Json
     }
 
@@ -491,12 +501,14 @@ function bwls {
         if (-not $selected) { return }
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] }
         Write-Host 'OK Items moved to trash'
-    } elseif ($Delete) {
+    }
+    elseif ($Delete) {
         $selected = $lines | _bw_select -Multi
         if (-not $selected) { return }
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] --permanent }
         Write-Host 'OK Items permanently deleted'
-    } else {
+    }
+    else {
         # Quita el ID del principio y ordena
         $lines | ForEach-Object { $_ -replace '^\S+\s+', '' } | Sort-Object
     }
@@ -570,12 +582,13 @@ function bwfind {
 
     if ($Id) {
         $results = @("$Id")
-    } else {
+    }
+    else {
         $items = bw list items | ConvertFrom-Json
 
         if ($Name) { $items = $items | Where-Object { $_.name -like "*$Name*" } }
         if ($User) { $items = $items | Where-Object { $_.login.username -eq $User } }
-        if ($Url)  { $items = $items | Where-Object { $_.login.uris -and ($_.login.uris | Where-Object { $_.uri -like "*$Url*" }) } }
+        if ($Url) { $items = $items | Where-Object { $_.login.uris -and ($_.login.uris | Where-Object { $_.uri -like "*$Url*" }) } }
 
         if (-not $items) { Write-Host 'X No items found'; return }
 
@@ -586,9 +599,11 @@ function bwfind {
     $selectItem = {
         if ($Id) {
             $Id
-        } elseif ($results.Count -eq 1) {
+        }
+        elseif ($results.Count -eq 1) {
             ($results[0] -split '\s+')[0]
-        } else {
+        }
+        else {
             $sel = $results | _bw_select
             if ($sel) { ($sel -split '\s+')[0] }
         }
@@ -609,14 +624,17 @@ function bwfind {
                 totp     = $i.login.totp
                 notes    = $i.notes
             } | _bw_pretty
-        } elseif ($Field -eq 'attachment') {
+        }
+        elseif ($Field -eq 'attachment') {
             (bw get item $id | ConvertFrom-Json).attachments | ForEach-Object {
                 "$($_.id) - $($_.fileName) - $($_.sizeName)"
             }
-        } else {
+        }
+        else {
             bw get $Field $id
         }
-    } elseif ($Copy) {
+    }
+    elseif ($Copy) {
         $id = & $selectItem
         if (-not $id) { return }
 
@@ -628,34 +646,41 @@ function bwfind {
             if ($AttachmentOutput) { $bwArgs += '--output', $AttachmentOutput }
             & bw @bwArgs
             Write-Host 'OK Attachment downloaded'
-        } else {
+        }
+        else {
             $value = bw get $copyField $id
             Set-Clipboard $value
             Write-Host "OK $copyField copied to clipboard"
         }
-    } elseif ($Exposed) {
+    }
+    elseif ($Exposed) {
         $id = & $selectItem
         if (-not $id) { return }
         $count = [int](bw get exposed $id)
         if ($count -gt 0) {
             Write-Host "!! Password found in $count security breaches"
-        } else {
+        }
+        else {
             Write-Host 'OK Password not found in any security breach'
         }
-    } elseif ($Trash) {
+    }
+    elseif ($Trash) {
         $selected = $results | _bw_select -Multi
         if (-not $selected) { return }
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] }
         Write-Host 'OK Items moved to trash'
-    } elseif ($Delete) {
+    }
+    elseif ($Delete) {
         $selected = $results | _bw_select -Multi
         if (-not $selected) { return }
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] --permanent }
         Write-Host 'OK Items permanently deleted'
-    } else {
+    }
+    else {
         if ($Id) {
             bw get item $Id | ConvertFrom-Json | _bw_pretty
-        } else {
+        }
+        else {
             $results | Sort-Object
         }
     }
@@ -690,7 +715,7 @@ function bwitem {
 #>
 function bwedit {
     param(
-        [Parameter(Mandatory)][ValidateSet('item','folder','org-collection','item-collections')]
+        [Parameter(Mandatory)][ValidateSet('item', 'folder', 'org-collection', 'item-collections')]
         [string]$Type,
         [Parameter(Mandatory)][string]$Id
     )
@@ -701,33 +726,34 @@ function bwedit {
             $curName = $current.name
             $curUser = $current.login.username
             $curPass = $current.login.password
-            $curUri  = if ($current.login.uris -and $current.login.uris.Count -gt 0) {
-                           $current.login.uris[0].uri
-                       } else { '' }
+            $curUri = if ($current.login.uris -and $current.login.uris.Count -gt 0) {
+                $current.login.uris[0].uri
+            }
+            else { '' }
             $curNote = $current.notes
 
-            $name     = Read-Host "Name [$curName]"
+            $name = Read-Host "Name [$curName]"
             $username = Read-Host "Username [$curUser]"
             $password = Read-Host 'Password (leave empty to keep, "gen" to generate)'
-            $uri      = Read-Host "URL [$curUri]"
-            $notes    = Read-Host 'Notes (leave empty to keep)'
+            $uri = Read-Host "URL [$curUri]"
+            $notes = Read-Host 'Notes (leave empty to keep)'
 
-            if (-not $password)          { $password = $curPass }
+            if (-not $password) { $password = $curPass }
             elseif ($password -eq 'gen') {
                 $password = _bwgen_interactive
                 Write-Host "OK Password generated: $password"
             }
 
-            if (-not $name)     { $name     = $curName }
+            if (-not $name) { $name = $curName }
             if (-not $username) { $username = $curUser }
-            if (-not $uri)      { $uri      = $curUri  }
-            if (-not $notes)    { $notes    = $curNote }
+            if (-not $uri) { $uri = $curUri }
+            if (-not $notes) { $notes = $curNote }
 
-            $current.name              = $name
-            $current.login.username    = $username
-            $current.login.password    = $password
+            $current.name = $name
+            $current.login.username = $username
+            $current.login.password = $password
             $current.login.uris[0].uri = $uri
-            $current.notes             = $notes
+            $current | Add-Member -NotePropertyName notes -NotePropertyValue $notes -Force
 
             # Custom fields
             if ($current.fields -and $current.fields.Count -gt 0) {
@@ -749,7 +775,8 @@ function bwedit {
                         value = $Matches[2].Trim()
                         type  = 0
                     }
-                } else {
+                }
+                else {
                     Write-Host 'X Invalid format, use name=value'
                 }
             }
@@ -760,7 +787,7 @@ function bwedit {
 
         'folder' {
             $folder = bw get folder $Id | ConvertFrom-Json
-            $fname  = Read-Host "Folder name [$($folder.name)]"
+            $fname = Read-Host "Folder name [$($folder.name)]"
             if (-not $fname) { $fname = $folder.name }
             $folder.name = $fname
             $folder | _bw_encode | bw edit folder $Id | Out-Null
@@ -775,7 +802,7 @@ function bwedit {
             $orgid = Read-Host 'Organization ID'
             if (-not $orgid) { Write-Host 'X Organization ID is required'; return }
 
-            $coll  = bw get org-collection $Id --organizationid $orgid | ConvertFrom-Json
+            $coll = bw get org-collection $Id --organizationid $orgid | ConvertFrom-Json
             $cname = Read-Host "Collection name [$($coll.name)]"
             if (-not $cname) { $cname = $coll.name }
             $coll.name = $cname
@@ -815,7 +842,7 @@ function bwmv {
 
     if (-not $FolderId) {
         $folders = bw list folders | ConvertFrom-Json | Where-Object { $_.name -ne 'No Folder' }
-        $sel     = ($folders | ForEach-Object { "$($_.id) $($_.name)" }) | _bw_select
+        $sel = ($folders | ForEach-Object { "$($_.id) $($_.name)" }) | _bw_select
         if (-not $sel) { return }
         $FolderId = ($sel -split '\s+')[0]
     }
@@ -874,12 +901,14 @@ function bwattachment {
         if (-not $File) { Write-Host 'X You must specify -File'; return }
         bw create attachment --file $File --itemid $ItemId
         Write-Host 'OK Attachment added'
-    } elseif ($Name) {
+    }
+    elseif ($Name) {
         $bwArgs = @('get', 'attachment', $Name, '--itemid', $ItemId)
         if ($Output) { $bwArgs += '--output', $Output }
         & bw @bwArgs
         Write-Host 'OK Attachment downloaded'
-    } else {
+    }
+    else {
         (bw get item $ItemId | ConvertFrom-Json).attachments | ForEach-Object {
             "$($_.id) - $($_.fileName) - $($_.sizeName)"
         }
@@ -922,7 +951,7 @@ function bwfolder {
     if ($Delete) {
         if (-not $Id) {
             $folders = (bw list folders | ConvertFrom-Json) | Where-Object { $_.name -ne 'No Folder' }
-            $sel     = ($folders | ForEach-Object { "$($_.id) $($_.name)" }) | _bw_select
+            $sel = ($folders | ForEach-Object { "$($_.id) $($_.name)" }) | _bw_select
             if (-not $sel) { return }
             $Id = ($sel -split '\s+')[0]
         }
@@ -956,8 +985,8 @@ function bwcollection {
         [switch]$Add
     )
 
-    if ($All)  { (bw list org-collections | ConvertFrom-Json) | ForEach-Object { "$($_.id) - $($_.name)" }; return }
-    if ($Add)  { _bwcollection_create; return }
+    if ($All) { (bw list org-collections | ConvertFrom-Json) | ForEach-Object { "$($_.id) - $($_.name)" }; return }
+    if ($Add) { _bwcollection_create; return }
     if (-not $Id) { Write-Host 'X You must specify an ID, -All, or -Add'; return }
     bw get org-collection $Id | ConvertFrom-Json | _bw_pretty
 }
@@ -980,9 +1009,9 @@ function bwtemplate {
     )
 
     $validTemplates = @(
-        'item','item.field','item.login','item.login.uri','item.card',
-        'item.identity','item.securenote','folder','collection',
-        'item-collections','org-collection'
+        'item', 'item.field', 'item.login', 'item.login.uri', 'item.card',
+        'item.identity', 'item.securenote', 'folder', 'collection',
+        'item-collections', 'org-collection'
     )
 
     if ($All) {
@@ -1019,9 +1048,9 @@ function bwadd {
     while (-not $name) { $name = Read-Host 'Item name (required)' }
     $notes = Read-Host 'Notes'
 
-    $item       = bw get template item | ConvertFrom-Json
-    $item.type  = [int]$type
-    $item.name  = $name
+    $item = bw get template item | ConvertFrom-Json
+    $item.type = [int]$type
+    $item.name = $name
     $item.notes = $notes
 
     switch ($type) {
@@ -1048,7 +1077,8 @@ function bwadd {
                 value = $Matches[2].Trim()
                 type  = 0
             }
-        } else {
+        }
+        else {
             Write-Host 'X Invalid format, use name=value'
         }
     }
@@ -1056,7 +1086,8 @@ function bwadd {
     $output = $item | _bw_encode | bw create item 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host 'OK Item created successfully'
-    } else {
+    }
+    else {
         Write-Host "X Error creating item: $output"
     }
 }
@@ -1108,7 +1139,8 @@ function bwdelete {
     if ($Type -eq 'folder') {
         bw delete folder $Id
         Write-Host 'OK Folder deleted'
-    } else {
+    }
+    else {
         bw delete item $Id --permanent
         Write-Host 'OK Item permanently deleted'
     }
@@ -1142,3 +1174,4 @@ function bwrestore {
 }
 
 #endregion
+

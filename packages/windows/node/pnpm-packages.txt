@@ -6,13 +6,16 @@
 @jmfederico/pi-web
 @microck/moji
 @oh-my-pi/pi-coding-agent
+@socketsecurity/cli
 @vtsls/language-server
 agent-browser
 agent-skill-manager
+ctx7
 defuddle
 eslint
 happy
 ocx
+openwiki
 oxlint
 tokscale
 typescript

@@ -34,7 +34,7 @@ prefetch_next = true
 location = ""
 
 [ui]
-theme = "tokyo-night"
+theme = "gruvbox"
 album_art = true
 progress_style = "block"
 sidebar_width = 30

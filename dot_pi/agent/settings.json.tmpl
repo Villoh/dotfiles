@@ -1,0 +1,49 @@
+{{- $piHome := .chezmoi.homeDir | replace "\\" "/" -}}
+{
+  "lastChangelogVersion": "0.83.0",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:pi-rtk-optimizer",
+    "npm:pi-caveman",
+    "npm:@upstash/context7-pi",
+    "git:github.com/DietrichGebert/ponytail",
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-lens",
+    "npm:@router-for-me/pi-cliproxyapi-provider",
+    "git:github.com/obra/superpowers",
+    "npm:pi-smart-fetch",
+    "npm:@injaneity/pi-computer-use",
+    "npm:pi-taskflow@0.2.7"
+  ],
+  "powerline": {
+    "preset": "default",
+    "fixedEditor": true
+  },
+  "npmCommand": [
+    "npm"
+  ],
+  "hideThinkingBlock": false,
+  "theme": "dark",
+  "modelRoles": {
+    "steward": "cliproxyapi/gpt-5.6-luna",
+    "expert": "cliproxyapi/claude-opus-5",
+    "builder": "cliproxyapi/gpt-5.6-terra",
+    "scout": "cliproxyapi/gpt-5.6-luna",
+    "frontend_designer": "cliproxyapi/claude-opus-5"
+  },
+  "taskflow": {
+    "builtInAgents": true,
+    "syncBuiltinAgentsToProject": false,
+    "piChild": {
+      "resourceProfile": "allowlist",
+      "extensions": [
+        "{{ $piHome }}/.pi/agent/npm/node_modules/@router-for-me/pi-cliproxyapi-provider/extensions/index.ts",
+        "{{ $piHome }}/.pi/agent/npm/node_modules/pi-rtk-optimizer/index.ts"
+      ],
+      "terminalGraceMs": 1500
+    }
+  },
+  "defaultProvider": "cliproxyapi",
+  "defaultModel": "gpt-5.6-luna"
+}

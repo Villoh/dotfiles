@@ -9,7 +9,8 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}AppData/Roaming/Rainmeter/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}Documents/Rainmeter/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.config/psmux/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.agents/skills/**{{ end }}
+.agents/skills/**
+.agents/skills.disabled/**
 {{ if ne .chezmoi.os "windows" }}AppData/
 Documents/
 scoop/
