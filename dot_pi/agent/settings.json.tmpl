@@ -1,6 +1,6 @@
 {{- $piHome := .chezmoi.homeDir | replace "\\" "/" -}}
 {
-  "lastChangelogVersion": "0.83.0",
+  "lastChangelogVersion": "0.84.2",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -14,7 +14,15 @@
     "git:github.com/obra/superpowers",
     "npm:pi-smart-fetch",
     "npm:@injaneity/pi-computer-use",
-    "npm:pi-taskflow@0.2.7"
+    "npm:pi-taskflow@0.2.7",
+    "npm:pi-mermaid",
+    "npm:@juicesharp/rpiv-todo",
+    {{/* npm:@tintinweb/pi-tasks - Claude Code-style task tracking (TaskCreate/List/Get/Update/Execute + widget + deps).
+      Commented out: not installed/tested yet, richer than needed for a simple todo list.
+      Uncomment to enable once tried. See https://github.com/tintinweb/pi-tasks */}}
+    "npm:pi-rewind-hook",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@narumitw/pi-btw"
   ],
   "powerline": {
     "preset": "default",

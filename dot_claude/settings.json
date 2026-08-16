@@ -1,9 +1,9 @@
 {
   "skillListingBudgetFraction": 0.02,
   "permissions": {
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "auto"
   },
-  "model": "opus",
+  "model": "sonnet",
   "hooks": {
     "PermissionRequest": [
       {
@@ -164,7 +164,9 @@
     "mattpocock-skills@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
     "interfaces@interfaces": true,
-    "vercel-plugin@vercel": true
+    "vercel-plugin@vercel": true,
+    "impeccable@impeccable": true,
+    "supabase@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -226,6 +228,12 @@
         "source": "github",
         "repo": "jakubkrehel/skills"
       }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
+      }
     }
   },
   "tui": "fullscreen",
@@ -234,5 +242,6 @@
     "mode": "hold"
   },
   "skipDangerousModePermissionPrompt": true,
+  "theme": "custom:vercel-geist",
   "voiceEnabled": false
 }

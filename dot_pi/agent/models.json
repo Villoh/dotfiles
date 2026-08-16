@@ -1,3 +1,1170 @@
 {
-  "providers": {}
+  "providers": {
+    "tunnel-agent-cliproxy": {
+      "baseUrl": "http://127.0.0.1:8317/v1",
+      "api": "openai-completions",
+      "apiKey": "no-key",
+      "models": [
+        {
+          "id": "claude-opus-4-6-thinking",
+          "name": "claude-opus-4-6-thinking (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-sonnet-4-6",
+          "name": "Claude Sonnet 4.6 (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gemini-3-flash",
+          "name": "Gemini 3 Flash Preview (Tunnel Agent)",
+          "contextWindow": 1048576,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gemini-3-flash-agent",
+          "name": "Gemini 3 Flash Agent (Tunnel Agent)"
+        },
+        {
+          "id": "gemini-3.1-flash-image",
+          "name": "Nano Banana 2 (Tunnel Agent)",
+          "contextWindow": 131072,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gemini-3.1-flash-lite",
+          "name": "Gemini 3.1 Flash Lite (Tunnel Agent)",
+          "contextWindow": 1048576,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gemini-3.1-pro-low",
+          "name": "Gemini 3.1 Pro Low (Tunnel Agent)"
+        },
+        {
+          "id": "gemini-3.5-flash-extra-low",
+          "name": "Gemini 3.5 Flash Extra Low (Tunnel Agent)"
+        },
+        {
+          "id": "gemini-3.5-flash-low",
+          "name": "Gemini 3.5 Flash Low (Tunnel Agent)"
+        },
+        {
+          "id": "gemini-3.6-flash-high",
+          "name": "Gemini 3.6 Flash High (Tunnel Agent)"
+        },
+        {
+          "id": "gemini-3.7-flash-high",
+          "name": "Gemini 3.7 Flash High (Tunnel Agent)"
+        },
+        {
+          "id": "gemini-pro-agent",
+          "name": "Gemini Pro Agent (Tunnel Agent)"
+        },
+        {
+          "id": "gpt-oss-120b-medium",
+          "name": "GPT Oss 120b Medium (Tunnel Agent)"
+        },
+        {
+          "id": "codex-auto-review",
+          "name": "Codex Auto Review (Tunnel Agent)"
+        },
+        {
+          "id": "gpt-5.3-codex-spark",
+          "name": "GPT-5.3 Codex Spark (Tunnel Agent)",
+          "contextWindow": 128000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.4",
+          "name": "GPT-5.4 (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.4-mini",
+          "name": "GPT-5.4 mini (Tunnel Agent)",
+          "contextWindow": 272000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.5",
+          "name": "GPT-5.5 (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.6-luna",
+          "name": "GPT-5.6 Luna (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.6-sol",
+          "name": "GPT-5.6 Sol (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-5.6-terra",
+          "name": "GPT-5.6 Terra (Tunnel Agent)",
+          "contextWindow": 1050000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "gpt-image-1.5",
+          "name": "gpt-image-1.5 (Tunnel Agent)",
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "gpt-image-2",
+          "name": "GPT-Image-2 (Tunnel Agent)",
+          "contextWindow": 272000,
+          "input": [
+            "text",
+            "image"
+          ]
+        }
+      ]
+    },
+    "tunnel-agent-cliproxy-anthropic": {
+      "baseUrl": "http://127.0.0.1:8317",
+      "api": "anthropic-messages",
+      "apiKey": "no-key",
+      "models": [
+        {
+          "id": "claude-3-5-haiku-20241022",
+          "name": "Claude 3.5 Haiku (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "claude-3-7-sonnet-20250219",
+          "name": "Claude 3.7 Sonnet (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-fable-5",
+          "name": "Claude Fable 5 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-haiku-4-5-20251001",
+          "name": "Claude Haiku 4.5 (latest) (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-opus-4-1-20250805",
+          "name": "Claude 4.1 Opus (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "claude-opus-4-20250514",
+          "name": "Claude 4 Opus (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "claude-opus-4-5-20251101",
+          "name": "Claude 4.5 Opus (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-opus-4-6",
+          "name": "claude-opus-4-6 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-opus-4-7",
+          "name": "Claude Opus 4.7 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-opus-4-8",
+          "name": "Claude Opus 4.8 (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-opus-5",
+          "name": "Claude Opus 5 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-sonnet-4-20250514",
+          "name": "Claude Sonnet 4 (latest) (Tunnel Agent)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-sonnet-4-5-20250929",
+          "name": "Claude Sonnet 4.5 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "claude-sonnet-5",
+          "name": "Claude Sonnet 5 (Tunnel Agent)",
+          "contextWindow": 1000000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        }
+      ]
+    },
+    "tunnel-agent-9router": {
+      "baseUrl": "http://127.0.0.1:20128/v1",
+      "api": "openai-completions",
+      "apiKey": "${TUNNEL_AGENT_9ROUTER_API_KEY}",
+      "models": [
+        {
+          "id": "cu/claude-4-sonnet",
+          "name": "Claude 4 Sonnet (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4-sonnet-thinking",
+          "name": "Claude 4 Sonnet Thinking (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.5-opus-high",
+          "name": "Claude 4.5 Opus High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.5-opus-high-thinking",
+          "name": "Claude 4.5 Opus High Thinking (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.5-sonnet",
+          "name": "Claude 4.5 Sonnet (Tunnel Agent - 9Router)",
+          "contextWindow": 200000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/claude-4.5-sonnet-thinking",
+          "name": "Claude 4.5 Sonnet Thinking (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.6-opus-high",
+          "name": "Claude 4.6 Opus High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.6-opus-high-thinking",
+          "name": "Claude 4.6 Opus High Thinking (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.6-opus-max",
+          "name": "Claude 4.6 Opus Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.6-opus-max-thinking",
+          "name": "Claude 4.6 Opus Max Thinking (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.6-sonnet-medium",
+          "name": "Claude 4.6 Sonnet Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-4.6-sonnet-medium-thinking",
+          "name": "Claude 4.6 Sonnet Medium Thinking (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-high",
+          "name": "Claude Fable 5 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-low",
+          "name": "Claude Fable 5 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-max",
+          "name": "Claude Fable 5 Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-medium",
+          "name": "Claude Fable 5 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-thinking-high",
+          "name": "Claude Fable 5 Thinking High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-thinking-low",
+          "name": "Claude Fable 5 Thinking Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-thinking-max",
+          "name": "Claude Fable 5 Thinking Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-thinking-medium",
+          "name": "Claude Fable 5 Thinking Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-thinking-xhigh",
+          "name": "Claude Fable 5 Thinking Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-fable-5-xhigh",
+          "name": "Claude Fable 5 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-high",
+          "name": "Claude Opus 4 7 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-high-fast",
+          "name": "Claude Opus 4 7 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-low",
+          "name": "Claude Opus 4 7 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-low-fast",
+          "name": "Claude Opus 4 7 Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-max",
+          "name": "Claude Opus 4 7 Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-max-fast",
+          "name": "Claude Opus 4 7 Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-medium",
+          "name": "Claude Opus 4 7 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-medium-fast",
+          "name": "Claude Opus 4 7 Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-high",
+          "name": "Claude Opus 4 7 Thinking High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-high-fast",
+          "name": "Claude Opus 4 7 Thinking High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-low",
+          "name": "Claude Opus 4 7 Thinking Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-low-fast",
+          "name": "Claude Opus 4 7 Thinking Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-max",
+          "name": "Claude Opus 4 7 Thinking Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-max-fast",
+          "name": "Claude Opus 4 7 Thinking Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-medium",
+          "name": "Claude Opus 4 7 Thinking Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-medium-fast",
+          "name": "Claude Opus 4 7 Thinking Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-xhigh",
+          "name": "Claude Opus 4 7 Thinking Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-thinking-xhigh-fast",
+          "name": "Claude Opus 4 7 Thinking Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-xhigh",
+          "name": "Claude Opus 4 7 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-7-xhigh-fast",
+          "name": "Claude Opus 4 7 Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-high",
+          "name": "Claude Opus 4 8 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-high-fast",
+          "name": "Claude Opus 4 8 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-low",
+          "name": "Claude Opus 4 8 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-low-fast",
+          "name": "Claude Opus 4 8 Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-max",
+          "name": "Claude Opus 4 8 Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-max-fast",
+          "name": "Claude Opus 4 8 Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-medium",
+          "name": "Claude Opus 4 8 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-medium-fast",
+          "name": "Claude Opus 4 8 Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-high",
+          "name": "Claude Opus 4 8 Thinking High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-high-fast",
+          "name": "Claude Opus 4 8 Thinking High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-low",
+          "name": "Claude Opus 4 8 Thinking Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-low-fast",
+          "name": "Claude Opus 4 8 Thinking Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-max",
+          "name": "Claude Opus 4 8 Thinking Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-max-fast",
+          "name": "Claude Opus 4 8 Thinking Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-medium",
+          "name": "Claude Opus 4 8 Thinking Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-medium-fast",
+          "name": "Claude Opus 4 8 Thinking Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-xhigh",
+          "name": "Claude Opus 4 8 Thinking Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-thinking-xhigh-fast",
+          "name": "Claude Opus 4 8 Thinking Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-xhigh",
+          "name": "Claude Opus 4 8 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-4-8-xhigh-fast",
+          "name": "Claude Opus 4 8 Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-high",
+          "name": "Claude Opus 5 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-high-fast",
+          "name": "Claude Opus 5 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-low",
+          "name": "Claude Opus 5 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-low-fast",
+          "name": "Claude Opus 5 Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-medium",
+          "name": "Claude Opus 5 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-medium-fast",
+          "name": "Claude Opus 5 Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-high",
+          "name": "Claude Opus 5 Thinking High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-high-fast",
+          "name": "Claude Opus 5 Thinking High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-low",
+          "name": "Claude Opus 5 Thinking Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-low-fast",
+          "name": "Claude Opus 5 Thinking Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-max",
+          "name": "Claude Opus 5 Thinking Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-max-fast",
+          "name": "Claude Opus 5 Thinking Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-medium",
+          "name": "Claude Opus 5 Thinking Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-medium-fast",
+          "name": "Claude Opus 5 Thinking Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-xhigh",
+          "name": "Claude Opus 5 Thinking Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-opus-5-thinking-xhigh-fast",
+          "name": "Claude Opus 5 Thinking Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-high",
+          "name": "Claude Sonnet 5 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-low",
+          "name": "Claude Sonnet 5 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-max",
+          "name": "Claude Sonnet 5 Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-medium",
+          "name": "Claude Sonnet 5 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-thinking-high",
+          "name": "Claude Sonnet 5 Thinking High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-thinking-low",
+          "name": "Claude Sonnet 5 Thinking Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-thinking-max",
+          "name": "Claude Sonnet 5 Thinking Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-thinking-medium",
+          "name": "Claude Sonnet 5 Thinking Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-thinking-xhigh",
+          "name": "Claude Sonnet 5 Thinking Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/claude-sonnet-5-xhigh",
+          "name": "Claude Sonnet 5 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/composer-2.5",
+          "name": "Composer 2.5 (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/composer-2.5-fast",
+          "name": "Composer 2.5 Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/cursor-grok-4.6-high",
+          "name": "Cursor Grok 4.6 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/cursor-grok-4.6-high-fast",
+          "name": "Cursor Grok 4.6 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/cursor-grok-4.6-xhigh",
+          "name": "Cursor Grok 4.6 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/cursor-grok-4.6-xhigh-fast",
+          "name": "Cursor Grok 4.6 Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/default",
+          "name": "Default (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3-flash",
+          "name": "Gemini 3 Flash Preview (Tunnel Agent - 9Router)",
+          "contextWindow": 1048576,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gemini-3.1-pro",
+          "name": "Gemini 3.1 Pro Preview (Tunnel Agent - 9Router)",
+          "contextWindow": 1048576,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gemini-3.5-flash",
+          "name": "Gemini 3.5 Flash (Tunnel Agent - 9Router)",
+          "contextWindow": 1048576,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gemini-3.6-flash-high",
+          "name": "Gemini 3.6 Flash High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3.6-flash-low",
+          "name": "Gemini 3.6 Flash Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3.6-flash-medium",
+          "name": "Gemini 3.6 Flash Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3.6-flash-minimal",
+          "name": "Gemini 3.6 Flash Minimal (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3.7-flash-high",
+          "name": "Gemini 3.7 Flash High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3.7-flash-low",
+          "name": "Gemini 3.7 Flash Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gemini-3.7-flash-medium",
+          "name": "Gemini 3.7 Flash Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/glm-5.2-high",
+          "name": "Glm 5.2 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/glm-5.2-max",
+          "name": "Glm 5.2 Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5-mini",
+          "name": "GPT-5 Mini (Tunnel Agent - 9Router)",
+          "contextWindow": 400000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gpt-5.1",
+          "name": "GPT-5.1 (Tunnel Agent - 9Router)",
+          "contextWindow": 400000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gpt-5.1-high",
+          "name": "GPT 5.1 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.1-low",
+          "name": "GPT 5.1 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2",
+          "name": "gpt-5.2 (Tunnel Agent - 9Router)",
+          "contextWindow": 400000,
+          "input": [
+            "text",
+            "image"
+          ]
+        },
+        {
+          "id": "cu/gpt-5.2-fast",
+          "name": "GPT 5.2 Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2-high",
+          "name": "GPT 5.2 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2-high-fast",
+          "name": "GPT 5.2 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2-low",
+          "name": "GPT 5.2 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2-low-fast",
+          "name": "GPT 5.2 Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2-xhigh",
+          "name": "GPT 5.2 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.2-xhigh-fast",
+          "name": "GPT 5.2 Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.3-codex",
+          "name": "GPT-5.3 Codex (Tunnel Agent - 9Router)",
+          "contextWindow": 400000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gpt-5.3-codex-fast",
+          "name": "GPT 5.3 Codex Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.3-codex-high",
+          "name": "GPT 5.3 Codex High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.3-codex-high-fast",
+          "name": "GPT 5.3 Codex High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.3-codex-low",
+          "name": "GPT 5.3 Codex Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.3-codex-low-fast",
+          "name": "GPT 5.3 Codex Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.3-codex-xhigh",
+          "name": "GPT-5.3 Codex XHigh (Tunnel Agent - 9Router)",
+          "contextWindow": 400000,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/gpt-5.3-codex-xhigh-fast",
+          "name": "GPT 5.3 Codex Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-high",
+          "name": "GPT 5.4 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-high-fast",
+          "name": "GPT 5.4 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-low",
+          "name": "GPT 5.4 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-medium",
+          "name": "GPT 5.4 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-medium-fast",
+          "name": "GPT 5.4 Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-mini-high",
+          "name": "GPT 5.4 Mini High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-mini-low",
+          "name": "GPT 5.4 Mini Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-mini-medium",
+          "name": "GPT 5.4 Mini Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-mini-none",
+          "name": "GPT 5.4 Mini None (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-mini-xhigh",
+          "name": "GPT 5.4 Mini Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-nano-high",
+          "name": "GPT 5.4 Nano High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-nano-low",
+          "name": "GPT 5.4 Nano Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-nano-medium",
+          "name": "GPT 5.4 Nano Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-nano-none",
+          "name": "GPT 5.4 Nano None (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-nano-xhigh",
+          "name": "GPT 5.4 Nano Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-xhigh",
+          "name": "GPT 5.4 Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.4-xhigh-fast",
+          "name": "GPT 5.4 Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-extra-high",
+          "name": "GPT 5.5 Extra High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-extra-high-fast",
+          "name": "GPT 5.5 Extra High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-high",
+          "name": "GPT 5.5 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-high-fast",
+          "name": "GPT 5.5 High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-low",
+          "name": "GPT 5.5 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-low-fast",
+          "name": "GPT 5.5 Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-medium",
+          "name": "GPT 5.5 Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-medium-fast",
+          "name": "GPT 5.5 Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-none",
+          "name": "GPT 5.5 None (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.5-none-fast",
+          "name": "GPT 5.5 None Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-high",
+          "name": "GPT 5.6 Luna High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-high-fast",
+          "name": "GPT 5.6 Luna High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-low",
+          "name": "GPT 5.6 Luna Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-low-fast",
+          "name": "GPT 5.6 Luna Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-max",
+          "name": "GPT 5.6 Luna Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-max-fast",
+          "name": "GPT 5.6 Luna Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-medium",
+          "name": "GPT 5.6 Luna Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-medium-fast",
+          "name": "GPT 5.6 Luna Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-none",
+          "name": "GPT 5.6 Luna None (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-none-fast",
+          "name": "GPT 5.6 Luna None Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-xhigh",
+          "name": "GPT 5.6 Luna Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-luna-xhigh-fast",
+          "name": "GPT 5.6 Luna Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-high",
+          "name": "GPT 5.6 Sol High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-high-fast",
+          "name": "GPT 5.6 Sol High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-low",
+          "name": "GPT 5.6 Sol Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-low-fast",
+          "name": "GPT 5.6 Sol Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-max",
+          "name": "GPT 5.6 Sol Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-max-fast",
+          "name": "GPT 5.6 Sol Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-medium",
+          "name": "GPT 5.6 Sol Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-medium-fast",
+          "name": "GPT 5.6 Sol Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-none",
+          "name": "GPT 5.6 Sol None (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-none-fast",
+          "name": "GPT 5.6 Sol None Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-xhigh",
+          "name": "GPT 5.6 Sol Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-sol-xhigh-fast",
+          "name": "GPT 5.6 Sol Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-high",
+          "name": "GPT 5.6 Terra High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-high-fast",
+          "name": "GPT 5.6 Terra High Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-low",
+          "name": "GPT 5.6 Terra Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-low-fast",
+          "name": "GPT 5.6 Terra Low Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-max",
+          "name": "GPT 5.6 Terra Max (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-max-fast",
+          "name": "GPT 5.6 Terra Max Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-medium",
+          "name": "GPT 5.6 Terra Medium (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-medium-fast",
+          "name": "GPT 5.6 Terra Medium Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-none",
+          "name": "GPT 5.6 Terra None (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-none-fast",
+          "name": "GPT 5.6 Terra None Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-xhigh",
+          "name": "GPT 5.6 Terra Xhigh (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/gpt-5.6-terra-xhigh-fast",
+          "name": "GPT 5.6 Terra Xhigh Fast (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/kimi-k2.7-code",
+          "name": "Kimi K2.7 Code (Tunnel Agent - 9Router)",
+          "contextWindow": 262144,
+          "input": [
+            "text",
+            "image"
+          ],
+          "reasoning": true
+        },
+        {
+          "id": "cu/kimi-k3-high",
+          "name": "Kimi K3 High (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/kimi-k3-low",
+          "name": "Kimi K3 Low (Tunnel Agent - 9Router)"
+        },
+        {
+          "id": "cu/kimi-k3-max",
+          "name": "Kimi K3 Max (Tunnel Agent - 9Router)"
+        }
+      ]
+    }
+  }
 }

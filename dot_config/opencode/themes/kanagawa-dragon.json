@@ -31,7 +31,7 @@
     "accent": { "dark": "dragonAqua" },
     "error": { "dark": "dragonRed" },
     "warning": { "dark": "dragonYellow" },
-    "success": { "dark": "dragonGreen2" },
+    "success": { "dark": "dragonGreen" },
     "info": { "dark": "dragonBlue2" },
     "text": { "dark": "dragonWhite" },
     "textMuted": { "dark": "dragonGray" },

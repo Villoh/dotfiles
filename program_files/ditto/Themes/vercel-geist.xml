@@ -1,0 +1,55 @@
+<Ditto_Theme_File Version="3" Author="chezmoi" Notes="Vercel Geist">
+
+	<!-- Caption: near-black mantle, Geist blue accent, Geist warning/error states. -->
+	<CaptionLeft>RGB(26, 26, 26)</CaptionLeft>
+	<CaptionRight>RGB(142, 78, 198)</CaptionRight>
+
+	<CaptionLeftTopMost>RGB(26, 26, 26)</CaptionLeftTopMost>
+	<CaptionRightTopMost>RGB(0, 114, 245)</CaptionRightTopMost>
+
+	<CaptionLeftNotConnected>RGB(229, 72, 77)</CaptionLeftNotConnected>
+	<CaptionRightNotConnected>RGB(229, 72, 77)</CaptionRightNotConnected>
+
+	<CaptionTextColor>RGB(237, 237, 237)</CaptionTextColor>
+
+	<!-- Alternating rows: Geist black and surface. -->
+	<ListBoxEvenRowsBG>RGB(10, 10, 10)</ListBoxEvenRowsBG>
+	<ListBoxOddRowsBG>RGB(31, 31, 31)</ListBoxOddRowsBG>
+
+	<ListBoxEvenRowsText>RGB(237, 237, 237)</ListBoxEvenRowsText>
+	<ListBoxOddRowsText>RGB(237, 237, 237)</ListBoxOddRowsText>
+
+	<!-- Selection: Geist gray background, purple text. -->
+	<ListBoxSelectedBG>RGB(46, 46, 46)</ListBoxSelectedBG>
+	<ListBoxSelectedNoFocusBG>RGB(41, 41, 41)</ListBoxSelectedNoFocusBG>
+
+	<ListBoxSelectedText>RGB(142, 78, 198)</ListBoxSelectedText>
+	<ListBoxSelectedNoFocusText>RGB(143, 143, 143)</ListBoxSelectedNoFocusText>
+
+	<!-- Borders: Geist gray default, amber for active/topmost, red for errors. -->
+	<Border>RGB(46, 46, 46)</Border>
+	<BorderTopMost>RGB(255, 178, 36)</BorderTopMost>
+	<BorderNotConnected>RGB(229, 72, 77)</BorderNotConnected>
+
+	<!-- Group tree: dark mantle background, purple group labels. -->
+	<GroupTreeBG>RGB(26, 26, 26)</GroupTreeBG>
+	<GroupTreeText>RGB(142, 78, 198)</GroupTreeText>
+
+	<CaptionSize>20</CaptionSize>
+	<CaptionFontSize>18</CaptionFontSize>
+
+	<DescriptionWindowBG>RGB(10, 10, 10)</DescriptionWindowBG>
+	<DescriptionWindowText>RGB(237, 237, 237)</DescriptionWindowText>
+
+	<MainWindowBG>RGB(10, 10, 10)</MainWindowBG>
+
+	<!-- Green for a pasted clip: success indicator. -->
+	<ClipPastedColor>RGB(69, 165, 87)</ClipPastedColor>
+
+	<!-- Search: black background, Geist text, purple border, amber highlight. -->
+	<SearchTextBoxFocusBG>RGB(10, 10, 10)</SearchTextBoxFocusBG>
+	<SearchTextBoxFocusText>RGB(237, 237, 237)</SearchTextBoxFocusText>
+	<SearchTextBoxFocusBorder>RGB(142, 78, 198)</SearchTextBoxFocusBorder>
+	<SearchTextHighlight>RGB(255, 178, 36)</SearchTextHighlight>
+
+</Ditto_Theme_File>

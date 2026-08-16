@@ -330,27 +330,73 @@
             "selectionBackground": "#393836",
             "white": "#A6A69C",
             "yellow": "#C4B28A"
+        },
+        {
+            "background": "#0A0A0A",
+            "black": "#0A0A0A",
+            "blue": "#0072F5",
+            "brightBlack": "#454545",
+            "brightBlue": "#52A8FF",
+            "brightCyan": "#12A594",
+            "brightGreen": "#62C073",
+            "brightPurple": "#8E4EC6",
+            "brightRed": "#E5484D",
+            "brightWhite": "#EDEDED",
+            "brightYellow": "#FFB224",
+            "cursorColor": "#EDEDED",
+            "cyan": "#12A594",
+            "foreground": "#EDEDED",
+            "green": "#45A557",
+            "name": "Vercel Geist",
+            "purple": "#EA3E83",
+            "red": "#E5484D",
+            "selectionBackground": "#292929",
+            "white": "#A1A1A1",
+            "yellow": "#FFB224"
         }
     ],
     "showTabsInTitlebar": true,
     "theme": "Kanagawa Dragon",
-    "themes": 
+    "themes":
     [
         {
             "name": "Kanagawa Dragon",
-            "tab": 
+            "tab":
             {
                 "background": "#1D1C19FF",
                 "iconStyle": "default",
                 "showCloseButton": "always",
                 "unfocusedBackground": null
             },
-            "tabRow": 
+            "tabRow":
             {
                 "background": "#282727FF",
                 "unfocusedBackground": "#0D0C0CFF"
             },
-            "window": 
+            "window":
+            {
+                "applicationTheme": "dark",
+                "experimental.rainbowFrame": false,
+                "frame": null,
+                "unfocusedFrame": null,
+                "useMica": false
+            }
+        },
+        {
+            "name": "Vercel Geist",
+            "tab":
+            {
+                "background": "#1A1A1AFF",
+                "iconStyle": "default",
+                "showCloseButton": "always",
+                "unfocusedBackground": null
+            },
+            "tabRow":
+            {
+                "background": "#292929FF",
+                "unfocusedBackground": "#0A0A0AFF"
+            },
+            "window":
             {
                 "applicationTheme": "dark",
                 "experimental.rainbowFrame": false,

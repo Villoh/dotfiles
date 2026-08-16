@@ -1,0 +1,67 @@
+# Vercel Geist palette (dark)
+
+[colors.primary]
+background = "#0a0a0a"
+foreground = "#ededed"
+dim_foreground = "#8f8f8f"
+bright_foreground = "#ededed"
+
+[colors.cursor]
+text = "#0a0a0a"
+cursor = "#ededed"
+
+[colors.vi_mode_cursor]
+text = "#0a0a0a"
+cursor = "#0072f5"
+
+[colors.search.matches]
+foreground = "#0a0a0a"
+background = "#a1a1a1"
+
+[colors.search.focused_match]
+foreground = "#0a0a0a"
+background = "#45a557"
+
+[colors.footer_bar]
+foreground = "#0a0a0a"
+background = "#a1a1a1"
+
+[colors.hints.start]
+foreground = "#0a0a0a"
+background = "#ffb224"
+
+[colors.hints.end]
+foreground = "#0a0a0a"
+background = "#a1a1a1"
+
+[colors.selection]
+text = "#ededed"
+background = "#292929"
+
+[colors.normal]
+black = "#0a0a0a"
+red = "#e5484d"
+green = "#45a557"
+yellow = "#ffb224"
+blue = "#0072f5"
+magenta = "#ea3e83"
+cyan = "#12a594"
+white = "#a1a1a1"
+
+[colors.bright]
+black = "#454545"
+red = "#e5484d"
+green = "#62c073"
+yellow = "#ffb224"
+blue = "#52a8ff"
+magenta = "#8e4ec6"
+cyan = "#12a594"
+white = "#ededed"
+
+[[colors.indexed_colors]]
+index = 16
+color = "#ff990a"
+
+[[colors.indexed_colors]]
+index = 17
+color = "#ea3e83"

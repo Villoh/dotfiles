@@ -1,0 +1,76 @@
+/**
+ * @name Vercel Geist
+ * @description Vercel Geist palette (dark), mirrors the active quickCss.css Kanagawa Dragon override.
+ * @version 1.0.0
+ * @author chezmoi
+ */
+
+/* Vencord's Themes tab lets several theme files be toggled independently of
+   quickCss.css (which currently holds the active Kanagawa Dragon override).
+   This one ships disabled — enable it in Settings > Vencord > Themes, and
+   turn "Use Quick CSS" off first so the two don't fight over :root vars. */
+:root {
+	--text-0: #0a0a0a;
+	--text-1: #ededed;
+	--text-2: #ededed;
+	--text-3: #ededed;
+	--text-4: #0072f5;
+	--text-5: #8f8f8f;
+
+	--bg-1: #2e2e2e;
+	--bg-2: #292929;
+	--bg-3: #1f1f1f;
+	--bg-4: #0a0a0a;
+	--hover: #2e2e2e66;
+	--active: #2e2e2e99;
+	--active-2: #8f8f8faa;
+	--message-hover: var(--hover);
+
+	--accent-1: #0072f5;
+	--accent-2: #0072f5;
+	--accent-3: #8e4ec6;
+	--accent-4: #ffb224;
+	--accent-5: #ff990a;
+	--accent-new: #e5484d;
+
+	--online: #45a557;
+	--dnd: #e5484d;
+	--idle: #ffb224;
+	--streaming: #8e4ec6;
+	--offline: #8f8f8f;
+
+	--border-light: #2e2e2e;
+	--border: #292929;
+	--border-hover: #0072f5;
+	--button-border: #2e2e2e;
+
+	--red-1: #f2a1a4;
+	--red-2: #e5484d;
+	--red-3: #c53a3e;
+	--red-4: #9e2f32;
+	--red-5: #7a2427;
+
+	--green-1: #8fc99c;
+	--green-2: #45a557;
+	--green-3: #368144;
+	--green-4: #2b6536;
+	--green-5: #204a28;
+
+	--blue-1: #7fb8ff;
+	--blue-2: #0072f5;
+	--blue-3: #005dc9;
+	--blue-4: #004a9e;
+	--blue-5: #003872;
+
+	--yellow-1: #ffcf7a;
+	--yellow-2: #ffb224;
+	--yellow-3: #d4930e;
+	--yellow-4: #a8740a;
+	--yellow-5: #7d5607;
+
+	--purple-1: #b98ee0;
+	--purple-2: #8e4ec6;
+	--purple-3: #723da0;
+	--purple-4: #59307d;
+	--purple-5: #42245c;
+}

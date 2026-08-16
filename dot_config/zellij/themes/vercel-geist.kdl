@@ -1,0 +1,131 @@
+// Vercel Geist theme for Zellij (dark).
+// Palette source: vercel.com/geist/colors.
+
+themes {
+    vercel-geist {
+        text_unselected {
+            base 237 237 237
+            background 10 10 10
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 69 165 87
+            emphasis_3 142 78 198
+        }
+        text_selected {
+            base 237 237 237
+            background 41 41 41
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 69 165 87
+            emphasis_3 142 78 198
+        }
+        ribbon_selected {
+            base 10 10 10
+            background 69 165 87
+            emphasis_0 229 72 77
+            emphasis_1 255 153 10
+            emphasis_2 142 78 198
+            emphasis_3 18 165 148
+        }
+        ribbon_unselected {
+            base 10 10 10
+            background 46 46 46
+            emphasis_0 229 72 77
+            emphasis_1 237 237 237
+            emphasis_2 0 114 245
+            emphasis_3 142 78 198
+        }
+        table_title {
+            base 69 165 87
+            background 10 10 10
+            emphasis_0 255 178 36
+            emphasis_1 18 165 148
+            emphasis_2 0 114 245
+            emphasis_3 142 78 198
+        }
+        table_cell_selected {
+            base 237 237 237
+            background 41 41 41
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 69 165 87
+            emphasis_3 142 78 198
+        }
+        table_cell_unselected {
+            base 237 237 237
+            background 10 10 10
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 69 165 87
+            emphasis_3 142 78 198
+        }
+        list_selected {
+            base 237 237 237
+            background 41 41 41
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 69 165 87
+            emphasis_3 142 78 198
+        }
+        list_unselected {
+            base 237 237 237
+            background 10 10 10
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 69 165 87
+            emphasis_3 142 78 198
+        }
+        frame_selected {
+            base 0 114 245
+            background 10 10 10
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 255 178 36
+            emphasis_3 142 78 198
+        }
+        frame_unselected {
+            base 69 69 69
+            background 10 10 10
+            emphasis_0 255 153 10
+            emphasis_1 18 165 148
+            emphasis_2 255 178 36
+            emphasis_3 142 78 198
+        }
+        frame_highlight {
+            base 255 153 10
+            background 10 10 10
+            emphasis_0 255 178 36
+            emphasis_1 0 114 245
+            emphasis_2 69 165 87
+            emphasis_3 229 72 77
+        }
+        exit_code_success {
+            base 69 165 87
+            background 10 10 10
+            emphasis_0 18 165 148
+            emphasis_1 0 0 0
+            emphasis_2 142 78 198
+            emphasis_3 69 69 69
+        }
+        exit_code_error {
+            base 229 72 77
+            background 10 10 10
+            emphasis_0 255 178 36
+            emphasis_1 0 0 0
+            emphasis_2 0 0 0
+            emphasis_3 0 0 0
+        }
+        multiplayer_user_colors {
+            player_1 255 153 10
+            player_2 0 114 245
+            player_3 0 0 0
+            player_4 255 178 36
+            player_5 18 165 148
+            player_6 0 0 0
+            player_7 229 72 77
+            player_8 0 0 0
+            player_9 0 0 0
+            player_10 0 0 0
+        }
+    }
+}

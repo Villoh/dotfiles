@@ -32,6 +32,26 @@ local dragon = {
   pink       = "#a292a3",
 }
 
+--- Vercel Geist palette (dark). Available as an alternate color_scheme,
+--- not activated below — Kanagawa Dragon stays the active scheme.
+local geist = {
+  background = "#0a0a0a",
+  base       = "#1a1a1a",
+  surface    = "#1f1f1f",
+  surface_alt = "#292929",
+  border     = "#454545",
+  text       = "#ededed",
+  muted      = "#a1a1a1",
+  blue       = "#0072f5",
+  cyan       = "#12a594",
+  green      = "#45a557",
+  yellow     = "#ffb224",
+  orange     = "#ff990a",
+  red        = "#e5484d",
+  violet     = "#8e4ec6",
+  pink       = "#ea3e83",
+}
+
 -- =============================================================================
 -- CONFIG BUILDER
 -- =============================================================================
@@ -59,6 +79,22 @@ config.color_schemes = {
     brights = {
       dragon.border, dragon.red, dragon.green, dragon.yellow,
       dragon.blue, dragon.violet, dragon.cyan, dragon.text,
+    },
+  },
+  ["Vercel Geist"] = {
+    background = geist.background,
+    foreground = geist.text,
+    cursor_bg = geist.text,
+    cursor_fg = geist.background,
+    selection_bg = geist.surface_alt,
+    selection_fg = geist.text,
+    ansi = {
+      geist.background, geist.red, geist.green, geist.yellow,
+      geist.blue, geist.pink, geist.cyan, geist.muted,
+    },
+    brights = {
+      geist.border, geist.red, geist.green, geist.yellow,
+      geist.blue, geist.violet, geist.cyan, geist.text,
     },
   },
 }

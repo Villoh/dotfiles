@@ -1,0 +1,25 @@
+// Vercel Geist palette (dark). gitui only loads a single active theme.ron,
+// so this is a reference clone — copy this content over theme.ron to switch.
+(
+    selected_tab: Some("#8e4ec6"),
+    command_fg: Some("#ededed"),
+    selection_bg: Some("#292929"),
+    selection_fg: Some("#ededed"),
+    use_selection_fg: Some(true),
+    cmdbar_bg: Some("#1f1f1f"),
+    disabled_fg: Some("#8f8f8f"),
+    diff_line_add: Some("#45a557"),
+    diff_line_delete: Some("#e5484d"),
+    diff_file_added: Some("#45a557"),
+    diff_file_removed: Some("#e5484d"),
+    diff_file_moved: Some("#8e4ec6"),
+    diff_file_modified: Some("#ffb224"),
+    commit_hash: Some("#0072f5"),
+    commit_time: Some("#ffb224"),
+    commit_author: Some("#45a557"),
+    danger_fg: Some("#e5484d"),
+    push_gauge_bg: Some("#0072f5"),
+    push_gauge_fg: Some("#0a0a0a"),
+    tag_fg: Some("#ffb224"),
+    branch_fg: Some("#45a557")
+)
