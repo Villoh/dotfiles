@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-08-05T22:54:54.917+02:00",
+  "CreationDate": "2026-08-17T22:24:40.359+02:00",
   "Sources": [
     {
       "Packages": [
@@ -47,7 +47,13 @@
           "PackageIdentifier": "IDRIX.VeraCrypt"
         },
         {
+          "PackageIdentifier": "AmN.yasb"
+        },
+        {
           "PackageIdentifier": "Nilesoft.Shell"
+        },
+        {
+          "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
           "PackageIdentifier": "Apple.Bonjour"
@@ -57,12 +63,6 @@
         },
         {
           "PackageIdentifier": "EpicGames.EpicGamesLauncher"
-        },
-        {
-          "PackageIdentifier": "AmN.yasb"
-        },
-        {
-          "PackageIdentifier": "Microsoft.PowerShell"
         },
         {
           "PackageIdentifier": "Oracle.JDK.17"
@@ -81,9 +81,6 @@
         },
         {
           "PackageIdentifier": "Nickvision.Parabolic"
-        },
-        {
-          "PackageIdentifier": "AppFlowy.AppFlowy"
         },
         {
           "PackageIdentifier": "Blizzard.BattleNet"
@@ -203,6 +200,9 @@
           "PackageIdentifier": "JetBrains.Toolbox"
         },
         {
+          "PackageIdentifier": "Balena.Etcher"
+        },
+        {
           "PackageIdentifier": "Obsidian.Obsidian"
         },
         {
@@ -210,6 +210,9 @@
         },
         {
           "PackageIdentifier": "beekeeper-studio.beekeeper-studio"
+        },
+        {
+          "PackageIdentifier": "T3Tools.T3Code"
         },
         {
           "PackageIdentifier": "JanProchazka.dbgate"
@@ -228,6 +231,9 @@
         },
         {
           "PackageIdentifier": "66HEX.Frame"
+        },
+        {
+          "PackageIdentifier": "Anysphere.Cursor"
         },
         {
           "PackageIdentifier": "M2Team.NanaZip"

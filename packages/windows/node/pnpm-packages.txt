@@ -13,6 +13,7 @@ agent-skill-manager
 ctx7
 defuddle
 eslint
+gitquarry
 happy
 ocx
 openwiki
@@ -20,4 +21,6 @@ oxlint
 tokscale
 typescript
 typescript-language-server
+vercel
 vscode-langservers-extracted
+wrangler

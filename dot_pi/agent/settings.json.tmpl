@@ -11,10 +11,10 @@
     "npm:@ff-labs/pi-fff",
     "npm:pi-lens",
     "npm:@router-for-me/pi-cliproxyapi-provider",
-    "git:github.com/obra/superpowers",
+    {{/* git:github.com/obra/superpowers - Commented out: enable only when needed. */}}
     "npm:pi-smart-fetch",
     "npm:@injaneity/pi-computer-use",
-    "npm:pi-taskflow@0.2.7",
+    "npm:pi-taskflow",
     "npm:pi-mermaid",
     "npm:@juicesharp/rpiv-todo",
     {{/* npm:@tintinweb/pi-tasks - Claude Code-style task tracking (TaskCreate/List/Get/Update/Execute + widget + deps).
@@ -22,13 +22,17 @@
       Uncomment to enable once tried. See https://github.com/tintinweb/pi-tasks */}}
     "npm:pi-rewind-hook",
     "npm:@juicesharp/rpiv-ask-user-question",
-    "npm:@narumitw/pi-btw",
-    "npm:@gotgenes/pi-permission-system",
     "npm:@diegopetrucci/pi-dirty-repo-guard",
     "npm:@diegopetrucci/pi-notify",
     "npm:@99percentpeople/pi-background-tasks",
+    {{/* npm:pi-interactive-shell - Commented out: its interactive overlay interferes with terminal UX. Re-enable when needed. */}}
+    "npm:pi-messenger",
+    "npm:pi-intercom",
     "npm:@99percentpeople/pi-pwsh-adapter",
-    "npm:@agnishc/edb-auto-name-session"
+    {{ if eq .chezmoi.os "windows" }}"../../development/personal/projects/pi/pi-extensions/packages/pi-auto-name-session"{{ else }}"npm:pi-auto-name-session"{{ end }},
+    {{ if eq .chezmoi.os "windows" }}"../../development/personal/projects/pi/pi-extensions/packages/pi-btw"{{ else }}"npm:pi-btw"{{ end }},
+    {{ if eq .chezmoi.os "windows" }}"../../development/personal/projects/pi/pi-extensions/packages/pi-cliproxy-usage"{{ else }}"npm:pi-cliproxy-usage"{{ end }},
+    {{ if eq .chezmoi.os "windows" }}"../../development/personal/projects/pi/pi-extensions/packages/pi-permission-system"{{ else }}"npm:@gotgenes/pi-permission-system"{{ end }}
     {{/* npm:pi-sandbox - OS-level bash sandboxing (network + filesystem) via sandbox-exec (macOS) or bubblewrap (Linux),
       with interactive allow/deny prompts. Commented out: macOS/Linux only, no Windows support (this host), also
       requires ripgrep on PATH. Revisit if working from WSL/Linux/macOS. See https://github.com/carderne/pi-sandbox */}}

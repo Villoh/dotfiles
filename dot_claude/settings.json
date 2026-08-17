@@ -146,27 +146,16 @@
     "command": "cols=$(stty size </dev/tty 2>/dev/null | awk '{print $2}'); export COLUMNS=$(( ${cols:-120} > 4 ? ${cols:-120} - 4 : 1 )); plugin_dir=$(ls -1d \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}\"/plugins/cache/*/claude-hud/*/ 2>/dev/null | sort -V | tail -1); exec \"/c/Program Files/nodejs/node\" \"${plugin_dir}dist/index.js\""
   },
   "enabledPlugins": {
-    "basedpyright@claude-code-lsps": true,
     "caveman@caveman": true,
     "claude-hud@claude-hud": true,
-    "csharp-lsp@claude-plugins-official": true,
-    "dart@claude-code-lsps": true,
-    "frontend-slides@frontend-slides": true,
-    "gopls-lsp@claude-plugins-official": true,
-    "jdtls-lsp@claude-plugins-official": true,
-    "kotlin-lsp@claude-plugins-official": true,
-    "powershell-editor-services@claude-code-lsps": true,
-    "rust-analyzer-lsp@claude-plugins-official": true,
     "superpowers@superpowers-marketplace": true,
-    "typescript-lsp@claude-plugins-official": true,
     "ponytail@ponytail": true,
-    "obsidian@obsidian-skills": true,
-    "mattpocock-skills@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true,
-    "interfaces@interfaces": true,
-    "vercel-plugin@vercel": true,
-    "impeccable@impeccable": true,
-    "supabase@claude-plugins-official": true
+    "bash-language-server@claude-code-lsps": true,
+    "powershell-editor-services@claude-code-lsps": true,
+    "jdtls@claude-code-lsps": true,
+    "vtsls@claude-code-lsps": true,
+    "basedpyright@claude-code-lsps": true,
+    "csharp-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -181,12 +170,6 @@
         "repo": "JuliusBrussee/caveman"
       }
     },
-    "claude-code-lsps": {
-      "source": {
-        "source": "github",
-        "repo": "Piebald-AI/claude-code-lsps"
-      }
-    },
     "claude-hud": {
       "source": {
         "source": "github",
@@ -197,12 +180,6 @@
       "source": {
         "source": "git",
         "url": "https://github.com/affaan-m/everything-claude-code.git"
-      }
-    },
-    "frontend-slides": {
-      "source": {
-        "source": "github",
-        "repo": "zarazhangrui/frontend-slides"
       }
     },
     "superpowers-marketplace": {
@@ -217,22 +194,10 @@
         "repo": "DietrichGebert/ponytail"
       }
     },
-    "obsidian-skills": {
+    "claude-code-lsps": {
       "source": {
         "source": "github",
-        "repo": "kepano/obsidian-skills"
-      }
-    },
-    "interfaces": {
-      "source": {
-        "source": "github",
-        "repo": "jakubkrehel/skills"
-      }
-    },
-    "impeccable": {
-      "source": {
-        "source": "github",
-        "repo": "pbakaus/impeccable"
+        "repo": "Piebald-AI/claude-code-lsps"
       }
     }
   },
@@ -242,6 +207,6 @@
     "mode": "hold"
   },
   "skipDangerousModePermissionPrompt": true,
-  "theme": "custom:vercel-geist",
+  "theme": "custom:kanagawa-dragon",
   "voiceEnabled": false
 }

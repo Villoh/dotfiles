@@ -3,7 +3,7 @@ goopdl
 graphifyy
 headroom-ai
 holded-tt
-morphe-builder
+masamune-tui
 pre-commit
 pyright
 serena-agent
