@@ -1,4 +1,5 @@
 {
+  "voiceFeaturesOnly": true,
   "ui": {},
   "voice": {
     "serverShortcut": "f12"
