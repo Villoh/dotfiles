@@ -68,3 +68,4 @@ function Get-GitLanServeLogs {
     Get-Content "$env:TEMP\git-daemon.log" -Wait -ErrorAction SilentlyContinue
 }
 Set-Alias -Name server-logs -Value Get-GitLanServeLogs
+

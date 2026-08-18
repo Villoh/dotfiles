@@ -48,7 +48,8 @@ function Test-GitConflict {
     if ($content -match '<<<<<<<') {
         Get-Content $tmp | Select-String -Pattern '<<<<<<<|=======|>>>>>>>' -Context 0, 0
         Write-Host "❌ Merge conflict would occur!" -ForegroundColor Red
-    } else {
+    }
+    else {
         Write-Host '✅ No conflicts. Safe to merge.' -ForegroundColor Green
     }
     Remove-Item $tmp -Force
@@ -93,7 +94,8 @@ function Invoke-GitAbort {
         if ($answer -match '^[Yy]$' -or [string]::IsNullOrEmpty($answer)) {
             git reset --hard
             git clean -fd
-        } else {
+        }
+        else {
             Write-Host '✅ Operation Canceled.' -ForegroundColor Green
         }
     }
@@ -254,7 +256,8 @@ function Add-GitExclude {
     $existing = if (Test-Path $excludePath) { Get-Content $excludePath } else { @() }
     if ($existing -contains $Path) {
         Write-Host "⚠️  Already excluded: $Path" -ForegroundColor Yellow
-    } else {
+    }
+    else {
         Add-Content -Path $excludePath -Value $Path
         Write-Host "❎ Excluded: $Path" -ForegroundColor Green
     }
@@ -268,7 +271,8 @@ function Remove-GitExclude {
     if ($existing -contains $Path) {
         $existing | Where-Object { $_ -ne $Path } | Set-Content $excludePath
         Write-Host "❎ Removed: $Path" -ForegroundColor Green
-    } else {
+    }
+    else {
         Write-Host "⚠️  Not found in exclude: $Path" -ForegroundColor Yellow
     }
 }
@@ -293,3 +297,4 @@ function Show-GitTree {
     }
 }
 Set-Alias -Name gtree -Value Show-GitTree
+
