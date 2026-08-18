@@ -46,3 +46,4 @@ Load these only when the task is relevant to them:
 | `docs/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
 | `docs/commits.md` | Writing or reviewing commit messages |
 | `docs/omarchy-migration.md` | CachyOS → Omarchy migration, Secure Boot, dual-boot, theme-overlap cleanup |
+| `docs/windows-disk-cleanup.md` | Freeing C: disk space, scoop/JetBrains/package-manager cache bloat, the `prune` PowerShell function |

@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+#
+# prune - limpia cachés de gestores de paquetes/dev tools que nunca se
+# autolimpian solos (npm, pnpm, bun, uv, go, dotnet/nuget, docker).
+#
+# No toca pacman/yay/AUR - para eso ya existe el script `cleanup`.
+#
+# Uso: prune [gestor...|--all] [-h|--help]
+#   Sin argumentos: selección interactiva con gum
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+
+MANAGERS=(npm pnpm bun uv go dotnet docker)
+
+command_exists() { command -v "$1" >/dev/null 2>&1; }
+
+show_help() {
+    cat << EOF
+${CYAN}Uso:${NC} prune [GESTOR...|--all] [-h|--help]
+
+${YELLOW}Descripción:${NC}
+  Limpia cachés de gestores de paquetes/dev tools que nunca se autolimpian
+  (npm, pnpm, bun, uv, go, dotnet/nuget, docker). No toca pacman/yay/AUR,
+  para eso está el script 'cleanup'.
+
+${YELLOW}Opciones:${NC}
+  --all       Limpiar todos los gestores instalados sin preguntar
+  -h, --help  Mostrar esta ayuda
+
+${YELLOW}Ejemplos:${NC}
+  prune              # elige qué limpiar con gum
+  prune npm pnpm
+  prune --all
+EOF
+    exit 0
+}
+
+check_installed() { command_exists "$1"; }
+
+check_ready() {
+    case "$1" in
+        docker) docker info >/dev/null 2>&1 ;;
+        *) return 0 ;;
+    esac
+}
+
+run_prune() {
+    case "$1" in
+        npm)  npm cache clean --force ;;
+        pnpm) pnpm store prune ;;
+        bun)
+            local cache="${BUN_INSTALL:-$HOME/.bun}/install/cache"
+            [ -d "$cache" ] && rm -rf "${cache:?}"/*
+            ;;
+        uv)     uv cache clean ;;
+        go)     go clean -cache ;;
+        dotnet) dotnet nuget locals all --clear ;;
+        docker) docker system prune -a --volumes --force ;;
+    esac
+}
+
+ALL=false
+TARGETS=()
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help) show_help ;;
+        --all) ALL=true; shift ;;
+        -*)
+            echo -e "${RED}Error: opción desconocida '$1'${NC}" >&2
+            exit 1
+            ;;
+        *) TARGETS+=("$1"); shift ;;
+    esac
+done
+
+if ! command_exists gum; then
+    echo -e "${RED}❌ Error: gum no está instalado${NC}" >&2
+    exit 1
+fi
+
+INSTALLED=()
+for m in "${MANAGERS[@]}"; do
+    check_installed "$m" && INSTALLED+=("$m")
+done
+
+if [ ${#INSTALLED[@]} -eq 0 ]; then
+    gum style --foreground 214 "No hay ningún gestor soportado instalado (${MANAGERS[*]})"
+    exit 0
+fi
+
+if [ "$ALL" = true ]; then
+    TARGETS=("${INSTALLED[@]}")
+elif [ ${#TARGETS[@]} -eq 0 ]; then
+    SELECTED=$(printf '%s\n' "${INSTALLED[@]}" | gum choose \
+        --no-limit \
+        --cursor.foreground="75" \
+        --selected.foreground="75" \
+        --header="Selecciona qué limpiar" \
+        --header.foreground="245")
+    [ -z "$SELECTED" ] && { gum style --foreground 214 "⚠️  No se seleccionó nada"; exit 0; }
+    mapfile -t TARGETS <<< "$SELECTED"
+else
+    for t in "${TARGETS[@]}"; do
+        if [[ ! " ${MANAGERS[*]} " =~ [[:space:]]${t}[[:space:]] ]]; then
+            echo -e "${RED}Error: '$t' no es un gestor soportado (${MANAGERS[*]})${NC}" >&2
+            exit 1
+        fi
+        if ! check_installed "$t"; then
+            gum style --foreground 214 "⚠️  '$t' no está instalado, se omite"
+        fi
+    done
+fi
+
+BEFORE=$(df --output=avail -B1 / | tail -n1 | tr -d ' ')
+
+for target in "${TARGETS[@]}"; do
+    check_installed "$target" || continue
+
+    if ! check_ready "$target"; then
+        gum style --foreground 245 "  [SKIP] $target no está corriendo"
+        continue
+    fi
+
+    gum style --foreground 75 --bold --border rounded --padding "1 2" "🧹 $target"
+    if run_prune "$target"; then
+        gum style --foreground 82 "  ✓ $target limpiado"
+    else
+        gum style --foreground 196 "  ✗ $target falló"
+    fi
+done
+
+AFTER=$(df --output=avail -B1 / | tail -n1 | tr -d ' ')
+RECLAIMED=$(awk "BEGIN { printf \"%.2f\", ($AFTER - $BEFORE) / 1073741824 }")
+
+echo
+gum style --foreground 82 --bold "Liberado: ${RECLAIMED} GB"
