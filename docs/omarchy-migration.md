@@ -398,3 +398,37 @@ shortcuts with fully inlined multi-line shell functions. Split into 3 piles:
       after the existing uv env sourcing — otherwise `git <name>` would stop
       finding them. Executable bit (`100755`) confirmed preserved through
       the move.
+
+### Fixed — `.chezmoiscripts/` review
+
+Checked every script for stale references left over from the cleanup above
+(only `run_once_00_linux-install.sh.tmpl` and `run_onchange_01_linux-secrets.sh.tmpl`
+are Linux-relevant; the rest are Windows-only and untouched by this
+migration). The install script was already clean — its submodule list
+matches the current Plymouth/SDDM state, no `cachyos`/`hypr.old`/zsh/tmux
+references.
+
+- [x] `run_onchange_01_linux-secrets.sh.tmpl` had a real dead path: it wrote
+      `terminal_envs` secrets (currently just `FIGMA_API_KEY`) to
+      `~/.config/zsh/functions/api-keys.zsh`, which nothing sources anymore
+      now that zsh is gone (and bash rc files were never managed here
+      either) — the file was written but silently never loaded. Collapsed
+      `terminal_envs` and `global_envs` into the single file `dot_profile`
+      actually sources (`~/.config/secrets/global-env.sh`).
+- [x] Follow-up: `dot_profile` only loads on an actual **login** shell, and a
+      graphical Omarchy/uwsm session may never spawn one — even when it
+      does, terminals opened later in the same session won't re-read it (no
+      auto-refresh without a full logout, which is what `terminal_envs`
+      existed for under zsh). Checked Omarchy's own `default/bashrc`
+      upstream (basecamp/omarchy, `quattro` branch): it explicitly reserves
+      a footer ("Add your own exports, aliases, and functions here") and
+      re-sources `env-bootstrap`/`bash/rc` on every new interactive shell
+      the same way. Rather than have chezmoi own the whole `~/.bashrc`
+      (which would clobber Omarchy's own aliases/completions — the same
+      mistake already avoided for tmux/herdr), the script now does an
+      idempotent grep-and-append of one `source global-env.sh` line into
+      that footer. Both secret groups now reload in every new terminal,
+      a strict improvement over the old zsh split, no second file needed.
+      Windows counterpart (`run_onchange_01_windows-secrets.ps1.tmpl`,
+      PowerShell `$PROFILE`) is unaffected — untouched by the zsh deletion.
+      **This section is done.**
