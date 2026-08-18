@@ -12,6 +12,13 @@ readonly LOCAL_THEME_PATH="$(chezmoi source-path)/other_config/sddm/themes/$THEM
 readonly METADATA="$THEMES_DIR/$THEME_NAME/metadata.desktop"
 readonly DATE=$(date +%s)
 
+# Omarchy ships its own SDDM theme via a drop-in at /etc/sddm.conf.d/autologin.conf
+# (Current=omarchy), which SDDM loads *after* the base /etc/sddm.conf and therefore
+# wins any Current= set there. Writing our override to a drop-in that sorts after
+# "autologin.conf" (zz- prefix) is what actually takes effect over Omarchy's default,
+# and it doesn't clobber the Autologin settings the way overwriting /etc/sddm.conf did.
+readonly THEME_DROPIN="/etc/sddm.conf.d/zz-sddm-theme.conf"
+
 readonly -a THEMES=(
     "astronaut" "black_hole" "cyberpunk" "hyprland_kath" "jake_the_dog"
     "japanese_aesthetic" "pixel_sakura" "pixel_sakura_static"
@@ -128,15 +135,30 @@ install_theme() {
     # Install fonts
     [[ -d "$dst/Fonts" ]] && spin "Installing fonts..." sudo cp -r "$dst/Fonts"/* /usr/share/fonts/
 
-    # Configure SDDM
-    echo "[Theme]
-Current=$THEME_NAME" | sudo tee /etc/sddm.conf >/dev/null
-
     sudo mkdir -p /etc/sddm.conf.d
+
+    # Configure SDDM via a drop-in (see THEME_DROPIN note above) instead of
+    # overwriting /etc/sddm.conf, which Omarchy's own drop-in would win against anyway.
+    echo "[Theme]
+Current=$THEME_NAME" | sudo tee "$THEME_DROPIN" >/dev/null
+
     echo "[General]
 InputMethod=qtvirtualkeyboard" | sudo tee /etc/sddm.conf.d/virtualkbd.conf >/dev/null
 
     info "Theme installed from $src"
+}
+
+# Switch back to Omarchy's default SDDM theme without reinstalling anything:
+# just drop our override and let Omarchy's own autologin.conf (Current=omarchy) apply.
+use_omarchy_theme() {
+    if [[ -f "$THEME_DROPIN" ]]; then
+        sudo rm -f "$THEME_DROPIN"
+        info "Removed theme override — Omarchy's default SDDM theme now applies"
+    else
+        info "No override installed — already using Omarchy's default SDDM theme"
+    fi
+
+    command -v omarchy-refresh-sddm &>/dev/null && spin "Refreshing Omarchy theme files..." omarchy-refresh-sddm
 }
 
 # Select theme variant
@@ -201,6 +223,7 @@ main() {
             "🔧 Enable SDDM Service" \
             "🎨 Select Theme Variant" \
             "✨ Preview the set theme" \
+            "🏠 Switch to Omarchy default theme" \
             "❌ Exit")
 
         case "$choice" in
@@ -210,6 +233,7 @@ main() {
             "🔧 Enable SDDM Service") enable_sddm ;;
             "🎨 Select Theme Variant") select_theme ;;
             "✨ Preview the set theme") preview_theme;;
+            "🏠 Switch to Omarchy default theme") use_omarchy_theme ;;
             "❌ Exit") info "Goodbye!"; exit 0 ;;
         esac
 

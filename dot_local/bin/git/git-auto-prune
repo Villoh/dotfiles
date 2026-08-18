@@ -1,0 +1,21 @@
+#!/bin/bash
+# git-auto-prune — delete branches whose merge-tree diff against the default branch is empty.
+set -euo pipefail
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo '❌ Cannot safely switch branches'
+  exit 1
+fi
+MAIN=$(git remote-default)
+git switch "$MAIN" >/dev/null 2>&1
+git fetch --prune || exit 1
+git pull || exit 1
+for BRANCH in $(git for-each-ref --format='%(refname:short)' refs/heads); do
+  if [ "$BRANCH" = 'main' ] || [ "$BRANCH" = 'master' ] || [ "$BRANCH" = "$MAIN" ]; then
+    continue
+  fi
+  BASE=$(git merge-base "$MAIN" "$BRANCH")
+  MERGE_DIFF=$(git merge-tree "$BASE" "$MAIN" "$BRANCH")
+  if [ -z "$MERGE_DIFF" ]; then
+    git branch -D "$BRANCH"
+  fi
+done

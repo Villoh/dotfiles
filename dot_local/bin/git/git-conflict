@@ -1,0 +1,21 @@
+#!/bin/bash
+# git-conflict <branch> — preview merge conflicts without merging.
+set -euo pipefail
+TO=$1
+TMP=$(mktemp)
+git merge-tree "$(git merge-base HEAD "$TO")" HEAD "$TO" > "$TMP"
+if grep -q '<<<<<<<' "$TMP"; then
+  awk '
+    /<<<<<<< / { in_conflict=1; print; next }
+    />>>>>>> / { print; in_conflict=0; next }
+    in_conflict { print }
+    /^=======/ { if (in_conflict) print }
+    ' "$TMP" |
+  sed -e $'s/<<<<<<<.*/\033[31m&\033[0m/' \
+      -e $'s/=======.*/\033[33m&\033[0m/' \
+      -e $'s/>>>>>>>.*/\033[32m&\033[0m/'
+  echo "❌ $(grep -c '^+=======$' "$TMP") merge conflicts would occur!"
+else
+  echo '✅ No conflicts. Safe to merge.'
+fi
+rm "$TMP"

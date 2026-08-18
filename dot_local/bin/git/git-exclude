@@ -1,0 +1,11 @@
+#!/bin/bash
+# git-exclude <path> — add a path to .git/info/exclude (local-only gitignore).
+set -euo pipefail
+path="$1"
+exclude_path="$(git rev-parse --git-path info/exclude)"
+if grep -Fxq "$path" "$exclude_path"; then
+  echo "⚠️  Already excluded: $path"
+else
+  echo "$path" >> "$exclude_path"
+  echo "❎ Excluded: $path"
+fi

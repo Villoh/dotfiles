@@ -112,6 +112,7 @@ gamepadla-polling
 gemini-cli
 ghostty
 git
+git-absorb
 git-crypt
 git-filter-repo
 gitbutler-bin

@@ -45,3 +45,4 @@ Load these only when the task is relevant to them:
 | `docs/windows.md` | Any Windows-specific config, junctions, AppData, scripts, running PowerShell from bash |
 | `docs/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
 | `docs/commits.md` | Writing or reviewing commit messages |
+| `docs/omarchy-migration.md` | CachyOS → Omarchy migration, Secure Boot, dual-boot, theme-overlap cleanup |

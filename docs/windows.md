@@ -81,7 +81,6 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 
 - `dot_config/ohmyposh/` — Oh My Posh prompt theme
 - `dot_config/yasb/` — YASB status bar
-- `dot_config/scoop/` — Scoop config
 - `dot_config/wezterm/wezterm.lua` — WezTerm terminal
 - `dot_tmux.conf.tmpl` — psmux native tmux-compatible config (`~/.tmux.conf`)
 - `program_files/ditto/` — Ditto clipboard manager (portable)

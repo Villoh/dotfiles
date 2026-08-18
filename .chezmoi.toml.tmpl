@@ -34,30 +34,26 @@ mode = "symlink"
     enable_uv         = true
     enable_zellij     = true
     enable_ytm_player = true
-    enable_scoop      = true
     enable_tmux       = true
+    enable_herdr      = true
     enable_wezterm    = true
     enable_alacritty  = true
 
     # ── Linux-only modules ─────────────────────────────────────────────────
     {{ if not $isWindows -}}
     enable_zsh        = true
-    enable_bash       = true
     enable_aerc       = true
     enable_nchat      = true
     enable_freetube   = true
     enable_cliphist   = true
     enable_vesktop    = true
-    enable_systemd    = true
     {{- else }}
     enable_zsh        = false
-    enable_bash       = false
     enable_aerc       = false
     enable_nchat      = false
     enable_freetube   = false
     enable_cliphist   = false
     enable_vesktop    = false
-    enable_systemd    = false
     {{- end }}
 
     # ── Windows-only modules ───────────────────────────────────────────────

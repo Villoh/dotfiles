@@ -1,0 +1,10 @@
+#!/bin/bash
+# git-include <path> — remove a path from .git/info/exclude.
+set -euo pipefail
+exclude_path="$(git rev-parse --git-path info/exclude)"
+if grep -Fxq "$1" "$exclude_path"; then
+  grep -Fxv "$1" "$exclude_path" > "$exclude_path.tmp" && mv "$exclude_path.tmp" "$exclude_path"
+  echo "❎ Removed: $1"
+else
+  echo "⚠️  Not found in exclude: $1"
+fi

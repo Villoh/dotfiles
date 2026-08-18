@@ -62,11 +62,11 @@
 
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
-| Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) | [⚙️](dot_config/hypr/) |
+| Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) | *(migrating to Omarchy — see `other_config/hypr-old-keybinds/`)* |
 | Status Bar | [Waybar](https://github.com/Alexays/Waybar) | [⚙️](dot_config/waybar/) |
 | Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) | [⚙️](dot_config/swaync/) |
 | OSD Overlays | [SwayOSD](https://github.com/ErikReider/SwayOSD) | [⚙️](dot_config/swayosd/) |
-| Shell | zsh | [⚙️](dot_config/zsh/) |
+| Shell | *(dropped — using Omarchy's defaults)* | — |
 | Prompt | [Starship](https://starship.rs/) | [⚙️](dot_config/fastfetch/) |
 | Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/) · [Ghostty](https://ghostty.org/) | [⚙️](dot_config/kitty/) · [⚙️](dot_config/ghostty/) |
 | Multiplexer | [tmux](https://github.com/tmux/tmux) · [psmux](https://github.com/psmux/psmux) | [⚙️](dot_tmux.conf.tmpl) |

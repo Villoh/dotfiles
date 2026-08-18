@@ -1,0 +1,19 @@
+#!/bin/bash
+# git-old — branch overview: ahead/behind vs default remote, merged status.
+printf "Fetching and Pruning..."
+git fetch --prune >/dev/null 2>&1
+printf "\r"
+DEFAULT=$(git remote-default)
+CURRENT=$(git symbolic-ref --short HEAD)
+MAX_LEN=$(git branch --format='%(refname:short)' | awk '{ print length }' | sort -nr | head -1)
+echo '---------------------------- Branches ----------------------------'
+git for-each-ref --sort=-committerdate --format='%(refname:short)%09%(committerdate:relative)%09%(upstream:track)' refs/heads/ \
+  | while IFS=$'\t' read -r BRANCH DATE TRACK; do
+  AHEAD=$(git rev-list --count "origin/$DEFAULT..$BRANCH" 2>/dev/null)
+  BEHIND=$(git rev-list --count "$BRANCH..origin/$DEFAULT" 2>/dev/null)
+  [[ "$TRACK" == *gone* ]] && MERGED="MERGED by $(git log -1 --format="%cn" "$BRANCH")" || MERGED=''
+  if [ "$BRANCH" = "$CURRENT" ]; then STATUS='*'
+  elif git worktree list | grep -q "\[$BRANCH\]"; then STATUS='+'
+  else STATUS=' '; fi
+  printf "%s %-*s | %-16s | +%-3s -%-3s | %s\n" "$STATUS" "$MAX_LEN" "$BRANCH" "$DATE" "$AHEAD" "$BEHIND" "$MERGED"
+done | git column

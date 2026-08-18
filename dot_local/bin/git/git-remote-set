@@ -1,0 +1,7 @@
+#!/bin/bash
+# git-remote-set <name> <url> — set a remote's URL, adding it if it doesn't exist.
+if git remote get-url "$1" >/dev/null 2>&1; then
+  git remote set-url "$@"
+else
+  git remote add "$@"
+fi

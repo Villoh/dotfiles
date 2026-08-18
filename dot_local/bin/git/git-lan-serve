@@ -1,0 +1,74 @@
+#!/bin/bash
+# git-lan-serve <addr|start|stop|test|clone|join|logs> — share/consume a repo over the LAN.
+set -euo pipefail
+
+addr() {
+  ifconfig | awk '/^en[0-9]/ {iface=$1} /inet / && $2 !~ /^127\./ {print $2; exit}'
+}
+
+start() {
+  cd "$(git pwd)" || exit 1
+  NAME=$(basename "$(pwd)")
+  cd ..
+  REPO="$(pwd)/$NAME.git"
+  echo "$REPO"
+  rm -rf "$REPO" || exit 1
+  git clone --bare "$NAME" "$REPO" || exit 1
+  LAN_IP=$(addr)
+  nohup git daemon --verbose --export-all --enable=receive-pack --base-path="$(pwd)" \
+    --reuseaddr --strict-paths "$REPO" > /tmp/git-daemon.log 2>&1 &
+  REMOTE_URL="git://$LAN_IP:9418/$NAME.git"
+  echo "Serving repository from $REMOTE_URL"
+  cd - > /dev/null
+  [ -n "${1:-}" ] && git remote-set "$1" "$REMOTE_URL"
+}
+
+stop() {
+  PIDS=$(ps -eo pid,comm | grep -E 'git-daemo|git daemon' | awk '{print $1}') || true
+  for PID in $PIDS; do echo "Killing: $PID"; done
+  pkill -f "git-daemo" || true
+  pkill -f "git daemon" || true
+  if lsof -i :9418 >/dev/null 2>&1; then
+    echo 'Error: some processes not killed'
+  fi
+}
+
+test_repo() {
+  REMOTE="git://$(addr):9418/$1"
+  if git ls-remote "$REMOTE" > /dev/null; then
+    echo "Server running at: $REMOTE"
+  else
+    exit 1
+  fi
+}
+
+clone() {
+  REMOTE="git://$(addr):9418/$1"
+  if test_repo "$1"; then
+    git clone "$REMOTE"
+  fi
+}
+
+join() {
+  BASE=$(basename "$(git pwd)")
+  REMOTE="git://$(addr):9418/$BASE.git"
+  if test_repo "$BASE.git"; then
+    git remote-set origin "$REMOTE"
+    echo "origin updated: (fetch & push)"
+  fi
+}
+
+logs() {
+  tail -f /tmp/git-daemon.log
+}
+
+case "${1:-}" in
+  addr) addr ;;
+  start) shift; start "$@" ;;
+  stop) stop ;;
+  test) shift; test_repo "$@" ;;
+  clone) shift; clone "$@" ;;
+  join) join ;;
+  logs) logs ;;
+  *) echo "Usage: git lan-serve <addr|start|stop|test|clone|join|logs> [args]"; exit 1 ;;
+esac

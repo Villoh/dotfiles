@@ -1,0 +1,8 @@
+#!/bin/bash
+# git-backmerge <branch> — merge <branch> back into the branch you came from.
+set -euo pipefail
+TARGET=$1
+git switch "$TARGET" || exit 1
+git pull || exit 1
+git switch -
+git merge "$TARGET"

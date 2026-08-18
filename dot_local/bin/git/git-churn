@@ -1,0 +1,6 @@
+#!/bin/bash
+# git-churn — top 25 most-changed files across the whole history.
+git -p log --all -M -C --name-only --format='format:' \
+  | sort | grep -v '^$' | uniq -c | sort -r \
+  | awk 'BEGIN {print count,file} {print $1 , $2}' \
+  | head -n 25

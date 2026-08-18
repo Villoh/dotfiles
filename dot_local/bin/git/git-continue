@@ -1,0 +1,14 @@
+#!/bin/bash
+# git-continue — smart continue: rebase, merge, cherry-pick, or revert in progress.
+gitdir=$(git rev-parse --git-dir)
+if [ -d "$gitdir/rebase-merge" ] || [ -d "$gitdir/rebase-apply" ]; then
+  git rebase --continue
+elif [ -f "$gitdir/MERGE_HEAD" ]; then
+  git merge --continue
+elif [ -f "$gitdir/CHERRY_PICK_HEAD" ]; then
+  git cherry-pick --continue
+elif [ -f "$gitdir/REVERT_HEAD" ]; then
+  git revert --continue
+else
+  echo '✅ Nothing to continue.'
+fi

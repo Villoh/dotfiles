@@ -1,0 +1,3 @@
+#!/bin/bash
+# git-zip — archive HEAD at the current tag as a zip.
+git archive --format=zip -o "$(git current-tag).zip" HEAD

@@ -1,0 +1,12 @@
+#!/bin/bash
+# git-sha [ref] — short SHA of ref (default HEAD), copied to clipboard if possible.
+REF="${1:-HEAD}"
+SHA=$(git rev-parse --short "$REF")
+echo "$SHA"
+if command -v pbcopy >/dev/null 2>&1; then
+  pbcopy <<< "$SHA"
+elif command -v xclip >/dev/null 2>&1; then
+  echo -n "$SHA" | xclip -selection clipboard
+elif command -v wl-copy >/dev/null 2>&1; then
+  echo -n "$SHA" | wl-copy
+fi

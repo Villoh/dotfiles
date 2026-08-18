@@ -1,0 +1,29 @@
+#!/bin/bash
+# clear-pip — uninstall every pip package except pip itself.
+# Bash port of the old zsh clear-pip() function (dropped along with zsh).
+set -euo pipefail
+
+if ! command -v python >/dev/null || ! python -m pip --version >/dev/null 2>&1; then
+    echo 'python with pip not found in PATH.' >&2
+    exit 1
+fi
+
+mapfile -t packages < <(
+    python -m pip list --disable-pip-version-check --format=json |
+        python -c 'import json, sys; print("\n".join(p["name"] for p in json.load(sys.stdin) if p["name"].lower() != "pip"))'
+)
+
+if (( ${#packages[@]} == 0 )); then
+    echo 'Only pip remains.'
+    exit 0
+fi
+
+if [[ ! -t 0 ]]; then
+    echo 'Interactive terminal required. Run this command directly.' >&2
+    exit 1
+fi
+
+read -r -p "Uninstall ${#packages[@]} package(s), preserving pip? [y/N] " reply
+[[ $reply =~ ^[Yy]$ ]] || exit 0
+
+python -m pip uninstall --disable-pip-version-check -y "${packages[@]}"

@@ -1,0 +1,16 @@
+#!/bin/bash
+# git-fixup <commit> — commit staged changes as a fixup! and autosquash-rebase them in.
+# NOTE: git-absorb (pacman -S git-absorb) does this automatically without needing
+# a target commit — prefer `git absorb --and-rebase` when available.
+set -euo pipefail
+TARGET=$(git rev-parse "$1")
+git commit --fixup="$TARGET" || exit 1
+for COMMIT in $(git rev-list --reverse "$TARGET^"..HEAD); do
+  PATCH=$(git diff "$COMMIT"^ "$COMMIT")
+  if ! echo "$PATCH" | git apply --check --3way -q; then
+    echo "❌ Rebase conflict would occur!"
+    git reset HEAD~1 --soft
+    exit 1
+  fi
+done
+git rebase -i --autosquash "$TARGET^"

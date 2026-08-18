@@ -21,7 +21,6 @@ CachyOS (Arch-based) + Hyprland (Wayland compositor).
 | `cliphist/` | Cliphist clipboard history |
 | `nchat/` | Terminal chat client |
 | `FreeTube/` | FreeTube YouTube frontend (settings are `.db`, gitignored) |
-| `fastfetch/` | System info display config |
 | `cava/` | Audio visualizer |
 | `btop/` | Resource monitor |
 | `yazi/` | File manager. `plugins/` and `flavors/` are gitignored — install with `ya pack` |
@@ -42,24 +41,25 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `docker-service` | Start, stop, or inspect Docker systemd service |
 | `extract-claude-config` | Export Claude config docs to `other_config/claude/` |
 | `cleanup` | System cleanup (cache, logs, orphan packages) |
+| `prune` | Gum-interactive cache cleanup for npm/pnpm/bun/uv/go/dotnet/docker (not pacman/AUR, see `cleanup`) |
 | `update-packages` | Interactive Gum updater for system/AUR, Flatpak, Brew, uv, npm, pnpm, and Bun. `--harness` updates coding-agent tools noninteractively. |
 | `plymouth-themes` | Install/switch Plymouth boot themes from `other_config/plymouth/themes/` |
 | `sddm-themes` | Install/switch SDDM login themes from `other_config/sddm/themes/` |
-| `cliphist.sh` | Cliphist clipboard history helper |
-| `dontkillsteam.sh` | Prevents Steam from being killed by memory pressure |
 | `fontman` | Font manager helper |
-| `migrate-to-cachyos` / `migrate-aur` / `migrate-flatpak` | CachyOS migration helpers |
+| `migrate-aur` / `migrate-flatpak` | Package migration helpers |
 | `post-hyde-install` / `pre-hyde-install` | HyDE desktop environment install hooks |
 | `openvpn-*` / `ikev2-*` | VPN management |
-| `hytale-launcher` / `fit-launcher-update` | Game launcher helpers |
 
 ## Shell configs
 
 | File | Shell |
 | ------ | ------- |
-| `dot_bashrc`, `dot_bash_profile`, `dot_bash_logout` | Bash |
-| `dot_zshenv`, `dot_zprofile` | Zsh |
 | `dot_profile` | POSIX |
+
+*Zsh config (`dot_config/zsh/`, root `dot_zshenv`) was dropped entirely —
+Omarchy's own shell defaults are used instead. `dot_zprofile` still sources
+`~/.profile` but nothing reads `.zprofile` itself anymore now that zsh is
+gone — candidate for removal too, not done yet since it wasn't asked for.*
 
 ## Reference-only (other_config)
 

@@ -1,0 +1,21 @@
+#!/bin/bash
+# git-abort — smart abort: rebase, merge, cherry-pick, or reset unmergeable conflicts.
+gitdir=$(git rev-parse --git-dir)
+if [ -d "$gitdir/rebase-merge" ] || [ -d "$gitdir/rebase-apply" ]; then
+  git rebase --abort
+  echo '✅ Aborted the rebase.'
+elif [ -f "$gitdir/MERGE_HEAD" ]; then
+  git merge --abort
+elif [ -f "$gitdir/CHERRY_PICK_HEAD" ]; then
+  git cherry-pick --abort
+elif git status --porcelain | grep -Eq '^(UU|AA|DD|UD|DU)'; then
+  read -r -p 'Unabortable conflicts detected. Reset changes? (Y/n) ' ANSWER
+  if [[ "$ANSWER" =~ ^[Yy]$ || -z "$ANSWER" ]]; then
+    git reset --hard
+    git clean -fd
+  else
+    echo '✅ Operation Canceled.'
+  fi
+else
+  echo '✅ Nothing to abort.'
+fi

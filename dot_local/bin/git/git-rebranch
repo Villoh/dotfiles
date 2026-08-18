@@ -1,0 +1,21 @@
+#!/bin/bash
+# git-rebranch — rebuild the current branch from a fresh copy of the default branch.
+set -euo pipefail
+MAIN=$(git remote-default)
+git savepoint
+if ! git can-merge "$MAIN"; then
+  exit 1
+fi
+BRANCH=$(git symbolic-ref --short HEAD)
+git switch "$MAIN" || exit 1
+git pull || exit 1
+git switch -
+TEMP=$(uuidgen)
+git switch -c "$TEMP"
+git switch "$MAIN"
+git branch -D "$BRANCH"
+git switch -c "$BRANCH"
+for COMMIT in $(git rev-list --reverse "$MAIN..$TEMP"); do
+  git cherry-pick "$COMMIT" || { echo "❌ cherry pick failed at $COMMIT"; exit 1; }
+done
+git branch -D "$TEMP"

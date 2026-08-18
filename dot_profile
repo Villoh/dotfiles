@@ -1,12 +1,17 @@
 
-. "$HOME/.local/share/../bin/env"
+[[ -s "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
+# git-* subcommand scripts (dot_local/bin/git/git-*) — not directly in PATH's
+# ~/.local/bin, so git's own external-command lookup (`git <name>` ->
+# `git-<name>`) wouldn't find them without this.
+export PATH="$HOME/.local/bin/git:$PATH"
 
 [ -r "${XDG_CONFIG_HOME:-$HOME/.config}/secrets/global-env.sh" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/secrets/global-env.sh"
 
 # GPG SSH Agent
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 export GPG_TTY=$(tty)
-export TERMINAL=kitty
+export TERMINAL=alacritty
 export EXPLORER=yazi
 export EDITOR=zeditor
 export VISUAL=zeditor

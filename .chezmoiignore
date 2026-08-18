@@ -8,7 +8,13 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_autohotkey) }}Documents/AutoHotkey/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}AppData/Roaming/Rainmeter/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}Documents/Rainmeter/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_herdr) }}.config/herdr/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.config/psmux/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_starship) }}.config/starship.toml{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_alacritty) }}.config/alacritty/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_btop) }}.config/btop/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_fastfetch) }}.config/fastfetch/**{{ end }}
+{{ if ne .chezmoi.os "windows" }}.config/opencode/themes/**{{ end }}
 .agents/skills/**
 .agents/skills.disabled/**
 {{ if ne .chezmoi.os "windows" }}AppData/
@@ -18,46 +24,33 @@ scoop/
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
 {{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshenv
-.zprofile
-.config/zsh/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_bash) }}.bashrc
-.bash_profile
-.bash_logout
-.profile{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/hypr.old/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zprofile
+.profile
+{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}.config/nchat/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}.config/cliphist/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}.config/vesktop/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_systemd) }}.config/systemd/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/autostart/**
-.config/mimeapps.list
-.local/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
 {{ if ne .chezmoi.os "windows" }}Pictures/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
 {{ if not .enable_zed }}.config/zed/**{{ end }}
 {{ if not .enable_yazi }}.config/yazi/**{{ end }}
-{{ if not .enable_btop }}.config/btop/**{{ end }}
-{{ if not .enable_fastfetch }}.config/fastfetch/**{{ end }}
 {{ if not .enable_cava }}.config/cava/**{{ end }}
 {{ if not .enable_gh_dash }}.config/gh-dash/**{{ end }}
 {{ if not .enable_micro }}.config/micro/**{{ end }}
 {{ if not .enable_opencode }}.config/opencode/**{{ end }}
-{{ if not .enable_starship }}.config/starship.toml{{ end }}
 {{ if not .enable_ohmyposh }}.config/ohmyposh/**{{ end }}
 {{ if not .enable_bun }}.config/.bunfig.toml{{ end }}
 {{ if not .enable_git }}.config/git/**{{ end }}
 {{ if not .enable_uv }}.config/uv/**{{ end }}
 {{ if not .enable_zellij }}.config/zellij/**{{ end }}
 {{ if not .enable_ytm_player }}.config/ytm-player/**{{ end }}
-{{ if not .enable_scoop }}.config/scoop/**{{ end }}
-{{ if not .enable_tmux }}.tmux.conf
+{{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.tmux.conf
 .tmux-keys{{ end }}
 {{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
-{{ if not .enable_alacritty }}.config/alacritty/**{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
 .claude/*

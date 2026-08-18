@@ -1,0 +1,20 @@
+#!/bin/bash
+# git-tree — visual tree of all tracked + untracked (non-ignored) files.
+git ls-files --cached --others --exclude-standard | sort -f | awk '
+  BEGIN { FS = "/" }
+  {
+    n = split($0, parts, "/")
+    path = ""
+    for (i = 1; i < n; i++) {
+      path = (i == 1 ? parts[i] : path "/" parts[i])
+      if (!(path in seen)) {
+        seen[path] = 1
+        indent = ""
+        for (j = 1; j < i; j++) indent = indent "│   "
+        print indent "├── \033[34m" parts[i] "/\033[0m"
+      }
+    }
+    indent = ""
+    for (j = 1; j < n; j++) indent = indent "│   "
+    print indent "├── " parts[n]
+  }'

@@ -1,0 +1,6 @@
+#!/bin/bash
+# git-lines <branch> [exclude-paths...] — shortstat diff vs branch, excluding paths.
+branch="$1"; shift
+excludes=""
+for f in "$@"; do excludes="$excludes :(exclude)$f"; done
+git diff --shortstat "$branch"...HEAD $excludes

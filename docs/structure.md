@@ -9,7 +9,7 @@ chezmoi/
 │
 ├── dot_config/                 # → ~/.config/
 ├── dot_local/bin/              # → ~/.local/bin/ (Linux scripts)
-├── dot_bashrc, dot_zshenv…     # Shell configs (Linux)
+├── dot_zprofile, dot_profile   # Shell configs (Linux)
 │
 ├── AppData/                    # → ~/AppData/ (Windows)
 ├── Documents/                  # → ~/Documents/ (Windows)
@@ -41,9 +41,6 @@ chezmoi/
 | Path | Repo |
 |------|------|
 | `other_config/plymouth/themes/adi1090x-themes` | adi1090x/plymouth-themes |
-| `other_config/plymouth/themes/cachyos` | CachyOS/cachyos-plymouth-theme |
 | `other_config/plymouth/themes/onepiece` | Anxhul10/onePiece-plymouth |
 | `other_config/plymouth/themes/vortex-ubuntu` | emanuele-scarsella/vortex-ubuntu-plymouth-theme |
 | `other_config/sddm/themes/sddm-astronaut-theme` | Keyitdev/sddm-astronaut-theme |
-| `dot_config/hypr/hyprlock/catppuccin` | catppuccin/hyprlock |
-| `dot_config/hypr/hyprlock/vivek-hyprlock-styles` | MrVivekRajan/Hyprlock-Styles |

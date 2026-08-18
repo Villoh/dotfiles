@@ -1,0 +1,14 @@
+#!/bin/bash
+# git-can-merge <branch> — exit 1 if merging <branch> into HEAD would conflict.
+set -euo pipefail
+TO=$1
+TMP=$(mktemp)
+git merge-tree "$(git merge-base HEAD "$TO")" HEAD "$TO" > "$TMP"
+if grep -q '<<<<<<<' "$TMP"; then
+  echo '❌ Merge conflict would occur!'
+  rm "$TMP"
+  exit 1
+else
+  echo '✅ No conflicts. Safe to merge.'
+fi
+rm "$TMP"

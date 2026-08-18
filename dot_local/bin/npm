@@ -1,0 +1,4 @@
+#!/bin/bash
+# npm — routes through socket's supply-chain-scanning wrapper.
+# Bash port of the old zsh `alias npm='socket npm'` (dropped along with zsh).
+exec socket npm "$@"
