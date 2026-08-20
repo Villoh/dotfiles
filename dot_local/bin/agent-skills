@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+set -u
+
+active_root="$HOME/.agents/skills"
+disabled_root="$HOME/.agents/skills.disabled"
+
+states=()
+names=()
+paths=()
+filtered=()
+
+load_skills() {
+    states=()
+    names=()
+    paths=()
+
+    local state root path
+    for state in Enabled Disabled; do
+        if [[ $state == Enabled ]]; then
+            root=$active_root
+        else
+            root=$disabled_root
+        fi
+        [[ -d $root ]] || continue
+
+        while IFS= read -r -d '' path; do
+            [[ -f $path/SKILL.md ]] || continue
+            states+=("$state")
+            names+=("${path##*/}")
+            paths+=("$path")
+        done < <(find "$root" -mindepth 1 -maxdepth 1 -type d -print0 | sort -z)
+    done
+}
+
+show_list() {
+    local filter=${1:-All}
+    load_skills
+
+    local i found=0
+    for ((i = 0; i < ${#names[@]}; i++)); do
+        [[ $filter == All || ${states[i]} == "$filter" ]] || continue
+        printf '%-8s %s\n' "${states[i]}" "${names[i]}"
+        found=1
+    done
+
+    ((found)) || printf 'No %s shared agent skills found.\n' "${filter,,}" >&2
+}
+
+rebuild_filter() {
+    filtered=()
+
+    local i needle=${query,,}
+    for ((i = 0; i < ${#names[@]}; i++)); do
+        [[ ${names[i],,} == *"$needle"* ]] && filtered+=("$i")
+    done
+}
+
+toggle_skill() {
+    local index=${filtered[selection]}
+    local name=${names[index]} source=${paths[index]} destination_root destination_state
+
+    if [[ ${states[index]} == Enabled ]]; then
+        destination_root=$disabled_root
+        destination_state=Disabled
+    else
+        destination_root=$active_root
+        destination_state=Enabled
+    fi
+
+    if [[ -e $destination_root/$name ]]; then
+        message="$name already exists in $destination_root."
+        return
+    fi
+
+    mkdir -p -- "$destination_root"
+    if mv -- "$source" "$destination_root/$name"; then
+        message="$name is now ${destination_state,,}."
+        load_skills
+        rebuild_filter
+        selection=0
+    else
+        message="Could not move $name."
+    fi
+}
+
+run_tui() {
+    [[ -t 0 && -t 1 ]] || { echo 'agent-skills TUI requires an interactive terminal.' >&2; return 1; }
+
+    load_skills
+    ((${#names[@]})) || { echo 'No shared agent skills found.' >&2; return; }
+
+    local selection=0 query='' message='' key rest lines page_size page start end total_pages index color
+    trap 'printf "\033[?25h"' EXIT INT TERM
+    printf '\033[?25l'
+
+    while :; do
+        rebuild_filter
+        if ((${#filtered[@]})); then
+            ((selection < ${#filtered[@]})) || selection=$((${#filtered[@]} - 1))
+        else
+            selection=0
+        fi
+
+        lines=$(tput lines 2>/dev/null || printf '24')
+        page_size=$((lines - 7))
+        ((page_size >= 3)) || page_size=3
+        page=$((selection / page_size))
+        start=$((page * page_size))
+        end=$((start + page_size))
+        ((${#filtered[@]} < end)) && end=${#filtered[@]}
+        total_pages=$(( (${#filtered[@]} + page_size - 1) / page_size ))
+        ((total_pages >= 1)) || total_pages=1
+
+        printf '\033[H\033[2J'
+        printf '\033[36mAgent skills\033[0m\n'
+        printf '\033[2mType to search  Backspace: erase  Enter/Space: toggle  Esc: clear/quit\033[0m\n'
+        printf '\033[33mSearch: %s  %s\033[0m\n\n' "$query" "$message"
+
+        if ((${#filtered[@]} == 0)); then
+            printf '\033[33mNo skills match the search.\033[0m\n'
+        fi
+        for ((i = start; i < end; i++)); do
+            index=${filtered[i]}
+            [[ $i == "$selection" ]] && cursor='>' || cursor=' '
+            [[ ${states[index]} == Enabled ]] && color='32' || color='2'
+            printf '%s \033[%sm[%s] %s\033[0m\n' "$cursor" "$color" "${states[index]:0:1}" "${names[index]}"
+        done
+
+        printf '\n\033[2mPage %d/%d  Up/Down: move  PgUp/PgDn: page\033[0m' "$((page + 1))" "$total_pages"
+        message=''
+        IFS= read -rsn1 key || true
+
+        case $key in
+            $'\e')
+                IFS= read -rsn2 -t 0.05 rest || rest=''
+                case $rest in
+                    '[A') ((selection > 0)) && ((selection--)) ;;
+                    '[B') ((selection + 1 < ${#filtered[@]})) && ((selection++)) ;;
+                    '[5~') ((selection -= page_size, selection < 0)) && selection=0 ;;
+                    '[6~')
+                        if ((${#filtered[@]})); then
+                            ((selection += page_size, selection >= ${#filtered[@]})) && selection=$((${#filtered[@]} - 1))
+                        fi
+                        ;;
+                    *)
+                        if [[ -n $query ]]; then
+                            query=''
+                            selection=0
+                        else
+                            break
+                        fi
+                        ;;
+                esac
+                ;;
+            $'\177'|$'\b')
+                query=${query:0:${#query}-1}
+                selection=0
+                ;;
+            ''|' ')
+                ((${#filtered[@]})) && toggle_skill
+                ;;
+            *)
+                if [[ $key == [[:print:]] ]]; then
+                    query+=$key
+                    selection=0
+                fi
+                ;;
+        esac
+    done
+}
+
+case ${1:-} in
+    list)
+        case ${2:-} in
+            '') show_list All ;;
+            --enabled) show_list Enabled ;;
+            --disabled) show_list Disabled ;;
+            *) echo 'Usage: agent-skills list [--enabled|--disabled]' >&2; exit 2 ;;
+        esac
+        ;;
+    ''|tui) run_tui ;;
+    -h|--help)
+        echo 'Usage: agent-skills [tui] | list [--enabled|--disabled]'
+        ;;
+    *)
+        echo 'Usage: agent-skills [tui] | list [--enabled|--disabled]' >&2
+        exit 2
+        ;;
+esac
