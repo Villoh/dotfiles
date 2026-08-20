@@ -3,6 +3,8 @@
 ignoreScripts: true
 saveExact: true
 minimumReleaseAge: 4320
+# NTFS does not support pnpm's clone/reflink import method.
+packageImportMethod: copy
 globalDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\.local\pnpm\global
 globalBinDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\.local\pnpm\bin
 storeDir: {{ .chezmoi.homeDir | replace "/" "\\" }}\scoop\apps\pnpm\current\store

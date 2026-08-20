@@ -42,8 +42,9 @@ function Invoke-HeadroomUpgrade {
     # (headroom issue #2462), so a plain re-resolve pulls the trojaned
     # ast-grep-cli 0.44.1 (Trojan:Win64/Lazy!MTB, headroom issue #2332).
     # --force reinstalls/upgrades headroom-ai to latest while excluding it.
+    # Python 3.12 uses xxhash's prebuilt wheel; newer Python versions need MSVC.
     Write-Host "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Updating headroom (safe, ast-grep-cli 0.44.1 excluded)..." -ForegroundColor Cyan
-    uv tool install "headroom-ai[all]" --with "ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1" --python 3.13 --force
+    uv tool install "headroom-ai[all]" --with "ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1" --python 3.12 --force
     if ($LASTEXITCODE -eq 0) { Write-Host "headroom updated." -ForegroundColor Green }
     else { Write-Warning "headroom update failed (exit code $LASTEXITCODE)." }
 }

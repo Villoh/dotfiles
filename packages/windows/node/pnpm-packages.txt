@@ -10,6 +10,7 @@
 @vtsls/language-server
 agent-browser
 agent-skill-manager
+bash-language-server
 ctx7
 defuddle
 eslint

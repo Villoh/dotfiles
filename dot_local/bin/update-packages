@@ -33,7 +33,7 @@ run_harness() {
     fi
 
     if command_exists uv; then
-        run_harness_step 'headroom (ast-grep-cli 0.44.1 excluded)' uv tool install 'headroom-ai[all]' --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1' --python 3.13 --force
+        run_harness_step 'headroom (ast-grep-cli 0.44.1 excluded)' uv tool install 'headroom-ai[all]' --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1' --python 3.12 --force
         run_harness_step 'serena' uv tool upgrade serena-agent
     else
         printf '→ Skipping headroom and serena: uv not found\n' >&2
@@ -149,7 +149,7 @@ while IFS= read -r choice; do
         # ast-grep-cli 0.44.1 (supply-chain trojan, headroom issue #2332). The
         # Windows sg.exe payload can't run on Linux, but the package is still
         # pulled — keep it excluded. --force reinstalls to latest with the pin.
-        "🗜️  headroom") run "headroom (ast-grep-cli 0.44.1 excluded)" uv tool install "headroom-ai[all]" --with "ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1" --python 3.13 --force ;;
+        "🗜️  headroom") run "headroom (ast-grep-cli 0.44.1 excluded)" uv tool install "headroom-ai[all]" --with "ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1" --python 3.12 --force ;;
         "🧭 serena") run "serena" uv tool upgrade serena-agent ;;
     esac
 done <<< "$selected"
