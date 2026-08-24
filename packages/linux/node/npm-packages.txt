@@ -4,3 +4,4 @@ node-gyp
 nopt
 npm
 semver
+prime-agent

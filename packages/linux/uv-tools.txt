@@ -11,3 +11,8 @@ tinytuya
 trafilatura
 ytm-player
 zuban
+goopdl
+harlequin
+headroom-ai
+masamune-tui
+serena-agent

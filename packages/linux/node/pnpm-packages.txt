@@ -16,3 +16,13 @@ typescript-language-server
 vscode-langservers-extracted
 @devcontainers/cli
 @kaitranntt/ccs
+@jmfederico/pi-web
+agent-browser
+bash-language-server
+ctx7
+defuddle
+gitquarry
+openwiki
+socket
+vercel
+wrangler
