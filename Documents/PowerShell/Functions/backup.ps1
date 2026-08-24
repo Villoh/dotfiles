@@ -169,7 +169,7 @@ function Invoke-CargoBackup {
     $git = $list | Where-Object { $_ -match 'https://' } |
         ForEach-Object { [regex]::Match($_, 'https://[^#)]+').Value -replace '\.git$', '' }
 
-    ($crates + $git) | Where-Object { $_ } | Sort-Object | Set-Content $file -Encoding UTF8
+    (@($crates) + @($git)) | Where-Object { $_ } | Sort-Object | Set-Content $file -Encoding UTF8
     Write-Host "cargo backup OK ($(($crates).Count) crates + $(($git).Count) git)" -ForegroundColor Green
     Write-Host "  (cargo-minimal.txt is manually maintained — not overwritten)" -ForegroundColor DarkGray
     return $true
