@@ -1,53 +1,53 @@
 {
   "customModels": [
     {
-      "model": "claude-fable-5",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "baseUrl": "http://127.0.0.1:8317",
       "displayName": "Claude Fable 5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "model": "claude-fable-5",
+      "provider": "anthropic"
     },
     {
-      "model": "claude-opus-5",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "baseUrl": "http://127.0.0.1:8317",
       "displayName": "Claude Opus 5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "model": "claude-opus-5",
+      "provider": "anthropic"
     },
     {
-      "model": "claude-sonnet-5",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "baseUrl": "http://127.0.0.1:8317",
       "displayName": "Claude Sonnet 5 (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317",
-      "provider": "anthropic",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "model": "claude-sonnet-5",
+      "provider": "anthropic"
     },
     {
-      "model": "gpt-5.6-luna",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "baseUrl": "http://127.0.0.1:8317/v1",
       "displayName": "GPT-5.6 Luna (2x usage) (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "model": "gpt-5.6-luna",
+      "provider": "openai"
     },
     {
-      "model": "gpt-5.6-sol",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "baseUrl": "http://127.0.0.1:8317/v1",
       "displayName": "GPT 5.6 Sol (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "model": "gpt-5.6-sol",
+      "provider": "openai"
     },
     {
-      "model": "gpt-5.6-terra",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
+      "baseUrl": "http://127.0.0.1:8317/v1",
       "displayName": "GPT 5.6 Terra (Tunnel Agent)",
-      "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "model": "gpt-5.6-terra",
+      "provider": "openai"
     },
     {
-      "model": "gpt-image-2",
-      "displayName": "GPT-Image-2 (Tunnel Agent)",
+      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}",
       "baseUrl": "http://127.0.0.1:8317/v1",
-      "provider": "openai",
-      "apiKey": "${TUNNEL_AGENT_CLIPROXY_API_KEY}"
+      "displayName": "GPT-Image-2 (Tunnel Agent)",
+      "model": "gpt-image-2",
+      "provider": "openai"
     }
   ],
   "enabledPlugins": {
@@ -67,54 +67,54 @@
       {
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
     ],
     "PermissionRequest": [
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "*"
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "*"
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "*",
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "*"
       }
     ],
     "SessionStart": [
       {
         "hooks": [
           {
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \u0022C:\\Users\\mikel\\.factory\\hooks\\herdr-agent-state.ps1\u0022 session",
+            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
             "timeout": 10,
             "type": "command"
           }
@@ -123,9 +123,9 @@
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"C:\\Users\\mikel\\.factory\\hooks\\herdr-agent-state.ps1\" session",
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -134,9 +134,9 @@
       {
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -145,9 +145,9 @@
       {
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }
@@ -156,9 +156,9 @@
       {
         "hooks": [
           {
-            "type": "command",
             "command": "C:/WINDOWS/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -ExecutionPolicy Bypass -EncodedCommand aQBmACAAKABUAGUAcwB0AC0AUABhAHQAaAAgAC0ATABpAHQAZQByAGEAbABQAGEAdABoACAAJwBDADoAXABVAHMAZQByAHMAXABtAGkAawBlAGwAXAAuAG8AcgBjAGEAXABhAGcAZQBuAHQALQBoAG8AbwBrAHMAXABkAHIAbwBpAGQALQBoAG8AbwBrAC4AYwBtAGQAJwAgAC0AUABhAHQAaABUAHkAcABlACAATABlAGEAZgApACAAewAgACYAIAAnAEMAOgBcAFUAcwBlAHIAcwBcAG0AaQBrAGUAbABcAC4AbwByAGMAYQBcAGEAZwBlAG4AdAAtAGgAbwBvAGsAcwBcAGQAcgBvAGkAZAAtAGgAbwBvAGsALgBjAG0AZAAnADsAIABlAHgAaQB0ACAAJABMAEEAUwBUAEUAWABJAFQAQwBPAEQARQAgAH0AOwAgAFsAQwBvAG4AcwBvAGwAZQBdADoAOgBJAG4ALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAIAB8ACAATwB1AHQALQBOAHUAbABsADsAIABlAHgAaQB0ACAAMAA=",
-            "timeout": 10
+            "timeout": 10,
+            "type": "command"
           }
         ]
       }

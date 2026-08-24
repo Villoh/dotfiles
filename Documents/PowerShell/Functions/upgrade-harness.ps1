@@ -60,7 +60,7 @@ function Invoke-SerenaUpgrade {
 function Invoke-ImpeccableUpgrade {
     if (-not (Get-Command npx -ErrorAction SilentlyContinue)) { Write-Warning "npx not found; skipping impeccable."; return }
     Write-Host "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Updating impeccable..." -ForegroundColor Cyan
-    npx impeccable update -y --providers=codex,cursor,opencode,pi --scope=global
+    npx impeccable update -y --providers=codex, cursor, opencode, pi --scope=global
     if ($LASTEXITCODE -eq 0) { Write-Host "impeccable updated." -ForegroundColor Green }
     else { Write-Warning "impeccable update failed (exit code $LASTEXITCODE)." }
 }
@@ -79,6 +79,7 @@ Set-Alias -Name update-harness  -Value Invoke-HarnessUpgrade
 Set-Alias -Name upgrade-harness -Value Invoke-HarnessUpgrade
 Set-Alias -Name update-impeccable  -Value Invoke-ImpeccableUpgrade
 Set-Alias -Name upgrade-impeccable -Value Invoke-ImpeccableUpgrade
+
 
 
 

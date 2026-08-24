@@ -1,6 +1,7 @@
 basedpyright
 goopdl
 graphifyy
+harlequin
 headroom-ai
 holded-tt
 masamune-tui
