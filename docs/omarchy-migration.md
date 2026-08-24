@@ -21,7 +21,7 @@ forced case. Reference only — never deployed (see `.chezmoiignore`).
 
 - [x] Verify ISO hash against official release.
 - [x] Flash + validate USB.
-- [ ] **Export GPG key(s) before wiping CachyOS** — `dot_config/git/encrypted_local.asc`
+- [x] **Export GPG key(s) before wiping CachyOS** — `dot_config/git/encrypted_local.asc`
       / `encrypted_work.asc` and the `secrets`/`bwp` scripts all decrypt
       through GPG; nothing decrypts on the fresh Omarchy install without it.
       ```
