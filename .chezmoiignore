@@ -64,6 +64,7 @@ scoop/
 !.claude/themes/
 !.claude/themes/**
 .pi/agent/auth.json
+.pi/agent/EXTENSIONS.md
 .pi/workflows/runs/**
 .omp/agent/agent.db
 .omp/agent/sessions/**

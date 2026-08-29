@@ -146,7 +146,7 @@
   "current_line_highlight": "none",
   "show_whitespaces": "none",
   "tab_size": 2,
-  "auto_indent": "none",
+  "auto_indent": false,
   "auto_indent_on_paste": false,
   "horizontal_scroll_margin": 1,
   "vertical_scroll_margin": 1,

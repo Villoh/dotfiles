@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-08-24T19:32:42.455+02:00",
+  "CreationDate": "2026-08-29T19:54:26.57+02:00",
   "Sources": [
     {
       "Packages": [
@@ -41,6 +41,9 @@
           "PackageIdentifier": "namazso.PawnIO"
         },
         {
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
+        },
+        {
           "PackageIdentifier": "Microsoft.GameInput"
         },
         {
@@ -51,6 +54,9 @@
         },
         {
           "PackageIdentifier": "Nilesoft.Shell"
+        },
+        {
+          "PackageIdentifier": "Neovim.Neovim"
         },
         {
           "PackageIdentifier": "Microsoft.PowerShell"
@@ -69,12 +75,6 @@
         },
         {
           "PackageIdentifier": "TechPowerUp.NVCleanstall"
-        },
-        {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
-        },
-        {
-          "PackageIdentifier": "Neovim.Neovim"
         },
         {
           "PackageIdentifier": "namazso.SecureUXTheme"

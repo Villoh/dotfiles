@@ -1,6 +1,8 @@
 {
   "voiceFeaturesOnly": true,
-  "ui": {},
+  "ui": {
+    "backgroundShellPrevShortcut": "alt+["
+  },
   "voice": {
     "serverShortcut": "f12"
   }

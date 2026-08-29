@@ -3,6 +3,7 @@
 ## What is this repo
 
 Dual-platform dotfiles managed with [chezmoi](https://chezmoi.io):
+
 - **Windows** — AtlasOS (Win11): AppData, Documents, PowerShell, Scoop, program_files
 - **Linux** — CachyOS + Hyprland: dot_config, dot_local/bin, shell configs
 
@@ -11,6 +12,7 @@ Dual-platform dotfiles managed with [chezmoi](https://chezmoi.io):
 **Mode: symlink.** Source files are symlinked into `$HOME`. Editing a file in `~/.config/` edits the chezmoi source directly — no `chezmoi re-add` needed.
 
 **Platform branching** is done in `.chezmoiignore` with Go templates:
+
 ```
 {{ if eq .chezmoi.os "windows" }}   # ignored on Linux
 {{ if ne .chezmoi.os "windows" }}   # ignored on Windows (covers Linux + macOS)
@@ -40,9 +42,10 @@ Dual-platform dotfiles managed with [chezmoi](https://chezmoi.io):
 Load these only when the task is relevant to them:
 
 | File | When to read |
-|------|-------------|
+| ------ | ------------- |
 | `docs/structure.md` | Exploring the repo, adding new configs, understanding what's tracked |
 | `docs/windows.md` | Any Windows-specific config, junctions, AppData, scripts, running PowerShell from bash |
 | `docs/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
 | `docs/commits.md` | Writing or reviewing commit messages |
 | `docs/omarchy-migration.md` | CachyOS → Omarchy migration, Secure Boot, dual-boot, theme-overlap cleanup |
+| `docs/nixos-dms-migration.md` | NixOS + Dank Material Shell alternative, Hyprland vs Niri, gaps vs Omarchy |

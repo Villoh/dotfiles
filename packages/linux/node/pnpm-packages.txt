@@ -3,7 +3,6 @@
 @fission-ai/openspec
 @gsd-build/sdk
 @microck/moji
-@oh-my-pi/pi-coding-agent
 @vtsls/language-server
 agent-skill-manager
 eslint

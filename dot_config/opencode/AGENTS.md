@@ -17,10 +17,15 @@ For version-specific docs, use `/org/project/version` from the `library` output 
 If a command fails with a quota error, inform the user and suggest `npx ctx7@latest login` or setting `CONTEXT7_API_KEY` env var for higher limits. Do not silently fall back to training data.
 <!-- context7 -->
 
+<!-- fff -->
+For any file search or grep in the current git-indexed directory, use fff tools.
+<!-- fff -->
+
 <!-- caveman-begin -->
 Respond terse like smart caveman. All technical substance stay. Only fluff die.
 
 Rules:
+
 - Drop: articles (a/an/the), filler (just/really/basically), pleasantries, hedging
 - Fragments OK. Short synonyms. Technical terms exact. Code unchanged.
 - Pattern: [thing] [action] [reason]. [next step].

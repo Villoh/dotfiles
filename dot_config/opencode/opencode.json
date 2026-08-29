@@ -31,6 +31,11 @@
     "./plugins/caveman/plugin.js"
   ],
   "mcp": {
+    "fff": {
+      "type": "local",
+      "command": ["fff-mcp"],
+      "enabled": true
+    },
     "caveman-shrink": {
       "type": "local",
       "command": [

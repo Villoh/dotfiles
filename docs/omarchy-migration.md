@@ -33,9 +33,9 @@ forced case. Reference only — never deployed (see `.chezmoiignore`).
       Copy those 3 files somewhere off this disk (USB, other drive) — never
       into the chezmoi repo itself. On the fresh Omarchy install:
       `gpg --import gpg-secret-*.asc && gpg --import-ownertrust gpg-ownertrust.txt`.
-- [ ] Boot USB, **full-disk install** on Disco 0 (no free-space install
+- [x] Boot USB, **full-disk install** on Disco 0 (no free-space install
       needed now that CachyOS is being wiped, not kept alongside).
-- [ ] Secure Boot / TPM must be OFF in BIOS for the installer to run at all —
+- [x] Secure Boot / TPM must be OFF in BIOS for the installer to run at all —
       Omarchy has no official Secure Boot support.
 - [ ] Run `sudo limine-scan` after install so Windows Boot Manager (Disco 1
       ESP) shows up in Limine's own boot menu, not just the firmware's F11/F12

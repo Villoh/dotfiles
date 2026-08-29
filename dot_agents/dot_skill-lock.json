@@ -332,9 +332,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
       "skillPath": "skills/agent-browser/SKILL.md",
-      "skillFolderHash": "037e8078db4b20b4aa25c04f21c6de7d335ec449",
+      "skillFolderHash": "82def67855a0d2aad7794207951820fa5422fdb0",
       "installedAt": "2026-08-09T11:58:45.687Z",
-      "updatedAt": "2026-08-09T11:58:45.687Z"
+      "updatedAt": "2026-08-25T17:11:35.910Z"
     },
     "seo-audit": {
       "source": "coreyhaines31/marketingskills",

@@ -1,0 +1,52 @@
+{
+  "lastChangelogVersion": "0.84.3",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-mcp-adapter",
+    "npm:pi-rtk-optimizer",
+    "npm:pi-caveman",
+    "npm:@upstash/context7-pi",
+    "git:github.com/DietrichGebert/ponytail",
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-lens",
+    "npm:@router-for-me/pi-cliproxyapi-provider",
+    "npm:@injaneity/pi-computer-use",
+    "npm:pi-mermaid",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:pi-rewind-hook",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@diegopetrucci/pi-dirty-repo-guard",
+    "npm:@diegopetrucci/pi-notify",
+    "npm:@99percentpeople/pi-background-tasks",
+    "npm:pi-messenger",
+    "npm:pi-intercom",
+    "npm:@99percentpeople/pi-pwsh-adapter",
+    "npm:@gotgenes/pi-permission-system",
+    "npm:@howaboua/pi-codex-conversion",
+    "npm:pi-web-access",
+    "npm:@villoh/pi-auto-name-session",
+    "npm:@villoh/pi-tools",
+    "npm:@villoh/pi-btw",
+    "npm:@villoh/pi-extensions-manager",
+    "npm:@villoh/pi-skill-manager"
+  ],
+  "powerline": {
+    "preset": "default",
+    "fixedEditor": true
+  },
+  "npmCommand": [
+    "npm"
+  ],
+  "hideThinkingBlock": false,
+  "theme": "dark",
+  "modelRoles": {
+    "steward": "cliproxyapi/gpt-5.6-luna",
+    "expert": "cliproxyapi/claude-opus-5",
+    "builder": "cliproxyapi/gpt-5.6-terra",
+    "scout": "cliproxyapi/gpt-5.6-luna",
+    "frontend_designer": "cliproxyapi/claude-opus-5"
+  },
+  "defaultProvider": "cliproxyapi",
+  "defaultModel": "claude-sonnet-5",
+  "enableSkillCommands": false
+}

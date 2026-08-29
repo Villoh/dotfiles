@@ -92,7 +92,7 @@ function Invoke-BunBackup {
     $raw = & bun pm ls -g 2>&1
     if ($LASTEXITCODE -ne 0) {
         $errorText = ($raw | Out-String).Trim()
-        if ($errorText -match 'Lockfile not found') {
+        if ($errorText -match 'Lockfile not found|missing lockfile') {
             @() | Out-File $file -Encoding UTF8
             Write-Host "bun backup OK (0 packages)" -ForegroundColor Green
             return $true

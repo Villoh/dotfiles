@@ -1,0 +1,16 @@
+{
+  "workflow": "none",
+  "autoOpenBrowser": false,
+  "searchRouting": {
+    "providers": [
+      "exa",
+      "duckduckgo"
+    ],
+    "fallbackOn": [
+      "transient",
+      "quota",
+      "network",
+      "invalid-response"
+    ]
+  }
+}
