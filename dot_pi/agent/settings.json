@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.84.3",
+  "lastChangelogVersion": "0.85.1",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -16,11 +16,9 @@
     "npm:pi-rewind-hook",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@diegopetrucci/pi-dirty-repo-guard",
-    "npm:@diegopetrucci/pi-notify",
     "npm:@99percentpeople/pi-background-tasks",
     "npm:pi-messenger",
     "npm:pi-intercom",
-    "npm:@99percentpeople/pi-pwsh-adapter",
     "npm:@gotgenes/pi-permission-system",
     "npm:@howaboua/pi-codex-conversion",
     "npm:pi-web-access",
@@ -28,7 +26,11 @@
     "npm:@villoh/pi-tools",
     "npm:@villoh/pi-btw",
     "npm:@villoh/pi-extensions-manager",
-    "npm:@villoh/pi-skill-manager"
+    "npm:@villoh/pi-skills-manager",
+    "npm:pi-cliproxy-usage",
+    "npm:@piewf/cli@5.13.2",
+    "npm:@narumitw/pi-plan-mode",
+    "npm:pi-extensible-workflows"
   ],
   "powerline": {
     "preset": "default",
@@ -47,6 +49,6 @@
     "frontend_designer": "cliproxyapi/claude-opus-5"
   },
   "defaultProvider": "cliproxyapi",
-  "defaultModel": "claude-sonnet-5",
+  "defaultModel": "gpt-5.6-luna",
   "enableSkillCommands": false
 }

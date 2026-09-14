@@ -1,7 +1,7 @@
 # Modelo que Codex usará de forma predeterminada para las tareas.
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 # Esfuerzo de razonamiento: medium equilibra velocidad y profundidad de análisis.
-model_reasoning_effort = "medium"
+model_reasoning_effort = "low"
 # Estilo de comunicación predeterminado; cambia el tono, no las capacidades del modelo.
 personality = "pragmatic"
 # Nivel de detalle de las respuestas; low produce respuestas más breves en proveedores Responses API.
@@ -18,7 +18,7 @@ model_reasoning_summary = "concise"
 # model_provider = "cliproxyapi"
 # openai_base_url = "http://127.0.0.1:8317/v1"
 
-notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\e4d75eceaa042f20\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
+notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\a708e72b10c27b59\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
 [model_providers.cliproxyapi]
 name = "CLIProxyAPI (Tunnel Agent)"
 base_url = "http://127.0.0.1:8317/v1"
@@ -103,9 +103,6 @@ enabled = true
 [plugins."template-creator@openai-primary-runtime"]
 enabled = true
 
-[plugins."sites@openai-bundled"]
-enabled = true
-
 [plugins."ponytail@ponytail"]
 enabled = true
 
@@ -124,6 +121,12 @@ enabled = true
 [plugins."codex-app-tools@openai-bundled"]
 enabled = true
 
+[plugins."unified-computer-use@openai-bundled"]
+enabled = true
+
+[plugins."sites@openai-bundled"]
+enabled = true
+
 [features]
 hooks = true
 js_repl = false
@@ -136,29 +139,25 @@ args = []
 
 [mcp_servers.node_repl]
 args = []
-command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\e4d75eceaa042f20\bin\node_repl.exe'
+command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node_repl.exe'
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\e4d75eceaa042f20\bin\node_modules'
-NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\e4d75eceaa042f20\bin\node.exe'
-NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex;C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\e4d75eceaa042f20\bin\node_modules'
+NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node_modules'
+NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node.exe'
+NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex;C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node_modules'
 CODEX_HOME = 'C:\Users\mikel\.codex'
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
-BROWSER_USE_TINYSKY_ENABLED = "0"
-NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = "Control the in-app browser in conjunction with the Browser Plugin."
-NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = "Control the Chrome browser in conjunction with the Chrome Plugin. Prefer this method of controlling Chrome over alternatives (such as Computer Use) unless the user explicitly mentions an alternative."
+BROWSER_USE_TINYSKY_ENABLED = "1"
+NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
+NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.825.32147"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"C:/Users/mikel/.codex/plugins/cache/openai-bundled/browser/26.825.32147/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
+BROWSER_USE_CODEX_APP_VERSION = "26.908.40834"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"C:/Users/mikel/.codex/plugins/cache/openai-bundled/browser/26.908.40834/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
 SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-e4ed25a5-df04-4108-a20d-e805331b3136'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\fac60c5e9a2ae3df\codex.exe'
-
-[mcp_servers.cua_repl]
-command = 'C:\Program Files\WindowsApps\OpenAI.Codex_26.825.4187.0_x64__2p2nqsd0c76g0\app\ChatGPT.exe'
-enabled = false
+SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-f52f9c14-2631-41a0-a184-a483a2814e85'
+CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\bffc5354119c8421\codex.exe'
 
 [windows]
 sandbox = "elevated"
@@ -263,6 +262,15 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects.'c:\users\mikel\documents\codex\2026-08-27\realtime-voice-chat-2']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-09-01\realtime-voice-chat']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\.codex\.chatgpt-projects\g-p-6a67033906648191bb6f58ad3d2c145c']
+trust_level = "trusted"
+
+[projects.'c:\users\mikel\documents\codex\2026-09-11\realtime-voice-chat']
 trust_level = "trusted"
 
 [shell_environment_policy.set]

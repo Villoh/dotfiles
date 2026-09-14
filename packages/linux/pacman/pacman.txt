@@ -220,6 +220,7 @@ networkmanager-openvpn
 nfs-utils
 nilfs-utils
 nodejs-lts-jod
+npm
 noto-color-emoji-fontconfig
 noto-fonts
 noto-fonts-cjk
@@ -254,6 +255,7 @@ pipewire-jack
 pipewire-pulse
 pkgfile
 playerctl
+pnpm
 plocate
 plymouth
 podman

@@ -115,6 +115,7 @@ neovim
 netctl
 network-manager-applet
 ninja
+npm
 noto-color-emoji-fontconfig
 noto-fonts
 noto-fonts-cjk
@@ -134,6 +135,7 @@ perl
 perplexity
 pkgfile
 playerctl
+pnpm
 plymouth
 polkit-gnome
 poppler-glib

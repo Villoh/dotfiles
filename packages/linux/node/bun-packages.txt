@@ -1,3 +1,0 @@
-@devcontainers/cli
-@kaitranntt/ccs
-@oh-my-pi/pi-coding-agent

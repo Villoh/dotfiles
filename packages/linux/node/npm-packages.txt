@@ -1,7 +1,1 @@
-@bitwarden/cli
-@google/gemini-cli
-node-gyp
-nopt
-npm
-semver
 prime-agent

@@ -143,6 +143,22 @@ if [ -f "$PKG_DIR/node/npm-packages.txt" ]; then
     done < "$PKG_DIR/node/npm-packages.txt"
 fi
 
+# -- pnpm ----------------------------------------------------------------------
+if [ -f "$PKG_DIR/node/pnpm-packages.txt" ]; then
+    log_section "pnpm"
+    pnpm_installed=$(pnpm list -g --json 2>/dev/null)
+    while IFS= read -r pkg; do
+        [[ -z "$pkg" ]] && continue
+        pkg_name="${pkg%@*}"
+        if echo "$pnpm_installed" | grep -q "\"$pkg_name\""; then
+            log_skip "pnpm: $pkg already installed"
+            (( skip++ )) || true
+        else
+            try_install "pnpm: $pkg" pnpm add -g "$pkg"
+        fi
+    done < "$PKG_DIR/node/pnpm-packages.txt"
+fi
+
 # -- bun -----------------------------------------------------------------------
 if [ -f "$PKG_DIR/node/bun-packages.txt" ]; then
     log_section "bun"

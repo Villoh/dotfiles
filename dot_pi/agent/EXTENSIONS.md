@@ -33,7 +33,7 @@ This is an inventory of the packages declared in `settings.json`. Local paths re
 | `pi-extensions-manager` | Extensions manager. |
 | `pi-permission-system` | Tool permission controls. |
 | `pi-codex-conversion` | Codex-related conversion helpers. |
-| `pi-skill-manager` | Skill management. |
+| `@villoh/pi-skills-manager` | Skill management. |
 
 ## Disabled
 

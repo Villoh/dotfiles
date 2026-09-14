@@ -624,6 +624,9 @@
         },
         "NoticesAPI": {
             "enabled": true
+        },
+        "AddAttachments": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -640,7 +643,7 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1788016238880
+        "settingsSyncVersion": 1789404473653
     },
     "windowsMaterial": "none"
 }

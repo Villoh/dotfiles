@@ -15,6 +15,11 @@ if (Test-Path 'C:\Users\mikel\Documents\PowerShell\PrettyPowerShell\PrettyPowerS
 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
             [System.Environment]::GetEnvironmentVariable("PATH", "User")
 
+# Mise: activate project-local tool versions
+if (Get-Command mise -ErrorAction SilentlyContinue) {
+    (& mise activate pwsh) | Out-String | Invoke-Expression
+}
+
 # Terminal Icons
 Import-Module -Name Terminal-Icons
 

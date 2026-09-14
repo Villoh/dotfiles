@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/winget-packages.schema.2.0.json",
-  "CreationDate": "2026-08-29T19:54:26.57+02:00",
+  "CreationDate": "2026-09-08T11:38:50.235+02:00",
   "Sources": [
     {
       "Packages": [
@@ -41,9 +41,6 @@
           "PackageIdentifier": "namazso.PawnIO"
         },
         {
-          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
-        },
-        {
           "PackageIdentifier": "Microsoft.GameInput"
         },
         {
@@ -65,10 +62,19 @@
           "PackageIdentifier": "Apple.Bonjour"
         },
         {
+          "PackageIdentifier": "Microsoft.VCRedist.2008.x64"
+        },
+        {
+          "PackageIdentifier": "Microsoft.VSTOR"
+        },
+        {
           "PackageIdentifier": "karlstav.cava"
         },
         {
           "PackageIdentifier": "EpicGames.EpicGamesLauncher"
+        },
+        {
+          "PackageIdentifier": "OpenVPNTechnologies.OpenVPN"
         },
         {
           "PackageIdentifier": "Oracle.JDK.17"
@@ -92,6 +98,9 @@
           "PackageIdentifier": "OBSProject.OBSStudio"
         },
         {
+          "PackageIdentifier": "CreativeTechnology.OpenAL"
+        },
+        {
           "PackageIdentifier": "Rainmeter.Rainmeter"
         },
         {
@@ -107,16 +116,16 @@
           "PackageIdentifier": "qBittorrent.qBittorrent"
         },
         {
-          "PackageIdentifier": "Microsoft.VCRedist.2013.x64"
-        },
-        {
           "PackageIdentifier": "Microsoft.DotNet.DesktopRuntime.6"
         },
         {
           "PackageIdentifier": "Microsoft.DotNet.SDK.10"
         },
         {
-          "PackageIdentifier": "Microsoft.VCRedist.2013.x86"
+          "PackageIdentifier": "Microsoft.VCRedist.2008.x86"
+        },
+        {
+          "PackageIdentifier": "Microsoft.XNARedist"
         },
         {
           "PackageIdentifier": "EpicGames.EpicOnlineServices"
@@ -231,9 +240,6 @@
         },
         {
           "PackageIdentifier": "66HEX.Frame"
-        },
-        {
-          "PackageIdentifier": "Anysphere.Cursor"
         },
         {
           "PackageIdentifier": "M2Team.NanaZip"

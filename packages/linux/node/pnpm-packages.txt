@@ -14,8 +14,9 @@ typescript
 typescript-language-server
 vscode-langservers-extracted
 @devcontainers/cli
-@kaitranntt/ccs
 @jmfederico/pi-web
+@kaitranntt/ccs
+@oh-my-pi/pi-coding-agent
 agent-browser
 bash-language-server
 ctx7
