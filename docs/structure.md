@@ -17,7 +17,7 @@ chezmoi/
 ├── program_files/              # Portable Windows programs (Ditto, Nilesoft) — not deployed
 │
 ├── packages/                   # Package lists — reference only, not deployed
-│   ├── linux/                  # pacman.txt, aur.txt, flatpak.txt, npm, bun, uv-tools
+│   ├── linux/                  # flatpak, npm, pnpm, bun, and uv tool lists
 │   └── windows/                # Scoop/Winget lists, windhawk-settings.reg
 │
 ├── other_config/               # Reference configs not deployed by chezmoi
