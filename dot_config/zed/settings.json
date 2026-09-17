@@ -38,7 +38,7 @@
   "theme": {
     "mode": "dark",
     "light": "One Light",
-    "dark": "Kanagawa Dragon"
+    "dark": "Vercel Dark"
   },
   "theme_overrides": {
     "Aura Dark": {

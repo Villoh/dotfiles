@@ -10,9 +10,7 @@
     "npm:@ff-labs/pi-fff",
     "npm:pi-lens",
     "npm:@router-for-me/pi-cliproxyapi-provider",
-    "npm:@injaneity/pi-computer-use",
     "npm:pi-mermaid",
-    "npm:@juicesharp/rpiv-todo",
     "npm:pi-rewind-hook",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@diegopetrucci/pi-dirty-repo-guard",
@@ -30,7 +28,9 @@
     "npm:pi-cliproxy-usage",
     "npm:@piewf/cli@5.13.2",
     "npm:@narumitw/pi-plan-mode",
-    "npm:pi-extensible-workflows"
+    "npm:pi-extensible-workflows",
+    "npm:@injaneity/pi-computer-use",
+    "npm:gentle-pi@2.6.0"
   ],
   "powerline": {
     "preset": "default",
@@ -40,7 +40,7 @@
     "npm"
   ],
   "hideThinkingBlock": false,
-  "theme": "dark",
+  "theme": "Gentleman-Cute",
   "modelRoles": {
     "steward": "cliproxyapi/gpt-5.6-luna",
     "expert": "cliproxyapi/claude-opus-5",

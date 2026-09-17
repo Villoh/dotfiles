@@ -1,4 +1,5 @@
 {
+  "yoloMode": true,
   "permission": {
     "*": "allow",
     "path": {
