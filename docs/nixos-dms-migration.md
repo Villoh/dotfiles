@@ -1,10 +1,16 @@
-# CachyOS → NixOS + DMS (alternative path)
+# NixOS + DMS
 
-Lighter-weight alternative to `docs/omarchy-migration.md`: NixOS as the base
-instead of Arch, [Dank Material Shell](https://danklinux.com) (DMS) as the
-Wayland shell instead of Omarchy's own Hyprland setup. Reference only —
-never deployed (see `.chezmoiignore`). Not a decision to switch, just the
-research needed to compare the two before committing to either.
+This is the current Linux target: NixOS as the operating system,
+[Hyprland](https://hyprland.org/) as the compositor, and
+[Dank Material Shell](https://danklinux.com) (DMS) as the desktop shell.
+
+The NixOS repository is the declarative source of truth for the system,
+packages, services, hardware, Hyprland, and DMS. This chezmoi repository is a
+complement: it manages personal dotfiles and scripts that are not managed by
+Nix/Home Manager. Do not apply overlapping configuration from both systems.
+
+The historical CachyOS/Omarchy sections below are retained as migration notes,
+not as installation instructions for this chezmoi repository.
 
 ## ISO + flashing
 

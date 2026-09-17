@@ -48,7 +48,7 @@ scoop/
 {{ if not .enable_uv }}.config/uv/**{{ end }}
 {{ if not .enable_zellij }}.config/zellij/**{{ end }}
 {{ if not .enable_ytm_player }}.config/ytm-player/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.tmux.conf
+{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.tmux.conf
 .tmux-keys{{ end }}
 {{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
 
@@ -88,7 +88,6 @@ README.md
 .config/zellij/config.lockunlock.kdl
 .config/zellij/config.defaults.kdl
 .config/zellij/config.kdl.bak
-.tmux.lockunlock.conf
 .tmux.conf.tmpl.bak
 
 # ── herdr runtime state (sockets, session, logs) — never deployed ──

@@ -4,7 +4,9 @@
 > **This installation is not 100% tested and is still under construction. Use at your own risk.**
 
 > [!NOTE]
-> Package selection is interactive — the install script uses [fzf](https://github.com/junegunn/fzf) to let you pick exactly which packages to install. You can also review and edit the lists beforehand in [`packages/windows/`](packages/windows/) (Windows) or [`packages/linux/`](packages/linux/) (Linux).
+> Windows package selection is interactive. Linux uses NixOS/Home Manager as
+> its declarative source of truth; this repository does not install Linux
+> packages.
 
 ## Prerequisites
 
@@ -22,21 +24,28 @@ winget install -e --id twpayne.chezmoi
 
 ### Linux
 
-Install **Git** and **chezmoi** via pacman:
+The Linux system must be configured with **NixOS + Hyprland + Dank Material
+Shell (DMS)** separately. Install Git and chezmoi declaratively through
+NixOS/Home Manager, then initialize this repository without applying it:
 
 ```bash
-sudo pacman -S git chezmoi
+chezmoi init https://github.com/Villoh/dotfiles
 ```
+
+Do not use pacman/AUR or the old Arch bootstrap flow on NixOS.
 
 ---
 
 ## Install
 
+Windows can use:
+
 ```bash
 chezmoi init --apply --exclude=encrypted github.com/Villoh/dotfiles
 ```
 
-During `init --apply`, chezmoi will:
+On Linux, use only `chezmoi init` first and review the result before applying.
+During initialization, chezmoi will:
 1. Clone the repo to `~/.local/share/chezmoi`
 2. Prompt for module enable/disable options (all default to `true`)
 3. Generate `~/.config/chezmoi/chezmoi.toml`
@@ -60,9 +69,8 @@ chezmoi runs scripts automatically in this order:
 
 **Linux:**
 
-| Script | What it does |
-|--------|--------------|
-| `run_once_00_linux-install` | Git submodules, bootstrap (paru, flatpak, Node, Bun, uv, bin) + packages (pacman/AUR, flatpak, npm, bun, uv, bin) |
+There is no Linux package-installation script. NixOS/Home Manager installs and
+updates the system and its packages declaratively.
 
 > Scripts run in numeric prefix order (00, 01, 02…).
 

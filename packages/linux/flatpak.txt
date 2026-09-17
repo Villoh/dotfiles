@@ -1,7 +1,0 @@
-com.obsproject.Studio
-io.github.flattool.Warehouse
-io.gitlab.theevilskeleton.Upscaler
-org.blender.Blender
-org.gimp.GIMP
-org.inkscape.Inkscape
-org.kde.krita

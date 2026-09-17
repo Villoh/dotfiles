@@ -1,4 +1,9 @@
-# CachyOS → Omarchy migration
+# CachyOS → Omarchy migration (historical)
+
+> Historical reference only. The current Linux installation is NixOS +
+> Hyprland + Dank Material Shell (DMS). NixOS/Home Manager owns the
+> declarative system, packages, services, and desktop; chezmoi manages only
+> personal dotfiles and scripts outside that scope.
 
 Tracking doc for retiring CachyOS and making Omarchy 4.0.0 (Quattro) the Linux
 daily driver. Windows (AtlasOS) stays untouched on its own disk for the rare

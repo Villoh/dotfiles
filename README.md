@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers/blob/main/kanagawa.svg"><img src=".github/assets/kanagawa.svg" width="100" alt="Kanagawa logo"/></a>
   <h1>dotfiles — Kanagawa Dragon</a> edition</h1>
-  <p>Personal Kanagawa Dragon dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://cachyos.org/">CachyOS</a> / <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
+  <p>Personal Kanagawa Dragon dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://nixos.org/">NixOS</a> + <a href="https://danklinux.com/">Dank Material Shell</a> + <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
   <p>
     <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=C5C9C5&label=Last%20Commit&labelColor=1D1C19&color=8992A7"/></a>&nbsp;&nbsp;
     <a href="https://github.com/Villoh/dotfiles"><img src="https://img.shields.io/github/repo-size/Villoh/dotfiles?style=for-the-badge&logo=files&logoColor=C5C9C5&label=Size&labelColor=1D1C19&color=C4B28A" alt="Repo Size"/></a>&nbsp;&nbsp;
@@ -58,11 +58,15 @@
 
 ### Linux
 
-> My Linux setup is built on top of [HyDE](https://github.com/HyDE-Project/HyDE). If you're interested in a full Hyprland desktop setup, check it out first.
+> The Linux installation is **NixOS + Hyprland + Dank Material Shell (DMS)**.
+> NixOS/Home Manager owns the system, packages, services, hardware, Hyprland,
+> and DMS. Chezmoi only manages personal dotfiles and scripts that are not
+> declared in the NixOS configuration. Do not run Arch/CachyOS package
+> installers or use pacman/AUR lists from this repository.
 
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
-| Desktop | [HyDE](https://github.com/HyDE-Project/HyDE) + [Hyprland](https://hyprland.org/) | *(migrating to Omarchy — see `other_config/hypr-old-keybinds/`)* |
+| Desktop | [NixOS](https://nixos.org/) + [Hyprland](https://hyprland.org/) + [DMS](https://danklinux.com/) | Managed by the NixOS repository |
 | Status Bar | [Waybar](https://github.com/Alexays/Waybar) | [⚙️](dot_config/waybar/) |
 | Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) | [⚙️](dot_config/swaync/) |
 | OSD Overlays | [SwayOSD](https://github.com/ErikReider/SwayOSD) | [⚙️](dot_config/swayosd/) |
@@ -78,6 +82,12 @@
 | Chat | [nchat](https://github.com/d99kris/nchat) | [⚙️](dot_config/nchat/) |
 | YouTube | [FreeTube](https://freetubeapp.io/) | [⚙️](dot_config/FreeTube/) |
 | Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
+
+## NixOS and chezmoi
+
+NixOS is the declarative source of truth for the Linux system. Use chezmoi for
+personal configuration that has no suitable Nix/Home Manager module. Review
+`chezmoi diff` before applying anything; initialization does not apply files.
 
 ## Fresh install
 

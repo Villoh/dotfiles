@@ -5,7 +5,18 @@
 Dual-platform dotfiles managed with [chezmoi](https://chezmoi.io):
 
 - **Windows** — AtlasOS (Win11): AppData, Documents, PowerShell, Scoop, program_files
-- **Linux** — CachyOS + Hyprland: dot_config, dot_local/bin, shell configs
+- **Linux** — NixOS + Hyprland + Dank Material Shell (DMS): personal dot_config, dot_local/bin, and shell configs
+
+## NixOS and chezmoi boundary
+
+NixOS/Home Manager is the source of truth for the operating system, packages,
+services, Hyprland/DMS, hardware, and any configuration already declared in the
+NixOS repository. Chezmoi manages personal dotfiles, templates, and scripts
+that are not managed by Nix. Do not make both systems manage the same file.
+
+Linux files in this repository are not an Arch/CachyOS installer. Package
+installation belongs in NixOS/Home Manager; do not add pacman, AUR, or
+imperative package-bootstrap logic here.
 
 ## chezmoi essentials
 
