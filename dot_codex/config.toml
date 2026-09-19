@@ -55,7 +55,7 @@ skill = "#b06dff"
 
 [marketplaces.openai-bundled]
 source_type = "local"
-source = '\\?\C:\Users\mikel\.codex\.tmp\bundled-marketplaces\openai-bundled'
+source = "/home/mikel/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.caveman]
 last_updated = "2026-08-17T14:59:52Z"
@@ -124,9 +124,6 @@ enabled = true
 [plugins."unified-computer-use@openai-bundled"]
 enabled = true
 
-[plugins."sites@openai-bundled"]
-enabled = true
-
 [features]
 hooks = true
 js_repl = false
@@ -139,25 +136,23 @@ args = []
 
 [mcp_servers.node_repl]
 args = []
-command = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node_repl.exe'
+command = "/usr/lib/chatgpt/resources/cua_node/bin/node_repl"
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node_modules'
-NODE_REPL_NODE_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node.exe'
-NODE_REPL_TRUSTED_CODE_PATHS = 'C:\Users\mikel\.codex;C:\Users\mikel\AppData\Local\OpenAI\Codex\runtimes\cua_node\a708e72b10c27b59\bin\node_modules'
-CODEX_HOME = 'C:\Users\mikel\.codex'
+NODE_REPL_NODE_MODULE_DIRS = "/usr/lib/chatgpt/resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/usr/lib/chatgpt/resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/home/mikel/.codex:/usr/lib/chatgpt/resources/cua_node/lib/node_modules"
+CODEX_HOME = "/home/mikel/.codex"
 BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.908.40834"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"C:/Users/mikel/.codex/plugins/cache/openai-bundled/browser/26.908.40834/scripts/browser-service.mjs","sky":"@oai/sky/service"}'
-SKY_CUA_NATIVE_PIPE = "1"
-SKY_CUA_NATIVE_PIPE_DIRECTORY = '\\.\pipe\codex-computer-use-f52f9c14-2631-41a0-a184-a483a2814e85'
-CODEX_CLI_PATH = 'C:\Users\mikel\AppData\Local\OpenAI\Codex\bin\bffc5354119c8421\codex.exe'
+BROWSER_USE_CODEX_APP_VERSION = "26.911.61220"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/home/mikel/.codex/plugins/cache/openai-bundled/browser/26.911.61220/scripts/browser-service.mjs"}'
+CODEX_CLI_PATH = "/usr/lib/chatgpt/resources/codex"
 
 [windows]
 sandbox = "elevated"

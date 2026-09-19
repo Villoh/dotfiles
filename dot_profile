@@ -11,3 +11,7 @@ export PATH="$HOME/.local/bin/git:$PATH"
 # GPG SSH Agent
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 export GPG_TTY=$(tty)
+
+# pnpm global binaries
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PATH"

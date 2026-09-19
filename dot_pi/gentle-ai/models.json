@@ -1,0 +1,82 @@
+{
+  "gentle-ai-explore": {
+    "model": "cliproxyapi/gpt-5.6-luna",
+    "thinking": "low"
+  },
+  "gentle-ai-worker": {
+    "model": "cliproxyapi/gpt-5.6-terra",
+    "thinking": "high"
+  },
+  "gentle-ai-verify": {
+    "model": "cliproxyapi/gpt-5.6-sol",
+    "thinking": "high"
+  },
+  "jd-judge-a": {
+    "model": "cliproxyapi/gpt-6-astra",
+    "thinking": "high"
+  },
+  "jd-judge-b": {
+    "model": "cliproxyapi/gpt-6-astra",
+    "thinking": "high"
+  },
+  "jd-fix-agent": {
+    "model": "cliproxyapi/gpt-5.6-terra",
+    "thinking": "medium"
+  },
+  "review-risk": {
+    "model": "cliproxyapi/gpt-6-astra",
+    "thinking": "high"
+  },
+  "review-reliability": {
+    "model": "cliproxyapi/gpt-5.6-sol",
+    "thinking": "high"
+  },
+  "review-resilience": {
+    "model": "cliproxyapi/gpt-5.6-sol",
+    "thinking": "high"
+  },
+  "review-readability": {
+    "model": "cliproxyapi/gpt-5.6-luna",
+    "thinking": "medium"
+  },
+  "sdd-explore": {
+    "model": "cliproxyapi/gpt-5.6-luna",
+    "thinking": "low"
+  },
+  "sdd-research": {
+    "model": "cliproxyapi/gpt-5.6-sol",
+    "thinking": "medium"
+  },
+  "sdd-proposal": {
+    "model": "cliproxyapi/gpt-6-astra",
+    "thinking": "high"
+  },
+  "sdd-spec": {
+    "model": "cliproxyapi/gpt-5.6-terra",
+    "thinking": "medium"
+  },
+  "sdd-design": {
+    "model": "cliproxyapi/gpt-6-astra",
+    "thinking": "high"
+  },
+  "sdd-tasks": {
+    "model": "cliproxyapi/gpt-5.6-luna",
+    "thinking": "medium"
+  },
+  "sdd-apply": {
+    "model": "cliproxyapi/gpt-5.6-terra",
+    "thinking": "high"
+  },
+  "sdd-verify": {
+    "model": "cliproxyapi/gpt-5.6-sol",
+    "thinking": "high"
+  },
+  "sdd-sync": {
+    "model": "cliproxyapi/gpt-5.6-luna",
+    "thinking": "low"
+  },
+  "sdd-archive": {
+    "model": "cliproxyapi/gpt-5.6-luna",
+    "thinking": "low"
+  }
+}

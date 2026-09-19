@@ -4,17 +4,16 @@
   "packages": [
     "npm:pi-mcp-adapter",
     "npm:pi-rtk-optimizer",
+    "npm:@ff-labs/pi-fff",
     "npm:pi-caveman",
     "npm:@upstash/context7-pi",
     "git:github.com/DietrichGebert/ponytail",
-    "npm:@ff-labs/pi-fff",
     "npm:pi-lens",
     "npm:@router-for-me/pi-cliproxyapi-provider",
     "npm:pi-mermaid",
     "npm:pi-rewind-hook",
     "npm:@juicesharp/rpiv-ask-user-question",
     "npm:@diegopetrucci/pi-dirty-repo-guard",
-    "npm:@99percentpeople/pi-background-tasks",
     "npm:pi-messenger",
     "npm:pi-intercom",
     "npm:@gotgenes/pi-permission-system",
@@ -28,9 +27,11 @@
     "npm:pi-cliproxy-usage",
     "npm:@piewf/cli@5.13.2",
     "npm:@narumitw/pi-plan-mode",
-    "npm:pi-extensible-workflows",
     "npm:@injaneity/pi-computer-use",
-    "npm:gentle-pi@2.6.0"
+    {
+      "source": "npm:gentle-pi@2.6.0",
+      "extensions": ["!extensions/pi-pretty.ts"]
+    }
   ],
   "powerline": {
     "preset": "default",
