@@ -7,7 +7,7 @@
 @jmfederico/pi-web
 @microck/moji
 @oh-my-pi/pi-coding-agent
-@piewf/cli
+@playwright/cli
 @vtsls/language-server
 agent-browser
 agent-skill-manager

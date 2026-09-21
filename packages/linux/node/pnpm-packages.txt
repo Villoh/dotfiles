@@ -16,7 +16,7 @@ vscode-langservers-extracted
 @jmfederico/pi-web
 @kaitranntt/ccs
 @earendil-works/pi-server
-@piewf/cli
+@playwright/cli
 @oh-my-pi/pi-coding-agent
 agent-browser
 bash-language-server
