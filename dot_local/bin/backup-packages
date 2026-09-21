@@ -167,6 +167,36 @@ backup_omarchy() {
     echo -e "${GREEN}🧩 Omarchy: ${#urls[@]} plugin repositories saved to omarchy-plugins.txt${NC}"
 }
 
+backup_herdr() {
+    local file="$BACKUP_DIR/herdr-plugins.json"
+    local registry inventory
+    if ! command -v herdr >/dev/null 2>&1; then
+        echo -e "${YELLOW}⚠️  Herdr not installed, skipping${NC}"
+        return 0
+    fi
+
+    registry=$(herdr plugin list --json) || return 1
+    inventory=$(jq -e --arg home "$HOME/" '
+        .result.plugins
+        | if type != "array" then error("Invalid Herdr plugin list") else . end
+        | map({
+            id: .plugin_id, enabled, kind: .source.kind,
+            source: (if .source.kind == "github" then
+                [.source.owner, .source.repo, .source.subdir]
+                | map(select(. != null and . != "")) | join("/")
+            elif .source.kind == "local" then
+                .plugin_root | if startswith($home) then ltrimstr($home)
+                else error("Local plugin outside HOME: back it up separately") end
+            else error("Unknown Herdr plugin source") end),
+            ref: (.source.requested_ref // null)
+        }) | sort_by(.id)
+    ' <<< "$registry") || return 1
+
+    save_existing_backup "$file"
+    printf '%s\n' "$inventory" > "$file"
+    echo -e "${GREEN}🧩 Herdr plugin inventory saved to herdr-plugins.json${NC}"
+}
+
 run_all() {
     backup_pacman
     backup_aur
@@ -179,6 +209,7 @@ run_all() {
     backup_brew
     backup_cargo
     backup_omarchy
+    backup_herdr
 }
 
 # ── Entry point ────────────────────────────────────────────────────────────────
@@ -206,6 +237,7 @@ for arg in "$@"; do
         --cargo)      backup_cargo;      HANDLED=true ;;
         --pnpm)       backup_pnpm;       HANDLED=true ;;
         --omarchy)    backup_omarchy;    HANDLED=true ;;
+        --herdr)      backup_herdr;      HANDLED=true ;;
         --interactive|-i) : ;;  # handled below
         *) echo -e "${YELLOW}⚠️  Unknown flag: $arg${NC}" >&2 ;;
     esac
@@ -247,7 +279,8 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
         "🗃️  bin" \
         "🍺 brew" \
         "📦 cargo" \
-        "🧩 omarchy")
+        "🧩 omarchy" \
+        "🧩 herdr")
 
     if [ -z "$SELECTED" ]; then
         gum style --foreground 196 "❌ No se seleccionó ninguna opción"
@@ -268,6 +301,7 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
             *brew*)       backup_brew       ;;
             *cargo*)  backup_cargo ;;
             *omarchy*) backup_omarchy ;;
+            *herdr*)   backup_herdr ;;
         esac
     done
 

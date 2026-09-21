@@ -79,6 +79,36 @@ those separately. No automatic installation is attached to `chezmoi apply`.
 
 Run the offline regression check with `python3 dev/test_omarchy_packages.py`.
 
+## Herdr plugin inventory
+
+`backup-packages --herdr` exports `herdr plugin list --json` into
+`packages/linux/herdr-plugins.json`. Herdr is also included in the interactive
+backup menu and default backup run. This requires a reachable Herdr session;
+query/parse failures leave the previous inventory untouched.
+
+The inventory stores plugin IDs, enabled state, GitHub `owner/repo[/subdir]`,
+requested refs, and local paths relative to `$HOME`. Unpinned GitHub plugins
+remain unpinned. Local plugins outside `$HOME` fail backup rather than exporting
+machine-specific absolute paths. Herdr's generated `plugins.json`, checkouts,
+binaries, credentials, and plugin-specific settings are not copied.
+
+Run `restore-packages`, select **herdr**, then choose plugins. Existing IDs are
+left untouched (including version and enabled state); registry warnings stop
+restoration for that plugin. Missing GitHub plugins use `herdr plugin install`
+with saved refs and native trust/build confirmation. Herdr installs GitHub
+plugins enabled; saved disabled plugins are disabled immediately afterward, so
+startup code may run before that disable. Install only trusted plugins.
+
+Local plugins require their package/working tree to exist first. For example,
+restore the Pi package providing `pi-workflows` before linking it. After a trust
+confirmation, restoration runs `herdr plugin link` with the saved enabled state.
+Missing local manifests stop restoration with an error. Dependencies and build
+toolchains must already be installed; no automatic setup runs on `chezmoi apply`.
+
+Run the offline regression check with `python3 dev/test_herdr_packages.py`.
+The inventory and tests are covered by existing `packages/**` and `dev/**`
+exclusions in `.chezmoiignore`.
+
 ## Shell configs
 
 | File | Shell |

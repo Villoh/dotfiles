@@ -1,0 +1,58 @@
+[
+  {
+    "id": "cloudmanic.herdr-plus",
+    "enabled": true,
+    "kind": "github",
+    "source": "cloudmanic/herdr-plus",
+    "ref": null
+  },
+  {
+    "id": "herdr-agent-quota",
+    "enabled": true,
+    "kind": "github",
+    "source": "levi-qiao/herdr-agent-quota",
+    "ref": null
+  },
+  {
+    "id": "herdr-navigator",
+    "enabled": true,
+    "kind": "github",
+    "source": "thanhdat77/herdr-navigator",
+    "ref": "9bdf30f03f53730e6232377a3fca3bdc6ed9f3ca"
+  },
+  {
+    "id": "herdr-sidebar",
+    "enabled": true,
+    "kind": "github",
+    "source": "alexarthurs/herdr-sidebar/plugins/herdr-sidebar",
+    "ref": null
+  },
+  {
+    "id": "nicosuave.memex",
+    "enabled": true,
+    "kind": "github",
+    "source": "nicosuave/memex",
+    "ref": "604437114ecdff208202a6241394a8cf11b5b7a4"
+  },
+  {
+    "id": "osolmaz.pi-workflows",
+    "enabled": true,
+    "kind": "local",
+    "source": ".pi/agent/npm/node_modules/@osolmaz/pi-workflows",
+    "ref": null
+  },
+  {
+    "id": "persiyanov.reviewr",
+    "enabled": true,
+    "kind": "github",
+    "source": "persiyanov/herdr-reviewr",
+    "ref": null
+  },
+  {
+    "id": "tab-smart-rename",
+    "enabled": true,
+    "kind": "github",
+    "source": "iurysza/herdr-tab-smart-rename",
+    "ref": null
+  }
+]

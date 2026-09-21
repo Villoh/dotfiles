@@ -18,6 +18,7 @@ DEFAULT_BIN="$DEFAULT_DIR/bin-packages.txt"
 DEFAULT_CARGO="$DEFAULT_DIR/cargo/cargo.txt"
 DEFAULT_CARGO_MINIMAL="$DEFAULT_DIR/cargo/cargo-minimal.txt"
 DEFAULT_OMARCHY="$DEFAULT_DIR/omarchy-plugins.txt"
+DEFAULT_HERDR="$DEFAULT_DIR/herdr-plugins.json"
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
@@ -61,7 +62,8 @@ SELECTED_MANAGERS=$(gum choose \
     "📦 pnpm" \
     "🗃️  bin" \
     "📦 cargo" \
-    "🧩 omarchy")
+    "🧩 omarchy" \
+    "🧩 herdr")
 
 if [ -z "$SELECTED_MANAGERS" ]; then
     gum style --foreground 196 "❌ No se seleccionó ningún gestor"
@@ -418,6 +420,74 @@ install_omarchy_plugins() {
     done
 }
 
+install_herdr_plugins() {
+    local file="$1"
+    [ ! -f "$file" ] && _warn_missing "$file" && return 1
+    if ! command_exists herdr || ! command_exists jq; then
+        gum style --foreground 196 "❌ Se necesitan Herdr y jq para restaurar plugins"
+        return 1
+    fi
+
+    # Validate the whole inventory before installing anything; never eval saved paths.
+    if ! jq -e '
+        type == "array" and all(.[];
+            (.id | type == "string" and test("^[A-Za-z0-9][A-Za-z0-9._-]*$")) and
+            (.enabled | type == "boolean") and
+            (.kind == "github" or .kind == "local") and
+            (.source | type == "string" and length > 0 and
+                (split("/") | all(. != "" and . != "." and . != ".."))) and
+            (if .kind == "github" then (.source | test("^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]+$")) else true end) and
+            (.ref == null or (.ref | type == "string" and length > 0))
+        ) and ([.[].id] | length == (unique | length))
+    ' "$file" >/dev/null; then
+        gum style --foreground 196 "❌ Inventario Herdr no válido: $file"
+        return 1
+    fi
+
+    local selected registry installed entry id kind source ref enabled state
+    local -a plugins=() ref_args=()
+    selected=$(_select_packages <(jq -r '.[].id' "$file") "🧩 Selecciona plugins Herdr") || return 0
+    mapfile -t plugins <<< "$selected"
+    registry=$(herdr plugin list --json) || return 1
+    installed=$(jq -ce '.result.plugins | if type == "array" then . else error("Invalid Herdr plugin list") end' <<< "$registry") || return 1
+
+    for id in "${plugins[@]}"; do
+        [[ -n "$id" ]] || continue
+        if jq -e --arg id "$id" 'any(.[]; .plugin_id == $id)' <<< "$installed" >/dev/null; then
+            if jq -e --arg id "$id" 'any(.[]; .plugin_id == $id and ((.warnings // []) | length > 0))' <<< "$installed" >/dev/null; then
+                gum style --foreground 196 "❌ $id tiene avisos en Herdr; revisa herdr plugin list antes de restaurar"
+                return 1
+            fi
+            gum style --foreground 245 "  [SKIP] $id ya registrado; no se cambia versión ni activación"
+            continue
+        fi
+        entry=$(jq -ce --arg id "$id" '.[] | select(.id == $id)' "$file") || return 1
+        kind=$(jq -r '.kind' <<< "$entry")
+        source=$(jq -r '.source' <<< "$entry")
+        ref=$(jq -r '.ref // empty' <<< "$entry")
+        enabled=$(jq -r '.enabled' <<< "$entry")
+        state=enabled
+        [[ "$enabled" == true ]] || state=disabled
+
+        if [[ "$kind" == local ]]; then
+            if [[ ! -f "$HOME/$source/herdr-plugin.toml" ]]; then
+                gum style --foreground 196 "❌ $id: instala primero el paquete local en $HOME/$source"
+                return 1
+            fi
+            gum confirm "¿Confiar en el plugin local $id ($source) y enlazarlo?" || return 1
+            herdr plugin link "--$state" "$HOME/$source"
+        else
+            ref_args=()
+            [[ -z "$ref" ]] || ref_args=("--ref=$ref")
+            # Native install retains its trust/build confirmation; do not pass --yes.
+            herdr plugin install "${ref_args[@]}" -- "$source"
+            if [[ "$enabled" == false ]]; then
+                herdr plugin disable "$id"
+            fi
+        fi
+    done
+}
+
 # ── EJECUTAR ───────────────────────────────────────────────────────────────────
 
 echo ""
@@ -465,6 +535,9 @@ while IFS= read -r manager <&3; do
         *omarchy*)
             file=$(get_file_location "omarchy-plugins.txt" "🧩" "$DEFAULT_OMARCHY")
             install_omarchy_plugins "$file" ;;
+        *herdr*)
+            file=$(get_file_location "herdr-plugins.json" "🧩" "$DEFAULT_HERDR")
+            install_herdr_plugins "$file" ;;
     esac
 done 3<<< "$SELECTED_MANAGERS"
 
