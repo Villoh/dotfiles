@@ -1,174 +1,154 @@
 onboarding = false
-
-{{ if eq .chezmoi.os "windows" -}}
-[terminal]
-default_shell = "pwsh.exe"
-{{ end }}
-# =============================================================================
-# Herdr - lock/unlock-style scheme, mirrored from the Zellij/tmux Ctrl-g setup
-# =============================================================================
-# Docs: https://herdr.dev/docs/keyboard/  https://herdr.dev/docs/configuration/
-#
-# Chezmoi renders this to ~/.config/herdr/config.toml. On Windows, setup links
-# %APPDATA%\herdr\config.toml to that rendered file.
-#
-# Philosophy: prefix = "ctrl+g", same gate key as Zellij and tmux in this repo.
-# Herdr's own prefix mechanism is already single-shot/native (like tmux) — no
-# manual re-lock chaining needed. Only entries that differ from herdr's
-# built-in defaults are listed below; everything else keeps herdr's default.
-# =============================================================================
+# Mirrors the Omarchy tmux config in config/tmux/tmux.conf
+# tmux session -> herdr workspace, tmux window -> herdr tab, tmux pane -> herdr pane
 
 [theme]
-# Herdr provides Kanagawa base theme; overrides below tune it to Dragon.
-name = "kanagawa"
-# Dragon has no light variant. Keep it stable instead of auto-switching.
-auto_switch = false
+# tmux ran on the terminal's own palette (bg=default, fg=default, ANSI blue accents)
+name = "terminal"
 
 [theme.custom]
-panel_bg = "#181616"
-accent = "#8ba4b0"
-surface0 = "#181616"
-surface1 = "#282727"
-surface_dim = "#282727"
-overlay0 = "#625e5a"
-overlay1 = "#737c73"
-text = "#c5c9c5"
-subtext0 = "#a6a69c"
-mauve = "#8992a7"
-green = "#87a987"
-yellow = "#c4b28a"
-red = "#c4746e"
-blue = "#8ba4b0"
-teal = "#8ea4a2"
-peach = "#b6927b"
+# The active tab is drawn as panel_bg text on an accent background, so panel_bg
+# has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
+panel_bg = "black"
+
+[terminal]
+# Matches -c "#{pane_current_path}" on every split, window, and session
+new_cwd = "follow"
 
 [keys]
-prefix = "ctrl+g"
+prefix = "ctrl+space"
 
-# --- pane focus ----------------------------------------------------------------
-# Also bound to ctrl+alt+arrows with no prefix — the one combo proven to fire
-# reliably on this terminal. Plain ctrl+h/j/k/l collides with Neovim defaults
-# (i_CTRL-H backspace, digraphs, redraw, etc.); alt+h/j/k/l and
-# ctrl+shift+h/j/k/l both turned out unreliable/conflicting too, so no
-# no-prefix letter alias is used — prefix+hjkl only for the letter form.
-focus_pane_left = ["prefix+h", "ctrl+alt+left"]
-focus_pane_down = ["prefix+j", "ctrl+alt+down"]
-focus_pane_up = ["prefix+k", "ctrl+alt+up"]
-focus_pane_right = ["prefix+l", "ctrl+alt+right"]
+# Config and help
+reload_config = "prefix+q"
+help = "prefix+?"
+detach = "prefix+d"
 
-# --- pane creation ---------------------------------------------------------------
-# Matches Zellij/tmux d=down, r=right. Herdr has no generic/"smart" split
-# direction action — only these two explicit directions exist.
-split_horizontal = [
-  "prefix+d",
-  "prefix+minus",
-  "prefix+quote",
-] # stacked (down). prefix+minus is herdr's own default; prefix+quote mirrors tmux's " key
-split_vertical = [
-  "prefix+r",
-  "prefix+v",
-  "prefix+percent",
-] # side-by-side (right). prefix+v is herdr's own default; prefix+percent mirrors tmux's % key
+# Copy mode
+copy_mode = "prefix+["
 
-# close_pane = "prefix+x"   # already herdr's default, matches x=close everywhere
-# zoom       = "prefix+z"   # already herdr's default, matches z=fullscreen/zoom
+# Panes
+split_horizontal = ["prefix+h", "alt+enter"]
+split_vertical = ["prefix+v", "alt+shift+enter"]
+close_pane = ["prefix+x", "alt+esc"]
+zoom = "prefix+z"
+last_pane = "prefix+;"
 
-# --- resize ------------------------------------------------------------------------
-# Herdr's resize is already a native sticky mode (unlike the hand-built Zellij
-# KDL / tmux key-table versions) — just rebind the entry keys off "r" (used
-# above for split-right) onto +/- to match the Zellij/tmux entry keys.
-resize_mode = "prefix+ctrl+r" # mnemonic: Ctrl r = Resize; plus/minus freed for split aliases
+focus_pane_left = "ctrl+alt+left"
+focus_pane_down = "ctrl+alt+down"
+focus_pane_up = "ctrl+alt+up"
+focus_pane_right = "ctrl+alt+right"
 
-# --- swap panes (herdr's "move" equivalent) ---------------------------------------
-# swap_pane_left/down/up/right already default to prefix+shift+h/j/k/l — no
-# modal "Move mode" needed here, herdr does direct one-shot swaps per
-# direction. Left as-is, no override needed.
+resize_mode = ["prefix+ctrl+left", "prefix+ctrl+down", "prefix+ctrl+up", "prefix+ctrl+right"]
 
-# --- rename pane -------------------------------------------------------------------
-# Matches Zellij/tmux "t" (mnemonic: Title). Herdr's default is shift+p.
-rename_pane = "prefix+t"
+# Like resize-pane on C-M-S-arrows
+resize_pane_left = "ctrl+alt+shift+left"
+resize_pane_down = "ctrl+alt+shift+down"
+resize_pane_up = "ctrl+alt+shift+up"
+resize_pane_right = "ctrl+alt+shift+right"
 
-# --- copy/scroll mode --------------------------------------------------------------
-# Matches the Zellij/tmux Ctrl-s entry convention. Herdr's default is "[".
-copy_mode = "prefix+ctrl+s"
+# No tmux equivalent; herdr's default prefix+shift+p is taken by previous session
+rename_pane = "prefix+shift+o"
 
-# edit_scrollback = "prefix+e"   # already herdr's default, left as-is
+# Windows -> tabs
+new_tab = "prefix+c"
+rename_tab = "prefix+r"
+close_tab = "prefix+k"
+switch_tab = ["prefix+1..9", "alt+1..9"]
+previous_tab = ["prefix+p", "alt+left"]
+next_tab = ["prefix+n", "alt+right"]
 
-# --- tabs ----------------------------------------------------------------------------
-# new_tab already defaults to c — matches this repo's Zellij/tmux conventions
-# exactly, no changes.
-# previous_tab/next_tab keep their prefix+p/prefix+n defaults, plus a
-# no-prefix alt+shift+left/right exception. Alt+letter chords (and
-# ctrl+alt+[/]) are sent as a bare ESC followed by the char (ambiguous
-# "meta" encoding) — herdr's raw_input log shows it timing out waiting for
-# the rest and flushing a lone escape, so those never fire reliably. Arrow
-# keys work because they arrive as a complete CSI sequence with a modifier
-# bitmask (e.g. ESC[1;7D for ctrl+alt+left); digits work the same way
-# (ctrl+alt+1..9 below), which is why F-keys (same encoding, just less
-# comfortable) were tried before. alt+shift+left/right is a different
-# 2-modifier arrow combo than panes' ctrl+alt+left/right, so it shouldn't
-# collide — worth testing since 2-modifier arrows are the proven-reliable
-# class here (ctrl+alt+shift+left/right, a 3-modifier combo, already failed).
-previous_tab = ["prefix+p", "ctrl+shift+left"]
-next_tab = ["prefix+n", "ctrl+shift+right"]
-# switch_tab already defaults to prefix+1..9, plus the same no-prefix
-# ctrl+alt exception (jump straight to tab N, browser ctrl+1..9 style).
-switch_tab = ["prefix+1..9", "ctrl+alt+1..9"]
-close_tab = "prefix+shift+t"                  # matches Zellij/tmux Shift+t = close tab
-# (herdr's own default is shift+x; overridden)
-rename_tab = "prefix+shift+r" # matches Zellij/tmux Shift+r = rename tab
-# (herdr's own default is shift+t; overridden)
+# Like swap-window -t -1/+1 on M-S-Left/Right
+move_tab_previous = "alt+shift+left"
+move_tab_next = "alt+shift+right"
 
-# --- workspace / session -------------------------------------------------------------
-# Core workspace actions keep herdr defaults. Optional actions have no built-in
-# bindings, so configure them explicitly instead of showing "unset" in help.
-open_worktree = "prefix+shift+o"
-remove_worktree = "prefix+alt+x"
-# Also bound to ctrl+shift+left/right with no prefix, same reasoning as tabs
-# above: a different 2-modifier arrow combo than panes' ctrl+alt+left/right.
-previous_workspace = ["prefix+shift+left", "ctrl+shift+up"]
-next_workspace = ["prefix+shift+right", "ctrl+shift+down"]
-switch_workspace = "prefix+shift+1..9"
+# Sessions -> workspaces
+new_workspace = "prefix+shift+c"
+rename_workspace = "prefix+shift+r"
+close_workspace = "prefix+shift+k"
+previous_workspace = ["prefix+shift+p", "alt+up"]
+next_workspace = ["prefix+shift+n", "alt+down"]
 
-# --- misc --------------------------------------------------------------------------
-# Herdr's own default is prefix+shift+r, but that's already taken by
-# rename_tab above, so reload_config is moved to prefix+shift+c (mnemonic: Config).
-reload_config = "prefix+shift+c"
-previous_agent = "prefix+alt+p"
-next_agent = "prefix+alt+n"
-focus_agent = "prefix+alt+1..9"
+[[keys.command]]
+key = "prefix+t"
+type = "plugin_action"
+command = "tab-smart-rename.rename-now"
+description = "smart rename current tab"
 
-# =============================================================================
-# Zellij/tmux <-> Herdr parity cheat sheet (all three use Ctrl-g as the gate)
-# =============================================================================
-# Matching across all three tools:
-# h/j/k/l        focus pane        (also ctrl+alt+hjkl / Alt+hjkl no-prefix)
-# d/r            new pane down/right   (also minus/v [herdr defaults] and quote/percent [tmux-style] aliases)
-# x              close pane
-# z              fullscreen/zoom
-# t              rename pane
-# c              new tab
-# n/p            next/previous tab (herdr default; alias in tmux; Zellij also has it)
-# Shift+t        close tab
-# Shift+r        rename tab
-# Ctrl+s         scroll/copy-mode entry
-# w              session/workspace manager
-#
-# Diverging by design (no equivalent, or different architecture):
-# s (smart split)    exists in Zellij/tmux only — herdr has no generic split action
-# e (stacked pane)   Zellij-only — neither tmux nor herdr have stacked panes
-# Shift+d (detach)   Zellij/tmux convention — herdr uses plain "q" instead
-#                    (and herdr's Shift+d is "close workspace", a different action)
-# Ctrl+q (quit)      Zellij/tmux only — herdr has no kill-session concept
-# Shift+hjkl (move)  in Zellij/tmux this enters a sticky Move mode; in herdr
-#                    it's already direct one-shot swap_pane_* actions, no mode
+[[keys.command]]
+key = "prefix+alt+t"
+type = "plugin_action"
+command = "tab-smart-rename.rename-all"
+description = "smart rename all tabs"
+
+[[keys.command]]
+key = "prefix+alt+q"
+type = "plugin_action"
+command = "herdr-agent-quota.refresh"
+description = "refresh all agent quotas"
+
+[[keys.command]]
+key = "prefix+shift+q"
+type = "plugin_action"
+command = "herdr-agent-quota.open-settings"
+description = "open agent quota settings"
+
+[[keys.command]]
+key = "prefix+shift+d"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"
+description = "toggle diff review"
+
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "herdr-navigator.open"
+description = "open navigator"
+
+[[keys.command]]
+key = "prefix+m"
+type = "plugin_action"
+command = "nicosuave.memex.palette"
+description = "search agent sessions"
+
+[[keys.command]]
+key = "prefix+shift+e"
+type = "plugin_action"
+command = "herdr-sidebar.open-sidebar"
+description = "open, focus, or close explorer"
+
+[ui]
+accent = "blue"
+
+# tmux drew single-line dividers between adjacent panes and no outer frame
+pane_gaps = false
+pane_outer_borders = false
+
+# tmux had no scrollbar column beside its panes
+pane_scrollbars = false
+
+# kill-window and kill-session never asked
+confirm_close = false
+
+# automatic-rename gave windows a name without prompting
+prompt_new_tab_name = false
+
+# set -g mouse on
+mouse_capture = true
+
+# status-right had the zoom flag followed by #h
+tab_bar_right = [{ type = "zoom" }, { type = "hostname" }]
+
+# set -g set-titles on / set -g set-titles-string '#h:#W', where tmux's #W was
+# the basename of the pane cwd. This is what Hyprland shows in the group bar,
+# and it resolves on the server so remote sessions name the remote host.
+window_title = "{hostname}: {workspace}"
+agent_panel_sort = "spaces" # herdr-agent-quota
 
 [ui.toast]
 delivery = "system"
 
-[ui]
-show_agent_labels_on_pane_borders = false
-agent_panel_sort = "spaces"
+[ui.sidebar]
 
-[ui.sound]
-enabled = true
+[ui.sidebar.agents]
+row_gap = 0 # herdr-agent-quota
+rows = [[{ token = "$quota_group", bold = true, dim = false }], [{ token = "$quota_icon", fg = "#e9e9f0", bold = false, dim = false, rules = [{ contains = "⁠", fg = "#94e2d5" }, { contains = "⁡", fg = "#f9e2af" }] }, { token = "$quota_provider_model", fg = "#e9e9f0", bold = true, dim = false }], [{ token = "$quota_share_5h_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_share_5h_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_share_5h_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_share_5h_unknown", bold = false, dim = false }], [{ token = "$quota_share_week_inline_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_share_week_inline_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_share_week_inline_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_share_week_inline_unknown", bold = false, dim = false }, { token = "$quota_share_week_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_share_week_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_share_week_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_share_week_unknown", bold = false, dim = false }], [{ token = "$quota_share_month_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_share_month_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_share_month_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_share_month_unknown", bold = false, dim = false }], [{ token = "$quota_model", fg = "#e9e9f0", bold = false, dim = false }], [{ token = "$quota_topic", bold = false, dim = false }], [{ token = "$quota_error", fg = "#e4b957", bold = false, dim = false }], [{ token = "$quota_context_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_context_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_context_danger", fg = "#df919b", bold = false, dim = false }], [{ token = "$quota_5h_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_5h_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_5h_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_5h_unknown", bold = false, dim = false }], [{ token = "$quota_week_inline_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_week_inline_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_week_inline_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_week_inline_unknown", bold = false, dim = false }, { token = "$quota_week_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_week_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_week_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_week_unknown", bold = false, dim = false }], [{ token = "$quota_month_normal", fg = "#98b17d", bold = false, dim = false }, { token = "$quota_month_warning", fg = "#dec27f", bold = false, dim = false }, { token = "$quota_month_danger", fg = "#df919b", bold = false, dim = false }, { token = "$quota_month_unknown", bold = false, dim = false }], [{ token = "$quota_nest_gap", bold = false, dim = false }]] # herdr-agent-quota-row
