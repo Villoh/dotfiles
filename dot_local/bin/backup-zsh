@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(chezmoi source-path)"
+BACKUP_DIR="$SOURCE_DIR/packages/linux/zsh"
+PACMAN_FILE="$BACKUP_DIR/pacman.txt"
+AUR_FILE="$BACKUP_DIR/aur.txt"
+PACKAGE_PATTERN='^(zsh|omarchy-zsh|zsh-[[:alnum:].+_-]+)$'
+
+if ! command -v pacman >/dev/null 2>&1; then
+  echo "pacman not found; run backup-zsh on an Arch/Omarchy system" >&2
+  exit 1
+fi
+
+mkdir -p "$BACKUP_DIR"
+
+write_packages() {
+  local query="$1" file="$2" tmp
+  tmp=$(mktemp "$file.XXXXXX")
+  if ! pacman "$query" | awk -v pattern="$PACKAGE_PATTERN" '$0 ~ pattern' | sort -u > "$tmp"; then
+    rm -f "$tmp"
+    return 1
+  fi
+  mv "$tmp" "$file"
+}
+
+# Keep native and foreign packages separate; pacman -Qqe includes both.
+write_packages -Qqn "$PACMAN_FILE"
+write_packages -Qqm "$AUR_FILE"
+
+printf 'Saved %s native Zsh packages to %s\n' "$(wc -l < "$PACMAN_FILE")" "$PACMAN_FILE"
+printf 'Saved %s AUR Zsh packages to %s\n' "$(wc -l < "$AUR_FILE")" "$AUR_FILE"

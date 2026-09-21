@@ -43,6 +43,8 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `dotfiles-sync` | Sync: `chezmoi re-add` + git add/commit/push |
 | `backup-packages` | Export user-level package/tool lists to `packages/linux/` |
 | `restore-packages` | Reinstall supported user-level tools from `packages/linux/` lists |
+| `backup-zsh` | Save Zsh and plugin packages for Arch/Omarchy sync |
+| `restore-zsh` | Reinstall saved Zsh and plugin packages on Arch/Omarchy |
 | `list-packages` | List currently installed packages (legacy Arch-oriented helper; review before use on NixOS) |
 | `secrets` | Manual secret refresh with `fzf`, backed by `packages/linux/system/secrets.json` |
 | `bwp` | Bitwarden Plus CLI helpers with shell-independent runtime session |
@@ -58,6 +60,21 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `migrate-aur` / `migrate-flatpak` | Legacy Arch/Flatpak migration helpers; not part of the NixOS workflow |
 | `post-hyde-install` / `pre-hyde-install` | HyDE desktop environment install hooks |
 | `openvpn-*` / `ikev2-*` | VPN management |
+
+## Zsh plugin sync
+
+`backup-zsh` and `restore-zsh` are intentionally separate from the general
+package scripts. They sync only `zsh`, `omarchy-zsh`, and `zsh-*` plugin
+packages between Arch/Omarchy systems:
+
+```bash
+backup-zsh
+# commit/push packages/linux/zsh/
+chezmoi update && chezmoi apply
+restore-zsh
+```
+
+They require `pacman`; NixOS/Home Manager owns Zsh packages on NixOS.
 
 ## Omarchy plugin inventory
 
@@ -114,11 +131,10 @@ exclusions in `.chezmoiignore`.
 | File | Shell |
 | ------ | ------- |
 | `dot_profile` | POSIX |
+| `dot_zshrc` | Portable Zsh behavior and Omarchy integration |
 
-*Zsh config (`dot_config/zsh/`, root `dot_zshenv`) was dropped entirely —
-Omarchy's own shell defaults are used instead. `dot_zprofile` still sources
-`~/.profile` but nothing reads `.zprofile` itself anymore now that zsh is
-gone — candidate for removal too, not done yet since it wasn't asked for.*
+`dot_zprofile` still sources `~/.profile`; Home Manager owns the NixOS-only
+plugin bootstrap while `dot_zshrc` owns portable shell behavior.
 
 ## Reference-only (other_config)
 

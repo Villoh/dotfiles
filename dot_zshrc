@@ -1,0 +1,39 @@
+# Keep cursor shape and shell behavior portable across devices.
+printf '\e[5 q'
+
+# Omarchy provides its shared shell defaults through this system path.
+OMARCHY_ZSH=false
+if [[ -r /usr/share/omarchy-zsh/shell/all ]]; then
+  OMARCHY_ZSH=true
+  [[ -r /usr/share/omarchy/default/bash/env-bootstrap ]] && source /usr/share/omarchy/default/bash/env-bootstrap
+  [[ -r /usr/share/omarchy-zsh/shell/zoptions ]] && source /usr/share/omarchy-zsh/shell/zoptions
+  source /usr/share/omarchy-zsh/shell/all
+fi
+
+export PATH="$HOME/.local/bin:$HOME/.local/share/pnpm/bin:$PATH"
+
+if [[ "$OMARCHY_ZSH" != true ]]; then
+  if [[ $- == *i* && -t 0 && -t 1 ]] && command -v starship >/dev/null 2>&1; then
+    eval "$(starship init zsh)"
+  fi
+
+  if [[ $- == *i* && -t 0 && -t 1 ]] && command -v fzf >/dev/null 2>&1; then
+    eval "$(fzf --zsh)"
+  fi
+
+  if [[ $- == *i* && -t 0 && -t 1 ]] && command -v zoxide >/dev/null 2>&1; then
+    eval "$(zoxide init zsh)"
+  fi
+
+  if [[ $- == *i* && -t 0 && -t 1 ]] && command -v fastfetch >/dev/null 2>&1; then
+    fastfetch
+  fi
+fi
+
+# Arch packages use these stable plugin paths; Home Manager loads its own paths.
+if [[ "$OMARCHY_ZSH" == true ]]; then
+  [[ -r /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+  [[ -r /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+    source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi

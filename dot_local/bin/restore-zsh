@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SOURCE_DIR="$(chezmoi source-path)"
+BACKUP_DIR="$SOURCE_DIR/packages/linux/zsh"
+PACMAN_FILE="$BACKUP_DIR/pacman.txt"
+AUR_FILE="$BACKUP_DIR/aur.txt"
+
+read_packages() {
+  local file="$1"
+  [[ -f "$file" ]] || return 0
+  awk '!/^[[:space:]]*(#|$)/' "$file"
+}
+
+install_pacman() {
+  local packages=()
+  mapfile -t packages < <(read_packages "$PACMAN_FILE")
+  ((${#packages[@]})) || return 0
+  sudo pacman -S --needed "${packages[@]}"
+}
+
+install_aur() {
+  local helper packages=()
+  mapfile -t packages < <(read_packages "$AUR_FILE")
+  ((${#packages[@]})) || return 0
+
+  if command -v yay >/dev/null 2>&1; then
+    helper=yay
+  elif command -v paru >/dev/null 2>&1; then
+    helper=paru
+  else
+    echo "AUR packages found, but neither yay nor paru is installed" >&2
+    return 1
+  fi
+
+  "$helper" -S --needed "${packages[@]}"
+}
+
+if ! command -v pacman >/dev/null 2>&1; then
+  echo "pacman not found; run restore-zsh on an Arch/Omarchy system" >&2
+  exit 1
+fi
+
+[[ -f "$PACMAN_FILE" || -f "$AUR_FILE" ]] || {
+  echo "No Zsh plugin backup found in $BACKUP_DIR" >&2
+  echo "Run backup-zsh on another system first" >&2
+  exit 1
+}
+
+install_pacman
+install_aur

@@ -26,7 +26,8 @@ scoop/
 {{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/devin/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zprofile
+{{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshrc
+.zprofile
 .profile
 {{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
