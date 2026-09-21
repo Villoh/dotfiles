@@ -59,6 +59,26 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `post-hyde-install` / `pre-hyde-install` | HyDE desktop environment install hooks |
 | `openvpn-*` / `ikev2-*` | VPN management |
 
+## Omarchy plugin inventory
+
+On machines using Omarchy, `backup-packages --omarchy` exports installed user
+plugin Git origins to `packages/linux/omarchy-plugins.txt`. Omarchy is also an
+option in the interactive backup menu and included in the default backup run.
+The list is reference data, already excluded from deployment by `.chezmoiignore`.
+
+On another machine with Omarchy and its shell already running, run
+`restore-packages` and select **omarchy**, then choose the repositories to restore.
+Existing origins are skipped; missing plugins use `omarchy plugin add`, retaining
+Omarchy's validation, trust confirmation, and activation/placement prompts.
+Only restore repositories you trust: plugins run unsandboxed in the shell.
+
+This restores repositories at their current default branch, not pinned versions,
+plugin dependencies, `shell.json` settings, or local edits. Backup warns about
+modified repositories and skips non-Git custom plugins with a warning; preserve
+those separately. No automatic installation is attached to `chezmoi apply`.
+
+Run the offline regression check with `python3 dev/test_omarchy_packages.py`.
+
 ## Shell configs
 
 | File | Shell |

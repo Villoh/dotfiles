@@ -17,6 +17,7 @@ DEFAULT_PNPM="$DEFAULT_DIR/node/pnpm-packages.txt"
 DEFAULT_BIN="$DEFAULT_DIR/bin-packages.txt"
 DEFAULT_CARGO="$DEFAULT_DIR/cargo/cargo.txt"
 DEFAULT_CARGO_MINIMAL="$DEFAULT_DIR/cargo/cargo-minimal.txt"
+DEFAULT_OMARCHY="$DEFAULT_DIR/omarchy-plugins.txt"
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
@@ -59,7 +60,8 @@ SELECTED_MANAGERS=$(gum choose \
     "📦 npm" \
     "📦 pnpm" \
     "🗃️  bin" \
-    "📦 cargo")
+    "📦 cargo" \
+    "🧩 omarchy")
 
 if [ -z "$SELECTED_MANAGERS" ]; then
     gum style --foreground 196 "❌ No se seleccionó ningún gestor"
@@ -381,6 +383,41 @@ install_bin_packages() {
     done <<< "$selected"
 }
 
+install_omarchy_plugins() {
+    local file="$1"
+    [ ! -f "$file" ] && _warn_missing "$file" && return 1
+    if ! command_exists omarchy || ! command_exists git; then
+        gum style --foreground 196 "❌ Se necesitan Omarchy y Git para restaurar plugins"
+        return 1
+    fi
+
+    local selected dir url pkg installed=""
+    local -a plugins=()
+    selected=$(_select_packages "$file" "🧩 Selecciona plugins Omarchy") || return 0
+    mapfile -t plugins <<< "$selected"
+
+    for dir in "$HOME/.config/omarchy/plugins"/*; do
+        [[ -e "$dir/.git" ]] || continue
+        url=$(git -C "$dir" remote get-url origin) || return 1
+        installed+="$url"$'\n'
+    done
+
+    for pkg in "${plugins[@]}"; do
+        [[ -n "$pkg" ]] || continue
+        if [[ "$pkg" == -* ]]; then
+            gum style --foreground 196 "❌ URL de plugin no válida: $pkg"
+            return 1
+        fi
+        if grep -qxF -- "$pkg" <<< "$installed"; then
+            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
+        else
+            # Keep Omarchy's validation, trust confirmation and enable/placement prompts.
+            omarchy plugin add "$pkg"
+            installed+="$pkg"$'\n'
+        fi
+    done
+}
+
 # ── EJECUTAR ───────────────────────────────────────────────────────────────────
 
 echo ""
@@ -393,7 +430,8 @@ gum style \
     --border-foreground 240 \
     "⚡ Preparando instalación..."
 
-while IFS= read -r manager; do
+# Read selections on a separate descriptor so installers retain terminal stdin.
+while IFS= read -r manager <&3; do
     case "$manager" in
         *pacman*)
             file=$(get_file_location "pacman/pacman.txt"     "📦" "$DEFAULT_PACMAN")
@@ -424,8 +462,11 @@ while IFS= read -r manager; do
             install_bin_packages "$file" ;;
         *cargo*)
             install_cargo_packages ;;
+        *omarchy*)
+            file=$(get_file_location "omarchy-plugins.txt" "🧩" "$DEFAULT_OMARCHY")
+            install_omarchy_plugins "$file" ;;
     esac
-done <<< "$SELECTED_MANAGERS"
+done 3<<< "$SELECTED_MANAGERS"
 
 gum style \
     --foreground 46 \
