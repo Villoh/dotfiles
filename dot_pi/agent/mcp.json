@@ -1,5 +1,15 @@
 {
   "mcpServers": {
-
+    "shadcn": {
+      "command": "shadcn",
+      "args": ["mcp"],
+      "inheritEnv": false
+    },
+    "fal": {
+      "url": "https://mcp.fal.ai/mcp",
+      "auth": "bearer",
+      "bearerTokenStore": true,
+      "approveTools": true
+    }
   }
 }

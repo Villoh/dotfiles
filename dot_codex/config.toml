@@ -1,7 +1,7 @@
 # Modelo que Codex usará de forma predeterminada para las tareas.
 model = "gpt-6-astra"
 # Esfuerzo de razonamiento: medium equilibra velocidad y profundidad de análisis.
-model_reasoning_effort = "low"
+model_reasoning_effort = "high"
 # Estilo de comunicación predeterminado; cambia el tono, no las capacidades del modelo.
 personality = "pragmatic"
 # Nivel de detalle de las respuestas; low produce respuestas más breves en proveedores Responses API.
@@ -14,9 +14,8 @@ model_reasoning_summary = "concise"
 # Limita las escrituras al workspace y mantiene aislado el resto del sistema.
 # sandbox_mode = "workspace-write"
 
-# Use this to use CLIProxyAPI as a provider instead of default one.
-# model_provider = "cliproxyapi"
-# openai_base_url = "http://127.0.0.1:8317/v1"
+# Use CLIProxyAPI as the default provider.
+model_provider = "cliproxyapi"
 
 notify = [ "C:\\Users\\mikel\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\a708e72b10c27b59\\bin\\node_modules\\@oai\\sky\\bin\\windows\\codex-computer-use.exe", "turn-ended" ]
 [model_providers.cliproxyapi]
@@ -36,6 +35,7 @@ show-context-window-usage = true
 notifications-turn-mode = "always"
 conversationDetailMode = "STEPS_PROSE"
 selected-avatar-id = "null-signal"
+ambient-suggestions-enabled = false
 
 [desktop.appearanceDarkChromeTheme]
 accent = "#0169cc"
@@ -65,7 +65,7 @@ source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.openai-primary-runtime]
 source_type = "local"
-source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+source = "/home/mikel/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.ponytail]
 last_updated = "2026-08-09T16:14:21Z"
@@ -106,19 +106,16 @@ enabled = true
 [plugins."ponytail@ponytail"]
 enabled = true
 
-[plugins."browser@openai-bundled"]
-enabled = true
-
 [plugins."obsidian@obsidian-skills"]
-enabled = true
-
-[plugins."chrome@openai-bundled"]
 enabled = true
 
 [plugins."vercel@openai-curated"]
 enabled = true
 
 [plugins."codex-app-tools@openai-bundled"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
 enabled = true
 
 [plugins."unified-computer-use@openai-bundled"]
@@ -266,6 +263,12 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects.'c:\users\mikel\documents\codex\2026-09-11\realtime-voice-chat']
+trust_level = "trusted"
+
+[projects."/home/mikel/Documents/Codex/2026-09-21/https-github-com-davebcn87-pi-autoresearch"]
+trust_level = "trusted"
+
+[projects."/home/mikel/Documents/Codex/2026-09-21/x20"]
 trust_level = "trusted"
 
 [shell_environment_policy.set]

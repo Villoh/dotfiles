@@ -1,6 +1,6 @@
 {
   "shortcuts": {
     "toggleDashboard": "ctrl+shift+r",
-    "fullscreenDashboard": "ctrl+shift+f"
+    "fullscreenDashboard": "ctrl+alt+f"
   }
 }
