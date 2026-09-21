@@ -25,6 +25,7 @@ scoop/
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
 {{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/devin/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zprofile
 .profile
 {{ end }}
