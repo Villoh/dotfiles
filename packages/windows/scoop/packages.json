@@ -652,6 +652,13 @@
             "Source": "main"
         },
         {
+            "Name": "tunnel-agent",
+            "Updated": "2026-09-22T15:39:44+02:00",
+            "Info": "",
+            "Version": "1.1.6",
+            "Source": "villoh"
+        },
+        {
             "Name": "uv",
             "Updated": "2026-09-06T17:35:27.0605792+02:00",
             "Info": "",
