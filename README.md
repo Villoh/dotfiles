@@ -91,7 +91,9 @@ personal configuration that has no suitable Nix/Home Manager module. Review
 
 ## Fresh install
 
-See the full installation guide: **[INSTALL.md](INSTALL.md)**
+See the full installation guide: **[INSTALL.md](INSTALL.md)**. OS-specific
+installation guides live in [`docs/install/`](docs/install/), followed by the
+common GPG/SSH/Git/chezmoi bootstrap.
 
 ## Wallpapers
 

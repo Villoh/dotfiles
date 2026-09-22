@@ -1,13 +1,16 @@
-# CachyOS → Omarchy migration (historical)
+# Omarchy installation
 
-> Historical reference only. The current Linux installation is NixOS +
-> Hyprland + Dank Material Shell (DMS). NixOS/Home Manager owns the
-> declarative system, packages, services, and desktop; chezmoi manages only
-> personal dotfiles and scripts outside that scope.
+> Installation reference for Omarchy, adapted to this machine, its dual-boot
+> layout, and the post-install chezmoi workflow. The hardware and release
+> values below are the validated baseline; update them before reusing the guide
+> on a different machine.
 
-Tracking doc for retiring CachyOS and making Omarchy 4.0.0 (Quattro) the Linux
-daily driver. Windows (AtlasOS) stays untouched on its own disk for the rare
-forced case. Reference only — never deployed (see `.chezmoiignore`).
+This guide covers installing Omarchy as the Linux daily driver, preserving the
+Windows installation, and handing off to the common dotfiles bootstrap. It is
+reference-only and never deployed (see `.chezmoiignore`).
+
+After the OS is working, continue with the [common post-install bootstrap](bootstrap.md)
+for GPG, SSH, Git, chezmoi, and the normal dotfiles flow.
 
 ## Target machine facts
 
@@ -22,7 +25,7 @@ forced case. Reference only — never deployed (see `.chezmoiignore`).
 - USB: MIKELUSB8 (F:, SanDisk Cruzer Blade 7.8 GB) — flashed and validated
   with balenaEtcher, ready to boot.
 
-## Install plan
+## Installation plan
 
 - [x] Verify ISO hash against official release.
 - [x] Flash + validate USB.
@@ -96,12 +99,12 @@ anything — simplest and what "leave Windows for when I'm forced" implies.
       `.gitmodules` cleaned.
 - [x] Fixed stale `dot_config/hypr/` / `hypr.old` references left over from
       that move: `.chezmoiignore`, `.chezmoiscripts/run_once_00_linux-install.sh.tmpl`
-      (was still cloning submodules that no longer exist), `docs/structure.md`,
+      (was still cloning submodules that no longer exist), `docs/repo/structure.md`,
       `README.md`.
 - [x] Removed `other_config/plymouth/themes/cachyos` submodule — it's
       literally CachyOS's own boot splash, pointless once CachyOS is gone.
       Fixed the same 3 stale-reference spots
-      (`.chezmoiscripts/run_once_00_linux-install.sh.tmpl`, `docs/structure.md`,
+      (`.chezmoiscripts/run_once_00_linux-install.sh.tmpl`, `docs/repo/structure.md`,
       `.gitmodules`).
 
 ### Pending — SDDM theme decision
@@ -182,7 +185,7 @@ these two Windows-only main configs.
       also has a hardcoded Windows path
       (`"source": "C:/Users/Mikel/.config/fastfetch/ascii.txt"`) — broken on
       Linux regardless of Omarchy. Gated `dot_config/fastfetch/**`
-      Windows-only too, dropped its `docs/linux.md` row.
+      Windows-only too, dropped its `docs/linux/linux.md` row.
 - Validated live with `chezmoi ignored` + `execute-template` — nothing
   changes on this Windows machine, template still parses.
 
@@ -289,7 +292,7 @@ herdr/tmux), scrapped zsh altogether rather than keep maintaining it:
       earlier) and the root `dot_zshenv` (the `ZDOTDIR` redirect).
 - [x] Cleaned up the now-dead references: `.chezmoiignore` (`.zshenv`,
       `.config/zsh/**` entries removed from the `enable_zsh` block),
-      `docs/structure.md`, `docs/linux.md`, `README.md`,
+      `docs/repo/structure.md`, `docs/linux/linux.md`, `README.md`,
       `.gitignore` (`dot_config/zsh/functions/api-keys.zsh`, a gitignored
       local-only file under a directory that no longer exists).
 - **Left as-is, flagged only**: `dot_zprofile` and `dot_profile` (still real
@@ -302,7 +305,7 @@ herdr/tmux), scrapped zsh altogether rather than keep maintaining it:
 
 ### Deferred — stale docs, on purpose
 
-`docs/linux.md` and the Linux stack table in `README.md` still describe the
+`docs/linux/linux.md` and the Linux stack table in `README.md` still describe the
 old HyDE/Hyprland/Waybar/Kitty/Ghostty setup, most of which is already gone
 from the repo. Not rewriting now: the final app roster depends on the
 decisions above and on what Omarchy itself ends up managing, so a rewrite now
@@ -334,7 +337,7 @@ Went through every `Documents/PowerShell/Functions/*.ps1` against its
       Omarchy: migrates packages *into* CachyOS's own optimized repos
       (`cachyos-v3/v4/extra/core`), which won't exist there. Whole purpose
       evaporates, not just the name. Removed the doc reference in
-      `docs/linux.md` too.
+      `docs/linux/linux.md` too.
 - Lower priority, cosmetic only: `cleanup` ("Arch/CachyOS" in banner text,
   logic itself is generic pacman/Arch and still works), `migrate-aur` /
   `migrate-flatpak` (mention `cachyos` repo priority in output text — still
@@ -345,7 +348,7 @@ Went through every `Documents/PowerShell/Functions/*.ps1` against its
 `cliphist.sh`, `dontkillsteam.sh`, `screenshot.sh`, `screenshot-menu.sh` — only
 referenced from the frozen `other_config/hypr-old-keybinds/keybindings.conf`
 (reference-only, never deployed), no live callers. Also dropped a dead
-`docs/linux.md` row for `hytale-launcher`, which never actually existed as a
+`docs/linux/linux.md` row for `hytale-launcher`, which never actually existed as a
 file in the repo. **This section (PowerShell ↔ bash parity) is done.**
 
 ### Done — `dot_config/autostart/`, `mimeapps.list`, `dot_config/fastfetch/`

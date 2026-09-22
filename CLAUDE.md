@@ -41,9 +41,11 @@ Load these only when the task is relevant to them:
 
 | File | When to read |
 |------|-------------|
-| `docs/structure.md` | Exploring the repo, adding new configs, understanding what's tracked |
-| `docs/windows.md` | Any Windows-specific config, junctions, AppData, scripts, running PowerShell from bash |
-| `docs/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
-| `docs/commits.md` | Writing or reviewing commit messages |
-| `docs/omarchy-migration.md` | CachyOS → Omarchy migration, Secure Boot, dual-boot, theme-overlap cleanup |
-| `docs/windows-disk-cleanup.md` | Freeing C: disk space, scoop/JetBrains/package-manager cache bloat, the `prune` PowerShell function |
+| `docs/repo/structure.md` | Exploring the repo, adding new configs, understanding what's tracked |
+| `docs/windows/windows.md` | Any Windows-specific config, junctions, AppData, scripts, running PowerShell from bash |
+| `docs/linux/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
+| `docs/repo/commits.md` | Writing or reviewing commit messages |
+| `docs/install/bootstrap.md` | Common GPG/SSH/Git/chezmoi handoff after installing an operating system |
+| `docs/install/omarchy.md` | Omarchy installation, Secure Boot, dual-boot, and post-install integration |
+| `docs/install/nixos-dms.md` | NixOS + Dank Material Shell installation, Hyprland vs Niri, and dual-boot |
+| `docs/windows/disk-cleanup.md` | Freeing C: disk space, scoop/JetBrains/package-manager cache bloat, the `prune` PowerShell function |

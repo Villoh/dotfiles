@@ -8,6 +8,20 @@
 > its declarative source of truth; this repository does not install Linux
 > packages.
 
+## Installation flow
+
+Every operating-system guide ends at a working OS. The shared handoff is:
+
+1. Install Git, GnuPG, OpenSSH, and chezmoi.
+2. Import the private GPG key and ownertrust from a secure backup.
+3. Start and verify the GPG/SSH agent when SSH authentication is required.
+4. Initialize chezmoi without applying files.
+5. Verify decryption with `chezmoi diff`.
+6. Apply the dotfiles and validate Git signing and SSH.
+
+See [`docs/install/bootstrap.md`](docs/install/bootstrap.md) for the complete
+procedure and the reason for this ordering.
+
 ## Prerequisites
 
 ### Windows
@@ -15,22 +29,23 @@
 > [!IMPORTANT]
 > Open **Terminal as Administrator** before running the install command. Some winget packages require elevation and will prompt UAC individually if the terminal is not elevated.
 
-Install **Git** and **chezmoi** via winget:
+Install **Git**, **GnuPG/Gpg4win**, and **chezmoi** via winget:
 
 ```powershell
 winget install -e --id Git.Git
+winget install -e --id GnuPG.Gpg4win
 winget install -e --id twpayne.chezmoi
 ```
+
+Import the private GPG key before applying the repository. See the [common
+bootstrap guide](docs/install/bootstrap.md).
 
 ### Linux
 
 The Linux system must be configured with **NixOS + Hyprland + Dank Material
-Shell (DMS)** separately. Install Git and chezmoi declaratively through
-NixOS/Home Manager, then initialize this repository without applying it:
-
-```bash
-chezmoi init https://github.com/Villoh/dotfiles
-```
+Shell (DMS)** separately. Install Git, GnuPG, OpenSSH, and chezmoi
+declaratively through NixOS/Home Manager. Then follow the [common bootstrap
+guide](docs/install/bootstrap.md).
 
 Do not use pacman/AUR or the old Arch bootstrap flow on NixOS.
 
@@ -38,13 +53,38 @@ Do not use pacman/AUR or the old Arch bootstrap flow on NixOS.
 
 ## Install
 
-Windows can use:
+### Personal flow — with private GPG keys
+
+Use this flow on your own machine. Import the private GPG key and ownertrust,
+then follow the [common bootstrap guide](docs/install/bootstrap.md):
 
 ```bash
-chezmoi init --apply --exclude=encrypted github.com/Villoh/dotfiles
+chezmoi init https://github.com/Villoh/dotfiles
+chezmoi diff
+chezmoi apply
 ```
 
-On Linux, use only `chezmoi init` first and review the result before applying.
+Do not apply until GnuPG can decrypt the encrypted files. On Windows, open an
+Administrator terminal before running the Windows package-install scripts.
+
+### Secondary flow — without private keys
+
+Use this flow for a secondary machine or another user who must not receive the
+encrypted personal configuration:
+
+```bash
+chezmoi init --apply --exclude=encrypted https://github.com/Villoh/dotfiles
+```
+
+This intentionally skips encrypted Git identities, work configuration,
+secrets, and other private files. Configure that machine's Git identity and
+SSH credentials separately. If the private GPG key is imported later, run:
+
+```bash
+chezmoi diff
+chezmoi apply
+```
+
 During initialization, chezmoi will:
 1. Clone the repo to `~/.local/share/chezmoi`
 2. Prompt for module enable/disable options (all default to `true`)

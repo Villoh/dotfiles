@@ -81,7 +81,7 @@ que aparecen fuentes nuevas.
 
 **Descartada — ya hay alternativa mejor identificada:**
 
-- `@tintinweb/pi-subagents` — ver `docs/pi-subagents-workflows-comparison.md`
+- `@tintinweb/pi-subagents` — ver `docs/agents/pi-subagents-workflows-comparison.md`
 
 **Ignorar:**
 
@@ -459,7 +459,7 @@ señalarlo después). Redundante mientras ponytail siga activo.
 
 *Fuente: GitHub `tintinweb/pi-subagents`*
 
-Ya evaluada a fondo en `docs/pi-subagents-workflows-comparison.md`: mejor UX
+Ya evaluada a fondo en `docs/agents/pi-subagents-workflows-comparison.md`: mejor UX
 visual estilo Claude Code (FleetView, `@agent`, sesiones reanudables), pero
 peor señal de mantenimiento (69 issues abiertos frente a 4 de
 `nicobailon/pi-subagents`). Sin motivo para preferirla habiendo una

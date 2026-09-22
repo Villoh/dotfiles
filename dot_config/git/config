@@ -179,7 +179,7 @@
   # `fixup`, `rebranch`, `yank`, `backmerge`, `churn`, `lines`, `sha`, `zip`,
   # `diff-file-last-commit`, `exclude`, `include`, `tree` all moved to real
   # commands in dot_local/bin/git-* (Linux) and git-workflow.ps1 (Windows) —
-  # see docs/omarchy-migration.md for the full mapping. Prefer `git absorb
+  # see docs/install/omarchy.md for the full mapping. Prefer `git absorb
   # --and-rebase` (git-absorb, pacman -S git-absorb) over `git fixup` when available.
 
   # ============================================================================

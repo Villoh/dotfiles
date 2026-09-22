@@ -27,7 +27,7 @@ pida aplicar la guía, dentro del alcance que haya aprobado.
   argumentos de comandos ni logs. Este repositorio cifra secretos con GPG.
 - **Propiedad de archivos:** NixOS/Home Manager gestiona paquetes y configuración
   declarativa existente; chezmoi solo archivos personales no gestionados por Nix.
-  Consultar [Linux](linux.md) antes de modificar esa instalación.
+  Consultar [Linux](../linux/linux.md) antes de modificar esa instalación.
 - **Alcance:** skills personales compartidas; dependencias de frontend y
   registries por proyecto. No inicializar una app React dentro de este repo.
 - **Portabilidad:** una fuente mantenida de cada skill, expuesta mediante rutas
@@ -176,7 +176,7 @@ skill duplicada.
 
 En Linux, no añadir bootstrap de paquetes a chezmoi ni ejecutar instaladores de
 sistema sugeridos por upstream. Para otro SO, seguir el gestor existente; para
-Windows consultar [su guía](windows.md).
+Windows consultar [su guía](../windows/windows.md).
 
 Para navegador, cargar instrucciones de la versión instalada:
 

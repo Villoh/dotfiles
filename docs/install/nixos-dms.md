@@ -9,8 +9,10 @@ packages, services, hardware, Hyprland, and DMS. This chezmoi repository is a
 complement: it manages personal dotfiles and scripts that are not managed by
 Nix/Home Manager. Do not apply overlapping configuration from both systems.
 
-The historical CachyOS/Omarchy sections below are retained as migration notes,
-not as installation instructions for this chezmoi repository.
+The Omarchy comparison below is retained as installation context; this guide
+is the NixOS installation path for this chezmoi repository. After the OS is
+working, continue with the [common post-install bootstrap](bootstrap.md) for
+GPG, SSH, Git, chezmoi, and the normal dotfiles flow.
 
 ## ISO + flashing
 
@@ -71,7 +73,7 @@ Omarchy's Limine setup does — the fix differs by bootloader choice:
   `nixos-rebuild switch` time, so it needs a re-run if Windows' own
   bootloader ever changes.
 - **Fast Boot gotcha** — identical issue already documented in
-  `docs/omarchy-migration.md`: this is a UEFI *firmware* behavior, not
+  `docs/install/omarchy.md`: this is a UEFI *firmware* behavior, not
   distro-specific. If Windows shows in a boot menu but won't actually
   boot, disable **Fast Boot** in the UEFI firmware (separate from
   Windows' own Fast Startup, already off).

@@ -134,7 +134,7 @@ CachyOS/Hyprland side — same manager set (npm/pnpm/bun/uv/go/dotnet/docker),
 same "skip if not installed, skip docker silently if the daemon's down"
 logic, but with a `gum choose` multi-select when run with no arguments
 instead of a `--name|--all` string match. It deliberately doesn't touch
-pacman/AUR caches — that's already `cleanup`'s job. See `docs/linux.md`.
+pacman/AUR caches — that's already `cleanup`'s job. See `docs/linux/linux.md`.
 
 ## Result
 
