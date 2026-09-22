@@ -26,9 +26,6 @@
           "PackageIdentifier": "Git.Git"
         },
         {
-          "PackageIdentifier": "GnuPG.GnuPG"
-        },
-        {
           "PackageIdentifier": "GnuPG.Gpg4win"
         },
         {
