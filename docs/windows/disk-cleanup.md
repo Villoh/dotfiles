@@ -136,6 +136,43 @@ logic, but with a `gum choose` multi-select when run with no arguments
 instead of a `--name|--all` string match. It deliberately doesn't touch
 pacman/AUR caches — that's already `cleanup`'s job. See `docs/linux/linux.md`.
 
+## Follow-up session
+
+Completed after the original cleanup:
+
+- Ran `Invoke-DevCleanup --all`: Scoop, npm, pnpm, bun, uv, Go, and NuGet.
+- Removed JetBrains local caches after confirming no IDE was running.
+- Ran DISM component cleanup as administrator.
+- Compacted Docker's WSL2 VHDX with `diskpart`.
+- Cleared Brave `Cache`, `Code Cache`, `Service Worker`, and `GPUCache` after closing Brave.
+- Removed the unused MSVC Rust toolchain and the .NET 10.0.400 SDK; retained the active GNU Rust toolchain and .NET 10.0.401.
+- Docker image/container pruning was skipped because Docker Desktop was not running.
+
+### Optional temporary-folder cleanup
+
+The following folders were **not** deleted automatically and should only be
+cleaned after closing applications that may be using them:
+
+- `C:\tmp`
+- `C:\temp`
+- `$env:LOCALAPPDATA\Temp`
+
+Use enumeration before deletion to avoid matching the shell's protected-path
+patterns:
+
+```powershell
+$paths = @('C:\tmp', 'C:\temp', "$env:LOCALAPPDATA\Temp")
+foreach ($path in $paths) {
+    if (Test-Path $path) {
+        Get-ChildItem $path -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+```
+
+Locked files are expected and can be left in place. `C:\tmp` and `C:\temp`
+are application-specific paths, so inspect them first if they contain anything
+other than disposable temporary data.
+
 ## Result
 
 359 GiB → 541 GiB free (~182 GB reclaimed), largest single win by far was
