@@ -136,32 +136,41 @@ logic, but with a `gum choose` multi-select when run with no arguments
 instead of a `--name|--all` string match. It deliberately doesn't touch
 pacman/AUR caches — that's already `cleanup`'s job. See `docs/linux/linux.md`.
 
-## Follow-up session
+## Cleanup performed
 
-Completed after the original cleanup:
+### Automated cleanup
 
-- Ran `Invoke-DevCleanup --all`: Scoop, npm, pnpm, bun, uv, Go, and NuGet.
+- Ran `Invoke-DevCleanup --all` for Scoop, npm, pnpm, bun, uv, Go, and NuGet.
+- Cleared the uv cache (5.57 GB), npm cache (4.55 GB), Nuitka cache (3.64 GB), and `%LOCALAPPDATA%\Temp` (0.90 GB).
+- Removed Vortex mod downloads (5.36 GB) and the remaining Vortex AppData data (0.29 GB); Vortex itself remains installed.
+- Removed leftover Jan local data (6.97 GB) after uninstalling Jan and removed `Jan.Jan` from the Winget package backup.
+- Recovered approximately 19.98 GB; a small amount of locked temp data remained.
+
+### Manual and elevated cleanup
+
 - Removed JetBrains local caches after confirming no IDE was running.
 - Ran DISM component cleanup as administrator.
 - Compacted Docker's WSL2 VHDX with `diskpart`.
 - Cleared Brave `Cache`, `Code Cache`, `Service Worker`, and `GPUCache` after closing Brave.
-- Removed the unused MSVC Rust toolchain and the .NET 10.0.400 SDK; retained the active GNU Rust toolchain and .NET 10.0.401.
+- Removed Claude's local VM bundle (8.24 GB) after exiting Claude Desktop; Claude itself remains installed and may redownload it if Cowork is used again.
+
+### Toolchain cleanup
+
+- Removed the unused MSVC Rust toolchain.
+- Removed the .NET 10.0.400 SDK.
+- Retained the active GNU Rust toolchain and .NET 10.0.401 SDK.
+
+### Deferred cleanup
+
 - Docker image/container pruning was skipped because Docker Desktop was not running.
-
-### Optional temporary-folder cleanup
-
-The following folders were **not** deleted automatically and should only be
-cleaned after closing applications that may be using them:
-
-- `C:\tmp`
-- `C:\temp`
-- `$env:LOCALAPPDATA\Temp`
+- `C:\tmp` and `C:\temp` were not deleted automatically. Inspect them first
+  because they may contain application-specific data.
 
 Use enumeration before deletion to avoid matching the shell's protected-path
 patterns:
 
 ```powershell
-$paths = @('C:\tmp', 'C:\temp', "$env:LOCALAPPDATA\Temp")
+$paths = @('C:\tmp', 'C:\temp')
 foreach ($path in $paths) {
     if (Test-Path $path) {
         Get-ChildItem $path -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
@@ -169,9 +178,7 @@ foreach ($path in $paths) {
 }
 ```
 
-Locked files are expected and can be left in place. `C:\tmp` and `C:\temp`
-are application-specific paths, so inspect them first if they contain anything
-other than disposable temporary data.
+Locked files are expected and can be left in place.
 
 ## Result
 
