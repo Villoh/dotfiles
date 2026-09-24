@@ -23,9 +23,6 @@
           "PackageIdentifier": "KRTirtho.Flemozi"
         },
         {
-          "PackageIdentifier": "Git.Git"
-        },
-        {
           "PackageIdentifier": "GnuPG.Gpg4win"
         },
         {
@@ -48,9 +45,6 @@
         },
         {
           "PackageIdentifier": "Nilesoft.Shell"
-        },
-        {
-          "PackageIdentifier": "Neovim.Neovim"
         },
         {
           "PackageIdentifier": "Microsoft.PowerShell"
@@ -149,9 +143,6 @@
           "PackageIdentifier": "AmN.YASBGUI"
         },
         {
-          "PackageIdentifier": "Atlassian.AtlassianCLI"
-        },
-        {
           "PackageIdentifier": "AutoHotkey.AutoHotkey"
         },
         {
@@ -189,9 +180,6 @@
         },
         {
           "PackageIdentifier": "SST.OpenCodeDesktop"
-        },
-        {
-          "PackageIdentifier": "Rustlang.Rustup"
         },
         {
           "PackageIdentifier": "Spicetify.Spicetify"
@@ -267,6 +255,21 @@
         },
         {
           "PackageIdentifier": "Microsoft.WSL"
+        },
+        {
+          "PackageIdentifier": "Bruno.Bruno"
+        },
+        {
+          "PackageIdentifier": "kangfenmao.CherryStudio"
+        },
+        {
+          "PackageIdentifier": "cjpais.Handy"
+        },
+        {
+          "PackageIdentifier": "LibreHardwareMonitor.LibreHardwareMonitor"
+        },
+        {
+          "PackageIdentifier": "ZedIndustries.Zed"
         }
       ],
       "SourceDetails": {

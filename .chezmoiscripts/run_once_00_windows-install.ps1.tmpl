@@ -84,6 +84,15 @@ if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     $summary.skip++
 }
 
+# -- Git (required before adding Scoop buckets) --------------------------------
+$scoopInstalled = scoop list 2>$null | Select-Object -ExpandProperty Name
+if ($scoopInstalled -contains "git") {
+    LogSkip "Scoop Git already installed"
+    $summary.skip++
+} else {
+    TryInstall "Scoop Git (required for buckets)" { scoop install git }
+}
+
 # -- fzf (needed for package selection below) ----------------------------------
 if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
     TryInstall "fzf" { scoop install fzf }
@@ -270,6 +279,13 @@ if ($selectedManagers -contains "cargo") {
     $cargoEntries = @(Get-Content $cargoFile |
         Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
     if ($cargoEntries) { $selectedCargoEntries = Select-WithFzf ($cargoEntries | Sort-Object) "cargo>" }
+}
+
+if ($selectedCargoEntries | Where-Object { $_ -match '^https://' }) {
+    if ($selectedScoopNames -notcontains "git") {
+        $selectedScoopNames += "git"
+        Log "  Scoop git required by selected cargo git package" "Cyan"
+    }
 }
 
 # == PACKAGE INSTALLS ==========================================================

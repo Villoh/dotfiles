@@ -3,7 +3,6 @@
   "Sources": [
     {
       "Packages": [
-        { "PackageIdentifier": "Git.Git" },
         { "PackageIdentifier": "Microsoft.PowerShell" },
         { "PackageIdentifier": "Microsoft.WindowsTerminal" },
         { "PackageIdentifier": "Flow-Launcher.Flow-Launcher" },

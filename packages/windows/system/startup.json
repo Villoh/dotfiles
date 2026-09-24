@@ -27,7 +27,7 @@
     },
     {
       "name": "Handy",
-      "path": "%USERPROFILE%\\scoop\\apps\\handy\\current\\handy.exe"
+      "path": "%LOCALAPPDATA%\\Handy\\handy.exe"
     }
   ],
   "msix": [

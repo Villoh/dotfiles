@@ -19,6 +19,7 @@
     ],
     "apps": [
         { "Name": "chezmoi",              "Source": "main"        },
+        { "Name": "git",                  "Source": "main"        },
         { "Name": "fzf",                  "Source": "main"        },
         { "Name": "zoxide",               "Source": "main"        },
         { "Name": "starship",             "Source": "main"        },
