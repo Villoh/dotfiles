@@ -1,5 +1,8 @@
-https://github.com/akitaonrails/ai-usagebar.git
-https://github.com/bobby-nicholas/omaland.git
+https://github.com/bobby-nicholas/omaland
 https://github.com/crmne/omarchy-hyprmoncfg.git
 https://github.com/Elevate08/qs-bitwarden-cli.git
+https://github.com/jankeesvw/omarchy-notification-center
+https://github.com/jjdizz1l/dizziee.system-updates
+https://github.com/juancasanueva/omarchy-plugin-manager.git
 https://github.com/SirJul1337/omarchy-lock-explorer.git
+https://github.com/viganogabriele/agent-usage-plus.git
