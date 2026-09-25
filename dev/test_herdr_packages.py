@@ -22,11 +22,11 @@ def check():
         log = root / "calls.jsonl"
         inventory = source / "packages/linux/herdr-plugins.json"
         env = dict(os.environ, HOME=str(home), SOURCE=str(source), CALLS=str(log),
-                   REGISTRY=str(registry), PATH=f"{bins}:{os.environ['PATH']}")
+                   REGISTRY=str(registry), PATH=f"{bins}{os.pathsep}{os.environ['PATH']}")
 
         def stub(name, code):
             path = bins / name
-            path.write_text(f"#!{sys.executable}\n" + code)
+            path.write_text(f"#!{sys.executable}\n" + code, encoding='utf-8')
             path.chmod(0o755)
 
         stub("chezmoi", "import os; print(os.environ['SOURCE'])\n")
@@ -95,7 +95,7 @@ else:
         assert records[0]['ref'] is None
         assert records[1]['source'] == 'tools/local plugin'
         assert records[2]['source'] == 'example/collection/plugins/demo'
-        assert records[2]['ref'] == 'v1.2.3' and records[2]['enabled'] is False
+        assert records[2]['ref'] is None and records[2]['enabled'] is False
         assert str(home) not in saved and 'resolved_commit' not in saved
         run('backup-packages', '--interactive')
         assert inventory.with_suffix('.json.bak').read_text() == saved
@@ -118,9 +118,9 @@ else:
         assert '[SKIP] test.present' in result.stdout
         calls = [json.loads(line) for line in log.read_text().splitlines()]
         assert calls == [
-            ['plugin', 'install', '--', 'example/floating'],
-            ['plugin', 'link', '--disabled', str(local)],
-            ['plugin', 'install', '--ref=v1.2.3', '--', 'example/collection/plugins/demo'],
+            ['plugin', 'install', 'example/floating'],
+            ['plugin', 'link', str(local), '--disabled'],
+            ['plugin', 'install', 'example/collection/plugins/demo', '--ref', 'v1.2.3'],
             ['plugin', 'disable', 'test.pinned'],
         ], calls
         registry.write_text(json.dumps(entries))

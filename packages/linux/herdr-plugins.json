@@ -7,7 +7,7 @@
     "ref": null
   },
   {
-    "id": "herdr-agent-quota",
+    "id": "herdr-agent-usage",
     "enabled": true,
     "kind": "github",
     "source": "levi-qiao/herdr-agent-quota",
@@ -18,7 +18,7 @@
     "enabled": true,
     "kind": "github",
     "source": "thanhdat77/herdr-navigator",
-    "ref": "9bdf30f03f53730e6232377a3fca3bdc6ed9f3ca"
+    "ref": null
   },
   {
     "id": "herdr-sidebar",
@@ -32,7 +32,7 @@
     "enabled": true,
     "kind": "github",
     "source": "nicosuave/memex",
-    "ref": "604437114ecdff208202a6241394a8cf11b5b7a4"
+    "ref": null
   },
   {
     "id": "osolmaz.pi-workflows",

@@ -104,15 +104,16 @@ backup menu and default backup run. This requires a reachable Herdr session;
 query/parse failures leave the previous inventory untouched.
 
 The inventory stores plugin IDs, enabled state, GitHub `owner/repo[/subdir]`,
-requested refs, and local paths relative to `$HOME`. Unpinned GitHub plugins
-remain unpinned. Local plugins outside `$HOME` fail backup rather than exporting
-machine-specific absolute paths. Herdr's generated `plugins.json`, checkouts,
+and local paths relative to `$HOME`. Backups omit requested refs and resolved
+commits, so missing plugins restore from the repository's default branch. Local
+plugins outside `$HOME` fail backup rather than exporting machine-specific
+absolute paths. Herdr's generated `plugins.json`, checkouts,
 binaries, credentials, and plugin-specific settings are not copied.
 
 Run `restore-packages`, select **herdr**, then choose plugins. Existing IDs are
 left untouched (including version and enabled state); registry warnings stop
 restoration for that plugin. Missing GitHub plugins use `herdr plugin install`
-with saved refs and native trust/build confirmation. Herdr installs GitHub
+without a ref and retain native trust/build confirmation. Herdr installs GitHub
 plugins enabled; saved disabled plugins are disabled immediately afterward, so
 startup code may run before that disable. Install only trusted plugins.
 

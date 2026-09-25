@@ -64,6 +64,8 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 | `Documents/PowerShell/Modules/` | Terminal-Icons, PowerToys Configure modules |
 | `Documents/PowerShell/Functions/bitwarden.ps1` | Bitwarden CLI helpers (sensitive) |
 | `Documents/PowerShell/Functions/secrets.ps1` | Manual secret refresh with `fzf`, backed by `packages/windows/system/secrets.json` |
+| `Documents/PowerShell/Functions/backup.ps1` | `backup-herdr` saves the plugin inventory without commit refs; `backup` includes it |
+| `Documents/PowerShell/Functions/restore.ps1` | `restore -Manager herdr -All -Yes` restores all; use `-Plugin id1,id2` to select. `-Yes` accepts plugin trust prompts |
 | `Documents/AutoHotkey/` | AutoHotkey automation scripts |
 | `Documents/Rainmeter/Skins/` | Rainmeter desktop widgets (sideCat, Trashy) |
 

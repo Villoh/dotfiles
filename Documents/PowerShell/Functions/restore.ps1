@@ -1,5 +1,7 @@
 # restore.ps1
-$PackagesDir = "$env:USERPROFILE\.local\share\chezmoi\packages\windows"
+$SourceDir = chezmoi source-path
+$PackagesDir = Join-Path $SourceDir "packages\windows"
+$HerdrPluginsFile = Join-Path $SourceDir "packages\linux\herdr-plugins.json"
 
 # -- fzf selection helpers -----------------------------------------------------
 # Multi-select: TAB=toggle (no cursor move)  CTRL-A=toggle-all  ENTER=confirm  ESC=skip
@@ -37,6 +39,18 @@ function Select-OneFzf {
 
 # -- Invoke-AllRestore ---------------------------------------------------------
 function Invoke-AllRestore {
+    param(
+        [ValidateSet('herdr')][string]$Manager,
+        [string[]]$Plugin,
+        [switch]$All,
+        [switch]$Yes
+    )
+    if ($Manager -eq 'herdr') {
+        Invoke-HerdrRestore -Plugin $Plugin -All:$All -Yes:$Yes
+        return
+    }
+    if ($Plugin -or $All -or $Yes) { throw 'Plugin selection arguments require -Manager herdr.' }
+
     $pkgDir = $PackagesDir
 
     $candidates = [System.Collections.Generic.List[string]]::new()
@@ -51,6 +65,7 @@ function Invoke-AllRestore {
     if (Test-Path "$pkgDir\uv-tools.txt") { $candidates.Add("uv") }
     if (Test-Path "$pkgDir\bin-packages.txt") { $candidates.Add("bin") }
     if (Test-Path "$pkgDir\cargo\cargo.txt" -or Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $candidates.Add("cargo") }
+    if ((Test-Path $HerdrPluginsFile) -and (Get-Command herdr -ErrorAction SilentlyContinue)) { $candidates.Add("herdr") }
 
     $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
         "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all"
@@ -69,6 +84,7 @@ function Invoke-AllRestore {
     if ($selectedManagers -contains "uv") { Invoke-UvRestore }
     if ($selectedManagers -contains "bin") { Invoke-BinRestore }
     if ($selectedManagers -contains "cargo") { Invoke-CargoRestore }
+    if ($selectedManagers -contains "herdr") { Invoke-HerdrRestore }
 
     Write-Host "Restore completado" -ForegroundColor Green
 }
@@ -378,6 +394,87 @@ function Invoke-BinRestore {
     Write-Host "bin restore OK" -ForegroundColor Green
 }
 Set-Alias -Name restore-bin -Value Invoke-BinRestore
+
+# -- herdr ---------------------------------------------------------------------
+function Invoke-HerdrRestore {
+    param([Alias('Plugin')][string[]]$PluginId, [switch]$All, [switch]$Yes)
+    if ($All -and $PluginId) { throw 'Use either -All or -Plugin, not both.' }
+    if (($All -or $PluginId) -and -not $Yes) { throw 'Non-interactive Herdr restore requires -Yes to trust selected plugins.' }
+    if (-not (Test-Path $HerdrPluginsFile)) { Write-Warning "No encontrado: $HerdrPluginsFile"; return }
+    if (-not (Get-Command herdr -ErrorAction SilentlyContinue)) { Write-Warning "Herdr no está instalado"; return }
+    if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) { Write-Warning "Herdr restore requiere fzf para elegir plugins"; return }
+
+    $plugins = Get-Content $HerdrPluginsFile -Raw | ConvertFrom-Json
+    $ids = @()
+    foreach ($plugin in $plugins) {
+        $parts = @($plugin.source -split '/')
+        if ($plugin.id -isnot [string] -or $plugin.id -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$' -or
+            $plugin.enabled -isnot [bool] -or $plugin.kind -notin @('github', 'local') -or
+            $plugin.source -isnot [string] -or [string]::IsNullOrWhiteSpace($plugin.source) -or
+            ($null -ne $plugin.ref -and ($plugin.ref -isnot [string] -or [string]::IsNullOrWhiteSpace($plugin.ref)))) {
+            throw "Inventario Herdr inválido: $HerdrPluginsFile"
+        }
+        if ($plugin.kind -eq 'github' -and
+            ($plugin.source -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_./-]+$' -or
+             @($parts | Where-Object { $_ -in @('', '.', '..') }).Count -gt 0)) {
+            throw "Origen GitHub inválido para $($plugin.id)"
+        }
+        if ($plugin.kind -eq 'local' -and
+            ([System.IO.Path]::IsPathRooted($plugin.source) -or
+             $plugin.source -match '(^|[\\/])\.\.?([\\/]|$)')) {
+            throw "Ruta local inválida para $($plugin.id)"
+        }
+        $ids += $plugin.id
+    }
+    if (@($ids | Sort-Object -Unique).Count -ne $ids.Count) { throw "IDs Herdr duplicados en $HerdrPluginsFile" }
+
+    if ($All) {
+        $selected = $ids
+    }
+    elseif ($PluginId) {
+        $selected = @($PluginId | Select-Object -Unique)
+        $unknown = @($selected | Where-Object { $_ -notin $ids })
+        if ($unknown) { throw "Plugins no encontrados en el inventario: $($unknown -join ', ')" }
+    }
+    else {
+        $selected = Select-WithFzf $ids "Herdr plugins>"
+    }
+    if (-not $selected) { return }
+
+    $live = herdr plugin list --json | ConvertFrom-Json
+    if ($LASTEXITCODE -ne 0 -or $live.result.plugins -isnot [array]) { throw "No se pudo leer el registro de plugins Herdr" }
+
+    foreach ($id in $selected) {
+        $plugin = $plugins | Where-Object id -eq $id | Select-Object -First 1
+        $existing = $live.result.plugins | Where-Object plugin_id -eq $id | Select-Object -First 1
+        if ($existing) {
+            if ($null -ne $existing.warnings -and @($existing.warnings).Count -gt 0) { throw "$id tiene avisos en Herdr; revísalos antes de restaurar" }
+            Write-Host "  [SKIP] $id ya registrado" -ForegroundColor DarkGray
+            continue
+        }
+
+        if ($plugin.kind -eq 'local') {
+            $path = Join-Path $HOME $plugin.source
+            if (-not (Test-Path (Join-Path $path 'herdr-plugin.toml'))) { throw "${id}: falta el manifiesto local en $path" }
+            if (-not $Yes -and (Read-Host "Confiar y enlazar $id? [y/N]") -notmatch '^(y|yes)$') { continue }
+            $linkArgs = @('plugin', 'link', $path)
+            if (-not $plugin.enabled) { $linkArgs += '--disabled' }
+            & herdr @linkArgs
+        }
+        else {
+            $installArgs = @('plugin', 'install', $plugin.source)
+            if ($plugin.ref) { $installArgs += @('--ref', $plugin.ref) }
+            if ($Yes) { $installArgs += '--yes' }
+            & herdr @installArgs
+        }
+        if ($LASTEXITCODE -ne 0) { throw "Falló la instalación de $id (exit $LASTEXITCODE)" }
+        if ($plugin.kind -eq 'github' -and -not $plugin.enabled) {
+            & herdr plugin disable $id
+            if ($LASTEXITCODE -ne 0) { throw "Falló la desactivación de $id (exit $LASTEXITCODE)" }
+        }
+    }
+}
+Set-Alias -Name restore-herdr -Value Invoke-HerdrRestore
 
 # -- windhawk --------------------------------------------------------------------
 function Invoke-WindhawkRestore {

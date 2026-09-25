@@ -188,7 +188,7 @@ backup_herdr() {
                 .plugin_root | if startswith($home) then ltrimstr($home)
                 else error("Local plugin outside HOME: back it up separately") end
             else error("Unknown Herdr plugin source") end),
-            ref: (.source.requested_ref // null)
+            ref: null
         }) | sort_by(.id)
     ' <<< "$registry") || return 1
 

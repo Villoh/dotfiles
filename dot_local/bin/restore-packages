@@ -475,12 +475,16 @@ install_herdr_plugins() {
                 return 1
             fi
             gum confirm "¿Confiar en el plugin local $id ($source) y enlazarlo?" || return 1
-            herdr plugin link "--$state" "$HOME/$source"
+            if [[ "$enabled" == true ]]; then
+                herdr plugin link "$HOME/$source"
+            else
+                herdr plugin link "$HOME/$source" --disabled
+            fi
         else
             ref_args=()
-            [[ -z "$ref" ]] || ref_args=("--ref=$ref")
+            [[ -z "$ref" ]] || ref_args=(--ref "$ref")
             # Native install retains its trust/build confirmation; do not pass --yes.
-            herdr plugin install "${ref_args[@]}" -- "$source"
+            herdr plugin install "$source" "${ref_args[@]}"
             if [[ "$enabled" == false ]]; then
                 herdr plugin disable "$id"
             fi
