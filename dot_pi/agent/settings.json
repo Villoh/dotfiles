@@ -40,7 +40,7 @@
   "npmCommand": [
     "npm"
   ],
-  "hideThinkingBlock": true,
+  "hideThinkingBlock": false,
   "theme": "omarchy-system",
   "modelRoles": {
     "steward": "cliproxyapi/gpt-6-luna",
