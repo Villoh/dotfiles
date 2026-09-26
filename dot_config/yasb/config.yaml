@@ -399,7 +399,7 @@ widgets:
     options:
       label: "<span>\uf2db</span> {info[value]}{info[unit]}"
       sensor_id: "/amdcpu/0/temperature/2"
-      server_host: "172.20.64.1"
+      server_host: "192.168.1.114"
       update_interval: 500
       precision: 2
       class_name: "libre-monitor-widget"
