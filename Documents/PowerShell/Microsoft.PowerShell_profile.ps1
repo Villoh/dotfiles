@@ -11,9 +11,13 @@ if (Test-Path 'C:\Users\mikel\Documents\PowerShell\PrettyPowerShell\PrettyPowerS
 
 # ---- BEGIN MIGRATED USER CUSTOMIZATIONS ----
 
-# Load PATH (for alacritty)
+# Load PATH (for alacritty); preserve paths injected into Herdr panes.
+$HerdrPath = if ($env:HERDR_ENV -eq "1") { $env:PATH -split ";" }
 $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH", "Machine") + ";" +
             [System.Environment]::GetEnvironmentVariable("PATH", "User")
+if ($HerdrPath) {
+    $env:PATH = (($HerdrPath + ($env:PATH -split ";") | Select-Object -Unique) -join ";")
+}
 
 # Mise: activate project-local tool versions
 if (Get-Command mise -ErrorAction SilentlyContinue) {
