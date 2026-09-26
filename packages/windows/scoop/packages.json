@@ -482,6 +482,11 @@
             "Source": "main"
         },
         {
+            "Name": "okular",
+            "Version": "26.08-7942",
+            "Source": "extras"
+        },
+        {
             "Name": "opencode",
             "Updated": "2026-09-06T17:35:04.474756+02:00",
             "Info": "",
