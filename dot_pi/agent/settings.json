@@ -41,7 +41,7 @@
     "npm"
   ],
   "hideThinkingBlock": false,
-  "theme": "omarchy-system",
+  "theme": "kanagawa-dragon",
   "modelRoles": {
     "steward": "cliproxyapi/gpt-6-luna",
     "expert": "cliproxyapi/claude-opus-5",
