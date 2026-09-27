@@ -5,11 +5,12 @@
       "args": ["mcp"],
       "inheritEnv": false
     },
-    "fal": {
-      "url": "https://mcp.fal.ai/mcp",
-      "auth": "bearer",
-      "bearerTokenStore": true,
-      "approveTools": true
+    "wealthfolio": {
+      "type": "http",
+      "url": "http://127.0.0.1:8639/mcp",
+      "headers": {
+        "Authorization": "Bearer ${WEALTHFOLIO_TOKEN}"
+      }
     }
   }
 }
