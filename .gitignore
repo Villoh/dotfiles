@@ -35,8 +35,12 @@ dot_config/opencode/node_modules/
 dot_config/opencode/bun.lock
 dot_config/opencode/package.json
 
-# Agent skill contents are restored from dot_skill-lock.json
+# Imported skills come from the lockfile; track this local Pi integration skill.
 dot_agents/skills/
+!dot_agents/skills/
+dot_agents/skills/*
+!dot_agents/skills/pi-dms-matugen/
+!dot_agents/skills/pi-dms-matugen/**
 dot_agents/skills.disabled/
 
 # docs ignore

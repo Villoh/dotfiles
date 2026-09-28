@@ -1,0 +1,3 @@
+[templates.pi]
+input_path = '/home/mikel/.config/matugen/dms/templates/pi.json'
+output_path = '/home/mikel/.pi/agent/themes/dankcolors.json'

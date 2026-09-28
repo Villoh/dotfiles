@@ -16,6 +16,9 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_fastfetch) }}.config/fastfetch/**{{ end }}
 {{ if ne .chezmoi.os "windows" }}.config/opencode/themes/**{{ end }}
 .agents/skills/**
+!.agents/skills/
+!.agents/skills/pi-dms-matugen/
+!.agents/skills/pi-dms-matugen/**
 .agents/skills.disabled/**
 {{ if ne .chezmoi.os "windows" }}AppData/
 Documents/
@@ -24,6 +27,7 @@ scoop/
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
 {{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/matugen/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/devin/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshrc
