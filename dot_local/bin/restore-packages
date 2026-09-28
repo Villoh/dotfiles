@@ -182,7 +182,7 @@ install_pacman_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 pacman — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes pacman") || return 0
+    selected=$(_select_packages "$file" "📦 Selecciona paquetes pacman") || return 1
 
     while IFS= read -r pkg; do
         [ -z "$pkg" ] && continue
@@ -209,7 +209,7 @@ install_aur_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "🔧 aur ($aur_helper) — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "🔧 Selecciona paquetes AUR") || return 0
+    selected=$(_select_packages "$file" "🔧 Selecciona paquetes AUR") || return 1
 
     while IFS= read -r pkg; do
         [ -z "$pkg" ] && continue
@@ -229,7 +229,7 @@ install_flatpak_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "📱 flatpak — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "📱 Selecciona paquetes Flatpak") || return 0
+    selected=$(_select_packages "$file" "📱 Selecciona paquetes Flatpak") || return 1
 
     while IFS= read -r pkg; do
         [ -z "$pkg" ] && continue
@@ -249,7 +249,7 @@ install_brew_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "🍺 brew — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "🍺 Selecciona paquetes brew") || return 0
+    selected=$(_select_packages "$file" "🍺 Selecciona paquetes brew") || return 1
 
     while IFS= read -r pkg; do
         [ -z "$pkg" ] && continue
@@ -269,7 +269,7 @@ install_uv_tools() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "🐍 uv — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "🐍 Selecciona uv tools") || return 0
+    selected=$(_select_packages "$file" "🐍 Selecciona uv tools") || return 1
 
     local installed
     installed=$(uv tool list 2>/dev/null || true)
@@ -292,7 +292,7 @@ install_bun_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "🍞 bun — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "🍞 Selecciona paquetes bun") || return 0
+    selected=$(_select_packages "$file" "🍞 Selecciona paquetes bun") || return 1
 
     local installed
     installed=$(bun pm ls -g 2>/dev/null || true)
@@ -316,7 +316,7 @@ install_npm_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 npm — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes npm") || return 0
+    selected=$(_select_packages "$file" "📦 Selecciona paquetes npm") || return 1
 
     local installed
     installed=$(npm ls -g --depth=0 2>/dev/null || true)
@@ -339,7 +339,7 @@ install_pnpm_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 pnpm — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes pnpm") || return 0
+    selected=$(_select_packages "$file" "📦 Selecciona paquetes pnpm") || return 1
 
     local installed
     installed=$(pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' || true)
@@ -370,7 +370,7 @@ install_cargo_packages() {
         --cursor.foreground="75" \
         --selected.foreground="75" \
         --header="Selecciona perfil cargo" \
-        --header.foreground="245") || return 0
+        --header.foreground="245") || return 1
 
     local file
     if [[ "$profile_choice" == minimal* ]]; then
@@ -384,7 +384,7 @@ install_cargo_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 cargo — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes cargo") || return 0
+    selected=$(_select_packages "$file" "📦 Selecciona paquetes cargo") || return 1
 
     local installed
     installed=$(cargo install --list 2>/dev/null || true)
@@ -416,7 +416,7 @@ install_bin_packages() {
     gum style --foreground 75 --bold --border rounded --padding "1 2" "🗃️  bin — $(basename "$file")"
 
     local selected
-    selected=$(_select_packages "$file" "🗃️  Selecciona paquetes bin") || return 0
+    selected=$(_select_packages "$file" "🗃️  Selecciona paquetes bin") || return 1
 
     local installed
     installed=$(bin list 2>/dev/null || true)
@@ -443,7 +443,7 @@ install_omarchy_plugins() {
 
     local selected dir url pkg installed=""
     local -a plugins=()
-    selected=$(_select_packages "$file" "🧩 Selecciona plugins Omarchy") || return 0
+    selected=$(_select_packages "$file" "🧩 Selecciona plugins Omarchy") || return 1
     mapfile -t plugins <<< "$selected"
 
     for dir in "$HOME/.config/omarchy/plugins"/*; do
@@ -494,7 +494,7 @@ install_herdr_plugins() {
 
     local selected registry installed entry id kind source ref enabled state
     local -a plugins=() ref_args=()
-    selected=$(_select_packages <(jq -r '.[].id' "$file") "🧩 Selecciona plugins Herdr") || return 0
+    selected=$(_select_packages <(jq -r '.[].id' "$file") "🧩 Selecciona plugins Herdr") || return 1
     mapfile -t plugins <<< "$selected"
     registry=$(herdr plugin list --json) || return 1
     installed=$(jq -ce '.result.plugins | if type == "array" then . else error("Invalid Herdr plugin list") end' <<< "$registry") || return 1

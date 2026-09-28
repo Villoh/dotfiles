@@ -6,7 +6,6 @@ pyright
 specify-cli
 tinytuya
 trafilatura
-ytm-player
 zuban
 goopdl
 harlequin
