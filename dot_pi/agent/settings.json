@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.85.1",
+  "lastChangelogVersion": "0.87.1",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -20,7 +20,6 @@
     "npm:@gotgenes/pi-subagents",
     "npm:@howaboua/pi-codex-conversion",
     "npm:pi-web-access",
-    "npm:@villoh/pi-auto-name-session",
     "npm:@villoh/pi-tools",
     "npm:@villoh/pi-btw",
     "npm:@villoh/pi-extensions-manager",
@@ -31,7 +30,8 @@
     "npm:@injaneity/pi-computer-use",
     "npm:@narumitw/pi-goal",
     "npm:@juicesharp/rpiv-todo",
-    "git:github.com/mizorewww/pi-devin"
+    "git:github.com/mizorewww/pi-devin",
+    "npm:@villoh/pi-auto-name-session"
   ],
   "powerline": {
     "preset": "default",
@@ -41,7 +41,7 @@
     "npm"
   ],
   "hideThinkingBlock": false,
-  "theme": "kanagawa-dragon",
+  "theme": "dankcolors",
   "modelRoles": {
     "steward": "cliproxyapi/gpt-6-luna",
     "expert": "cliproxyapi/claude-opus-5",
