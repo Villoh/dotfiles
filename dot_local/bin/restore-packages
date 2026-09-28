@@ -22,6 +22,24 @@ DEFAULT_HERDR="$DEFAULT_DIR/herdr-plugins.json"
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
+usage() {
+    cat <<'EOF'
+Usage: restore-packages [--pacman] [--aur] [--flatpak] [--brew] [--uv]
+                       [--bun] [--npm] [--pnpm] [--bin] [--cargo]
+                       [--omarchy] [--herdr]
+       restore-packages --help
+
+With manager flags, use default chezmoi paths and skip manager/location menus.
+Package and Herdr plugin selection remains interactive.
+Without flags, show interactive manager and location menus.
+EOF
+}
+
+if [[ "${1:-}" == --help || "${1:-}" == -h ]]; then
+    usage
+    exit 0
+fi
+
 if ! command_exists gum; then
     echo "❌ Error: gum no está instalado" >&2
     echo "Instálalo con: sudo pacman -S gum" >&2
@@ -46,24 +64,52 @@ echo ""
 gum style --foreground 245 --bold "🎯 PASO 1: Selecciona los gestores de paquetes"
 echo ""
 
-SELECTED_MANAGERS=$(gum choose \
-    --no-limit \
-    --cursor.foreground="75" \
-    --selected.foreground="75" \
-    --header="ESPACIO=toggle  ENTER=confirmar" \
-    --header.foreground="245" \
-    "📦 pacman" \
-    "🔧 aur" \
-    "📱 flatpak" \
-    "🍺 brew" \
-    "🐍 uv" \
-    "🍞 bun" \
-    "📦 npm" \
-    "📦 pnpm" \
-    "🗃️  bin" \
-    "📦 cargo" \
-    "🧩 omarchy" \
-    "🧩 herdr")
+if (($#)); then
+    declare -A selected=()
+    selected_managers=()
+    for arg in "$@"; do
+        case "$arg" in
+            --pacman) manager="📦 pacman" ;;
+            --aur) manager="🔧 aur" ;;
+            --flatpak) manager="📱 flatpak" ;;
+            --brew) manager="🍺 brew" ;;
+            --uv) manager="🐍 uv" ;;
+            --bun) manager="🍞 bun" ;;
+            --npm) manager="📦 npm" ;;
+            --pnpm) manager="📦 pnpm" ;;
+            --bin) manager="🗃️  bin" ;;
+            --cargo) manager="📦 cargo" ;;
+            --omarchy) manager="🧩 omarchy" ;;
+            --herdr) manager="🧩 herdr" ;;
+            *) echo "❌ Opción desconocida: $arg" >&2; usage >&2; exit 2 ;;
+        esac
+        if [[ -z "${selected["$manager"]+x}" ]]; then
+            selected["$manager"]=1
+            selected_managers+=("$manager")
+        fi
+    done
+    SELECTED_MANAGERS=$(printf '%s\n' "${selected_managers[@]}")
+    USE_CUSTOM="✓ Sí, usar chezmoi/packages/linux/"
+else
+    SELECTED_MANAGERS=$(gum choose \
+        --no-limit \
+        --cursor.foreground="75" \
+        --selected.foreground="75" \
+        --header="ESPACIO=toggle  ENTER=confirmar" \
+        --header.foreground="245" \
+        "📦 pacman" \
+        "🔧 aur" \
+        "📱 flatpak" \
+        "🍺 brew" \
+        "🐍 uv" \
+        "🍞 bun" \
+        "📦 npm" \
+        "📦 pnpm" \
+        "🗃️  bin" \
+        "📦 cargo" \
+        "🧩 omarchy" \
+        "🧩 herdr")
+fi
 
 if [ -z "$SELECTED_MANAGERS" ]; then
     gum style --foreground 196 "❌ No se seleccionó ningún gestor"
@@ -76,13 +122,15 @@ echo ""
 gum style --foreground 245 --bold "📁 PASO 2: Ubicación de los archivos"
 echo ""
 
-USE_CUSTOM=$(gum choose \
-    --cursor.foreground="75" \
-    --selected.foreground="75" \
-    --header="¿Usar ubicaciones por defecto?" \
-    --header.foreground="245" \
-    "✓ Sí, usar chezmoi/packages/linux/" \
-    "✎ No, quiero elegir otras ubicaciones")
+if (($# == 0)); then
+    USE_CUSTOM=$(gum choose \
+        --cursor.foreground="75" \
+        --selected.foreground="75" \
+        --header="¿Usar ubicaciones por defecto?" \
+        --header.foreground="245" \
+        "✓ Sí, usar chezmoi/packages/linux/" \
+        "✎ No, quiero elegir otras ubicaciones")
+fi
 
 get_file_location() {
     local type=$1 emoji=$2 default_path=$3

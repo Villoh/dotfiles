@@ -20,9 +20,11 @@ def check():
         bins.mkdir()
         registry = root / "registry.json"
         log = root / "calls.jsonl"
+        gum_log = root / "gum.jsonl"
         inventory = source / "packages/linux/herdr-plugins.json"
         env = dict(os.environ, HOME=str(home), SOURCE=str(source), CALLS=str(log),
-                   REGISTRY=str(registry), PATH=f"{bins}{os.pathsep}{os.environ['PATH']}")
+                   GUM_CALLS=str(gum_log), REGISTRY=str(registry),
+                   PATH=f"{bins}{os.pathsep}{os.environ['PATH']}")
 
         def stub(name, code):
             path = bins / name
@@ -30,9 +32,11 @@ def check():
             path.chmod(0o755)
 
         stub("chezmoi", "import os; print(os.environ['SOURCE'])\n")
-        stub("gum", r"""import os, sys
+        stub("gum", r"""import json, os, sys
 args = sys.argv[1:]
 if args[0] == 'choose':
+    with open(os.environ['GUM_CALLS'], 'a') as out:
+        out.write(json.dumps(args) + '\n')
     if '🧩 herdr' in args:
         print('🧩 herdr')
     elif '✓ Sí, usar chezmoi/packages/linux/' in args:
@@ -120,12 +124,19 @@ else:
         assert calls == [
             ['plugin', 'install', 'example/floating'],
             ['plugin', 'link', str(local), '--disabled'],
-            ['plugin', 'install', 'example/collection/plugins/demo', '--ref', 'v1.2.3'],
+            ['plugin', 'install', 'example/collection/plugins/demo'],
             ['plugin', 'disable', 'test.pinned'],
         ], calls
         registry.write_text(json.dumps(entries))
         run('restore-packages')
         assert len(log.read_text().splitlines()) == len(calls)
+        npm_list = source / 'packages/linux/node/npm-packages.txt'
+        npm_list.parent.mkdir(parents=True, exist_ok=True)
+        npm_list.touch()
+        choose_count = len(gum_log.read_text().splitlines())
+        result = run('restore-packages', '--herdr', '--npm')
+        assert len(gum_log.read_text().splitlines()) == choose_count + 1
+        assert '[SKIP] test.present' in result.stdout
 
         # Invalid inventories and unreadable live state must not cause installs.
         for invalid in [None, records + [records[0]],
@@ -150,6 +161,9 @@ else:
         result = run('restore-packages', ok=False, extra={'FAIL_INSTALL': '1'})
         assert '¡Instalación completada!' not in result.stdout
         assert len(log.read_text().splitlines()) == len(calls) + 1
+        result = run('restore-packages', '--help')
+        assert '--herdr' in result.stdout and '--npm' in result.stdout
+        run('restore-packages', '--not-a-manager', ok=False)
         print('Herdr package backup/restore checks passed')
 
 

@@ -110,9 +110,13 @@ plugins outside `$HOME` fail backup rather than exporting machine-specific
 absolute paths. Herdr's generated `plugins.json`, checkouts,
 binaries, credentials, and plugin-specific settings are not copied.
 
-Run `restore-packages`, select **herdr**, then choose plugins. Existing IDs are
-left untouched (including version and enabled state); registry warnings stop
-restoration for that plugin. Missing GitHub plugins use `herdr plugin install`
+Run `restore-packages --herdr` to skip manager/location menus, then choose
+plugins. Manager flags can be combined, e.g. `restore-packages --herdr --npm`;
+without flags, the interactive manager menu remains. Supported flags: `--pacman`,
+`--aur`, `--flatpak`, `--brew`, `--uv`, `--bun`, `--npm`, `--pnpm`, `--bin`,
+`--cargo`, `--omarchy`, and `--herdr`. Existing IDs are left untouched
+(including version and enabled state); registry warnings stop restoration for
+that plugin. Missing GitHub plugins use `herdr plugin install`
 without a ref and retain native trust/build confirmation. Herdr installs GitHub
 plugins enabled; saved disabled plugins are disabled immediately afterward, so
 startup code may run before that disable. Install only trusted plugins.
