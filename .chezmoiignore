@@ -8,7 +8,7 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_autohotkey) }}Documents/AutoHotkey/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}AppData/Roaming/Rainmeter/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}Documents/Rainmeter/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_herdr) }}.config/herdr/**{{ end }}
+{{ if not .enable_herdr }}.config/herdr/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.config/psmux/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_starship) }}.config/starship.toml{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_alacritty) }}.config/alacritty/**{{ end }}

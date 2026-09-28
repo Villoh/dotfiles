@@ -214,24 +214,21 @@ a permanent silent loss.
       redirect shim, so the `dot_config/tmux/tmux.conf` `source-file`
       workaround was removed again.
 
-### Decided — herdr and tmux are now Windows-only
+### Decision — tmux Windows-only; herdr cross-platform
 
-Omarchy's simpler tmux/herdr defaults won out — good enough that they might
-get carried back to Windows later instead. Both made Windows-only in
-`.chezmoiignore`:
+Omarchy's simpler tmux defaults remain in use on Linux. Herdr config now
+deploys on both platforms when `enable_herdr` is true; platform-specific
+settings are handled inside its template.
 
-- `.config/herdr/**` — ignored whenever `.chezmoi.os != "windows"` (no
-  `enable_herdr` toggle existed or was added, just a plain OS gate).
+- `.config/herdr/**` — ignored only when `enable_herdr` is false.
 - `.tmux.conf` / `.tmux-keys` — ignored unless `.chezmoi.os == "windows"`
-  (same `enable_tmux` toggle, now also OS-gated).
+  (also controlled by `enable_tmux`).
 - Removed `dot_config/tmux/tmux.conf` (the `source-file ~/.tmux.conf`
   redirect from the previous entry) — pointless now, and would have broken
   tmux startup on Omarchy since `~/.tmux.conf` no longer gets deployed there
-  either. Omarchy's own tmux/herdr configs are left completely untouched on
-  Linux.
+  either. Omarchy's own tmux config remains untouched on Linux.
 
-Validated live with `chezmoi ignored` (both configs still deploy on this
-Windows machine; nothing else changed).
+Herdr deployment is controlled by `enable_herdr` on both platforms.
 
 ### Fixed — `dot_config/zsh` was mostly HyDE boilerplate
 
