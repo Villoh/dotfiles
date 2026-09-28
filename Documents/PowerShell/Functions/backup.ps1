@@ -1,7 +1,7 @@
 # backup.ps1
 $SourceDir = chezmoi source-path
 $PackagesDir = Join-Path $SourceDir "packages\windows"
-$HerdrPluginsFile = Join-Path $SourceDir "packages\linux\herdr-plugins.json"
+$HerdrPluginsFile = Join-Path $SourceDir "packages\windows\herdr-plugins.json"
 
 function Save-ExistingBackup {
     param([string]$Path)

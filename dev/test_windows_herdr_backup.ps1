@@ -21,6 +21,8 @@ function herdr {
 }
 
 . "$PSScriptRoot\..\Documents\PowerShell\Functions\backup.ps1"
+$expectedFile = Join-Path $SourceDir 'packages\windows\herdr-plugins.json'
+if ($HerdrPluginsFile -ne $expectedFile) { throw "Unexpected Windows Herdr inventory path: $HerdrPluginsFile" }
 $tempDir = Join-Path $env:TEMP "herdr-backup-test-$PID"
 $HerdrPluginsFile = Join-Path $tempDir 'herdr-plugins.json'
 try {

@@ -17,8 +17,8 @@ chezmoi/
 ├── program_files/              # Portable Windows programs (Ditto, Nilesoft) — not deployed
 │
 ├── packages/                   # Package lists — reference only, not deployed
-│   ├── linux/                  # flatpak, npm, pnpm, bun, and uv tool lists
-│   └── windows/                # Scoop/Winget lists, windhawk-settings.reg
+│   ├── linux/                  # Linux package lists and Herdr plugin inventory
+│   └── windows/                # Windows package lists, Herdr inventory, Windhawk settings
 │
 ├── other_config/               # Reference configs not deployed by chezmoi
 │   ├── plymouth/themes/        # Boot splash themes (4 submodules)

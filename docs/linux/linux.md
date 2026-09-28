@@ -99,7 +99,8 @@ Run the offline regression check with `python3 dev/test_omarchy_packages.py`.
 ## Herdr plugin inventory
 
 `backup-packages --herdr` exports `herdr plugin list --json` into
-`packages/linux/herdr-plugins.json`. Herdr is also included in the interactive
+`packages/linux/herdr-plugins.json`. Windows uses a separate inventory at
+`packages/windows/herdr-plugins.json`. Herdr is also included in the interactive
 backup menu and default backup run. This requires a reachable Herdr session;
 query/parse failures leave the previous inventory untouched.
 
