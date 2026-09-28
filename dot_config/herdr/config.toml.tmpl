@@ -7,9 +7,9 @@ onboarding = false
 name = "terminal"
 
 [theme.custom]
-# The active tab is drawn as panel_bg text on an accent background, so panel_bg
-# has to be dark for it to read - same colors as status-left's "#[fg=black,bg=blue]"
-panel_bg = "black"
+# The active tab uses panel_bg text on an accent background. Keep this override
+# disabled unless the terminal's default foreground lacks enough contrast.
+# panel_bg = "black"
 
 [terminal]
 # Matches -c "#{pane_current_path}" on every split, window, and session
@@ -119,7 +119,7 @@ command = "{{ if eq .chezmoi.os "windows" }}herdr-sidebar.open-sidebar-windows{{
 description = "open, focus, or close explorer"
 
 [ui]
-accent = "blue"
+# accent = "blue"
 
 # tmux drew single-line dividers between adjacent panes and no outer frame
 pane_gaps = false
