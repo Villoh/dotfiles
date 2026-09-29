@@ -31,33 +31,29 @@ Disco 1 (Windows/AtlasOS, untouched, its own separate ESP). Because the two
 ESPs live on **different disks**, this hits the same cross-disk situation
 Omarchy's Limine setup does — the fix differs by bootloader choice:
 
-- **systemd-boot (NixOS default)** — only auto-detects Windows when its
-  `bootmgfw.efi` lives on the *same* ESP systemd-boot is installed to
-  ([confirmed on the NixOS wiki](https://wiki.nixos.org/wiki/Windows), and
-  [ArchWiki](https://wiki.archlinux.org/title/Systemd-boot): systemd-boot
-  can only launch EFI binaries from the ESP it's installed to, or an
-  XBOOTLDR partition on the *same disk*). Real fix, not just a firmware
-  keypress: copy Windows' own `\EFI\Microsoft` folder onto the NixOS ESP,
-  then add a manual entry:
+- **systemd-boot (NixOS default)** — Windows has its own ESP on another disk,
+  so systemd-boot cannot launch that ESP's `bootmgfw.efi` directly. Copy the
+  Microsoft boot files onto NixOS's `/boot` ESP; systemd-boot then discovers
+  the copied `EFI/Microsoft/Boot/bootmgfw.efi` automatically on next boot.
+  Find the Windows ESP PARTUUID with `lsblk -o NAME,FSTYPE,PARTUUID,LABEL`,
+  then mount it read-only and copy its Microsoft directory:
 
   ```sh
-  mkdir -p /boot/EFI/Microsoft
-  cp -r /mnt/windows-esp/EFI/Microsoft/* /boot/EFI/Microsoft/
-  cat > /boot/loader/entries/windows.conf <<'EOF'
-  title   Windows
-  efi     /EFI/Microsoft/Boot/bootmgfw.efi
-  EOF
+  sudo mkdir -p /mnt/windows-esp
+  sudo mount -o ro /dev/disk/by-partuuid/<WINDOWS-ESP-PARTUUID> /mnt/windows-esp
+  sudo mkdir -p /boot/EFI/Microsoft
+  sudo cp -a /mnt/windows-esp/EFI/Microsoft/. /boot/EFI/Microsoft/
+  sudo umount /mnt/windows-esp
   ```
 
-  Works because `bootmgfw.efi` locates its BCD/`winload.efi` via the
-  Windows partition's GUID, not the ESP's path — a plain file copy is
-  enough ([community-confirmed](https://forum.endeavouros.com/t/tutorial-add-a-systemd-boot-loader-menu-entry-for-a-windows-installation-using-a-separate-esp-partition/37431)).
-  NixOS's systemd-boot activation only ever touches its own
-  `nixos-generation-*.conf` entries, so `windows.conf` survives every
-  `nixos-rebuild switch` untouched. Only maintenance cost: re-copy if a
-  major Windows feature update ever replaces `bootmgfw.efi` (rare, and no
-  worse than os-prober needing a re-run below). Firmware F11/F12 stays as
-  the zero-effort fallback if this manual step is skipped.
+  **Do not create `/boot/loader/entries/windows.conf`**: the copied EFI
+  binary is auto-detected, and a manual entry for the same file creates a
+  duplicate Windows option. Check with `bootctl list` after reboot; keep the
+  copied Microsoft directory on `/boot`. If an old manual `windows.conf`
+  exists, remove or rename it outside the `.conf` extension, but do not remove
+  `/boot/EFI/Microsoft` or the automatic entry disappears. Re-copy the
+  directory after Windows updates its boot files. Firmware F11/F12 remains a
+  fallback.
 - **GRUB + os-prober** — the actual equivalent of Limine's `limine-scan`:
   scans all disks at every rebuild and adds a real "Windows Boot Manager"
   entry to GRUB's own menu automatically.
@@ -78,66 +74,162 @@ Omarchy's Limine setup does — the fix differs by bootloader choice:
   boot, disable **Fast Boot** in the UEFI firmware (separate from
   Windows' own Fast Startup, already off).
 
-Recommendation: **systemd-boot + the manual Windows entry above**. Real
-menu entry, no F11/F12, no second bootloader added to the stack, and
-stays fully compatible with Lanzaboote/Secure Boot if that's ever pursued
-(Lanzaboote replaces systemd-boot specifically — GRUB has no equally
-well-trodden Lanzaboote path). GRUB + os-prober is the fallback only if
-the manual copy step is a maintenance burden not worth carrying (e.g.
-Windows reinstalled/repaired often enough that `bootmgfw.efi` needs
-re-copying repeatedly).
+Recommendation: **systemd-boot + the copied Windows EFI files above**. This
+adds one real Windows menu entry without another bootloader; leave out the
+manual `.conf` entry to avoid duplicates. GRUB + os-prober is the alternative
+if maintaining the copied EFI files becomes a burden (for example, frequent
+Windows bootloader repairs).
 
-## Secure Boot (optional, post-install)
+## Secure Boot
 
-Not required, same "leave Windows for when I'm forced" framing as the
-Omarchy doc's Secure Boot section. If pursued, NixOS's answer is
-[Lanzaboote](https://github.com/nix-community/lanzaboote) — an actively
-maintained module, unlike Omarchy's explicitly-unsupported DIY `sbctl`
-path (see the gap study above). It still uses `sbctl` for the actual key
-handling, same tool Omarchy's own optional path uses:
+The [NixOS Secure Boot guide](https://wiki.nixos.org/wiki/Secure_Boot)
+documents **Lanzaboote** and **Limine** as maintained NixOS paths. A third
+option is keeping stock systemd-boot and signing its files manually with
+`sbctl`; that is possible but not integrated with NixOS rebuilds and is not
+recommended here.
+
+Secure Boot requires UEFI boot and firmware keys trusted by the machine.
+Check `bootctl status` first. Keep Secure Boot disabled until the selected
+bootloader is installed and its EFI files are signed. Back up the keys in
+`/var/lib/sbctl` securely; never put private keys in chezmoi or Git. Keep the
+Microsoft certificates enrolled for Windows. Firmware Setup Mode steps vary
+by motherboard: read its manual, preserve `dbx`, and retain firmware-builtin
+keys if the vendor needs them for Option ROMs or firmware updates. `sbctl`
+creates/enrolls keys and checks signatures. If it is not installed yet, create
+keys from a temporary Nix shell:
 
 ```sh
-sudo sbctl create-keys                      # generates keys in /var/lib/sbctl
+nix shell nixpkgs#sbctl -c sh -c 'sudo "$(command -v sbctl)" create-keys'
 ```
 
-```nix
-# flake.nix — add as an input
-lanzaboote.url = "github:nix-community/lanzaboote/v1.1.0";
+Use the same temporary-shell pattern for other `sbctl` commands when needed.
 
-# configuration.nix
-imports = [ lanzaboote.nixosModules.lanzaboote ];
-environment.systemPackages = [ pkgs.sbctl ];
-# Lanzaboote replaces the systemd-boot module — must be forced off.
-boot.loader.systemd-boot.enable = lib.mkForce false;
-boot.lanzaboote = {
-  enable = true;
-  pkiBundle = "/var/lib/sbctl";
+### Option A: Lanzaboote (recommended for this host)
+
+Lanzaboote retains the systemd-boot menu format and signs NixOS boot files
+during rebuilds. It requires UEFI, current systemd-boot, and nixpkgs
+unstable. Keep the copied `/boot/EFI/Microsoft` tree from the dual-boot steps
+above; do not add a manual `windows.conf`.
+
+Add the flake input:
+
+```nix
+lanzaboote = {
+  url = "github:nix-community/lanzaboote/v1.1.0";
+  inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
 
-`nixos-rebuild switch`, then `sudo sbctl verify` to confirm the generated
-boot files are signed. Put the firmware into Secure Boot *Setup Mode*
-(steps are vendor-specific — ThinkPad/Framework/Surface/ASUS all differ,
-see [Lanzaboote's enable-secure-boot guide](https://nix-community.github.io/lanzaboote/getting-started/enable-secure-boot.html)),
-boot back in, then enroll keys **keeping Microsoft's** so Windows still
-boots under Secure Boot — the direct equivalent of Omarchy's
-`sbctl enroll-keys -m`:
+Import `inputs.lanzaboote.nixosModules.lanzaboote` in the desktop host. In
+the boot module use:
+
+```nix
+{ lib, pkgs, ... }:
+
+{
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+  };
+  environment.systemPackages = [ pkgs.sbctl ];
+}
+```
+
+Create keys **before** rebuilding, while Secure Boot remains disabled:
+
+```sh
+nix flake lock
+nix flake check
+nix shell nixpkgs#sbctl -c sh -c 'sudo "$(command -v sbctl)" create-keys'
+sudo nixos-rebuild switch --flake .#desktop
+sudo sbctl verify
+```
+
+Confirm Lanzaboote's EFI stubs/generations are signed. Raw kernel files may
+be reported unsigned. Then follow the board-specific Setup Mode procedure,
+boot back to NixOS, and enroll keys with Microsoft's certificates:
 
 ```sh
 sudo sbctl enroll-keys --microsoft
 ```
 
-Reboot, confirm with `bootctl status` (`Secure Boot: enabled (user)`).
-Unlike Omarchy's pacman hook that re-signs the kernel on every
-`omarchy-update`, Lanzaboote signs automatically as part of every
-`nixos-rebuild switch` — no separate hook to maintain.
+Add `--firmware-builtin` only if the motherboard/vendor requires its
+preloaded certificates. Reboot, enable Secure Boot in firmware if it remains
+disabled, and check `bootctl status` reports `Secure Boot: enabled (user)`.
 
-**Interaction with the dual-boot choice above:** Lanzaboote's documented
-path explicitly replaces the *systemd-boot* module — there's no equally
-well-trodden GRUB+Lanzaboote combo. So Secure Boot + a real GRUB dropdown
-menu together isn't the well-supported path; if Secure Boot is ever
-pursued, pair it with systemd-boot + firmware F11/F12 for Windows, not
-GRUB+os-prober.
+### Option B: Stock systemd-boot with manual signing (advanced, not recommended)
+
+This keeps `boot.loader.systemd-boot.enable = true`; no Lanzaboote input or
+module. Add `environment.systemPackages = [ pkgs.sbctl ];`, run
+`nix flake check`, and activate that package with Secure Boot still off:
+
+```sh
+sudo nixos-rebuild switch --flake .#desktop
+sudo sbctl create-keys
+```
+
+Locate the actual systemd-boot EFI file and current NixOS kernel EFI file
+with `bootctl status` and `bootctl list`, then sign:
+
+```sh
+sudo sbctl sign --save /boot/EFI/systemd/systemd-bootx64.efi
+sudo sbctl sign --save /boot/EFI/nixos/<current-kernel>.efi
+sudo sbctl verify
+```
+
+Paths vary; also sign the fallback EFI executable if firmware boots it.
+Only after verification, enter Setup Mode, enroll with
+`sudo sbctl enroll-keys --microsoft`, reboot, and enable Secure Boot in
+firmware. After **every** rebuild, sign new/overwritten boot files before
+rebooting. `sbctl` tracks paths, but NixOS kernel filenames change between
+versions, so `sign-all` alone can miss a new kernel. Stock entries also load
+initrd and command line separately; signing only the kernel does not
+authenticate those files. This is fragile and gives weaker boot-chain
+coverage than a signed unified image.
+
+### Option C: Limine
+
+Limine's Secure Boot option is provided by NixOS; no external flake input is
+needed. This replaces systemd-boot, so test its menu and Windows fallback
+before enabling Secure Boot. Configure Limine initially with Secure Boot off:
+
+```nix
+{ lib, pkgs, ... }:
+{
+  environment.systemPackages = [ pkgs.sbctl ];
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.limine.enable = true;
+  boot.loader.limine.secureBoot.enable = false;
+}
+```
+
+Run `nix flake check`, create keys with the temporary `nix shell` command
+above, then activate Limine while Secure Boot remains off:
+
+```sh
+sudo nixos-rebuild switch --flake .#desktop
+```
+
+Test that Limine boots NixOS. Then follow the board-specific Setup Mode
+procedure and boot back into NixOS. Enroll keys, retaining Microsoft and
+firmware-builtin certificates per the NixOS wiki:
+
+```sh
+sudo sbctl enroll-keys --microsoft --firmware-builtin
+```
+
+Set `boot.loader.limine.secureBoot.enable = true`, run
+`sudo nixos-rebuild switch --flake .#desktop`, reboot, and verify with
+`bootctl status` and `sudo sbctl verify`. Keep firmware's Windows Boot
+Manager entry as fallback; Limine's Windows menu entry needs separate
+configuration for the Windows ESP on another disk.
+
+Sources: [NixOS Secure Boot](https://wiki.nixos.org/wiki/Secure_Boot),
+[NixOS Lanzaboote](https://wiki.nixos.org/wiki/Lanzaboote),
+[NixOS Limine](https://wiki.nixos.org/wiki/Limine), and
+[sbctl signing workflow](https://github.com/Foxboron/sbctl/blob/master/docs/sbctl.8.txt).
 
 ## Installing DMS
 
