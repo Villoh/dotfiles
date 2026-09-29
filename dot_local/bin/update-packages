@@ -49,20 +49,17 @@ case "${1:-}" in
         exit $?
         ;;
     -h|--help)
-        echo 'Usage: update-packages [--harness]'
+        cat <<'EOF'
+Usage: update-packages [--all | manager...]
+       update-packages --harness
+
+Managers: system flatpak brew mise uv npm pnpm bun skills caveman
+          impeccable context7 headroom serena
+Use --manager or manager; no arguments opens interactive menu.
+EOF
         exit 0
         ;;
-    '') ;;
-    *)
-        echo "Unknown option: $1" >&2
-        exit 2
-        ;;
 esac
-
-if ! command_exists gum; then
-    echo "gum not found. Install with: sudo pacman -S gum" >&2
-    exit 1
-fi
 
 choices=()
 if command_exists yay; then
@@ -74,6 +71,7 @@ elif command_exists pacman; then
 fi
 command_exists flatpak && choices+=("📱 flatpak")
 command_exists brew && choices+=("🍺 brew")
+command_exists mise && choices+=("🧰 mise")
 command_exists uv && choices+=("🐍 uv tools")
 command_exists npm && choices+=("📦 npm globals")
 command_exists pnpm && choices+=("📦 pnpm globals")
@@ -90,25 +88,66 @@ if ((${#choices[@]} == 0)); then
     exit 1
 fi
 
-gum style \
-    --foreground 75 \
-    --border-foreground 75 \
-    --border double \
-    --align center \
-    --width 60 \
-    --margin "1 2" \
-    --padding "2 4" \
-    '📦  UPDATE PACKAGES  📦' \
-    '' \
-    'Select package managers to update'
+choice_for() {
+    case "$1" in
+        system) if command_exists yay; then echo "🔧 system + AUR (yay)"; elif command_exists paru; then echo "🔧 system + AUR (paru)"; elif command_exists pacman; then echo "📦 system (pacman)"; fi ;;
+        flatpak) echo "📱 flatpak" ;;
+        brew) echo "🍺 brew" ;;
+        mise) echo "🧰 mise" ;;
+        uv) echo "🐍 uv tools" ;;
+        npm) echo "📦 npm globals" ;;
+        pnpm) echo "📦 pnpm globals" ;;
+        bun) echo "🍞 bun globals" ;;
+        skills) echo "🎯 skills.sh" ;;
+        caveman) echo "🦴 caveman (opencode)" ;;
+        impeccable) echo "🧩 Impeccable" ;;
+        context7) echo "📚 Context7 (CLI skills)" ;;
+        headroom) echo "🗜️  headroom" ;;
+        serena) echo "🧭 serena" ;;
+        *) return 1 ;;
+    esac
+}
 
-selected=$(gum choose \
-    --no-limit \
-    --cursor.foreground="75" \
-    --selected.foreground="75" \
-    --header="SPACE=toggle  ENTER=update" \
-    --header.foreground="245" \
-    "${choices[@]}")
+if (($#)); then
+    selected_choices=()
+    for arg in "$@"; do
+        manager=${arg#--}
+        if [[ "$manager" == all ]]; then
+            selected_choices=("${choices[@]}")
+            continue
+        fi
+        if ! choice=$(choice_for "$manager") || [[ ! " ${choices[*]} " == *"$choice"* ]]; then
+            echo "Unsupported or unavailable manager: $arg" >&2
+            exit 2
+        fi
+        selected_choices+=("$choice")
+    done
+    selected=$(printf '%s\n' "${selected_choices[@]}" | awk '!seen[$0]++')
+else
+    if ! command_exists gum; then
+        echo "gum not found. Install with: sudo pacman -S gum" >&2
+        exit 1
+    fi
+    gum style \
+        --foreground 75 \
+        --border-foreground 75 \
+        --border double \
+        --align center \
+        --width 60 \
+        --margin "1 2" \
+        --padding "2 4" \
+        '📦  UPDATE PACKAGES  📦' \
+        '' \
+        'Select package managers to update'
+
+    selected=$(gum choose \
+        --no-limit \
+        --cursor.foreground="75" \
+        --selected.foreground="75" \
+        --header="SPACE=toggle  ENTER=update" \
+        --header.foreground="245" \
+        "${choices[@]}")
+fi
 
 [[ -z "$selected" ]] && { echo "No package manager selected."; exit 0; }
 
@@ -116,11 +155,11 @@ failed=0
 run() {
     local label=$1
     shift
-    gum style --foreground 75 --bold "→ $label"
+    if command_exists gum; then gum style --foreground 75 --bold "→ $label"; else printf '→ %s\n' "$label"; fi
     if "$@"; then
-        gum style --foreground 42 "  ✓ Done"
+        if command_exists gum; then gum style --foreground 42 "  ✓ Done"; else printf '  ✓ Done\n'; fi
     else
-        gum style --foreground 196 "  ✗ Failed"
+        if command_exists gum; then gum style --foreground 196 "  ✗ Failed"; else printf '  ✗ Failed\n' >&2; fi
         failed=1
     fi
 }
@@ -135,6 +174,7 @@ while IFS= read -r choice; do
             run "Homebrew metadata" brew update
             run "Homebrew packages" brew upgrade
             ;;
+        "🧰 mise") run "mise tools" mise upgrade ;;
         "🐍 uv tools") run "uv tools" uv tool upgrade --all ;;
         "📦 npm globals") run "npm global packages" npm update -g ;;
         "📦 pnpm globals") run "pnpm global packages" pnpm update -g --latest ;;
