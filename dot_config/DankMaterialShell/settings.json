@@ -24,7 +24,7 @@
     "detroit67": {
       "dark": {
         "flavor": "67-dark",
-        "accent": "flashlight-toned"
+        "accent": "motor-feint"
       }
     },
     "deepmono": {
@@ -36,8 +36,52 @@
   },
   "cornerRadius": 12,
   "controlCenterShowMicPercent": true,
+  "controlCenterWidgets": [
+    {
+      "id": "volumeSlider",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "brightnessSlider",
+      "enabled": true,
+      "width": 50,
+      "deviceName": "leds:input9:rgb:indicator"
+    },
+    {
+      "id": "wifi",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "bluetooth",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "audioOutput",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "audioInput",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "nightMode",
+      "enabled": true,
+      "width": 50
+    },
+    {
+      "id": "darkMode",
+      "enabled": true,
+      "width": 50
+    }
+  ],
   "appIdSubstitutions": [],
   "keybindsFloatingWindow": true,
+  "networkPreference": "wifi",
   "cursorSettings": {
     "theme": "Bibata-Modern-Classic",
     "size": 24,
@@ -83,24 +127,34 @@
       "leftWidgets": [
         "launcherButton",
         "workspaceSwitcher",
-        "focusedWindow"
+        "focusedWindow",
+        {
+          "id": "dankKDEConnect",
+          "enabled": true
+        }
       ],
       "centerWidgets": [
         "music",
         "clock",
         "weather",
         {
-          "id": "systemUpdate",
+          "id": "dankscale",
+          "enabled": true
+        },
+        {
+          "id": "dockerManager",
           "enabled": true
         }
       ],
       "rightWidgets": [
+        {
+          "id": "aiOverviewControl",
+          "enabled": true
+        },
         "systemTray",
-        "clipboard",
         "cpuUsage",
         "memUsage",
         "controlCenterButton",
-        "battery",
         {
           "id": "bitwarden",
           "enabled": true
@@ -198,5 +252,6 @@
     }
   },
   "frameEnabled": true,
+  "frameRounding": 16,
   "configVersion": 18
 }
