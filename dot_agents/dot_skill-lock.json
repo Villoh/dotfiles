@@ -145,6 +145,15 @@
       "installedAt": "2026-07-23T11:28:35.174Z",
       "updatedAt": "2026-07-23T11:28:35.174Z"
     },
+    "no-ai-slop": {
+      "source": "petergyang/no-ai-slop",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/petergyang/no-ai-slop.git",
+      "skillPath": "skills/no-ai-slop/SKILL.md",
+      "skillFolderHash": "3d8be37cd59f6601cbc33676ecaf5b42865daf63",
+      "installedAt": "2026-09-30T15:44:29.033Z",
+      "updatedAt": "2026-09-30T15:44:29.033Z"
+    },
     "obsidian-bases": {
       "source": "git@github.com:kepano/obsidian-skills.git",
       "sourceType": "git",
