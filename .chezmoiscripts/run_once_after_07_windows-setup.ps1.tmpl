@@ -126,6 +126,7 @@ while ($waited -lt 15 -and -not (Get-Process -Name explorer -ErrorAction Silentl
 # Extra grace period for the shell to fully initialize after explorer starts
 Start-Sleep -Seconds 3
 
+{{ if .enable_startup -}}
 if (Test-Path "$pkgDir\system\startup.json") {
     $startup = Get-Content "$pkgDir\system\startup.json" | ConvertFrom-Json
     foreach ($entry in $startup.registry) {
@@ -133,12 +134,16 @@ if (Test-Path "$pkgDir\system\startup.json") {
         Start-IfNotRunning $entry.name $entry.path $argsVal
     }
 }
+{{ end -}}
 
+{{ if .enable_windhawk -}}
 # -- Windhawk -----------------------------------------------------------------
 $whInstall = (Get-ItemProperty "HKLM:\SOFTWARE\Windhawk" -ErrorAction SilentlyContinue).InstallPath
 if (-not $whInstall) { $whInstall = "C:\Program Files\Windhawk" }
 Start-IfNotRunning "Windhawk" (Join-Path $whInstall "Windhawk.exe")
+{{ end -}}
 
+{{ if .enable_mica -}}
 # -- Mica For Everyone --------------------------------------------------------
 $micaPkg = Get-AppxPackage -Name "*MicaForEveryone*" -ErrorAction SilentlyContinue
 if ($micaPkg) {
@@ -148,6 +153,7 @@ if ($micaPkg) {
 } else {
     LogSkip "MicaForEveryone - not installed"
 }
+{{ end -}}
 
 Write-Host ""
 Write-Host "[windows-setup] Done: $ok OK  $skip skipped  $fail failed" -ForegroundColor Cyan

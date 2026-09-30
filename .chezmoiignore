@@ -27,8 +27,8 @@ scoop/
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
 {{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/matugen/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/DankMaterialShell/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/matugen/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/DankMaterialShell/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/devin/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshrc
@@ -40,6 +40,7 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}.config/cliphist/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}.config/vesktop/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_concord) }}.config/concord/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
 {{ if ne .chezmoi.os "windows" }}Pictures/**{{ end }}
 
@@ -53,6 +54,7 @@ scoop/
 {{ if not .enable_ohmyposh }}.config/ohmyposh/**{{ end }}
 {{ if not .enable_bun }}.config/.bunfig.toml{{ end }}
 {{ if not .enable_git }}.config/git/**{{ end }}
+{{ if not .enable_gitui }}.config/gitui/**{{ end }}
 {{ if not .enable_uv }}.config/uv/**{{ end }}
 {{ if not .enable_zellij }}.config/zellij/**{{ end }}
 {{ if not .enable_ytm_player }}.config/ytm-player/**{{ end }}
