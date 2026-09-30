@@ -11,18 +11,24 @@ function Save-ExistingBackup {
 }
 
 function Invoke-AllBackup {
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrEmpty()]
+        [ValidateSet('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'bin', 'cargo', 'mise', 'herdr')]
+        [string[]]$Manager = @('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'bin', 'cargo', 'mise', 'herdr')
+    )
     New-Item -ItemType Directory -Force -Path $PackagesDir | Out-Null
     $results = @(
-        Invoke-WingetBackup
-        Invoke-ScoopBackup
-        Invoke-NodeBackup
-        Invoke-BunBackup
-        Invoke-PnpmBackup
-        Invoke-UvBackup
-        Invoke-BinBackup
-        Invoke-CargoBackup
-        Invoke-MiseBackup
-        Invoke-HerdrBackup
+        if ($Manager -contains 'winget') { Invoke-WingetBackup }
+        if ($Manager -contains 'scoop') { Invoke-ScoopBackup }
+        if ($Manager -contains 'npm') { Invoke-NodeBackup }
+        if ($Manager -contains 'bun') { Invoke-BunBackup }
+        if ($Manager -contains 'pnpm') { Invoke-PnpmBackup }
+        if ($Manager -contains 'uv') { Invoke-UvBackup }
+        if ($Manager -contains 'bin') { Invoke-BinBackup }
+        if ($Manager -contains 'cargo') { Invoke-CargoBackup }
+        if ($Manager -contains 'mise') { Invoke-MiseBackup }
+        if ($Manager -contains 'herdr') { Invoke-HerdrBackup }
     )
     if ($results -contains $false) {
         Write-Warning "Backup failed for one or more sources."

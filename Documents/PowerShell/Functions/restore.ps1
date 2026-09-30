@@ -39,41 +39,40 @@ function Select-OneFzf {
 
 # -- Invoke-AllRestore ---------------------------------------------------------
 function Invoke-AllRestore {
+    [CmdletBinding()]
     param(
-        [ValidateSet('herdr', 'mise')][string]$Manager,
+        [ValidateNotNullOrEmpty()]
+        [ValidateSet('winget', 'winget-elevated', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'bin', 'cargo', 'mise', 'herdr')]
+        [string[]]$Manager,
         [string[]]$Plugin,
         [switch]$All,
         [switch]$Yes
     )
-    if ($Manager -eq 'herdr') {
-        Invoke-HerdrRestore -Plugin $Plugin -All:$All -Yes:$Yes
-        return
-    }
-    if ($Plugin -or $All -or $Yes) { throw 'Plugin selection arguments require -Manager herdr.' }
-    if ($Manager -eq 'mise') {
-        Invoke-MiseRestore
-        return
+    if (($Plugin -or $All -or $Yes) -and (-not $Manager -or ($Manager -ne 'herdr'))) {
+        throw 'Plugin selection arguments require -Manager herdr only.'
     }
 
-    $pkgDir = $PackagesDir
+    $selectedManagers = $Manager
+    if (-not $selectedManagers) {
+        $pkgDir = $PackagesDir
+        $candidates = [System.Collections.Generic.List[string]]::new()
+        if ((Test-Path "$pkgDir\winget\packages.json") -or (Test-Path "$pkgDir\winget\minimal.json")) {
+            $candidates.Add("winget")
+        }
+        if (Test-Path "$pkgDir\winget\elevated.json") { $candidates.Add("winget-elevated") }
+        if (Test-Path "$pkgDir\scoop\packages.json") { $candidates.Add("scoop") }
+        if (Test-Path "$pkgDir\node\npm-packages.json") { $candidates.Add("npm") }
+        if (Test-Path "$pkgDir\node\bun-packages.txt") { $candidates.Add("bun") }
+        if (Test-Path "$pkgDir\node\pnpm-packages.txt") { $candidates.Add("pnpm") }
+        if (Test-Path "$pkgDir\uv-tools.txt") { $candidates.Add("uv") }
+        if (Test-Path "$pkgDir\bin-packages.txt") { $candidates.Add("bin") }
+        if ((Test-Path "$pkgDir\cargo\cargo.txt") -or (Test-Path "$pkgDir\cargo\cargo-minimal.txt")) { $candidates.Add("cargo") }
+        if (Test-Path (Join-Path $pkgDir 'mise-tools.txt')) { $candidates.Add("mise") }
+        if ((Test-Path $HerdrPluginsFile) -and (Get-Command herdr -ErrorAction SilentlyContinue)) { $candidates.Add("herdr") }
 
-    $candidates = [System.Collections.Generic.List[string]]::new()
-    if ((Test-Path "$pkgDir\winget\packages.json") -or (Test-Path "$pkgDir\winget\minimal.json")) {
-        $candidates.Add("winget")
+        $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
+            "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all"
     }
-    if (Test-Path "$pkgDir\winget\elevated.json") { $candidates.Add("winget-elevated") }
-    if (Test-Path "$pkgDir\scoop\packages.json") { $candidates.Add("scoop") }
-    if (Test-Path "$pkgDir\node\npm-packages.json") { $candidates.Add("npm") }
-    if (Test-Path "$pkgDir\node\bun-packages.txt") { $candidates.Add("bun") }
-    if (Test-Path "$pkgDir\node\pnpm-packages.txt") { $candidates.Add("pnpm") }
-    if (Test-Path "$pkgDir\uv-tools.txt") { $candidates.Add("uv") }
-    if (Test-Path "$pkgDir\bin-packages.txt") { $candidates.Add("bin") }
-    if ((Test-Path "$pkgDir\cargo\cargo.txt") -or (Test-Path "$pkgDir\cargo\cargo-minimal.txt")) { $candidates.Add("cargo") }
-    if (Test-Path (Join-Path $pkgDir 'mise-tools.txt')) { $candidates.Add("mise") }
-    if ((Test-Path $HerdrPluginsFile) -and (Get-Command herdr -ErrorAction SilentlyContinue)) { $candidates.Add("herdr") }
-
-    $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
-        "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=skip all"
 
     if (-not $selectedManagers -or $selectedManagers.Count -eq 0) {
         Write-Host "No managers selected." -ForegroundColor Yellow
@@ -90,7 +89,7 @@ function Invoke-AllRestore {
     if ($selectedManagers -contains "bin") { Invoke-BinRestore }
     if ($selectedManagers -contains "cargo") { Invoke-CargoRestore }
     if ($selectedManagers -contains "mise") { Invoke-MiseRestore }
-    if ($selectedManagers -contains "herdr") { Invoke-HerdrRestore }
+    if ($selectedManagers -contains "herdr") { Invoke-HerdrRestore -Plugin $Plugin -All:$All -Yes:$Yes }
 
     Write-Host "Restore completado" -ForegroundColor Green
 }

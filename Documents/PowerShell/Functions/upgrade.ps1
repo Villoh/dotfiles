@@ -1,11 +1,26 @@
 # upgrade.ps1
 
+function Invoke-PackageUpdate {
+    [CmdletBinding()]
+    param(
+        [ValidateNotNullOrEmpty()]
+        [ValidateSet('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'mise')]
+        [string[]]$Manager = @('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'mise')
+    )
+    if ($Manager -contains 'winget') { Invoke-WingetUpgrade }
+    if ($Manager -contains 'scoop') { Invoke-ScoopUpgrade }
+    if ($Manager -contains 'npm') { Invoke-NpmUpgrade }
+    if ($Manager -contains 'bun') { Invoke-BunUpgrade }
+    if ($Manager -contains 'pnpm') { Invoke-PnpmUpgrade }
+    if ($Manager -contains 'uv') { Invoke-UvUpgrade }
+    if ($Manager -contains 'mise') { Invoke-MiseUpgrade }
+}
+Set-Alias -Name update -Value Invoke-PackageUpdate
+
 function Invoke-AllUpgrade {
-    Invoke-WingetUpgrade
-    Invoke-ScoopUpgrade
-    Invoke-NodeUpgrade
-    Invoke-UvUpgrade
-    Invoke-MiseUpgrade
+    [CmdletBinding()]
+    param()
+    Invoke-PackageUpdate
 }
 
 Set-Alias -Name upgrade-all       -Value Invoke-AllUpgrade
