@@ -61,6 +61,28 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `post-hyde-install` / `pre-hyde-install` | HyDE desktop environment install hooks |
 | `openvpn-*` / `ikev2-*` | VPN management |
 
+## mise tools
+
+`backup-packages --mise` saves installed tools and exact versions to
+`packages/linux/mise-tools.txt` (one `tool@version` per line). mise is also
+included in default backup and the interactive menu. Backup requires `jq`;
+query/JSON failures keep the previous inventory. System and linked runtimes
+are omitted with a warning because they live outside mise-managed installs.
+
+`restore-packages --mise` selects saved versions and runs `mise install`.
+Existing versions are handled by mise; no global activation or changes to
+`mise.toml` occur. Preserve global/project configuration separately, including
+custom plugin sources, tool options, environment variables, and tasks. Install
+mise and any required custom backend plugins first. Only restore trusted tools:
+backend installers can execute code. NixOS/Home Manager still owns system packages.
+
+`update-packages --mise` (also `mise` without the flag prefix) runs `mise upgrade`
+for tools in the current configuration, respecting version ranges without
+`--bump`. mise appears in the interactive menu and `--all` when installed.
+The mise executable itself must be updated through NixOS or its package manager.
+
+Offline regression check: `python3 dev/test_mise_packages.py`.
+
 ## Zsh plugin sync
 
 `backup-zsh` and `restore-zsh` are intentionally separate from the general

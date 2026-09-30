@@ -21,6 +21,7 @@ function Invoke-AllBackup {
         Invoke-UvBackup
         Invoke-BinBackup
         Invoke-CargoBackup
+        Invoke-MiseBackup
         Invoke-HerdrBackup
     )
     if ($results -contains $false) {
@@ -238,6 +239,51 @@ New-Item -ItemType Directory -Force -Path "`$pfDir\32", "`$pfDir\64" | Out-Null
     Write-Host "windhawk backup OK" -ForegroundColor Green
 }
 Set-Alias -Name backup-windhawk -Value Invoke-WindhawkBackup
+
+function Invoke-MiseBackup {
+    if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+        Write-Warning "mise not found; skipping backup."
+        return $true
+    }
+
+    $file = Join-Path $PackagesDir 'mise-tools.txt'
+    try {
+        $raw = & mise ls --installed --json
+        if ($LASTEXITCODE -ne 0) { throw "mise ls failed (exit $LASTEXITCODE)" }
+        $json = $raw -join "`n"
+        $data = ConvertFrom-Json -InputObject $json -ErrorAction Stop
+        if ($json.TrimStart() -notmatch '^\{' -or $data -isnot [pscustomobject]) {
+            throw 'invalid mise inventory: expected an object of version arrays'
+        }
+        $specs = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
+        foreach ($tool in $data.PSObject.Properties) {
+            if ($tool.Name -notmatch '^[A-Za-z0-9][^\s]*\z' -or $tool.Value -isnot [array]) {
+                throw "invalid mise tool entry: $($tool.Name)"
+            }
+            foreach ($record in $tool.Value) {
+                if ($record -isnot [pscustomobject] -or $record.version -isnot [string] -or
+                    $record.version -notmatch '^[A-Za-z0-9][^\s]*\z') {
+                    throw "invalid mise version for $($tool.Name)"
+                }
+                if ($record.version -eq 'system' -or $null -ne $record.symlinked_to) {
+                    Write-Warning "Omitting non-transferable mise tool: $($tool.Name)@$($record.version)"
+                    continue
+                }
+                [void]$specs.Add("$($tool.Name)@$($record.version)")
+            }
+        }
+        New-Item -ItemType Directory -Force -Path $PackagesDir -ErrorAction Stop | Out-Null
+        Save-ExistingBackup $file
+        $specs | Out-File $file -Encoding UTF8 -ErrorAction Stop
+        Write-Host "mise backup OK ($($specs.Count) versions)" -ForegroundColor Green
+        return $true
+    }
+    catch {
+        Write-Warning "mise backup failed: $_"
+        return $false
+    }
+}
+Set-Alias -Name backup-mise -Value Invoke-MiseBackup
 
 function Invoke-HerdrBackup {
     if (-not (Get-Command herdr -ErrorAction SilentlyContinue)) {

@@ -69,6 +69,26 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 | `Documents/AutoHotkey/` | AutoHotkey automation scripts |
 | `Documents/Rainmeter/Skins/` | Rainmeter desktop widgets (sideCat, Trashy) |
 
+## mise tools
+
+- `backup-mise` exports installed tools and exact versions to
+  `packages/windows/mise-tools.txt`; `backup` includes it. Query/JSON failures
+  keep the previous inventory. System and linked runtimes are omitted with
+  warnings because they are not transferable mise-managed installs.
+- `restore-mise` or `restore -Manager mise` selects saved versions through fzf;
+  mise is also available in the restore manager menu. Like other package restores,
+  missing fzf selects all entries. Restoration uses `mise install`, without
+  global activation or changes to `mise.toml`. Preserve global/project config,
+  custom plugin sources, tool options, environment variables, and tasks separately.
+  Install mise and required custom backend plugins first. Only restore trusted
+  tools: backend installers can execute code.
+- `update-mise` / `upgrade-mise` runs `mise upgrade` for the current configuration,
+  preserving version ranges without `--bump`. `update-all` / `upgrade-all` includes
+  it. The mise executable remains managed by Scoop or its original package manager.
+
+Offline regression check: `pwsh -NoProfile -File dev/test_windows_mise_packages.ps1`.
+Inventory and tests use existing `packages/**` and `dev/**` deployment exclusions.
+
 ## Scripts
 
 | Script | Description |

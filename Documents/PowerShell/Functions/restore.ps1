@@ -40,7 +40,7 @@ function Select-OneFzf {
 # -- Invoke-AllRestore ---------------------------------------------------------
 function Invoke-AllRestore {
     param(
-        [ValidateSet('herdr')][string]$Manager,
+        [ValidateSet('herdr', 'mise')][string]$Manager,
         [string[]]$Plugin,
         [switch]$All,
         [switch]$Yes
@@ -50,11 +50,15 @@ function Invoke-AllRestore {
         return
     }
     if ($Plugin -or $All -or $Yes) { throw 'Plugin selection arguments require -Manager herdr.' }
+    if ($Manager -eq 'mise') {
+        Invoke-MiseRestore
+        return
+    }
 
     $pkgDir = $PackagesDir
 
     $candidates = [System.Collections.Generic.List[string]]::new()
-    if (Test-Path "$pkgDir\winget\packages.json" -or Test-Path "$pkgDir\winget\minimal.json") {
+    if ((Test-Path "$pkgDir\winget\packages.json") -or (Test-Path "$pkgDir\winget\minimal.json")) {
         $candidates.Add("winget")
     }
     if (Test-Path "$pkgDir\winget\elevated.json") { $candidates.Add("winget-elevated") }
@@ -64,7 +68,8 @@ function Invoke-AllRestore {
     if (Test-Path "$pkgDir\node\pnpm-packages.txt") { $candidates.Add("pnpm") }
     if (Test-Path "$pkgDir\uv-tools.txt") { $candidates.Add("uv") }
     if (Test-Path "$pkgDir\bin-packages.txt") { $candidates.Add("bin") }
-    if (Test-Path "$pkgDir\cargo\cargo.txt" -or Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $candidates.Add("cargo") }
+    if ((Test-Path "$pkgDir\cargo\cargo.txt") -or (Test-Path "$pkgDir\cargo\cargo-minimal.txt")) { $candidates.Add("cargo") }
+    if (Test-Path (Join-Path $pkgDir 'mise-tools.txt')) { $candidates.Add("mise") }
     if ((Test-Path $HerdrPluginsFile) -and (Get-Command herdr -ErrorAction SilentlyContinue)) { $candidates.Add("herdr") }
 
     $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
@@ -84,6 +89,7 @@ function Invoke-AllRestore {
     if ($selectedManagers -contains "uv") { Invoke-UvRestore }
     if ($selectedManagers -contains "bin") { Invoke-BinRestore }
     if ($selectedManagers -contains "cargo") { Invoke-CargoRestore }
+    if ($selectedManagers -contains "mise") { Invoke-MiseRestore }
     if ($selectedManagers -contains "herdr") { Invoke-HerdrRestore }
 
     Write-Host "Restore completado" -ForegroundColor Green
@@ -394,6 +400,27 @@ function Invoke-BinRestore {
     Write-Host "bin restore OK" -ForegroundColor Green
 }
 Set-Alias -Name restore-bin -Value Invoke-BinRestore
+
+# -- mise ----------------------------------------------------------------------
+function Invoke-MiseRestore {
+    if (-not (Get-Command mise -ErrorAction SilentlyContinue)) { Write-Warning "mise not found; skipping restore."; return }
+    $file = Join-Path $PackagesDir 'mise-tools.txt'
+    if (-not (Test-Path $file)) { Write-Warning "Not found: $file"; return }
+
+    $specs = @(Get-Content $file -ErrorAction Stop | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+    foreach ($spec in $specs) {
+        if ($spec -notmatch '^[A-Za-z0-9][^\s]*@[A-Za-z0-9][^\s]*\z') {
+            throw "Invalid mise tool specification: $spec"
+        }
+    }
+    $selected = Select-WithFzf $specs 'mise>'
+    foreach ($spec in $selected) {
+        & mise install '--' $spec
+        if ($LASTEXITCODE -ne 0) { throw "mise install failed for $spec (exit $LASTEXITCODE)" }
+    }
+    Write-Host "mise restore OK" -ForegroundColor Green
+}
+Set-Alias -Name restore-mise -Value Invoke-MiseRestore
 
 # -- herdr ---------------------------------------------------------------------
 function Invoke-HerdrRestore {

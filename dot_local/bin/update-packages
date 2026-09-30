@@ -164,7 +164,8 @@ run() {
     fi
 }
 
-while IFS= read -r choice; do
+# Keep terminal stdin available to native updater prompts.
+while IFS= read -r choice <&3; do
     case "$choice" in
         "🔧 system + AUR (yay)") run "System and AUR" yay -Syu ;;
         "🔧 system + AUR (paru)") run "System and AUR" paru -Syu ;;
@@ -192,11 +193,19 @@ while IFS= read -r choice; do
         "🗜️  headroom") run "headroom (ast-grep-cli 0.44.1 excluded)" uv tool install "headroom-ai[all]" --with "ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1" --python 3.12 --force ;;
         "🧭 serena") run "serena" uv tool upgrade serena-agent ;;
     esac
-done <<< "$selected"
+done 3<<< "$selected"
 
 if ((failed)); then
-    gum style --foreground 196 --border rounded --padding "1 2" "Update completed with errors."
+    if command_exists gum; then
+        gum style --foreground 196 --border rounded --padding "1 2" "Update completed with errors."
+    else
+        printf 'Update completed with errors.\n' >&2
+    fi
     exit 1
 fi
 
-gum style --foreground 42 --border rounded --padding "1 2" "Update completed."
+if command_exists gum; then
+    gum style --foreground 42 --border rounded --padding "1 2" "Update completed."
+else
+    printf 'Update completed.\n'
+fi

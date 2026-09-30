@@ -5,6 +5,7 @@ function Invoke-AllUpgrade {
     Invoke-ScoopUpgrade
     Invoke-NodeUpgrade
     Invoke-UvUpgrade
+    Invoke-MiseUpgrade
 }
 
 Set-Alias -Name upgrade-all       -Value Invoke-AllUpgrade
@@ -90,6 +91,14 @@ function Invoke-UvUpgrade {
 }
 Set-Alias -Name update-uv      -Value Invoke-UvUpgrade
 Set-Alias -Name upgrade-uv     -Value Invoke-UvUpgrade
+
+function Invoke-MiseUpgrade {
+    if (-not (Get-Command mise -ErrorAction SilentlyContinue)) { Write-Warning "mise not found; skipping upgrade."; return }
+    mise upgrade
+    if ($LASTEXITCODE -ne 0) { Write-Warning "mise upgrade failed (exit code $LASTEXITCODE)." }
+}
+Set-Alias -Name update-mise  -Value Invoke-MiseUpgrade
+Set-Alias -Name upgrade-mise -Value Invoke-MiseUpgrade
 
 function Invoke-WingetReinstall {
     param(
