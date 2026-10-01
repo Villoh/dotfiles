@@ -26,7 +26,6 @@ desktop_notifications = true
 [voice]
 self_mute = false
 self_deaf = false
-input_source = "pulseaudio:alsa_input.pci-0000_0d_00.4.analog-stereo"
 allow_microphone_transmit = true
 push_to_talk = false
 push_to_talk_shortcut = "F8"

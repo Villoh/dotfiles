@@ -18,6 +18,7 @@ sync_history_to_ytmusic = true
 
 [yt_dlp]
 cookies_file = ""
+use_session_cookies = false
 ca_bundle = ""
 remote_components = ""
 js_runtimes = ""
@@ -34,7 +35,7 @@ prefetch_next = true
 location = ""
 
 [ui]
-theme = "gruvbox"
+theme = "ansi-dark"
 album_art = true
 progress_style = "block"
 sidebar_width = 30
