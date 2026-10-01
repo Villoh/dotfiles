@@ -37,8 +37,8 @@
   },
   "theme": {
     "mode": "dark",
-    "light": "One Light",
-    "dark": "{{ if eq .chezmoi.os "windows" }}Aura Dark{{ else }}DankShell Dark{{ end }}"
+    "light": "{{ if eq .chezmoi.os "windows" }}Kanagawa Lotus{{ else }}DankShell Light{{ end }}",
+    "dark": "{{ if eq .chezmoi.os "windows" }}Kanagawa Dragon{{ else }}DankShell Dark{{ end }}"
   },
   "theme_overrides": {
     "Aura Dark": {
@@ -160,6 +160,36 @@
 
 
   "format_on_save": "off",
+  "languages": {
+    "Nix": {
+      "language_servers": ["nixd", "nil"],
+      "formatter": {
+        "external": {
+          "command": "nixfmt"
+        }
+      },
+      "format_on_save": "on"
+    }
+  },
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "nixd": {
+          "nixpkgs": {
+            "expr": "import (builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").inputs.nixpkgs { }"
+          },
+          "options": {
+            "nixos": {
+              "expr": "(builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").nixosConfigurations.desktop.options"
+            },
+            "home-manager": {
+              "expr": "(builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
+            }
+          }
+        }
+      }
+    }
+  },
   "extend_comment_on_newline": false,
 
 
