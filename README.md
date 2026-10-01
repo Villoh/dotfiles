@@ -109,23 +109,113 @@ Windows setup inspired by and borrowed from:
 
 ## PowerShell functions
 
-Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/PowerShell/Functions/) on every shell session:
+Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/PowerShell/Functions/) on every shell session. Windows only. On Linux the Git helpers are standalone `git-*` scripts in `dot_local/bin/git/`.
+
+### Dotfiles and chezmoi
 
 | Command | Description |
 | --------- | ------------- |
-| `restore-windhawk` | Import Windhawk settings from registry — close Windhawk first |
-| `setup-wsl` | Install a WSL distro (fzf picker), configure locale and packages (Arch-specific) |
-| `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
-| `enable-devmode` | Enable Windows Developer Mode (required for chezmoi symlinks) |
-| `disable-devmode` | Disable Windows Developer Mode |
-| `upgrade` | Update all package managers and tools |
-| `backup` | Backup dotfiles and settings |
-| `restore` | Restore dotfiles and settings |
+| `dotfiles-sync` / `dsync` | `git add .`, commit with a timestamp and push, through `chezmoi git` |
+| `dapply` | `chezmoi apply` |
+| `dedit [path]` | `chezmoi edit` |
+| `dupdate` | `chezmoi git -- pull` and `chezmoi apply` |
 | `reset-run-once-scripts` | Clear `scriptState` so all `run_once_` scripts re-run on next apply |
 | `reset-run-onchange-script [name]` | Clear `entryState` for one or all `run_onchange_` scripts |
+| `secrets` | Re-run the Windows secrets script from `packages/windows/system/secrets.json` |
+| `agent-skills [tui\|list]` | Enable or disable shared agent skills in `~/.agents/skills` (TUI), or list them with `--enabled` / `--disabled` |
+
+### Packages
+
+Managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`, `mise`, `herdr`. `-Manager` limits the run to some of them.
+
+| Command | Description |
+| --------- | ------------- |
+| `backup` / `backup-pkgs` | Export package lists to `packages/windows/` |
+| `backup-<manager>` | Back up a single manager; also `backup-windhawk` |
+| `restore` / `restore-pkgs` | Reinstall from the saved lists (fzf picker, or `-Manager`) |
+| `restore-<manager>` | Restore a single manager; also `restore-winget-elevated` and `restore-windhawk` |
+| `update` / `update-all` / `upgrade-all` | Upgrade every manager (`-Manager` to pick some) |
+| `update-<manager>` / `upgrade-<manager>` | Upgrade one manager (`winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `mise`, `node`) |
+| `winget-reinstall <id>` | Uninstall and reinstall a winget package in an elevated window |
+| `migrate [-Source] [-Target]` | Move packages between managers: `winget` <-> `scoop`, or any direction between `npm`, `bun` and `pnpm` |
+| `pnpm-add-fresh <pkg>` | `pnpm add -g` ignoring the minimum release age |
+| `prune [target]` | Clean package manager caches (scoop, npm, pnpm, bun, uv, ...) |
+| `clear-pip` | Clear the pip environment (asks for confirmation) |
+| `restore-windhawk` | Import Windhawk settings from the registry file; close Windhawk first |
+
+### AI agents
+
+| Command | Description |
+| --------- | ------------- |
+| `update-harness` / `upgrade-harness` | Update the whole agent harness: skills, Context7, Caveman, headroom, Serena and impeccable |
+| `update-skills`, `update-context7`, `update-caveman`, `update-headroom`, `update-serena`, `update-impeccable` | Update a single piece (every one also has an `upgrade-` alias) |
+| `install-claude-plugins` | Install the Claude Code plugins listed in `enabledPlugins` that are missing |
+| `claudex` | Run Claude Code against `gpt-5.6-sol` with its subagent and tool settings |
+
+### Git
+
+| Command | Description |
+| --------- | ------------- |
+| `remote-default` | Name of the remote default branch |
+| `remote-set <name> <url>` | Add the remote, or update its URL if it exists |
+| `old` | List local branches with age, ahead/behind and merged state |
+| `conflict <branch>` / `cf` | Show the conflicts a merge would cause |
+| `can-merge <branch>` / `cfm` | Check whether a merge would be clean |
+| `continue-git` / `abort-git` | Continue or abort the rebase, merge, cherry-pick or revert in progress |
+| `prune-local` | Delete local branches whose remote is gone |
+| `clean-merged` | Delete branches already merged (except main, master, develop) |
+| `auto-prune` | Update the default branch and delete branches with nothing left to merge |
+| `fixup <commit>` | Create a fixup commit and autosquash it (aborts if it would conflict) |
+| `rebranch` | Rebuild the current branch on top of the updated default branch |
+| `yank` | Reset to the remote branch, keeping a backup branch if you had local commits |
+| `backmerge <branch>` | Pull the branch and merge it into the current one |
+| `churn` | The 25 most modified files in the history |
+| `glines <branch> [-Exclude ...]` | Lines changed against a branch |
+| `sha [ref]` | Short SHA, copied to the clipboard |
+| `gitzip` | Zip `HEAD` named after its tag |
+| `diff-file-last-commit <file>` | Diff a file against its previous commit |
+| `gexclude <path>` / `ginclude <path>` | Add or remove a path in `.git/info/exclude` |
+| `gtree` | Tree of tracked and untracked files |
+| `server-start [remote]` | Serve the current repository over the LAN with `git daemon` |
+| `server-kill`, `server-test`, `server-clone`, `server-join`, `server-logs` | Stop it, test it, clone from it, point `origin` to it, follow its log |
+
+### Terminal tools
+
+| Command | Description |
+| --------- | ------------- |
+| `y` | Launch yazi and `cd` to the last directory on exit (`q`; `Q` quits without changing it) |
+| `zj [query]` | Attach to or create a zellij session named after the directory (resolved with zoxide if `query` is given) |
+| `zwork [query]` | Attach to or create the persistent `villoh` zellij session |
+| `keybinds` | Show Alacritty, Zellij and GlazeWM keybindings in `less` |
+| `keybinds-al` / `keybinds-zj` / `keybinds-gwm` | Show only the Alacritty, Zellij or GlazeWM ones |
+| `npm` | Wrapper: runs `socket npm` |
+
+### Windows setup
+
+| Command | Description |
+| --------- | ------------- |
+| `setup-wsl` | Install a WSL distro (fzf picker), configure locale and packages (Arch-specific) |
+| `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
+| `enable-devmode` / `disable-devmode` | Toggle Windows Developer Mode (required for chezmoi symlinks) |
+| `disable-win-keys` / `enable-win-keys` | Disable or restore Windows key shortcuts so GlazeWM can use `Win` (`-Scope User\|System`) |
+| `win-keys-status` | Show whether the Windows key shortcuts are disabled (user, system and effective) |
 | `startup-entries` | List all startup.json entries and their current enabled/disabled state |
-| `disable-startup [name]` | Disable a startup entry (fzf picker if no name given) |
-| `enable-startup [name]` | Enable a startup entry (fzf picker if no name given) |
+| `disable-startup [name]` / `enable-startup [name]` | Disable or enable a startup entry (fzf picker if no name given) |
+
+### Bitwarden
+
+Needs the `bw` CLI; `fzf` is optional.
+
+| Command | Description |
+| --------- | ------------- |
+| `bwstart` | Log in if needed, unlock and sync in one step |
+| `bwlogin`, `bwlock`, `bwsync`, `bwconfig` | Log in (`-Sso`, `-ApiKey`), lock and clear the session, sync, and manage the server |
+| `bwu` | Vault state: `unauthenticated`, `locked` or `unlocked` |
+| `bwls`, `bwfind`, `bwitem` | List (fzf, bulk trash or delete), search and show items |
+| `bwadd`, `bwedit`, `bwmv`, `bwattachment` | Create (login, card, identity, SSH key), edit, move and download attachments |
+| `bwfolder`, `bwcollection`, `bwtemplate` | Folders, organization collections and item templates |
+| `bwgen` | Generate a password interactively and copy it |
+| `bwtrash`, `bwrestore`, `bwdelete`, `bwempty` | Trash, restore, delete permanently and empty the trash |
 
 ## Daily workflow
 
