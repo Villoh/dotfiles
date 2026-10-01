@@ -11,6 +11,7 @@ if [[ -r /usr/share/omarchy-zsh/shell/all ]]; then
 fi
 
 export PATH="$HOME/.local/bin:$HOME/.local/share/pnpm/bin:$PATH"
+export NH_OS_FLAKE="$HOME/development/personal/projects/nixos-config#desktop"
 
 if [[ "$OMARCHY_ZSH" != true ]]; then
   if [[ $- == *i* && -t 0 && -t 1 ]] && command -v starship >/dev/null 2>&1; then
@@ -37,3 +38,6 @@ if [[ "$OMARCHY_ZSH" == true ]]; then
   [[ -r /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
+
+# Load Wannme/HSQL environment.
+[[ -r "$HOME/development/work/wannme/keys/env/credentials.env" ]] && source "$HOME/development/work/wannme/keys/env/credentials.env"
