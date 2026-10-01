@@ -13,7 +13,7 @@ This repository no longer bootstraps Linux packages. Pacman/AUR package lists
 and the Arch/CachyOS installation script were removed. Package installation
 belongs in the NixOS configuration.
 
-See also: [NixOS](nixos/README.md) (current target) and [Omarchy hotkeys](omarchy/hotkeys.md) (reference).
+See also: [NixOS](nixos/README.md) (current target) and [Omarchy](omarchy/README.md) (reference).
 
 ## dot_config — key apps
 

@@ -1,10 +1,5 @@
 # Omarchy hotkeys
 
-> [!NOTE]
-> Omarchy is **not** the current Linux target; this repo now targets
-> [NixOS + DMS](../nixos/README.md). Kept as reference only (see also
-> [`docs/install/omarchy.md`](../../install/omarchy.md)).
-
 Fetched on 2026-10-01 from the
 [official manual](https://omarchy.org/manual/hotkeys/)
 ([source](https://github.com/omacom/omarchy/blob/quattro/manual/07-hotkeys.md),
