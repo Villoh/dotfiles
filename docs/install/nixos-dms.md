@@ -4,7 +4,7 @@ This is the current Linux target: NixOS as the operating system,
 [Hyprland](https://hyprland.org/) as the compositor, and
 [Dank Material Shell](https://danklinux.com) (DMS) as the desktop shell.
 
-The NixOS repository is the declarative source of truth for the system,
+The [NixOS repository](https://github.com/Villoh/nixos-config) is the declarative source of truth for the system,
 packages, services, hardware, Hyprland, and DMS. This chezmoi repository is a
 complement: it manages personal dotfiles and scripts that are not managed by
 Nix/Home Manager. Do not apply overlapping configuration from both systems.

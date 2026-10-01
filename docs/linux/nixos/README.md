@@ -7,7 +7,7 @@ Installation guide: [`docs/install/nixos-dms.md`](../../install/nixos-dms.md).
 
 | Owner | Manages |
 | ----- | ------- |
-| NixOS repo (`~/development/personal/projects/nixos-config`) | OS, packages, services, hardware, boot, Hyprland, DMS, greeter, gaming, Flatpak |
+| NixOS repo: [Villoh/nixos-config](https://github.com/Villoh/nixos-config) (local: `~/development/personal/projects/nixos-config`) | OS, packages, services, hardware, boot, Hyprland, DMS, greeter, gaming, Flatpak |
 | chezmoi (this repo) | Personal dotfiles, templates, scripts, secrets |
 
 Never let both manage the same file. Package installation belongs in the NixOS

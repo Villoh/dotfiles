@@ -11,7 +11,7 @@ repositories manage the same file.
 
 This repository no longer bootstraps Linux packages. Pacman/AUR package lists
 and the Arch/CachyOS installation script were removed. Package installation
-belongs in the NixOS configuration.
+belongs in the [NixOS configuration](https://github.com/Villoh/nixos-config).
 
 See also: [NixOS](nixos/README.md) (current target) and [Omarchy](omarchy/README.md) (reference).
 

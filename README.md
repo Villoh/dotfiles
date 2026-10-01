@@ -61,12 +61,12 @@
 > The Linux installation is **NixOS + Hyprland + Dank Material Shell (DMS)**.
 > NixOS/Home Manager owns the system, packages, services, hardware, Hyprland,
 > and DMS. Chezmoi only manages personal dotfiles and scripts that are not
-> declared in the NixOS configuration. Do not run Arch/CachyOS package
+> declared in my [NixOS configuration](https://github.com/Villoh/nixos-config). Do not run Arch/CachyOS package
 > installers or use pacman/AUR lists from this repository.
 
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
-| Desktop | [NixOS](https://nixos.org/) + [Hyprland](https://hyprland.org/) + [DMS](https://danklinux.com/) | Managed by the NixOS repository |
+| Desktop | [NixOS](https://nixos.org/) + [Hyprland](https://hyprland.org/) + [DMS](https://danklinux.com/) | [Villoh/nixos-config](https://github.com/Villoh/nixos-config) |
 | Shell UI (bar, dock, notifications, OSD, launcher) | [Dank Material Shell](https://danklinux.com/) | [⚙️](dot_config/DankMaterialShell/) |
 | Dynamic Theming | [Matugen](https://github.com/InioX/matugen) | [⚙️](dot_config/matugen/) |
 | Shell | [Zsh](https://www.zsh.org/) | [⚙️](dot_zshrc) |
