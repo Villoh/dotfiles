@@ -1,5 +1,5 @@
 {
-  "workflow": "none",
+  "workflow": "summary-review",
   "autoOpenBrowser": false,
   "searchRouting": {
     "providers": [

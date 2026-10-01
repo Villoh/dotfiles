@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.87.1",
+  "lastChangelogVersion": "0.99.2",
   "defaultThinkingLevel": "high",
   "packages": [
     "npm:pi-mcp-adapter",
@@ -44,12 +44,13 @@
   "theme": "dankcolors",
   "modelRoles": {
     "steward": "cliproxyapi/gpt-6-luna",
-    "expert": "cliproxyapi/claude-opus-5",
-    "builder": "cliproxyapi/gpt-6-sol",
+    "expert": "cliproxyapi/claude-opus-5-5",
+    "builder": "cliproxyapi/gpt-6.1-sol",
     "scout": "cliproxyapi/gpt-6-luna",
-    "frontend_designer": "cliproxyapi/claude-opus-5"
+    "frontend_designer": "cliproxyapi/claude-opus-5-5"
   },
   "defaultProvider": "cliproxyapi",
-  "defaultModel": "gpt-6-luna",
-  "enableSkillCommands": false
+  "defaultModel": "claude-sonnet-5-5",
+  "enableSkillCommands": false,
+  "showHardwareCursor": false
 }
