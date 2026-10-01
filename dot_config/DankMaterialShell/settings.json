@@ -99,6 +99,9 @@
     }
   },
   "matugenTemplateNeovim": true,
+  "showDock": true,
+  "dockSmartAutoHide": true,
+  "dockShowTrash": true,
   "osdPowerProfileEnabled": true,
   "screenPreferences": {
     "lockScreen": [
