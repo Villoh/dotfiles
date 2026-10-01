@@ -28,7 +28,7 @@
 
 ### Linux
 
-> Coming soon
+![desktop-linux](.github/assets/desktop-linux.png)
 
 ## Overview
 
