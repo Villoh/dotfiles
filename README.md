@@ -61,27 +61,25 @@
 > The Linux installation is **NixOS + Hyprland + Dank Material Shell (DMS)**.
 > NixOS/Home Manager owns the system, packages, services, hardware, Hyprland,
 > and DMS. Chezmoi only manages personal dotfiles and scripts that are not
-> declared in my [NixOS configuration](https://github.com/Villoh/nixos-config). Do not run Arch/CachyOS package
-> installers or use pacman/AUR lists from this repository.
+> declared in my [NixOS configuration](https://github.com/Villoh/nixos-config).
+> Do not run Arch/CachyOS package installers or use pacman/AUR lists from this
+> repository.
 
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
 | Desktop | [NixOS](https://nixos.org/) + [Hyprland](https://hyprland.org/) + [DMS](https://danklinux.com/) | [Villoh/nixos-config](https://github.com/Villoh/nixos-config) |
-| Shell UI (bar, dock, notifications, OSD, launcher) | [Dank Material Shell](https://danklinux.com/) | [⚙️](dot_config/DankMaterialShell/) |
+| Shell UI (bar, dock, notifications, OSD, launcher, clipboard) | [Dank Material Shell](https://danklinux.com/) | [⚙️](dot_config/DankMaterialShell/) |
 | Dynamic Theming | [Matugen](https://github.com/InioX/matugen) | [⚙️](dot_config/matugen/) |
-| Shell | [Zsh](https://www.zsh.org/) | [⚙️](dot_zshrc) |
-| Prompt | [Starship](https://starship.rs/) | [⚙️](dot_zshrc) |
-| Terminal | [WezTerm](https://wezfurlong.org/wezterm/) | [⚙️](dot_config/wezterm/) |
-| Multiplexer | [tmux](https://github.com/tmux/tmux) · [Zellij](https://zellij.dev/) · Herdr | [⚙️](dot_tmux.conf.tmpl) · [⚙️](dot_config/zellij/) · [⚙️](dot_config/herdr/) |
-| Editor | [Zed](https://zed.dev/) · [micro](https://micro-editor.github.io/) | [⚙️](dot_config/zed/) · [⚙️](dot_config/micro/) |
+| Shell | [Zsh](https://www.zsh.org/) + [Oh My Zsh](https://ohmyz.sh/) | [⚙️](dot_zshrc) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/shell/zsh.nix) |
+| Prompt | [Starship](https://starship.rs/) | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/shell/zsh.nix) |
+| Terminal | [Ghostty](https://ghostty.org/) · [Kitty](https://sw.kovidgoyal.net/kitty/) | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/terminals/ghostty.nix) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/terminals/kitty.nix) |
+| Multiplexer | Herdr | [⚙️](dot_config/herdr/) |
+| Editor | [Zed](https://zed.dev/) · [Neovim](https://neovim.io/) | [⚙️](dot_config/zed/) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/development/neovim.nix) |
 | File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
-| Git | [gitui](https://github.com/gitui-org/gitui) · [gh-dash](https://github.com/dlvhdr/gh-dash) | [⚙️](dot_config/gitui/) · [⚙️](dot_config/gh-dash/) |
-| Clipboard | [cliphist](https://github.com/sentriz/cliphist) | [⚙️](dot_config/cliphist/) |
 | Discord | [Vesktop](https://github.com/Vencord/Vesktop) · Concord | [⚙️](dot_config/vesktop/) · [⚙️](dot_config/private_concord/) |
 | Chat | [nchat](https://github.com/d99kris/nchat) | [⚙️](dot_config/nchat/) |
 | Music | [ytm-player](https://github.com/peternaame-boop/ytm-player) · [cava](https://github.com/karlstav/cava) | [⚙️](dot_config/ytm-player/) · [⚙️](dot_config/cava/) |
-| YouTube | [FreeTube](https://freetubeapp.io/) | [⚙️](dot_config/FreeTube/) |
-| AI Agents | [opencode](https://opencode.ai/) | [⚙️](dot_config/opencode/) |
+| AI Agents | [Claude Code](https://claude.com/claude-code) · [Codex](https://github.com/openai/codex) · Pi · omp · Devin · [opencode](https://opencode.ai/) | [⚙️](dot_claude/) · [⚙️](dot_codex/) · [⚙️](dot_pi/) · [⚙️](dot_omp/) · [⚙️](dot_config/devin/) · [⚙️](dot_config/opencode/) |
 
 ## NixOS and chezmoi
 
