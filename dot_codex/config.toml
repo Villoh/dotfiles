@@ -1,7 +1,7 @@
 # Modelo que Codex usará de forma predeterminada para las tareas.
-model = "gpt-6-astra"
+model = "gpt-6-luna"
 # Esfuerzo de razonamiento: medium equilibra velocidad y profundidad de análisis.
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 # Estilo de comunicación predeterminado; cambia el tono, no las capacidades del modelo.
 personality = "pragmatic"
 # Nivel de detalle de las respuestas; low produce respuestas más breves en proveedores Responses API.
@@ -275,6 +275,18 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects.'c:\users\mikel\documents\codex\2026-09-22\realtime-voice-chat']
+trust_level = "trusted"
+
+[projects."/home/mikel/development/personal/projects/career-ops"]
+trust_level = "trusted"
+
+[projects."/home/mikel/development/personal/projects/tunnel-agent"]
+trust_level = "trusted"
+
+[projects."/home/mikel/.local/share/chezmoi"]
+trust_level = "trusted"
+
+[projects."/home/mikel/Documents/Codex/2026-10-01/realtime-voice-chat"]
 trust_level = "trusted"
 
 [shell_environment_policy.set]
