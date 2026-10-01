@@ -67,21 +67,21 @@
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
 | Desktop | [NixOS](https://nixos.org/) + [Hyprland](https://hyprland.org/) + [DMS](https://danklinux.com/) | Managed by the NixOS repository |
-| Status Bar | [Waybar](https://github.com/Alexays/Waybar) | [⚙️](dot_config/waybar/) |
-| Notifications | [SwayNC](https://github.com/ErikReider/SwayNotificationCenter) | [⚙️](dot_config/swaync/) |
-| OSD Overlays | [SwayOSD](https://github.com/ErikReider/SwayOSD) | [⚙️](dot_config/swayosd/) |
-| Shell | *(dropped — using Omarchy's defaults)* | — |
-| Prompt | [Starship](https://starship.rs/) | [⚙️](dot_config/fastfetch/) |
-| Terminal | [Kitty](https://sw.kovidgoyal.net/kitty/) · [Ghostty](https://ghostty.org/) | [⚙️](dot_config/kitty/) · [⚙️](dot_config/ghostty/) |
-| Multiplexer | [tmux](https://github.com/tmux/tmux) · [psmux](https://github.com/psmux/psmux) | [⚙️](dot_tmux.conf.tmpl) |
-| Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
+| Shell UI (bar, dock, notifications, OSD, launcher) | [Dank Material Shell](https://danklinux.com/) | [⚙️](dot_config/DankMaterialShell/) |
+| Dynamic Theming | [Matugen](https://github.com/InioX/matugen) | [⚙️](dot_config/matugen/) |
+| Shell | [Zsh](https://www.zsh.org/) | [⚙️](dot_zshrc) |
+| Prompt | [Starship](https://starship.rs/) | [⚙️](dot_zshrc) |
+| Terminal | [WezTerm](https://wezfurlong.org/wezterm/) | [⚙️](dot_config/wezterm/) |
+| Multiplexer | [tmux](https://github.com/tmux/tmux) · [Zellij](https://zellij.dev/) · Herdr | [⚙️](dot_tmux.conf.tmpl) · [⚙️](dot_config/zellij/) · [⚙️](dot_config/herdr/) |
+| Editor | [Zed](https://zed.dev/) · [micro](https://micro-editor.github.io/) | [⚙️](dot_config/zed/) · [⚙️](dot_config/micro/) |
 | File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
+| Git | [gitui](https://github.com/gitui-org/gitui) · [gh-dash](https://github.com/dlvhdr/gh-dash) | [⚙️](dot_config/gitui/) · [⚙️](dot_config/gh-dash/) |
 | Clipboard | [cliphist](https://github.com/sentriz/cliphist) | [⚙️](dot_config/cliphist/) |
-| Discord | [Vesktop](https://github.com/Vencord/Vesktop) | [⚙️](dot_config/vesktop/) |
-| Email | [aerc](https://aerc-mail.org/) | [⚙️](dot_config/aerc/) |
+| Discord | [Vesktop](https://github.com/Vencord/Vesktop) · Concord | [⚙️](dot_config/vesktop/) · [⚙️](dot_config/private_concord/) |
 | Chat | [nchat](https://github.com/d99kris/nchat) | [⚙️](dot_config/nchat/) |
+| Music | [ytm-player](https://github.com/peternaame-boop/ytm-player) · [cava](https://github.com/karlstav/cava) | [⚙️](dot_config/ytm-player/) · [⚙️](dot_config/cava/) |
 | YouTube | [FreeTube](https://freetubeapp.io/) | [⚙️](dot_config/FreeTube/) |
-| Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
+| AI Agents | [opencode](https://opencode.ai/) | [⚙️](dot_config/opencode/) |
 
 ## NixOS and chezmoi
 
