@@ -76,7 +76,7 @@ implementation progress.
 
 ### Desktop integration
 
-- [x] **Vesktop** — System24 selected with Kanagawa Dragon QuickCSS overrides; no Catppuccin URL.
+- [x] **Vesktop** — Windows: System24 + Kanagawa Dragon QuickCSS (`AppData/Roaming/vesktop/settings/`). Linux: DMS matugen `dank-discord.css` (`dot_config/vesktop/settings/`).
 - [x] **Warp** — Kanagawa Dragon theme added; select it from Warp theme settings.
 - [x] **GlazeWM** — Catppuccin anchors removed; focused and unfocused borders use Dragon colors.
 - [x] **YASB** — CSS variables and direct Catppuccin colors migrated to Kanagawa Dragon.
@@ -120,7 +120,7 @@ implementation progress.
 | Herdr | `dot_config/herdr/config.toml.tmpl` | Built-in Kanagawa base with Dragon overrides; fixed dark mode | Validate after deployment; no light Dragon variant |
 | aerc | — | Descartado; configuración retirada del repositorio | No action |
 | gitui | `dot_config/gitui/theme.ron` | Active inline Kanagawa Dragon palette; current patch fields only | Validate visually; legacy Catppuccin references are gone |
-| Vesktop | `dot_config/vesktop/settings/settings.json`; `settings/quickCss.css` | System24 selected; Kanagawa Dragon palette overrides active; no Catppuccin URL | Validate visually in Vesktop |
+| Vesktop | Windows: `AppData/Roaming/vesktop/settings/`; Linux: `dot_config/vesktop/settings/settings.json` | Windows: System24 + Kanagawa Dragon; Linux: DMS-generated `dank-discord.css` (matugen) | Validate visually in Vesktop |
 | Hyprlock legacy | `dot_config/hypr.old/hyprlock/catppuccin/`; `.gitmodules` | Legacy/old Hyprlock tree and Catppuccin submodule | Confirm whether tree is still deployed before touching |
 
 No current `waybar`, `kitty`, or `ghostty` theme surface was found in tracked

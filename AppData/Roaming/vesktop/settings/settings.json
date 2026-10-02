@@ -1,12 +1,12 @@
 {
     "autoUpdate": true,
     "autoUpdateNotification": true,
-    "useQuickCss": false,
-    "themeLinks": [],
-    "eagerPatches": false,
-    "enabledThemes": [
-        "dank-discord.css"
+    "useQuickCss": true,
+    "themeLinks": [
+        "https://refact0r.github.io/system24/build/system24.css"
     ],
+    "eagerPatches": false,
+    "enabledThemes": [],
     "enableReactDevtools": false,
     "frameless": false,
     "transparent": false,
@@ -241,7 +241,7 @@
         "ImageZoom": {
             "enabled": true,
             "size": 360,
-            "zoom": 1,
+            "zoom": 1.6,
             "saveZoomValues": true,
             "nearestNeighbour": false,
             "square": true,
@@ -629,9 +629,6 @@
         },
         "AddAttachments": {
             "enabled": false
-        },
-        "FixDiscordCss": {
-            "enabled": true
         }
     },
     "uiElements": {
@@ -648,7 +645,7 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1790954869002
+        "settingsSyncVersion": 1790873914466
     },
     "windowsMaterial": "none"
 }
