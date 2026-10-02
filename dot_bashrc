@@ -1,0 +1,3 @@
+# Load Wannme/HSQL environment (no interactive guard: coding agents use non-interactive shells).
+wannme-env() { source "$HOME/development/work/wannme/keys/credentials.sh" "$@"; }
+[[ -r "$HOME/development/work/wannme/keys/credentials.sh" ]] && wannme-env

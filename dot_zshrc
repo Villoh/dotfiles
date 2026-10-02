@@ -10,9 +10,6 @@ if [[ -r /usr/share/omarchy-zsh/shell/all ]]; then
   source /usr/share/omarchy-zsh/shell/all
 fi
 
-export PATH="$HOME/.local/bin:$HOME/.local/share/pnpm/bin:$PATH"
-export NH_OS_FLAKE="$HOME/development/personal/projects/nixos-config#desktop"
-
 if [[ "$OMARCHY_ZSH" != true ]]; then
   if [[ $- == *i* && -t 0 && -t 1 ]] && command -v starship >/dev/null 2>&1; then
     eval "$(starship init zsh)"
@@ -39,5 +36,9 @@ if [[ "$OMARCHY_ZSH" == true ]]; then
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
+export PATH="$HOME/.local/bin:$HOME/.local/share/pnpm/bin:$PATH"
+export NH_OS_FLAKE="$HOME/development/personal/projects/nixos-config#desktop"
+
 # Load Wannme/HSQL environment.
-[[ -r "$HOME/development/work/wannme/keys/env/credentials.env" ]] && source "$HOME/development/work/wannme/keys/env/credentials.env"
+wannme-env() { source "$HOME/development/work/wannme/keys/credentials.sh" "$@"; }
+[[ -r "$HOME/development/work/wannme/keys/credentials.sh" ]] && wannme-env

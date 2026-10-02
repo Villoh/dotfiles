@@ -2,8 +2,7 @@
 # ~/.bash_profile
 #
 
+# Source POSIX profile for compatibility
+[[ -f ~/.profile ]] && . ~/.profile
 [[ -f ~/.bashrc ]] && . ~/.bashrc
-. "$HOME/.cargo/env"
-
-. "$HOME/.local/share/../bin/env"
-. "$HOME/.profile"
+[[ -f ~/.cargo/env ]] && . ~/.cargo/env
