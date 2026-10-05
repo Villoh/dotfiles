@@ -174,17 +174,15 @@
   "lsp": {
     "nixd": {
       "settings": {
-        "nixd": {
-          "nixpkgs": {
-            "expr": "import (builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").inputs.nixpkgs { }"
+        "nixpkgs": {
+          "expr": "import (builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").inputs.nixpkgs { }"
+        },
+        "options": {
+          "nixos": {
+            "expr": "(builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").nixosConfigurations.desktop.options"
           },
-          "options": {
-            "nixos": {
-              "expr": "(builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").nixosConfigurations.desktop.options"
-            },
-            "home-manager": {
-              "expr": "(builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
-            }
+          "home-manager": {
+            "expr": "(builtins.getFlake \"/home/mikel/development/personal/projects/nixos-config\").nixosConfigurations.desktop.options.home-manager.users.type.getSubOptions []"
           }
         }
       }
