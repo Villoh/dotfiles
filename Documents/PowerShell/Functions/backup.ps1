@@ -5,6 +5,7 @@ $HerdrPluginsFile = Join-Path $SourceDir "packages\windows\herdr-plugins.json"
 
 function Save-ExistingBackup {
     param([string]$Path)
+    New-Item -ItemType Directory -Force -Path (Split-Path $Path) -ErrorAction Stop | Out-Null
     if (Test-Path $Path) {
         Copy-Item $Path "$Path.bak" -Force
     }

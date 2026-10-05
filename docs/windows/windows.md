@@ -89,6 +89,13 @@ Backup managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`,
 `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `mise`.
 Herdr's `-Plugin`, `-All`, and `-Yes` require `-Manager herdr` alone.
 
+The tracked npm/bun/pnpm and uv inventories have been retired on Windows too.
+The Linux mise configuration does not replace them. Until fresh inventories
+are generated on Windows, these tools cannot be restored from this repository;
+restore/bootstrap menus omit missing inventories. Run `backup -Manager npm,bun,pnpm,uv`
+after installing the desired tools on Windows to generate new local inventories.
+Backup commands create missing inventory directories, including `node/`.
+
 ## uv tools
 
 ```powershell
