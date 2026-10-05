@@ -31,7 +31,8 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/matugen/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/DankMaterialShell/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/devin/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/devin/**
+.config/equibop/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshrc
 .zprofile
 .profile
