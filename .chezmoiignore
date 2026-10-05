@@ -26,7 +26,8 @@ scoop/
 {{ end }}
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
-{{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/pnpm/**
+.config/mise/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/matugen/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/DankMaterialShell/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}

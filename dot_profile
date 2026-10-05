@@ -12,6 +12,8 @@ export PATH="$HOME/.local/bin/git:$PATH"
 export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 export GPG_TTY=$(tty)
 
-# pnpm global binaries
+# Keep pnpm for projects; global CLI tools are managed by mise.
 export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME/bin:$PATH"
+
+# Make mise tools available to login sessions and desktop applications.
+export PATH="${MISE_DATA_DIR:-$HOME/.local/share/mise}/shims:$PATH"

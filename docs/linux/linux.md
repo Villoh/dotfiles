@@ -85,25 +85,64 @@ patch versions are not preserved. Only restore trusted packages.
 
 ## mise tools
 
-`backup-packages --mise` saves installed tools and exact versions to
-`packages/linux/mise-tools.txt` (one `tool@version` per line). mise is also
-included in default backup and the interactive menu. Backup requires `jq`;
-query/JSON failures keep the previous inventory. System and linked runtimes
-are omitted with a warning because they live outside mise-managed installs.
+mise is restored from global/project configuration, not a generated package
+inventory. Keep `config.toml` and project `mise.toml` files versioned, including
+tool versions/options, custom plugin sources, environment variables, and tasks.
+After restoring trusted configuration and installing mise/required plugins:
 
-`restore-packages --mise` selects saved versions and runs `mise install`.
-Existing versions are handled by mise; no global activation or changes to
-`mise.toml` occur. Preserve global/project configuration separately, including
-custom plugin sources, tool options, environment variables, and tasks. Install
-mise and any required custom backend plugins first. Only restore trusted tools:
-backend installers can execute code. NixOS/Home Manager still owns system packages.
+```bash
+mise install
+```
+
+`backup-packages` and `restore-packages` no longer handle mise. Historical
+`mise-tools.txt` inventories and their `.bak` files are left untouched and are
+not used for restoration. NixOS/Home Manager still owns system packages.
 
 `update-packages --mise` (also `mise` without the flag prefix) runs `mise upgrade`
 for tools in the current configuration, respecting version ranges without
 `--bump`. mise appears in the interactive menu and `--all` when installed.
 The mise executable itself must be updated through NixOS or its package manager.
 
-Offline regression check: `python3 dev/test_mise_packages.py`.
+Linux user CLI configuration lives in `dot_config/mise/config.toml` and is
+excluded on Windows. `npm:` tools use the Nix-provided standalone aube CLI
+(`npm.package_manager = "aube_cli"`); Python tools use uv through `pipx:`.
+Nix still provides Node, uv, and pnpm. Bun is declared in mise for tools such
+as ocx. Zsh activates mise, and the login profile exposes shims to desktop apps;
+pnpm's former global bin directory is no longer added to PATH.
+
+Prefer mise registry names only when they resolve to the same tool and version.
+Vercel uses `vercel` (registry backend `npm:vercel`), preserving its esbuild
+approval; Bun already uses its core registry entry. Explicit sources remain
+for tools without equivalent registry entries. Do not replace `npm:cf` with
+`cf` (Cloud Foundry, not Cloudflare), OpenCode v2 with the registry's v1 route,
+or `npm:@playwright/cli` with `playwright` (a different npm package).
+
+Claude, Codex, Pi, and OMP use native binaries from their mise registry entries
+(`claude`, `codex`, `pi`, `oh-my-pi`). Happy uses `npm:happy`, the upstream rename
+of `happy-coder`; only its reviewed binary-unpacking postinstall is allowed.
+Devin uses `http:devin` with the official Linux x86_64 archive and a pinned
+SHA256 from its versioned manifest. Version discovery uses the upstream current
+manifest, but a Devin bump also requires refreshing the checksum from
+`https://static.devin.ai/cli/<version>/manifest.json`; stale checksums fail closed.
+Nix CLI copies remain as fallback until explicitly retired. Herdr, Devin
+Desktop, and auxiliary tools remain in Nix. Project Java is not declared in the
+global mise configuration; do not upgrade inactive tools or prune it as part
+of global maintenance. New shells select mise agents; existing Pi sessions
+keep running their original executable.
+
+Migrated root package versions are pinned. Ordinary `mise upgrade` respects
+those pins; use `mise upgrade --bump` deliberately to update versions in the
+configuration. Headroom/Serena update shortcuts use `--bump`, preserving their
+tool options. Headroom keeps the ast-grep-cli exclusions in `uvx_args`.
+Python requests and extras are also declared per tool, rather than inferred
+from package names. Root pins are not transitive dependency lockfiles.
+
+Install scripts are allowed only for selected native components. CCS and ASM
+root hooks remain disabled to avoid modifying user configuration during
+installation. Reviewed low-download tools have individual `aube_args`
+exceptions; no global download-threshold bypass is configured. Preserve these
+options in versioned mise configuration. The retired pnpm inventory must not be
+used to reinstall the migrated tools as duplicate globals.
 
 ## Zsh plugin sync
 

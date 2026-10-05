@@ -55,41 +55,6 @@ backup_flatpak() {
     fi
 }
 
-backup_mise() {
-    local file="$BACKUP_DIR/mise-tools.txt" installed tools
-    if ! command -v mise >/dev/null 2>&1; then
-        echo -e "${YELLOW}⚠️  mise not installed, skipping${NC}"
-        return 0
-    fi
-    if ! command -v jq >/dev/null 2>&1; then
-        echo "❌ jq is required to back up mise tools" >&2
-        return 1
-    fi
-
-    installed=$(mise ls --installed --json) || return 1
-    tools=$(jq -er '
-        if type != "object" then error("Invalid mise tool list") else . end
-        | to_entries | map(
-            .key as $tool
-            | if ($tool | test("^[A-Za-z0-9][^[:space:]]*\\z")) and (.value | type == "array")
-              then .value else error("Invalid mise tool entry") end
-            | map(
-                if (.version | type == "string" and test("^[A-Za-z0-9][^[:space:]]*\\z"))
-                then . else error("Invalid mise version") end
-                | select(.version != "system" and .symlinked_to == null)
-                | $tool + "@" + .version
-            )
-        ) | flatten | unique | join("\n")
-    ' <<< "$installed") || return 1
-    if jq -e 'any(.[][]; .version == "system" or .symlinked_to != null)' <<< "$installed" >/dev/null; then
-        echo "⚠️  mise system/linked versions omitted; preserve their external runtimes separately" >&2
-    fi
-
-    save_existing_backup "$file"
-    if [[ -n "$tools" ]]; then printf '%s\n' "$tools" > "$file"; else : > "$file"; fi
-    echo -e "${GREEN}🧰 mise tools and versions saved to mise-tools.txt${NC}"
-}
-
 backup_uv() {
     local file="$BACKUP_DIR/uv-tools.txt" installed line pkg extras python tools=""
     local pattern='^([A-Za-z0-9][A-Za-z0-9._-]*) v[^[:space:]]+( \[extras: ([A-Za-z0-9][A-Za-z0-9._-]*(, ?[A-Za-z0-9][A-Za-z0-9._-]*)*)\])? \[(CPython|PyPy|GraalPy) ([0-9]+\.[0-9]+)\.[^]]+\]$'
@@ -262,7 +227,6 @@ run_all() {
     backup_pacman
     backup_aur
     backup_flatpak
-    backup_mise
     backup_uv
     backup_bun
     backup_npm
@@ -291,7 +255,6 @@ for arg in "$@"; do
         --pacman)  backup_pacman;  HANDLED=true ;;
         --aur)     backup_aur;     HANDLED=true ;;
         --flatpak) backup_flatpak; HANDLED=true ;;
-        --mise)    backup_mise;    HANDLED=true ;;
         --uv)      backup_uv;      HANDLED=true ;;
         --bun)     backup_bun;     HANDLED=true ;;
         --npm)     backup_npm;     HANDLED=true ;;
@@ -302,7 +265,7 @@ for arg in "$@"; do
         --omarchy)    backup_omarchy;    HANDLED=true ;;
         --herdr)      backup_herdr;      HANDLED=true ;;
         --interactive|-i) : ;;  # handled below
-        *) echo -e "${YELLOW}⚠️  Unknown flag: $arg${NC}" >&2 ;;
+        *) echo -e "${YELLOW}⚠️  Unknown flag: $arg${NC}" >&2; exit 2 ;;
     esac
 done
 
@@ -335,7 +298,6 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
         "📦 pacman" \
         "🔧 aur" \
         "📱 flatpak" \
-        "🧰 mise" \
         "🐍 uv" \
         "🍞 bun" \
         "📦 npm" \
@@ -357,7 +319,6 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
             *pacman*)  backup_pacman  ;;
             *aur*)     backup_aur     ;;
             *flatpak*) backup_flatpak ;;
-            *mise*)    backup_mise    ;;
             *uv*)      backup_uv      ;;
             *bun*)     backup_bun     ;;
             *pnpm*)    backup_pnpm    ;;

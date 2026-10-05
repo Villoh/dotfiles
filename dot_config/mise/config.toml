@@ -1,0 +1,53 @@
+[settings]
+minimum_release_age = "2d"
+
+# The packaged CLI supports scoped exceptions for reviewed low-download tools.
+[settings.npm]
+package_manager = "aube_cli"
+
+[settings.pipx]
+uvx = true
+
+[tools]
+claude = "2.1.289"
+codex = "0.160.0"
+pi = "1.0.2"
+"oh-my-pi" = "18.6.0"
+"npm:happy" = { version = "1.2.5", allow_builds = ["happy"] }
+"npm:@opencode/cli" = { version = "2.0.22", allow_builds = ["@opencode/cli"] }
+"npm:@earendil-works/pi-server" = "1.0.2"
+"npm:@gsd-build/sdk" = { version = "0.1.0", aube_args = "--allow-low-downloads" }
+"npm:@jmfederico/pi-web" = { version = "1.202610.1", allow_builds = ["node-pty"] }
+"npm:@kaitranntt/ccs" = "8.10.0"
+"npm:@piewf/cli" = { version = "5.19.0", aube_args = "--allow-low-downloads" }
+"npm:@playwright/cli" = "0.1.22"
+"npm:agent-skill-manager" = { version = "2.20.1", aube_args = "--allow-low-downloads" }
+"npm:cf" = { version = "1.0.0-beta.5", allow_builds = ["workerd"] }
+"npm:gitquarry" = { version = "0.2.0", aube_args = "--allow-low-downloads", allow_builds = ["gitquarry"] }
+"npm:ocx" = { version = "2.0.15", aube_args = "--allow-low-downloads" }
+"npm:openwiki" = { version = "0.7.0", allow_builds = ["better-sqlite3"] }
+"npm:socket" = "1.1.179"
+"npm:tokscale" = "4.17.0"
+vercel = { version = "62.2.0", allow_builds = ["esbuild"], trust_policy_excludes = [] }
+"pipx:gamepadla-plus" = { version = "1.9.0", uvx_args = "--python 3.11" }
+"pipx:goopdl" = { version = "1.2.1", uvx_args = "--python 3.14" }
+"pipx:harlequin" = { version = "2.16.1", extras = "mysql", uvx_args = "--python 3.13" }
+# Preserve the excluded ast-grep-cli releases during installation and upgrades.
+"pipx:headroom-ai" = { version = "0.39.1", uvx_args = "--python 3.14 --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1'" }
+"pipx:holded-tt" = { version = "1.2.2", uvx_args = "--python 3.14" }
+"pipx:masamune-tui" = { version = "1.1.0", uvx_args = "--python 3.14" }
+"pipx:serena-agent" = { version = "1.7.0", uvx_args = "--python 3.14" }
+"pipx:trafilatura" = { version = "2.3.0", uvx_args = "--python 3.14" }
+bun = "1.4.2"
+ruff = "0.16.10"
+ty = "0.0.84"
+git-filter-repo = "2.47.0"
+"github:PrimeIntellect-ai/prime-agent" = { version = "0.9.8", asset_pattern = "prime-agent-*-linux-x64-baseline.tar.gz", filter_bins = "prime-agent" }
+
+# ponytail: Devin's checksum is pinned; refresh it from the versioned manifest when bumping.
+[tools."http:devin"]
+version = "3000.11.3"
+url = "https://static.devin.ai/cli/{{ version }}/devin-{{ version }}-x86_64-unknown-linux.tar.gz"
+checksum = "sha256:83b3b113c01bf2a3e9e100db08d77e6b086806a7754f091e20831bdfe215157e"
+version_list_url = "https://static.devin.ai/cli/current/manifest.json"
+version_json_path = ".version"

@@ -72,8 +72,8 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 ## Package commands
 
 ```powershell
-backup -Manager mise
-restore -Manager mise
+backup -Manager uv
+restore -Manager uv
 update -Manager mise
 update -Manager mise,uv,npm
 ```
@@ -82,10 +82,10 @@ update -Manager mise,uv,npm
 package/profile selection. Without parameters, `backup` and `update` process all
 supported managers; `restore` opens its existing menu. Duplicate names run once.
 `update-all` / `upgrade-all` always update all managers and reject `-Manager`.
-Existing per-manager aliases remain available.
+Supported per-manager aliases remain available.
 
 Backup managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`,
-`mise`, `herdr`. Restore also supports `winget-elevated`. Update supports
+`herdr`. Restore also supports `winget-elevated`. Update supports
 `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `mise`.
 Herdr's `-Plugin`, `-All`, and `-Yes` require `-Manager herdr` alone.
 
@@ -124,22 +124,23 @@ trusted packages. Regenerate the Windows inventory on Windows, not from Linux.
 
 ## mise tools
 
-- `backup -Manager mise` (also `backup-mise`) exports installed tools and exact versions to
-  `packages/windows/mise-tools.txt`; `backup` includes it. Query/JSON failures
-  keep the previous inventory. System and linked runtimes are omitted with
-  warnings because they are not transferable mise-managed installs.
-- `restore -Manager mise` (also `restore-mise`) selects saved versions through fzf;
-  mise is also available in the restore manager menu. Like other package restores,
-  missing fzf selects all entries. Restoration uses `mise install`, without
-  global activation or changes to `mise.toml`. Preserve global/project config,
-  custom plugin sources, tool options, environment variables, and tasks separately.
-  Install mise and required custom backend plugins first. Only restore trusted
-  tools: backend installers can execute code.
-- `update -Manager mise` (also `update-mise` / `upgrade-mise`) runs `mise upgrade` for the current configuration,
-  preserving version ranges without `--bump`. `update-all` / `upgrade-all` includes
-  it. The mise executable remains managed by Scoop or its original package manager.
+Keep Windows-compatible global/project mise configuration versioned, including
+tool versions/options, custom plugin sources, environment variables, and tasks.
+After restoring trusted configuration and installing mise/required plugins:
 
-The inventory uses the existing `packages/**` deployment exclusion.
+```powershell
+mise install
+```
+
+`backup` and `restore` no longer include mise; historical `mise-tools.txt`
+inventories and `.bak` files remain untouched but are not used for restoration.
+The Linux `dot_config/mise/config.toml` remains excluded on Windows: preserve
+Windows-compatible configuration separately rather than copying Linux-only tools.
+
+`update -Manager mise` (also `update-mise` / `upgrade-mise`) still runs
+`mise upgrade` for the current configuration, preserving version ranges without
+`--bump`. `update-all` / `upgrade-all` includes it. The mise executable remains
+managed by Scoop or its original package manager.
 
 ## Scripts
 

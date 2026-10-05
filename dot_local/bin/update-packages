@@ -32,11 +32,11 @@ run_harness() {
         printf '→ Skipping Context7: ctx7 not found\n' >&2
     fi
 
-    if command_exists uv; then
-        run_harness_step 'headroom (ast-grep-cli 0.44.1 excluded)' uv tool install 'headroom-ai[all]' --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1' --python 3.12 --force
-        run_harness_step 'serena' uv tool upgrade serena-agent
+    if command_exists mise; then
+        run_harness_step 'headroom' mise upgrade --bump pipx:headroom-ai
+        run_harness_step 'serena' mise upgrade --bump pipx:serena-agent
     else
-        printf '→ Skipping headroom and serena: uv not found\n' >&2
+        printf '→ Skipping headroom and serena: mise not found\n' >&2
     fi
 
     return "$harness_failed"
@@ -80,8 +80,8 @@ command_exists npx && choices+=("🎯 skills.sh")
 command_exists npx && choices+=("🦴 caveman (opencode)")
 command_exists npx && choices+=("🧩 Impeccable")
 command_exists ctx7 && choices+=("📚 Context7 (CLI skills)")
-command_exists uv && choices+=("🗜️  headroom")
-command_exists uv && choices+=("🧭 serena")
+command_exists mise && choices+=("🗜️  headroom")
+command_exists mise && choices+=("🧭 serena")
 
 if ((${#choices[@]} == 0)); then
     echo "No supported package manager found." >&2
@@ -184,14 +184,9 @@ while IFS= read -r choice <&3; do
         "🦴 caveman (opencode)") run "Caveman for OpenCode" npx -y github:JuliusBrussee/caveman -- --only opencode --force --non-interactive ;;
         "🧩 Impeccable") run "Impeccable" npx impeccable update -y --providers=codex,cursor,opencode,pi --scope=global ;;
         "📚 Context7 (CLI skills)") run "Context7 CLI skills" ctx7 setup --cli --opencode --claude --codex --yes ;;
-        # NOTE: do NOT use `headroom update` / plain `uv tool upgrade headroom-ai`.
-        # The published wheel metadata omits the ast-grep-cli !=0.44.1 exclusion
-        # (headroom issue #2462), so a plain re-resolve pulls the compromised
-        # ast-grep-cli 0.44.1 (supply-chain trojan, headroom issue #2332). The
-        # Windows sg.exe payload can't run on Linux, but the package is still
-        # pulled — keep it excluded. --force reinstalls to latest with the pin.
-        "🗜️  headroom") run "headroom (ast-grep-cli 0.44.1 excluded)" uv tool install "headroom-ai[all]" --with "ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1" --python 3.12 --force ;;
-        "🧭 serena") run "serena" uv tool upgrade serena-agent ;;
+        # Keep Headroom's dependency exclusions in the mise tool configuration.
+        "🗜️  headroom") run "headroom" mise upgrade --bump pipx:headroom-ai ;;
+        "🧭 serena") run "serena" mise upgrade --bump pipx:serena-agent ;;
     esac
 done 3<<< "$selected"
 

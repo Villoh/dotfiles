@@ -36,8 +36,12 @@ if [[ "$OMARCHY_ZSH" == true ]]; then
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
-export PATH="$HOME/.local/bin:$HOME/.local/share/pnpm/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 export NH_OS_FLAKE="$HOME/development/personal/projects/nixos-config#desktop"
+
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
 
 # Load Wannme/HSQL environment.
 wannme-env() { source "$HOME/development/work/wannme/keys/credentials.sh" "$@"; }
