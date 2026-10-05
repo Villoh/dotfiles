@@ -6,7 +6,7 @@
     "catppuccin": {
       "dark": {
         "flavor": "mocha",
-        "accent": "mauve"
+        "accent": "red"
       }
     },
     "astralJourney": {
@@ -18,19 +18,25 @@
     "amoledBlack": {
       "dark": {
         "flavor": "black",
-        "accent": "maroon"
+        "accent": "white"
       }
     },
     "detroit67": {
       "dark": {
         "flavor": "67-dark",
-        "accent": "motor-feint"
+        "accent": "fuse-muted"
       }
     },
     "deepmono": {
       "dark": {
         "flavor": "mono",
         "accent": "paper"
+      }
+    },
+    "amoledNoir": {
+      "dark": {
+        "flavor": "noir",
+        "accent": "mono"
       }
     }
   },
@@ -80,8 +86,14 @@
     }
   ],
   "appIdSubstitutions": [],
+  "spotlightSectionViewModes": {
+    "apps": "list"
+  },
+  "appDrawerSectionViewModes": {
+    "apps": "list"
+  },
   "keybindsFloatingWindow": true,
-  "networkPreference": "wifi",
+  "networkPreference": "ethernet",
   "cursorSettings": {
     "theme": "Bibata-Modern-Classic",
     "size": 24,
