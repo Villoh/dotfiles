@@ -89,6 +89,39 @@ Backup managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`,
 `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `mise`.
 Herdr's `-Plugin`, `-All`, and `-Yes` require `-Manager herdr` alone.
 
+## uv tools
+
+```powershell
+backup -Manager uv
+restore -Manager uv
+update -Manager uv
+```
+
+`backup-uv` saves `packages/windows/uv-tools.txt` using native uv metadata:
+package extras, original registry version constraints, Python major/minor, and
+additional `--with` registry requirements (including version exclusions).
+For example:
+
+```text
+harlequin[mysql] --python 3.13
+headroom-ai[all] --python 3.12 --with ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1
+```
+
+Query errors, warnings about skipped/broken tools, or invalid metadata leave
+the inventory and its `.bak` untouched. Unsupported sources/specifications fail
+rather than exporting a lossy entry.
+Old name-only lists still work. Backup, restore, and the Windows install template
+keep their uv validation/parsing inside each script, without an external helper.
+Restore and bootstrap pass each argument separately, without `Invoke-Expression`.
+Native uv installation checks existing tools instead of
+skipping them by name. Failed restores/updates terminate before success messages;
+bootstrap installations record failures in their existing summary.
+
+This is not a lockfile: Python patches, resolved dependency versions, custom
+indexes/options, and extras/markers on additional requirements are not preserved
+by this native-list-based inventory. Preserve those separately; only restore
+trusted packages. Regenerate the Windows inventory on Windows, not from Linux.
+
 ## mise tools
 
 - `backup -Manager mise` (also `backup-mise`) exports installed tools and exact versions to

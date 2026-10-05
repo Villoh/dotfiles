@@ -101,8 +101,9 @@ Set-Alias -Name update-node    -Value Invoke-NodeUpgrade
 Set-Alias -Name upgrade-node   -Value Invoke-NodeUpgrade
 
 function Invoke-UvUpgrade {
-    if (Get-Command uv -ErrorAction SilentlyContinue) { uv tool upgrade --all }
-    else { Write-Warning "uv not found." }
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) { Write-Warning 'uv not found.'; return }
+    & uv tool upgrade --all
+    if ($LASTEXITCODE -ne 0) { throw "uv tool upgrade failed (exit $LASTEXITCODE)" }
 }
 Set-Alias -Name update-uv      -Value Invoke-UvUpgrade
 Set-Alias -Name upgrade-uv     -Value Invoke-UvUpgrade

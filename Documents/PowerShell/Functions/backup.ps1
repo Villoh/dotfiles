@@ -142,15 +142,82 @@ function Invoke-PnpmBackup {
 Set-Alias -Name backup-pnpm    -Value Invoke-PnpmBackup
 
 function Invoke-UvBackup {
-    $file = "$PackagesDir\uv-tools.txt"
-    Save-ExistingBackup $file
-    uv tool list | Where-Object { $_ -and $_ -notmatch '^\s*-' } | ForEach-Object {
-        $parts = $_ -split ' '
-        if ($parts.Count -gt 0) { $parts[0].Trim() }
-    } | Where-Object { $_ } | Out-File $file -Encoding UTF8
-    if ($LASTEXITCODE -ne 0) { Write-Warning "uv backup failed"; return $false }
-    Write-Host "uv backup OK" -ForegroundColor Green
-    return $true
+    function ConvertTo-UvToolArguments {
+        param([string]$Spec)
+
+        $name = '[A-Za-z0-9][A-Za-z0-9._-]*'
+        $package = "$name(?:\[$name(?:,$name)*\])?"
+        # Accept canonical registry versions; unsupported forms fail before any install.
+        $release = '(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*'
+        $suffix = '(?:a[0-9]+|b[0-9]+|rc[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?'
+        $publicVersion = "$release$suffix"
+        $localVersion = '(?:\+[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)?'
+        $compatible = "~=(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)+$suffix"
+        $version = "(?:===[A-Za-z0-9][A-Za-z0-9._+!-]*|(?:==|!=)(?:$publicVersion$localVersion|$release\.\*)|(?:<=|>=|<|>)$publicVersion|$compatible)"
+        $requirement = "$package(?:$version(?:,$version)*)?"
+        $python = '(?:(?:cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+'
+        $pattern = "\A(?<package>$requirement)(?: --python (?<python>$python))?(?: --with (?<with>$requirement))*\z"
+        $match = [regex]::Match($Spec, $pattern)
+        if (-not $match.Success) { throw 'Invalid uv inventory entry; expected registry requirements and optional --python/--with.' }
+
+        $toolArgs = @('tool', 'install')
+        if ($match.Groups['python'].Success) {
+            $toolArgs += @('--python', $match.Groups['python'].Value)
+        }
+        foreach ($dependency in $match.Groups['with'].Captures) {
+            $toolArgs += @('--with', $dependency.Value)
+        }
+        $toolArgs + @('--', $match.Groups['package'].Value)
+    }
+
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+        Write-Warning 'uv not found; skipping backup.'
+        return $true
+    }
+
+    $file = Join-Path $PackagesDir 'uv-tools.txt'
+    $ErrorActionPreference = 'Stop'
+    $diagnosticsFile = $null
+    try {
+        $diagnosticsFile = [System.IO.Path]::GetTempFileName()
+        $raw = @(& uv tool list --show-version-specifiers --show-extras --show-python --show-with --color never 2>$diagnosticsFile)
+        if ($LASTEXITCODE -ne 0) { throw "uv tool list failed (exit $LASTEXITCODE)" }
+        $diagnostics = Get-Content $diagnosticsFile -Raw
+        # uv can skip broken tools with warnings while returning exit 0.
+        if ($diagnostics -and -not ($raw.Count -eq 0 -and $diagnostics.Trim() -eq 'No tools installed')) {
+            throw 'uv tool list reported warnings; keeping previous inventory.'
+        }
+        $pattern = '\A(?<name>[A-Za-z0-9][A-Za-z0-9._-]*) v\S+(?: \[required: (?<required>[^\]]+)\])?(?: \[extras: (?<extras>[A-Za-z0-9._, -]+)\])?(?: \[with: (?<with>.+)\])? \[(?<impl>CPython|PyPy|GraalPy) (?<python>[0-9]+\.[0-9]+)\.[^\]]+\]\z'
+        $tools = @(foreach ($line in $raw) {
+            if (-not $line -or $line -match '^\s*- ') { continue }
+            $match = [regex]::Match($line, $pattern)
+            if (-not $match.Success) { throw 'Invalid uv tool metadata; keeping previous inventory.' }
+            $spec = $match.Groups['name'].Value
+            if ($match.Groups['extras'].Success) { $spec += '[' + $match.Groups['extras'].Value.Replace(' ', '') + ']' }
+            if ($match.Groups['required'].Success) { $spec += $match.Groups['required'].Value.Replace(' ', '') }
+            # ponytail: keep Python major/minor; pin patches if exact runtime builds matter.
+            $python = $match.Groups['python'].Value
+            if ($match.Groups['impl'].Value -ne 'CPython') { $python = $match.Groups['impl'].Value.ToLowerInvariant() + '@' + $python }
+            $spec += " --python $python"
+            if ($match.Groups['with'].Success) {
+                foreach ($dependency in ($match.Groups['with'].Value -split ', ')) { $spec += " --with $dependency" }
+            }
+            ConvertTo-UvToolArguments $spec | Out-Null
+            $spec
+        })
+        New-Item -ItemType Directory -Force -Path $PackagesDir | Out-Null
+        Save-ExistingBackup $file
+        $tools | Out-File $file -Encoding UTF8
+        Write-Host "uv backup OK ($($tools.Count) tools; extras, Python and additional requirements)" -ForegroundColor Green
+        return $true
+    }
+    catch {
+        Write-Warning "uv backup failed: $_"
+        return $false
+    }
+    finally {
+        if ($diagnosticsFile) { Remove-Item $diagnosticsFile -ErrorAction SilentlyContinue }
+    }
 }
 Set-Alias -Name backup-uv      -Value Invoke-UvBackup
 

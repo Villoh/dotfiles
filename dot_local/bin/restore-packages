@@ -293,26 +293,34 @@ install_mise_tools() {
 }
 
 install_uv_tools() {
-    local file="$1"
+    local file="$1" line selected pkg flag python
+    local pattern='^[A-Za-z0-9][A-Za-z0-9._-]*(\[[A-Za-z0-9][A-Za-z0-9._-]*(,[A-Za-z0-9][A-Za-z0-9._-]*)*\])?( --python ((cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+)?$'
     [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    echo ""
-    gum style --foreground 75 --bold --border rounded --padding "1 2" "🐍 uv — $(basename "$file")"
+    if ! command_exists uv; then
+        gum style --foreground 196 "❌ uv no está instalado"
+        return 1
+    fi
 
-    local selected
-    selected=$(_select_packages "$file" "🐍 Selecciona uv tools") || return 1
-
-    local installed
-    installed=$(uv tool list 2>/dev/null || true)
-
-    while IFS= read -r pkg; do
-        [ -z "$pkg" ] && continue
-        if echo "$installed" | grep -q "^$pkg "; then
-            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-        else
-            gum style --foreground 75 "  [....] $pkg"
-            uv tool install "$pkg"
+    # Validate the whole inventory before installing; never eval saved arguments.
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        [[ -z "$line" ]] && continue
+        if [[ ! "$line" =~ $pattern ]]; then
+            gum style --foreground 196 "❌ Entrada uv no válida: $line"
+            return 1
         fi
-    done <<< "$selected"
+    done < "$file"
+
+    selected=$(_select_packages "$file" "🐍 Selecciona uv tools") || return 1
+    local -a tools=() python_args=()
+    mapfile -t tools <<< "$selected"
+    for line in "${tools[@]}"; do
+        [[ -z "$line" ]] && continue
+        read -r pkg flag python <<< "$line"
+        python_args=()
+        [[ -z "$python" ]] || python_args=(--python "$python")
+        # Native install checks extras and interpreter even for existing tools.
+        uv tool install "${python_args[@]}" -- "$pkg" || return 1
+    done
 }
 
 install_bun_packages() {

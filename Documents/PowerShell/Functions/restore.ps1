@@ -295,23 +295,51 @@ Set-Alias -Name restore-pnpm -Value Invoke-PnpmRestore
 
 # -- uv ------------------------------------------------------------------------
 function Invoke-UvRestore {
-    $file = "$PackagesDir\uv-tools.txt"
-    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
+    function ConvertTo-UvToolArguments {
+        param([string]$Spec)
 
-    $allTools = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedTools = Select-WithFzf $allTools "uv>"
-    $installed = uv tool list 2>$null
+        $name = '[A-Za-z0-9][A-Za-z0-9._-]*'
+        $package = "$name(?:\[$name(?:,$name)*\])?"
+        # Accept canonical registry versions; unsupported forms fail before any install.
+        $release = '(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*'
+        $suffix = '(?:a[0-9]+|b[0-9]+|rc[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?'
+        $publicVersion = "$release$suffix"
+        $localVersion = '(?:\+[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)?'
+        $compatible = "~=(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)+$suffix"
+        $version = "(?:===[A-Za-z0-9][A-Za-z0-9._+!-]*|(?:==|!=)(?:$publicVersion$localVersion|$release\.\*)|(?:<=|>=|<|>)$publicVersion|$compatible)"
+        $requirement = "$package(?:$version(?:,$version)*)?"
+        $python = '(?:(?:cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+'
+        $pattern = "\A(?<package>$requirement)(?: --python (?<python>$python))?(?: --with (?<with>$requirement))*\z"
+        $match = [regex]::Match($Spec, $pattern)
+        if (-not $match.Success) { throw 'Invalid uv inventory entry; expected registry requirements and optional --python/--with.' }
+
+        $toolArgs = @('tool', 'install')
+        if ($match.Groups['python'].Success) {
+            $toolArgs += @('--python', $match.Groups['python'].Value)
+        }
+        foreach ($dependency in $match.Groups['with'].Captures) {
+            $toolArgs += @('--with', $dependency.Value)
+        }
+        $toolArgs + @('--', $match.Groups['package'].Value)
+    }
+
+    $file = Join-Path $PackagesDir 'uv-tools.txt'
+    if (-not (Test-Path $file)) { throw "Not found: $file" }
+    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) { throw 'uv not found; install it before restoring tools.' }
+
+    $allTools = @(Get-Content $file -ErrorAction Stop | Where-Object { $_ } | Sort-Object)
+    # Validate every entry before installing anything; never eval saved arguments.
+    foreach ($tool in $allTools) { ConvertTo-UvToolArguments $tool | Out-Null }
+    $selectedTools = Select-WithFzf $allTools 'uv>'
+    if (-not $selectedTools) { return }
 
     foreach ($tool in $selectedTools) {
-        if ($installed -match $tool) {
-            Write-Host "  [SKIP] $tool already installed" -ForegroundColor DarkGray
-        }
-        else {
-            Write-Host "  [....] $tool" -ForegroundColor Cyan
-            uv tool install $tool
-        }
+        $toolArgs = @(ConvertTo-UvToolArguments $tool)
+        # Native uv checks requirements and interpreter even for existing tools.
+        & uv @toolArgs
+        if ($LASTEXITCODE -ne 0) { throw "uv tool install failed (exit $LASTEXITCODE)" }
     }
-    Write-Host "uv restore OK" -ForegroundColor Green
+    Write-Host 'uv restore OK' -ForegroundColor Green
 }
 Set-Alias -Name restore-uv -Value Invoke-UvRestore
 

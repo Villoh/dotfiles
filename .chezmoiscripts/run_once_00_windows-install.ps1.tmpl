@@ -230,7 +230,35 @@ if ($selectedManagers -contains "bun") {
 # -- uv tools ------------------------------------------------------------------
 $selectedUvTools = @()
 if ($selectedManagers -contains "uv") {
-    $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    function ConvertTo-UvToolArguments {
+        param([string]$Spec)
+
+        $name = '[A-Za-z0-9][A-Za-z0-9._-]*'
+        $package = "$name(?:\[$name(?:,$name)*\])?"
+        # Accept canonical registry versions; unsupported forms fail before any install.
+        $release = '(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*'
+        $suffix = '(?:a[0-9]+|b[0-9]+|rc[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?'
+        $publicVersion = "$release$suffix"
+        $localVersion = '(?:\+[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)?'
+        $compatible = "~=(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)+$suffix"
+        $version = "(?:===[A-Za-z0-9][A-Za-z0-9._+!-]*|(?:==|!=)(?:$publicVersion$localVersion|$release\.\*)|(?:<=|>=|<|>)$publicVersion|$compatible)"
+        $requirement = "$package(?:$version(?:,$version)*)?"
+        $python = '(?:(?:cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+'
+        $pattern = "\A(?<package>$requirement)(?: --python (?<python>$python))?(?: --with (?<with>$requirement))*\z"
+        $match = [regex]::Match($Spec, $pattern)
+        if (-not $match.Success) { throw 'Invalid uv inventory entry; expected registry requirements and optional --python/--with.' }
+
+        $toolArgs = @('tool', 'install')
+        if ($match.Groups['python'].Success) {
+            $toolArgs += @('--python', $match.Groups['python'].Value)
+        }
+        foreach ($dependency in $match.Groups['with'].Captures) {
+            $toolArgs += @('--with', $dependency.Value)
+        }
+        $toolArgs + @('--', $match.Groups['package'].Value)
+    }
+    $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" -ErrorAction Stop | Where-Object { $_.Trim() -ne "" } | Sort-Object)
+    foreach ($tool in $uvTools) { ConvertTo-UvToolArguments $tool | Out-Null }
     if ($uvTools) { $selectedUvTools = Select-WithFzf $uvTools "uv>" }
 }
 
@@ -426,14 +454,9 @@ if ($selectedManagers -contains "uv") {
         LogSkip "uv already installed"
         $summary.skip++
     }
-    $uvInstalled = uv tool list 2>$null
     foreach ($tool in $selectedUvTools) {
-        if ($uvInstalled -match [regex]::Escape($tool)) {
-            LogSkip "uv: $tool already installed"
-            $summary.skip++
-        } else {
-            TryInstall "uv: $tool" { uv tool install $tool }
-        }
+        $toolArgs = @(ConvertTo-UvToolArguments $tool)
+        TryInstall "uv: $tool" { & uv @toolArgs }
     }
 }
 

@@ -63,6 +63,26 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `post-hyde-install` / `pre-hyde-install` | HyDE desktop environment install hooks |
 | `openvpn-*` / `ikev2-*` | VPN management |
 
+## uv tools
+
+`backup-packages --uv` saves package names, extras, and Python major/minor
+versions to `packages/linux/uv-tools.txt`, using native `uv tool list
+--show-extras --show-python` metadata. For example:
+
+```text
+harlequin[mysql] --python 3.13
+```
+
+`restore-packages --uv` validates the inventory and passes the package and
+Python request as separate arguments to `uv tool install`, without `eval`.
+Native uv installation handles already-installed tools, including changes to
+extras and Python. Old name-only lists still work. Nonzero query exits or
+invalid output keep the previous backup. Warnings alone do not: uv can skip
+broken tools with exit 0, producing an incomplete or empty inventory. Check
+warnings before accepting a backup. This is not a lockfile: package versions, dependency
+versions, additional `--with` requirements, custom sources/indexes, and Python
+patch versions are not preserved. Only restore trusted packages.
+
 ## mise tools
 
 `backup-packages --mise` saves installed tools and exact versions to
