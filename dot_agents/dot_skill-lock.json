@@ -21,16 +21,6 @@
       "updatedAt": "2026-09-30T16:32:01Z",
       "computedHash": "a9f1d15143627d772d318e8675f8a26999d372592d21a2134d25c2ed15ebc8e5"
     },
-    "analyze-sessions": {
-      "source": "amosblomqvist/pi-config",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/amosblomqvist/pi-config.git",
-      "skillPath": "skills/analyze-sessions/SKILL.md",
-      "skillFolderHash": "44d020605968058fa89d1d55f91a2101049819c0a954c0a56dbe87e850ff6bfb",
-      "installedAt": "2026-09-02T21:01:47.236Z",
-      "updatedAt": "2026-09-30T16:32:01Z",
-      "computedHash": "44d020605968058fa89d1d55f91a2101049819c0a954c0a56dbe87e850ff6bfb"
-    },
     "archify": {
       "source": "tt-a1i/archify",
       "sourceType": "github",
