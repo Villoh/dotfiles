@@ -177,8 +177,6 @@ plugin dependencies, `shell.json` settings, or local edits. Backup warns about
 modified repositories and skips non-Git custom plugins with a warning; preserve
 those separately. No automatic installation is attached to `chezmoi apply`.
 
-Run the offline regression check with `python3 dev/test_omarchy_packages.py`.
-
 ## Herdr plugin inventory
 
 `backup-packages --herdr` exports `herdr plugin list --json` into
@@ -211,9 +209,8 @@ confirmation, restoration runs `herdr plugin link` with the saved enabled state.
 Missing local manifests stop restoration with an error. Dependencies and build
 toolchains must already be installed; no automatic setup runs on `chezmoi apply`.
 
-Run the offline regression check with `python3 dev/test_herdr_packages.py`.
-The inventory and tests are covered by existing `packages/**` and `dev/**`
-exclusions in `.chezmoiignore`.
+The inventory is covered by the existing `packages/**` deployment exclusion
+in `.chezmoiignore`.
 
 ## Shell configs
 

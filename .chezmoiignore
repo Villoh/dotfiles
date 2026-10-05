@@ -89,7 +89,6 @@ packages/**
 program_files/**
 other_config/**
 docs/**
-dev/**
 CLAUDE.md
 AGENTS.md
 INSTALL.md
