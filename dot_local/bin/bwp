@@ -123,6 +123,47 @@ bwsync() {
   bw sync
 }
 
+# Print one item's password and nothing else, for `password.command` in mail
+# clients. Never prompts. `bw get password <name>` matches substrings across
+# the whole vault, so a name is resolved to an id by EXACT match first. If no
+# item matches it syncs once and retries, since the local cache may predate it.
+# Usage: bwp pass [--copy] <item id | exact item name>
+#   --copy  put it on the Wayland clipboard (flagged sensitive) instead of stdout
+_bw_resolve_id() {
+  local item="$1" out ids n
+  if [[ "$item" =~ ^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$ ]]; then
+    printf '%s' "$item"; return 0
+  fi
+  out=$(bw list items --search "$item" --nointeraction 2>&1) || { echo "bwp pass: ${out%%$'\n'*}" >&2; return 1; }
+  ids=$(jq -r --arg n "$item" '.[] | select(.name == $n) | .id' <<<"$out") || return 1
+  n=$(grep -c . <<<"$ids")
+  case "$n" in
+    1) printf '%s' "$ids" ;;
+    0) return 3 ;;
+    *) echo "bwp pass: $n items are named \"$item\"; use the item id instead" >&2; return 1 ;;
+  esac
+}
+
+bwpass() {
+  local copy=0
+  if [ "${1:-}" = "--copy" ]; then copy=1; shift; fi
+  local item="${1:?usage: bwp pass [--copy] <item id or exact name>}" id rc
+  id=$(_bw_resolve_id "$item"); rc=$?
+  if [ "$rc" -eq 3 ]; then
+    bw sync --nointeraction >/dev/null 2>&1
+    id=$(_bw_resolve_id "$item"); rc=$?
+    [ "$rc" -eq 3 ] && { echo "bwp pass: no item named \"$item\"" >&2; return 1; }
+  fi
+  [ "$rc" -eq 0 ] || return 1
+  if [ "$copy" -eq 1 ]; then
+    local pw
+    pw=$(bw get password "$id" --nointeraction) || return 1
+    printf '%s' "$pw" | wl-copy --sensitive && echo "✓ password copied to clipboard" >&2
+  else
+    bw get password "$id" --nointeraction
+  fi
+}
+
 #endregion
 
 #region ── List & Search ───────────────────────────────────
@@ -972,6 +1013,9 @@ Usage: bwp <command> [arguments]
 Session:
   unlock, start, login, lock, sync, status
 
+Secrets:
+  pass [--copy] <item>   print an item's password, or copy it (for scripts)
+
 Vault:
   list, find, item, edit, move, attachment
   folder, collection, template, add, generate
@@ -985,6 +1029,7 @@ case "${1:-}" in
   login)      shift; bwlogin "$@" ;;
   lock)       shift; bwlock "$@" ;;
   sync)       shift; bwsync "$@" ;;
+  pass)       shift; bwpass "$@" ;;
   status)     shift; _bw_status "$@" ;;
   config)     shift; bwconfig "$@" ;;
   list|ls)    shift; bwls "$@" ;;
