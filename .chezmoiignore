@@ -40,7 +40,6 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}.config/nchat/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_cliphist) }}.config/cliphist/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}.config/vesktop/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_concord) }}.config/concord/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}

@@ -29,7 +29,6 @@ See also: [NixOS](nixos/README.md) (current target) and [Omarchy](omarchy/README
 | `ghostty/` | Ghostty terminal |
 | `dot_tmux.conf.tmpl` | Tmux multiplexer (`~/.tmux.conf`) |
 | `zsh/` | Zsh-specific functions, aliases, and completions |
-| `cliphist/` | Cliphist clipboard history |
 | `nchat/` | Terminal chat client |
 | `FreeTube/` | FreeTube YouTube frontend (settings are `.db`, gitignored) |
 | `cava/` | Audio visualizer |
