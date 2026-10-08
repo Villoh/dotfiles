@@ -1,0 +1,49 @@
+# Himalaya CLI + himalaya-tui share this file.
+# Passwords are gpg-encrypted in ~/.config/mail/ (created by hand, NOT tracked
+# by chezmoi); gpg-agent caches the passphrase, so you are only prompted once
+# per agent session. Password file = ~/.config/mail/<file>.asc
+{{- $gmailPass := printf "%s/.config/mail/gmail.asc" .chezmoi.homeDir }}
+{{- $purelymail := list
+      (dict "name" "purelymail" "email" "hi@mikelvillota.com"    "display" "Mikel Villota")
+      (dict "name" "bh-info"    "email" "info@beyondhumane.com"  "display" "Beyond Humane")
+      (dict "name" "bh-admin"   "email" "admin@beyondhumane.com" "display" "Beyond Humane")
+      (dict "name" "bh-mikel"   "email" "mikel@beyondhumane.com" "display" "Mikel Villota") }}
+
+display-name = "Mikel Villota"
+
+[accounts.gmail]
+default = true
+email = "mikelvillotatic@gmail.com"
+
+# Gmail files sent mail by itself, so message.send.save-copy stays unset.
+mailbox.alias.inbox = "INBOX"
+mailbox.alias.sent = "[Gmail]/Sent Mail"
+mailbox.alias.drafts = "[Gmail]/Drafts"
+mailbox.alias.trash = "[Gmail]/Trash"
+
+imap.server = "imaps://imap.gmail.com:993"
+imap.sasl.plain.username = "mikelvillotatic@gmail.com"
+imap.sasl.plain.password.command = "gpg --quiet --decrypt {{ $gmailPass }}"
+
+smtp.server = "smtps://smtp.gmail.com:465"
+smtp.sasl.plain.username = "mikelvillotatic@gmail.com"
+smtp.sasl.plain.password.command = "gpg --quiet --decrypt {{ $gmailPass }}"
+{{ range $purelymail }}
+{{- $pass := printf "%s/.config/mail/%s.asc" $.chezmoi.homeDir .name }}
+[accounts.{{ .name }}]
+email = "{{ .email }}"
+display-name = "{{ .display }}"
+
+# Purelymail does not file sent mail itself: keep a copy in Sent.
+message.send.save-copy = "sent"
+mailbox.alias.inbox = "INBOX"
+mailbox.alias.sent = "Sent"
+
+imap.server = "imaps://imap.purelymail.com:993"
+imap.sasl.plain.username = "{{ .email }}"
+imap.sasl.plain.password.command = "gpg --quiet --decrypt {{ $pass }}"
+
+smtp.server = "smtps://smtp.purelymail.com:465"
+smtp.sasl.plain.username = "{{ .email }}"
+smtp.sasl.plain.password.command = "gpg --quiet --decrypt {{ $pass }}"
+{{ end }}

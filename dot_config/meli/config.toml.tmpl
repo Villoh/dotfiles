@@ -1,0 +1,37 @@
+# Passwords are gpg-encrypted in ~/.config/mail/ (created by hand, NOT tracked
+# by chezmoi); gpg-agent caches the passphrase, so you are only prompted once
+# per agent session. Password file = ~/.config/mail/<name>.asc
+{{- $gmailPass := printf "%s/.config/mail/gmail.asc" .chezmoi.homeDir }}
+{{- $purelymail := list
+      (dict "name" "purelymail" "email" "hi@mikelvillota.com"    "display" "Mikel Villota")
+      (dict "name" "bh-info"    "email" "info@beyondhumane.com"  "display" "Beyond Humane")
+      (dict "name" "bh-admin"   "email" "admin@beyondhumane.com" "display" "Beyond Humane")
+      (dict "name" "bh-mikel"   "email" "mikel@beyondhumane.com" "display" "Mikel Villota") }}
+
+[accounts.gmail]
+root_mailbox = "INBOX"
+format = "imap"
+server_hostname = "imap.gmail.com"
+server_port = 993
+server_username = "mikelvillotatic@gmail.com"
+server_password_command = "gpg --quiet --decrypt {{ $gmailPass }}"
+identity = "mikelvillotatic@gmail.com"
+display_name = "Mikel Villota"
+listing.index_style = "Conversations"
+# Gmail saves sent mail by itself; storing it here would duplicate it.
+composing.store_sent_mail = false
+send_mail = { hostname = "smtp.gmail.com", port = 465, auth = { type = "auto", username = "mikelvillotatic@gmail.com", password = { type = "command_eval", value = "gpg --quiet --decrypt {{ $gmailPass }}" } }, security = { type = "tls" } }
+{{ range $purelymail }}
+{{- $pass := printf "%s/.config/mail/%s.asc" $.chezmoi.homeDir .name }}
+[accounts.{{ .name }}]
+root_mailbox = "INBOX"
+format = "imap"
+server_hostname = "imap.purelymail.com"
+server_port = 993
+server_username = "{{ .email }}"
+server_password_command = "gpg --quiet --decrypt {{ $pass }}"
+identity = "{{ .email }}"
+display_name = "{{ .display }}"
+listing.index_style = "Conversations"
+send_mail = { hostname = "smtp.purelymail.com", port = 465, auth = { type = "auto", username = "{{ .email }}", password = { type = "command_eval", value = "gpg --quiet --decrypt {{ $pass }}" } }, security = { type = "tls" } }
+{{ end }}
