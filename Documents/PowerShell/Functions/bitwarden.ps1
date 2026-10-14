@@ -2,12 +2,10 @@
 # Bitwarden CLI - PowerShell Functions
 # Converted from zsh. Sin dependencia de jq (PowerShell nativo).
 #
-# Coloca este fichero en:
-#   $HOME\Documents\PowerShell\bw-functions.ps1
+# Lo carga el perfil de PowerShell (Documents\PowerShell\Functions\*.ps1).
 #
-# Y añade esta linea a tu $PROFILE
-#   ($HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1):
-#   . "$PSScriptRoot\bw-functions.ps1"
+# Variables de entorno opcionales:
+#   BWP_CLIPBOARD_SEC  segundos hasta limpiar un secreto copiado (30, 0 = nunca)
 #
 # Requirements: bw CLI
 # Opcional:      fzf (si no esta instalado se usa Out-GridView)
@@ -115,6 +113,53 @@ function _bw_select {
 #>
 function _bw_status {
     (bw status | ConvertFrom-Json).status
+}
+
+<#
+.SYNOPSIS
+    Helper interno. Lee una linea sin mostrarla en pantalla y la devuelve como texto
+    ('' si se deja vacia). Para contrasenas, tarjetas, CVV, SSN, claves privadas...
+#>
+function _bw_ask_secret {
+    param([Parameter(Mandatory)][string]$Prompt)
+    $secure = Read-Host $Prompt -AsSecureString
+    if ($secure.Length -eq 0) { return '' }
+    ConvertFrom-SecureString $secure -AsPlainText
+}
+
+<#
+.SYNOPSIS
+    Helper interno. Pide confirmacion antes de algo irreversible. Solo 'y'/'Y' acepta.
+#>
+function _bw_confirm {
+    param([Parameter(Mandatory)][string]$Message)
+    (Read-Host "$Message [y/N]") -match '^[yY]$'
+}
+
+<#
+.SYNOPSIS
+    Helper interno. Copia un secreto al portapapeles y lo limpia pasados
+    BWP_CLIPBOARD_SEC segundos (30 por defecto, 0 = no limpiar) si sigue siendo
+    lo copiado: una copia posterior tuya no se toca. Solo un hash del secreto
+    llega al proceso que limpia. Set-Clipboard no puede excluir el valor del
+    historial de Windows (Win+V): si lo tienes activo, el valor queda en el.
+#>
+function _bw_copy_secret {
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Value)
+    Set-Clipboard -Value $Value
+
+    $sec = 30
+    if ($env:BWP_CLIPBOARD_SEC -match '^\d+$') { $sec = [int]$env:BWP_CLIPBOARD_SEC }
+    if ($sec -le 0) { return }
+
+    $env:BWP_SEC = "$sec"
+    $env:BWP_HASH = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($Value)))
+    $job = 'Start-Sleep -Seconds ([int]$env:BWP_SEC); $c = Get-Clipboard -Raw; ' +
+        'if ($c -and [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($c))) -eq $env:BWP_HASH) { Set-Clipboard -Value $null }'
+    $start = @{ FilePath = (Get-Process -Id $PID).Path; ArgumentList = @('-NoProfile', '-Command', $job) }
+    if ($IsWindows) { $start.WindowStyle = 'Hidden' }
+    try { Start-Process @start }
+    finally { Remove-Item Env:BWP_SEC, Env:BWP_HASH -ErrorAction SilentlyContinue }
 }
 
 <#
@@ -325,7 +370,7 @@ function _bwadd_login {
         Write-Host 'OK Password generated'
     }
     else {
-        $password = Read-Host 'Password (leave empty for blank)'
+        $password = _bw_ask_secret 'Password (leave empty for blank)'
     }
 
     $login = bw get template item.login | ConvertFrom-Json
@@ -351,10 +396,10 @@ function _bwadd_card {
     $card = bw get template item.card | ConvertFrom-Json
     $card.cardholderName = Read-Host 'Cardholder name'
     $card.brand = Read-Host 'Brand (visa/mastercard/amex/discover/diners/jcb/maestro/unionpay)'
-    $card.number = Read-Host 'Card number'
+    $card.number = _bw_ask_secret 'Card number'
     $card.expMonth = Read-Host 'Expiration month (01-12)'
     $card.expYear = Read-Host 'Expiration year'
-    $card.code = Read-Host 'CVV'
+    $card.code = _bw_ask_secret 'CVV'
     return $card
 }
 
@@ -380,9 +425,9 @@ function _bwadd_identity {
     $id.postalCode = Read-Host 'Postal code'
     $id.country = Read-Host 'Country'
     $id.username = Read-Host 'Username'
-    $id.ssn = Read-Host 'SSN'
-    $id.passportNumber = Read-Host 'Passport number'
-    $id.licenseNumber = Read-Host "Driver's license number"
+    $id.ssn = _bw_ask_secret 'SSN'
+    $id.passportNumber = _bw_ask_secret 'Passport number'
+    $id.licenseNumber = _bw_ask_secret "Driver's license number"
     return $id
 }
 
@@ -393,8 +438,9 @@ function _bwadd_identity {
     [PSCustomObject] Sub-objeto sshKey.
 #>
 function _bwadd_sshkey {
+    $privateKey = _bw_ask_secret 'Private key'
     [PSCustomObject]@{
-        privateKey  = Read-Host 'Private key'
+        privateKey  = $privateKey
         publicKey   = Read-Host 'Public key'
         fingerprint = Read-Host 'Fingerprint'
     }
@@ -505,6 +551,7 @@ function bwls {
     elseif ($Delete) {
         $selected = $lines | _bw_select -Multi
         if (-not $selected) { return }
+        if (-not (_bw_confirm "Permanently delete $(@($selected).Count) item(s)?")) { return }
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] --permanent }
         Write-Host 'OK Items permanently deleted'
     }
@@ -586,9 +633,10 @@ function bwfind {
     else {
         $items = bw list items | ConvertFrom-Json
 
-        if ($Name) { $items = $items | Where-Object { $_.name -like "*$Name*" } }
+        # IndexOf, not -like: * ? [ in the text are literal, not wildcards.
+        if ($Name) { $items = $items | Where-Object { $_.name -and $_.name.IndexOf($Name, [StringComparison]::OrdinalIgnoreCase) -ge 0 } }
         if ($User) { $items = $items | Where-Object { $_.login.username -eq $User } }
-        if ($Url) { $items = $items | Where-Object { $_.login.uris -and ($_.login.uris | Where-Object { $_.uri -like "*$Url*" }) } }
+        if ($Url) { $items = $items | Where-Object { $_.login.uris -and ($_.login.uris | Where-Object { $_.uri -and $_.uri.IndexOf($Url, [StringComparison]::OrdinalIgnoreCase) -ge 0 }) } }
 
         if (-not $items) { Write-Host 'X No items found'; return }
 
@@ -649,7 +697,7 @@ function bwfind {
         }
         else {
             $value = bw get $copyField $id
-            Set-Clipboard $value
+            _bw_copy_secret ([string]$value)
             Write-Host "OK $copyField copied to clipboard"
         }
     }
@@ -673,6 +721,7 @@ function bwfind {
     elseif ($Delete) {
         $selected = $results | _bw_select -Multi
         if (-not $selected) { return }
+        if (-not (_bw_confirm "Permanently delete $(@($selected).Count) item(s)?")) { return }
         @($selected) | ForEach-Object { bw delete item ($_ -split '\s+')[0] --permanent }
         Write-Host 'OK Items permanently deleted'
     }
@@ -723,6 +772,11 @@ function bwedit {
     switch ($Type) {
         'item' {
             $current = bw get item $Id | ConvertFrom-Json
+            if (-not $current) { Write-Host 'X Could not read the item'; return }
+            if ($current.type -ne 1) {
+                Write-Host "X bwedit only handles login items; use: bwitem `"$Id`""
+                return
+            }
             $curName = $current.name
             $curUser = $current.login.username
             $curPass = $current.login.password
@@ -734,14 +788,14 @@ function bwedit {
 
             $name = Read-Host "Name [$curName]"
             $username = Read-Host "Username [$curUser]"
-            $password = Read-Host 'Password (leave empty to keep, "gen" to generate)'
+            $password = _bw_ask_secret 'Password (leave empty to keep, "gen" to generate)'
             $uri = Read-Host "URL [$curUri]"
             $notes = Read-Host 'Notes (leave empty to keep)'
 
             if (-not $password) { $password = $curPass }
             elseif ($password -eq 'gen') {
                 $password = _bwgen_interactive
-                Write-Host "OK Password generated: $password"
+                Write-Host 'OK Password generated'
             }
 
             if (-not $name) { $name = $curName }
@@ -752,16 +806,34 @@ function bwedit {
             $current.name = $name
             $current.login.username = $username
             $current.login.password = $password
-            $current.login.uris[0].uri = $uri
+            # An item may have no URIs yet (uris null or empty): create the list.
+            if ($uri) {
+                if ($current.login.uris -and @($current.login.uris).Count -gt 0) {
+                    $current.login.uris[0].uri = $uri
+                }
+                else {
+                    $current.login | Add-Member -NotePropertyName uris -Force `
+                        -NotePropertyValue @([PSCustomObject]@{ match = $null; uri = $uri })
+                }
+            }
             $current | Add-Member -NotePropertyName notes -NotePropertyValue $notes -Force
 
-            # Custom fields
-            if ($current.fields -and $current.fields.Count -gt 0) {
+            # Custom fields. bw omits `fields` when there are none, so work on our own
+            # list and write it back at the end.
+            $fieldList = @(if ($current.fields) { $current.fields })
+            if ($fieldList.Count -gt 0) {
                 Write-Host "Custom fields:"
-                foreach ($f in $current.fields) {
-                    Write-Host "  [$($f.name)] = $($f.value)"
-                    Write-Host "  New value for '$($f.name)' (leave empty to keep): " -NoNewline
-                    $newVal = [Console]::ReadLine()
+                foreach ($f in $fieldList) {
+                    if ($f.type -eq 1) {
+                        # Hidden field: show neither the current value nor the new one.
+                        Write-Host "  [$($f.name)] (hidden)"
+                        $newVal = _bw_ask_secret "  New value for '$($f.name)' (leave empty to keep)"
+                    }
+                    else {
+                        Write-Host "  [$($f.name)] = $($f.value)"
+                        Write-Host "  New value for '$($f.name)' (leave empty to keep): " -NoNewline
+                        $newVal = [Console]::ReadLine()
+                    }
                     if ($newVal) { $f.value = $newVal }
                 }
             }
@@ -769,10 +841,11 @@ function bwedit {
                 Write-Host "Add new field? (name=value, leave empty to finish): " -NoNewline
                 $newField = [Console]::ReadLine()
                 if (-not $newField) { break }
-                if ($newField -match '^(.+)=(.+)$') {
-                    $current.fields += [pscustomobject]@{
+                # Split at the FIRST '=' so values may contain '='; values are kept verbatim.
+                if ($newField -match '^([^=]+)=(.+)$') {
+                    $fieldList += [pscustomobject]@{
                         name  = $Matches[1].Trim()
-                        value = $Matches[2].Trim()
+                        value = $Matches[2]
                         type  = 0
                     }
                 }
@@ -781,6 +854,7 @@ function bwedit {
                 }
             }
 
+            $current | Add-Member -NotePropertyName fields -NotePropertyValue $fieldList -Force
             $current | _bw_encode | bw edit item $Id | Out-Null
             Write-Host 'OK Item updated successfully'
         }
@@ -1071,10 +1145,10 @@ function bwadd {
         Write-Host "Add field? (name=value, leave empty to finish): " -NoNewline
         $newField = [Console]::ReadLine()
         if (-not $newField) { break }
-        if ($newField -match '^(.+)=(.+)$') {
+        if ($newField -match '^([^=]+)=(.+)$') {
             $item.fields += [pscustomobject]@{
                 name  = $Matches[1].Trim()
-                value = $Matches[2].Trim()
+                value = $Matches[2]
                 type  = 0
             }
         }
@@ -1100,8 +1174,9 @@ function bwadd {
 #>
 function bwgen {
     $generated = _bwgen_interactive
-    Set-Clipboard $generated
-    Write-Host "OK Password generated and copied: $generated"
+    if (-not $generated) { Write-Host 'X Could not generate a password'; return }
+    _bw_copy_secret ([string]$generated)
+    Write-Host 'OK Password generated and copied to the clipboard'
 }
 
 <#
@@ -1122,19 +1197,34 @@ function bwtrash {
 .SYNOPSIS
     Elimina permanentemente un item o carpeta por su ID.
 .PARAMETER Type
-    Tipo de objeto: 'item' (predeterminado) o 'folder'.
+    Tipo de objeto: 'item' (predeterminado) o 'folder'. Si el primer argumento no es
+    ninguno de los dos, se toma como el ID de un item.
 .PARAMETER Id
     ID del objeto a eliminar.
+.PARAMETER Yes
+    No pide confirmacion.
 .EXAMPLE
     bwdelete "item-id"
     bwdelete item "item-id"
-    bwdelete folder "folder-id"
+    bwdelete folder "folder-id" -Yes
 #>
 function bwdelete {
     param(
-        [string]$Type = 'item',
-        [Parameter(Mandatory)][string]$Id
+        [Parameter(Mandatory, Position = 0)][string]$Type,
+        [Parameter(Position = 1)][string]$Id,
+        [switch]$Yes
     )
+
+    if ($Type -in 'item', 'folder') {
+        if (-not $Id) { Write-Host 'X Usage: bwdelete [item|folder] "id" [-Yes]'; return }
+    }
+    else {
+        # bwdelete "id": a single argument is an item id.
+        $Id = $Type
+        $Type = 'item'
+    }
+
+    if (-not $Yes -and -not (_bw_confirm "Permanently delete $Type $Id?")) { return }
 
     if ($Type -eq 'folder') {
         bw delete folder $Id
@@ -1149,13 +1239,19 @@ function bwdelete {
 <#
 .SYNOPSIS
     Vacia la papelera eliminando permanentemente todos sus items.
+.PARAMETER Yes
+    No pide confirmacion.
 .EXAMPLE
     bwempty
+    bwempty -Yes
 #>
 function bwempty {
-    (bw list items --trash | ConvertFrom-Json) | ForEach-Object {
-        bw delete item $_.id --permanent
-    }
+    param([switch]$Yes)
+
+    $trashed = @(bw list items --trash | ConvertFrom-Json)
+    if ($trashed.Count -eq 0) { Write-Host 'OK Trash is already empty'; return }
+    if (-not $Yes -and -not (_bw_confirm "Permanently delete $($trashed.Count) item(s) in the trash?")) { return }
+    $trashed | ForEach-Object { bw delete item $_.id --permanent }
     Write-Host 'OK Trash emptied'
 }
 
