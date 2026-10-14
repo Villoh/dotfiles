@@ -1,15 +1,73 @@
 #!/usr/bin/env bash
+# SC2155 (`local x=$(cmd)` masks cmd's status) is disabled file-wide; where the
+# status matters (bwedit's `bw get item`) it is declared and checked separately.
+# SC2154: variables filled by _ask_secret (printf -v) look unassigned to it.
+# shellcheck disable=SC2155,SC2154
 set -o pipefail
 
 # Bitwarden Plus: shell-independent helpers around Bitwarden CLI.
 
-session_file="${XDG_RUNTIME_DIR:-/tmp}/bwp-${UID}.session"
+# Never fall back to /tmp: a predictable name in a shared directory is no place
+# for the session key.
+runtime_dir="${XDG_RUNTIME_DIR:-/run/user/${UID}}"
+session_file="${runtime_dir}/bwp-${UID}.session"
+
+# Minutes of inactivity before the session key is removed (0 = never), and
+# seconds before a copied secret is cleared from the clipboard (0 = never).
+autolock_min="${BWP_AUTOLOCK_MIN:-15}"
+clipboard_sec="${BWP_CLIPBOARD_SEC:-30}"
 
 _save_session() {
   local session="$1"
   [ -n "$session" ] || return 1
+  if [ ! -d "$runtime_dir" ] || [ ! -O "$runtime_dir" ]; then
+    echo "bwp: $runtime_dir is not a directory you own; not storing the session key" >&2
+    return 1
+  fi
   umask 077
   printf '%s\n' "$session" > "$session_file" && chmod 600 "$session_file"
+}
+
+# Re-arm the inactivity timer (every bwp command pushes the deadline back). A
+# transient user timer removes the key even if no bwp command runs again.
+# Suspend and screen lock do not lock it: use `bwp lock` for those.
+_arm_autolock() {
+  [ -r "$session_file" ] && [ "$autolock_min" -gt 0 ] 2>/dev/null || return 0
+  command -v systemd-run >/dev/null 2>&1 || return 0
+  systemctl --user stop bwp-autolock.timer bwp-autolock.service >/dev/null 2>&1
+  systemd-run --user --quiet --collect --unit=bwp-autolock \
+    --on-active="${autolock_min}m" --setenv=PATH="$PATH" \
+    -- "$(readlink -f "$0")" lock >/dev/null 2>&1
+  return 0
+}
+
+# Put a secret on the Wayland clipboard, flagged sensitive, and clear it after
+# clipboard_sec seconds if it is still what is there (a later copy of yours is
+# left alone). Only a hash of the secret reaches the background process.
+_copy_secret() {
+  printf '%s' "$1" | wl-copy --sensitive || return 1
+  [ "$clipboard_sec" -gt 0 ] 2>/dev/null || return 0
+  BWP_HASH=$(printf '%s' "$1" | sha256sum) BWP_SEC="$clipboard_sec" \
+    setsid -f bash -c '
+      sleep "$BWP_SEC"
+      [ "$(wl-paste --no-newline 2>/dev/null | sha256sum)" = "$BWP_HASH" ] && wl-copy --clear
+    ' >/dev/null 2>&1
+  return 0
+}
+
+# Ask before anything irreversible. Reads the terminal, so a pipe cannot answer.
+_confirm() {
+  local answer
+  read -r -p "$1 [y/N]: " answer </dev/tty || return 1
+  [ "$answer" = "y" ] || [ "$answer" = "Y" ]
+}
+
+# _ask_secret <var> <prompt>: read a line without echoing it.
+_ask_secret() {
+  local __v
+  read -r -s -p "$2" __v
+  echo >&2
+  printf -v "$1" '%s' "$__v"
 }
 
 _load_session() {
@@ -115,6 +173,7 @@ bwlock() {
   bw lock
   local status=$?
   rm -f "$session_file"
+  systemctl --user stop bwp-autolock.timer >/dev/null 2>&1
   return "$status"
 }
 
@@ -158,7 +217,7 @@ bwpass() {
   if [ "$copy" -eq 1 ]; then
     local pw
     pw=$(bw get password "$id" --nointeraction) || return 1
-    printf '%s' "$pw" | wl-copy --sensitive && echo "✓ password copied to clipboard" >&2
+    _copy_secret "$pw" && echo "✓ password copied to clipboard" >&2
   else
     bw get password "$id" --nointeraction
   fi
@@ -215,6 +274,7 @@ bwls() {
     delete)
       local ids=$(echo "$items" | fzf --multi | awk '{print $1}')
       [ -z "$ids" ] && return 1
+      _confirm "Permanently delete $(grep -c . <<<"$ids") item(s)?" || return 1
       echo "$ids" | xargs -I {} bw delete item {} --permanent
       echo "✓ Items permanently deleted"
       ;;
@@ -344,8 +404,9 @@ bwfind() {
         [ -n "$attachment_output" ] && bw_args+=(--output "$attachment_output")
         bw "${bw_args[@]}" && echo "✓ Attachment downloaded"
       else
-        bw get "$field" "$id" | wl-copy
-        echo "✓ $field copied to clipboard"
+        local value
+        value=$(bw get "$field" "$id") || return 1
+        _copy_secret "$value" && echo "✓ $field copied to clipboard"
       fi
       ;;
     exposed)
@@ -367,6 +428,7 @@ bwfind() {
     delete)
       local ids=$(echo "$results" | fzf --multi | awk '{print $1}')
       [ -z "$ids" ] && return 1
+      _confirm "Permanently delete $(grep -c . <<<"$ids") item(s)?" || return 1
       echo "$ids" | xargs -I {} bw delete item {} --permanent
       echo "✓ Items permanently deleted"
       ;;
@@ -411,16 +473,21 @@ bwedit() {
 
   case "$type" in
     item)
-      local current=$(bw get item "$id")
-      local cur_name=$(echo $current     | jq -r '.name')
-      local cur_username=$(echo $current | jq -r '.login.username // ""')
-      local cur_password=$(echo $current | jq -r '.login.password // ""')
-      local cur_uri=$(echo $current      | jq -r '.login.uris[0].uri // ""')
-      local cur_notes=$(echo $current    | jq -r '.notes // ""')
+      local current
+      current=$(bw get item "$id") || return 1
+      if [ "$(printf '%s' "$current" | jq -r '.type')" != "1" ]; then
+        echo "✗ bwp edit only handles login items; use: bwp item \"$id\"" >&2
+        return 1
+      fi
+      local cur_name=$(printf '%s' "$current"     | jq -r '.name')
+      local cur_username=$(printf '%s' "$current" | jq -r '.login.username // ""')
+      local cur_password=$(printf '%s' "$current" | jq -r '.login.password // ""')
+      local cur_uri=$(printf '%s' "$current"      | jq -r '.login.uris[0].uri // ""')
+      local cur_notes=$(printf '%s' "$current"    | jq -r '.notes // ""')
 
       read -r -p "Name [$cur_name]: " name
       read -r -p "Username [$cur_username]: " username
-      read -r -p "Password (leave empty to keep, \"gen\" to generate): " password
+      _ask_secret password "Password (leave empty to keep, \"gen\" to generate): "
       read -r -p "URL [$cur_uri]: " uri
       read -r -p "Notes (leave empty to keep): " notes
 
@@ -428,7 +495,7 @@ bwedit() {
         password="$cur_password"
       elif [ "$password" = "gen" ]; then
         password=$(_bwgen_interactive)
-        echo "✓ Password generated: $password"
+        echo "✓ Password generated"
       fi
 
       name=${name:-$cur_name}
@@ -436,14 +503,17 @@ bwedit() {
       uri=${uri:-$cur_uri}
       notes=${notes:-$cur_notes}
 
-      # Use --arg to safely handle special characters in values
-      local updated=$(echo $current | jq \
+      # --arg/--rawfile keep special characters safe. Secrets and notes go in
+      # with --rawfile (a /dev/fd path in argv) because argv is world-readable
+      # in /proc while the process runs.
+      local updated=$(printf '%s' "$current" | jq \
         --arg name     "$name"     \
         --arg username "$username" \
-        --arg password "$password" \
+        --rawfile password <(printf '%s' "$password") \
         --arg uri      "$uri"      \
-        --arg notes    "$notes"    \
-        '.name=$name | .login.username=$username | .login.password=$password | .login.uris[0].uri=$uri | .notes=$notes')
+        --rawfile notes <(printf '%s' "$notes") \
+        '.name=$name | .login.username=$username | .login.password=$password
+         | (if $uri != "" then .login.uris[0].uri=$uri else . end) | .notes=$notes')
 
       # Edit existing custom fields
       local fields_count=$(echo "$updated" | jq '(.fields // []) | length')
@@ -452,11 +522,18 @@ bwedit() {
         local i=0
         while [ "$i" -lt "$fields_count" ]; do
           local fname=$(echo "$updated" | jq -r ".fields[$i].name")
-          local fvalue=$(echo "$updated" | jq -r ".fields[$i].value // \"\"")
-          echo "  [$fname] = $fvalue"
-          read -r -p "  New value for '$fname' (leave empty to keep): " newval
+          local ftype=$(echo "$updated" | jq -r ".fields[$i].type")
+          if [ "$ftype" = "1" ]; then
+            # Hidden field: neither print its value nor echo the new one.
+            echo "  [$fname] (hidden)"
+            _ask_secret newval "  New value for '$fname' (leave empty to keep): "
+          else
+            local fvalue=$(echo "$updated" | jq -r ".fields[$i].value // \"\"")
+            echo "  [$fname] = $fvalue"
+            read -r -p "  New value for '$fname' (leave empty to keep): " newval
+          fi
           if [ -n "$newval" ]; then
-            updated=$(echo "$updated" | jq --argjson idx "$i" --arg val "$newval" '.fields[$idx].value = $val')
+            updated=$(echo "$updated" | jq --argjson idx "$i" --rawfile val <(printf '%s' "$newval") '.fields[$idx].value = $val')
           fi
           i=$((i + 1))
         done
@@ -469,7 +546,7 @@ bwedit() {
         if [[ "$newfield" == *=* ]]; then
           updated=$(echo "$updated" | jq \
             --arg name  "${newfield%%=*}" \
-            --arg value "${newfield#*=}"  \
+            --rawfile value <(printf '%s' "${newfield#*=}") \
             '.fields = (.fields // []) + [{"name": $name, "value": $value, "type": 0}]')
         else
           echo "✗ Invalid format, use name=value"
@@ -496,12 +573,13 @@ bwedit() {
         return 1
       fi
 
-      local current=$(bw get org-collection "$id" --organizationid "$orgid")
-      local cur_name=$(echo $current | jq -r '.name')
+      local current
+      current=$(bw get org-collection "$id" --organizationid "$orgid") || return 1
+      local cur_name=$(echo "$current" | jq -r '.name')
       read -r -p "Collection name [$cur_name]: " cname
       cname=${cname:-$cur_name}
 
-      echo $current | jq --arg name "$cname" '.name = $name' | bw encode | bw edit org-collection "$id" --organizationid "$orgid" > /dev/null && echo "✓ Collection renamed successfully"
+      echo "$current" | jq --arg name "$cname" '.name = $name' | bw encode | bw edit org-collection "$id" --organizationid "$orgid" > /dev/null && echo "✓ Collection renamed successfully"
       ;;
 
     item-collections)
@@ -510,8 +588,10 @@ bwedit() {
       echo "Enter collection IDs separated by spaces:"
       read -r collectionids
 
-      local ids_json=$(echo $collectionids | tr ' ' '\n' | jq -R . | jq -s .)
-      echo $ids_json | bw encode | bw edit item-collections "$id" > /dev/null && echo "✓ Item collections updated successfully"
+      local -a ids_arr
+      read -ra ids_arr <<<"$collectionids"
+      local ids_json=$(printf '%s\n' "${ids_arr[@]}" | jq -R . | jq -s .)
+      echo "$ids_json" | bw encode | bw edit item-collections "$id" > /dev/null && echo "✓ Item collections updated successfully"
       ;;
 
     *)
@@ -733,14 +813,16 @@ bwtemplate() {
 # Do not call directly
 _bwadd_select_folder() {
   local folders=$(bw list folders | jq '[.[] | select(.name != "No Folder")]')
-  local count=$(echo $folders | jq 'length')
+  local count=$(echo "$folders" | jq 'length')
 
   if [ "$count" -gt 0 ]; then
-    echo "\nAvailable folders:" >&2
-    echo $folders | jq -r 'to_entries[] | "\(.key + 1)) \(.value.name)"' >&2
+    printf '\nAvailable folders:\n' >&2
+    echo "$folders" | jq -r 'to_entries[] | "\(.key + 1)) \(.value.name)"' >&2
     read -r -p "Folder number (leave empty for none): " foldernum
-    if [ -n "$foldernum" ]; then
-      echo $folders | jq -r ".[$foldernum - 1].id"
+    if [[ "$foldernum" =~ ^[0-9]+$ ]]; then
+      echo "$folders" | jq -r --argjson n "$foldernum" 'if $n >= 1 then (.[$n - 1].id // empty) else empty end'
+    elif [ -n "$foldernum" ]; then
+      echo "✗ Not a folder number; using none" >&2
     fi
   fi
 }
@@ -755,12 +837,12 @@ _bwadd_login() {
     password=$(_bwgen_interactive)
     echo "✓ Password generated" >&2
   else
-    read -r -p "Password (leave empty for blank): " password
+    _ask_secret password "Password (leave empty for blank): "
   fi
 
   bw get template item.login | jq \
     --arg user "$username" \
-    --arg pass "$password" \
+    --rawfile pass <(printf '%s' "$password") \
     --arg uri  "$uri"      \
     'del(.totp) | .username=$user | .password=$pass | .uris=[{"match":null,"uri":$uri}]'
 }
@@ -769,18 +851,18 @@ _bwadd_login() {
 _bwadd_card() {
   read -r -p "Cardholder name: " cardholder
   read -r -p "Brand (visa/mastercard/amex/discover/diners/jcb/maestro/unionpay): " brand
-  read -r -p "Card number: " number
+  _ask_secret number "Card number: "
   read -r -p "Expiration month (01-12): " expmonth
   read -r -p "Expiration year: " expyear
-  read -r -p "CVV: " code
+  _ask_secret code "CVV: "
 
   bw get template item.card | jq \
     --arg ch  "$cardholder" \
     --arg br  "$brand"      \
-    --arg num "$number"     \
+    --rawfile num <(printf '%s' "$number") \
     --arg em  "$expmonth"   \
     --arg ey  "$expyear"    \
-    --arg cvv "$code"       \
+    --rawfile cvv <(printf '%s' "$code") \
     '.cardholderName=$ch | .brand=$br | .number=$num | .expMonth=$em | .expYear=$ey | .code=$cvv'
 }
 
@@ -800,9 +882,9 @@ _bwadd_identity() {
   read -r -p "Postal code: " postalcode
   read -r -p "Country: " country
   read -r -p "Username: " username
-  read -r -p "SSN: " ssn
-  read -r -p "Passport number: " passport
-  read -r -p "Driver's license number: " license
+  _ask_secret ssn "SSN: "
+  _ask_secret passport "Passport number: "
+  _ask_secret license "Driver's license number: "
 
   bw get template item.identity | jq \
     --arg title  "$title"      \
@@ -819,9 +901,9 @@ _bwadd_identity() {
     --arg pc     "$postalcode" \
     --arg cn     "$country"    \
     --arg un     "$username"   \
-    --arg ssn    "$ssn"        \
-    --arg pp     "$passport"   \
-    --arg lic    "$license"    \
+    --rawfile ssn <(printf '%s' "$ssn") \
+    --rawfile pp  <(printf '%s' "$passport") \
+    --rawfile lic <(printf '%s' "$license") \
     '.title=$title | .firstName=$fn | .middleName=$mn | .lastName=$ln |
      .company=$co | .email=$em | .phone=$ph |
      .address1=$a1 | .address2=$a2 | .city=$ci | .state=$st |
@@ -832,12 +914,12 @@ _bwadd_identity() {
 # Internal helper: creates an SSH Key item (type=5)
 # No official template available, built manually
 _bwadd_sshkey() {
-  read -r -p "Private key: " privatekey
+  _ask_secret privatekey "Private key: "
   read -r -p "Public key: " publickey
   read -r -p "Fingerprint: " fingerprint
 
   jq -n \
-    --arg priv "$privatekey"  \
+    --rawfile priv <(printf '%s' "$privatekey") \
     --arg pub  "$publickey"   \
     --arg fp   "$fingerprint" \
     '{"privateKey":$priv,"publicKey":$pub,"fingerprint":$fp}'
@@ -879,17 +961,19 @@ bwadd() {
     *) echo "✗ Invalid type"; return 1 ;;
   esac
 
+  [ -n "$subobject" ] || { echo "✗ Could not build the item" >&2; return 1; }
+
   local folderid=$(_bwadd_select_folder)
 
   local item=$(bw get template item | jq \
     --argjson type "$type"       \
     --arg     name "$name"       \
-    --arg     notes "$notes"     \
-    --argjson sub  "$subobject"  \
-    ".type=\$type | .name=\$name | .notes=\$notes | .$subfield=\$sub")
+    --rawfile notes <(printf '%s' "$notes") \
+    --slurpfile sub <(printf '%s' "$subobject") \
+    ".type=\$type | .name=\$name | .notes=\$notes | .$subfield=\$sub[0]")
 
   if [ -n "$folderid" ]; then
-    item=$(echo $item | jq --arg fid "$folderid" '.folderId = $fid')
+    item=$(echo "$item" | jq --arg fid "$folderid" '.folderId = $fid')
   fi
 
   # Add custom fields
@@ -899,14 +983,14 @@ bwadd() {
     if [[ "$newfield" == *=* ]]; then
       item=$(echo "$item" | jq \
         --arg name  "${newfield%%=*}" \
-        --arg value "${newfield#*=}"  \
+        --rawfile value <(printf '%s' "${newfield#*=}") \
         '.fields = (.fields // []) + [{"name": $name, "value": $value, "type": 0}]')
     else
       echo "✗ Invalid format, use name=value"
     fi
   done
 
-  echo $item | bw encode | bw create item > /dev/null && echo "✓ Item created successfully"
+  echo "$item" | bw encode | bw create item > /dev/null && echo "✓ Item created successfully"
 }
 
 #endregion
@@ -923,10 +1007,10 @@ _bwgen_interactive() {
 
   if [ "$type" = "passphrase" ]; then
     read -r -p "Number of words [3]: " words
-    args+=(-p --words ${words:-3})
+    args+=(-p --words "${words:-3}")
 
     read -r -p "Separator [_]: " separator
-    args+=(--separator ${separator:-_})
+    args+=(--separator "${separator:-_}")
 
     read -r -p "Capitalize? (y/n) [n]: " capitalize
     [ "$capitalize" = "y" ] && args+=(-c)
@@ -935,7 +1019,7 @@ _bwgen_interactive() {
     [ "$includenumber" = "y" ] && args+=(--includeNumber)
   else
     read -r -p "Length [25]: " length
-    args+=(--length ${length:-25})
+    args+=(--length "${length:-25}")
 
     read -r -p "Uppercase? (y/n) [y]: " uppercase
     [ "${uppercase:-y}" = "y" ] && args+=(-u)
@@ -965,9 +1049,9 @@ _bwgen_interactive() {
 # Generate a password/passphrase interactively and copy it to the clipboard
 # Usage: bwp generate
 bwgen() {
-  local generated=$(_bwgen_interactive)
-  echo "$generated" | wl-copy
-  echo "✓ Password generated and copied: $generated"
+  local generated
+  generated=$(_bwgen_interactive) || return 1
+  _copy_secret "$generated" && echo "✓ Password generated and copied to the clipboard"
 }
 
 #endregion
@@ -983,18 +1067,27 @@ bwtrash() {
 # Permanently delete an item or folder by ID
 # Usage: bwp delete "id" / bwp delete item "id" / bwp delete folder "id"
 bwdelete() {
-  if [ "$1" = "folder" ]; then
-    bw delete folder "$2" && echo "✓ Folder deleted"
-  elif [ "$1" = "item" ]; then
-    bw delete item "$2" --permanent && echo "✓ Item permanently deleted"
+  local yes=0 kind=item
+  if [ "${1:-}" = "-y" ] || [ "${1:-}" = "--yes" ]; then yes=1; shift; fi
+  case "${1:-}" in item|folder) kind="$1"; shift ;; esac
+  local target="${1:-}"
+  [ -n "$target" ] || { echo "✗ Usage: bwp delete [-y] [item|folder] \"id\"" >&2; return 1; }
+  [ "$yes" -eq 1 ] || _confirm "Permanently delete $kind $target?" || return 1
+  if [ "$kind" = "folder" ]; then
+    bw delete folder "$target" && echo "✓ Folder deleted"
   else
-    bw delete item "$1" --permanent && echo "✓ Item permanently deleted"
+    bw delete item "$target" --permanent && echo "✓ Item permanently deleted"
   fi
 }
 
 # Empty the trash by permanently deleting all items in it
 bwempty() {
-  bw list items --trash | jq -r '.[].id' | xargs -I {} bw delete item {} --permanent
+  local yes=0 ids
+  if [ "${1:-}" = "-y" ] || [ "${1:-}" = "--yes" ]; then yes=1; fi
+  ids=$(bw list items --trash | jq -r '.[].id') || return 1
+  [ -n "$ids" ] || { echo "✓ Trash is already empty"; return 0; }
+  [ "$yes" -eq 1 ] || _confirm "Permanently delete $(grep -c . <<<"$ids") item(s) in the trash?" || return 1
+  echo "$ids" | xargs -I {} bw delete item {} --permanent
   echo "✓ Trash emptied"
 }
 
@@ -1019,9 +1112,16 @@ Secrets:
 Vault:
   list, find, item, edit, move, attachment
   folder, collection, template, add, generate
-  config, trash, delete, empty, restore
+  config, trash, delete [-y], empty [-y], restore
+
+Environment:
+  BWP_AUTOLOCK_MIN    minutes idle before the session key is removed (15, 0 = never)
+  BWP_CLIPBOARD_SEC   seconds before a copied secret is cleared (30, 0 = never)
 EOF
 }
+
+# Every command, including a failed one, pushes the auto-lock deadline back.
+trap _arm_autolock EXIT
 
 case "${1:-}" in
   unlock)     shift; bwu "$@" ;;
