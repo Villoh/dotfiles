@@ -53,14 +53,20 @@ bwwatch() {
   trap '[ -n "$monitor" ] && { pkill -P "$monitor" 2>/dev/null; kill "$monitor" 2>/dev/null; }' EXIT
   (
     while read -r line; do
-      [[ "$line" == *"boolean true"* ]] && bwlock
+      if [[ "$line" == *"boolean true"* ]]; then
+        echo "bwp: locked on suspend"   # stdout goes to the journal under systemd
+        bwlock
+      fi
     done < <(dbus-monitor --system \
       "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'" 2>/dev/null)
   ) &
   monitor=$!
   while sleep "${BWP_WATCH_SEC:-5}"; do
     [ -e "$session_file" ] || continue
-    [ "$(timeout 3 dms ipc call lock isLocked 2>/dev/null)" = true ] && bwlock
+    if [ "$(timeout 3 dms ipc call lock isLocked 2>/dev/null)" = true ]; then
+      echo "bwp: locked on screen lock"
+      bwlock
+    fi
   done
 }
 
