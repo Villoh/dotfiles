@@ -6,6 +6,8 @@
 #
 # Variables de entorno opcionales:
 #   BWP_CLIPBOARD_SEC  segundos hasta limpiar un secreto copiado (30, 0 = nunca)
+#   BWP_AUTOLOCK_MIN   minutos sin usar bw antes de descartar la sesion (15, 0 = nunca)
+#   BWP_WATCH_SEC      segundos entre comprobaciones del temporizador (10)
 #
 # Requirements: bw CLI
 # Opcional:      fzf (si no esta instalado se usa Out-GridView)
@@ -14,6 +16,75 @@
 # Forzar UTF-8 para que el output del CLI de bw se interprete correctamente
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
+
+#region ── Auto-lock (paridad con bwp) ─────────────────────────────────────────
+
+# La clave de sesion vive en $env:BW_SESSION, propia de cada consola. Se descarta:
+#  - tras BWP_AUTOLOCK_MIN minutos sin ejecutar bw (reloj de pared, cuenta la suspension);
+#  - al detectar una suspension: dos ticks consecutivos del temporizador separados por
+#    mucho mas de su intervalo (el temporizador no avanza dormido);
+#  - en Windows, al bloquear la pantalla (LogonUI.exe en ejecucion).
+# Los ticks se miden con la hora en que se generan, asi un comando largo o fzf abierto
+# no se confunde con una suspension.
+$global:BwpState = @{
+    Min      = $(if ($env:BWP_AUTOLOCK_MIN -match '^\d+$') { [int]$env:BWP_AUTOLOCK_MIN } else { 15 })
+    TickSec  = $(if ($env:BWP_WATCH_SEC -match '^\d+$' -and [int]$env:BWP_WATCH_SEC -gt 0) { [int]$env:BWP_WATCH_SEC } else { 10 })
+    Last     = [DateTime]::UtcNow    # ultimo uso de bw
+    LastTick = [DateTime]::UtcNow    # ultimo tick del temporizador
+    LockedBy = $null                 # motivo del ultimo bloqueo automatico
+}
+
+# Devuelve el motivo si descarto la sesion, o $null. Global: la accion del temporizador
+# corre en otro ambito y no ve las funciones del ambito desde el que se cargo el fichero.
+function global:_bw_tick {
+    param([DateTime]$Now = [DateTime]::UtcNow)
+    $s = $global:BwpState
+    $gap = ($Now - $s.LastTick).TotalSeconds
+    $s.LastTick = $Now
+    if (-not $env:BW_SESSION) { return $null }
+
+    $reason = $null
+    if ($gap -gt [Math]::Max(30, 3 * $s.TickSec)) { $reason = 'suspend' }
+    elseif ($s.Min -gt 0 -and ($Now - $s.Last).TotalMinutes -gt $s.Min) { $reason = 'idle' }
+    elseif ($IsWindows -and (Get-Process -Name LogonUI -ErrorAction SilentlyContinue)) { $reason = 'screen lock' }
+
+    if ($reason) {
+        Remove-Item Env:BW_SESSION -ErrorAction SilentlyContinue
+        $s.LockedBy = $reason
+    }
+    $reason
+}
+
+# Envoltorio de bw: comprueba la caducidad, anota el ultimo uso y avisa si la sesion
+# se descarto sola. Reenvia la entrada de la tuberia solo si la hay (si no, bw unlock
+# no podria pedir la contrasena).
+function global:bw {
+    $s = $global:BwpState
+    if ($env:BW_SESSION -and $s.Min -gt 0 -and ([DateTime]::UtcNow - $s.Last).TotalMinutes -gt $s.Min) {
+        Remove-Item Env:BW_SESSION -ErrorAction SilentlyContinue
+        $s.LockedBy = 'idle'
+    }
+    if (-not $env:BW_SESSION -and $s.LockedBy) {
+        if ($args[0] -notin 'login', 'unlock') {
+            Write-Warning "bw session discarded ($($s.LockedBy)); run bwu to unlock again"
+        }
+        $s.LockedBy = $null
+    }
+    $s.Last = [DateTime]::UtcNow
+    $exe = (Get-Command bw -CommandType Application -ErrorAction Stop | Select-Object -First 1).Source
+    if ($MyInvocation.ExpectingInput) { $input | & $exe @args } else { & $exe @args }
+}
+
+if (-not (Get-EventSubscriber -SourceIdentifier BwpAutolock -ErrorAction SilentlyContinue)) {
+    $global:BwpState.Timer = [System.Timers.Timer]::new($global:BwpState.TickSec * 1000)
+    $global:BwpState.Timer.AutoReset = $true
+    Register-ObjectEvent -InputObject $global:BwpState.Timer -EventName Elapsed `
+        -SourceIdentifier BwpAutolock `
+        -Action { [void](_bw_tick -Now $Event.TimeGenerated.ToUniversalTime()) } | Out-Null
+    $global:BwpState.Timer.Start()
+}
+
+#endregion
 
 #region ── Helpers JSON ────────────────────────────────────────────────────────
 
