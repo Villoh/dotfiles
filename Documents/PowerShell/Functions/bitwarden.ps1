@@ -347,6 +347,70 @@ function bwsync {
 
 <#
 .SYNOPSIS
+    Helper interno. Resuelve un item a su ID: un UUID pasa tal cual; un nombre se busca por
+    coincidencia EXACTA (distingue mayusculas), porque `bw get password <nombre>` casa por
+    subcadena en todo el vault. Devuelve @{ Status; Id }: found | missing | ambiguous | error.
+#>
+function _bw_resolve_id {
+    param([Parameter(Mandatory)][string]$Item)
+    if ($Item -match '^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$') {
+        return @{ Status = 'found'; Id = $Item }
+    }
+    $raw = bw list items --search $Item --nointeraction 2>&1
+    if ($LASTEXITCODE) {
+        return @{ Status = 'error'; Message = (($raw | Out-String).Trim() -split "`n")[0] }
+    }
+    $ids = @(($raw | Out-String | ConvertFrom-Json) | Where-Object { $_.name -ceq $Item } | ForEach-Object { $_.id })
+    switch ($ids.Count) {
+        0 { return @{ Status = 'missing' } }
+        1 { return @{ Status = 'found'; Id = $ids[0] } }
+        default { return @{ Status = 'ambiguous'; Message = "$($ids.Count) items are named `"$Item`"; use the item id instead" } }
+    }
+}
+
+<#
+.SYNOPSIS
+    Imprime la contrasena de un item y nada mas, para `password.command` de clientes de correo.
+    Nunca pregunta. Si ningun item se llama asi, sincroniza una vez y reintenta, porque la
+    cache local puede ser anterior al item.
+.PARAMETER Item
+    ID del item o su nombre exacto.
+.PARAMETER Copy
+    La copia al portapapeles (con limpieza) en vez de imprimirla.
+.EXAMPLE
+    bwpass "Mail personal"
+    bwpass -Copy 3f2b8c1e-0000-4000-8000-000000000000
+#>
+function bwpass {
+    param(
+        [Parameter(Mandatory, Position = 0)][string]$Item,
+        [switch]$Copy
+    )
+
+    $r = _bw_resolve_id $Item
+    if ($r.Status -eq 'missing') {
+        bw sync --nointeraction *> $null
+        $r = _bw_resolve_id $Item
+    }
+    switch ($r.Status) {
+        'missing'   { Write-Error "bwpass: no item named `"$Item`""; return }
+        'ambiguous' { Write-Error "bwpass: $($r.Message)"; return }
+        'error'     { Write-Error "bwpass: $($r.Message)"; return }
+    }
+
+    $pw = bw get password $r.Id --nointeraction
+    if ($LASTEXITCODE -or -not $pw) { Write-Error "bwpass: could not read the password"; return }
+    if ($Copy) {
+        _bw_copy_secret ([string]$pw)
+        Write-Host 'OK password copied to clipboard'
+    }
+    else {
+        $pw
+    }
+}
+
+<#
+.SYNOPSIS
     Bloquea el vault y elimina la variable de sesion.
 #>
 function bwlock {
