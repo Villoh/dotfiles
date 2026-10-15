@@ -33,12 +33,35 @@ _save_session() {
 # Suspend and screen lock do not lock it: use `bwp lock` for those.
 _arm_autolock() {
   [ -r "$session_file" ] && [ "$autolock_min" -gt 0 ] 2>/dev/null || return 0
+  touch "$session_file"
   command -v systemd-run >/dev/null 2>&1 || return 0
   systemctl --user stop bwp-autolock.timer bwp-autolock.service >/dev/null 2>&1
   systemd-run --user --quiet --collect --unit=bwp-autolock \
     --on-active="${autolock_min}m" --setenv=PATH="$PATH" \
     -- "$(readlink -f "$0")" lock >/dev/null 2>&1
   return 0
+}
+
+# Lock when the machine suspends (logind's PrepareForSleep) or when DMS locks
+# the screen. Meant to run as a user service; see the bwp-lock-watch unit.
+# Suspend is event-driven. DMS does not publish its lock state to logind, so
+# that one is polled, and only while a session key exists.
+bwwatch() {
+  local monitor
+  trap 'exit 0' TERM INT
+  # The listener and its dbus-monitor are children of one subshell: stop both.
+  trap '[ -n "$monitor" ] && { pkill -P "$monitor" 2>/dev/null; kill "$monitor" 2>/dev/null; }' EXIT
+  (
+    while read -r line; do
+      [[ "$line" == *"boolean true"* ]] && bwlock
+    done < <(dbus-monitor --system \
+      "type='signal',interface='org.freedesktop.login1.Manager',member='PrepareForSleep'" 2>/dev/null)
+  ) &
+  monitor=$!
+  while sleep "${BWP_WATCH_SEC:-5}"; do
+    [ -e "$session_file" ] || continue
+    [ "$(timeout 3 dms ipc call lock isLocked 2>/dev/null)" = true ] && bwlock
+  done
 }
 
 # Put a secret on the Wayland clipboard, flagged sensitive, and clear it after
@@ -70,10 +93,26 @@ _ask_secret() {
   printf -v "$1" '%s' "$__v"
 }
 
+# True when the key has not been used for autolock_min minutes. Wall-clock, so
+# time spent suspended counts (the systemd timer below does not tick then).
+# The file's mtime is the last use: every bw call and every command refreshes it.
+_session_expired() {
+  [ "$autolock_min" -gt 0 ] 2>/dev/null || return 1
+  local mtime
+  mtime=$(stat -c %Y "$session_file" 2>/dev/null) || return 1
+  [ $(( $(date +%s) - mtime )) -gt $(( autolock_min * 60 )) ]
+}
+
 _load_session() {
   if [ -n "${BW_SESSION:-}" ]; then
     printf '%s\n' "$BW_SESSION"
   elif [ -r "$session_file" ]; then
+    if _session_expired; then
+      rm -f "$session_file"
+      systemctl --user stop bwp-autolock.timer >/dev/null 2>&1
+      return 0
+    fi
+    touch "$session_file"
     cat "$session_file"
   fi
 }
@@ -1105,6 +1144,7 @@ Usage: bwp <command> [arguments]
 
 Session:
   unlock, start, login, lock, sync, status
+  watch                  lock on suspend and DMS screen lock (run as a service)
 
 Secrets:
   pass [--copy] <item>   print an item's password, or copy it (for scripts)
@@ -1128,6 +1168,7 @@ case "${1:-}" in
   start)      shift; bwstart "$@" ;;
   login)      shift; bwlogin "$@" ;;
   lock)       shift; bwlock "$@" ;;
+  watch)      shift; bwwatch "$@" ;;
   sync)       shift; bwsync "$@" ;;
   pass)       shift; bwpass "$@" ;;
   status)     shift; _bw_status "$@" ;;
