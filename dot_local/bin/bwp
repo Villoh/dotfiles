@@ -1145,8 +1145,96 @@ bwrestore() {
 #endregion
 
 _usage() {
+  if [ -n "${1:-}" ]; then
+    local usage
+    case "$1" in
+      unlock) usage='unlock
+Unlock the vault and save the session key; log in first if needed.' ;;
+      start) usage='start
+Unlock the vault, then sync with the server.' ;;
+      login) usage='login [--sso | --apikey]
+Log in with email/password (default), SSO, or an API key; save the session key.' ;;
+      lock) usage='lock
+Lock the vault and remove the saved session key.' ;;
+      watch) usage='watch
+Watch for suspend and DMS screen lock, then lock the vault. Run as a user service.
+BWP_WATCH_SEC sets the screen-lock polling interval in seconds (default: 5).' ;;
+      sync) usage='sync
+Sync the vault with the server.' ;;
+      status) usage='status
+Print the vault status: unauthenticated, locked, or unlocked.' ;;
+      pass) usage='pass [--copy] <item-id | exact-item-name>
+Print only the password, without prompting. Quote names containing spaces.
+  --copy    Copy to the Wayland clipboard instead of stdout.
+Duplicate names require an item ID; a missing name triggers one sync and retry.' ;;
+      config) usage='config [<server-url> | --reset]
+Show the current server, set a server URL, or restore vault.bitwarden.com.
+Log in again after changing the server.' ;;
+      list|ls) usage='list [--folder <id>] [--list-trash | --trash | --delete]
+List vault items (alias: ls).
+  --folder <id>    Limit results to a folder.
+  --list-trash     List trashed items.
+  --trash          Select items with fzf and move them to trash.
+  --delete         Select items with fzf and permanently delete after confirmation.' ;;
+      find) usage='find <filters> [<action>]
+Filters can be combined: --id <id>, --name <text>, --user <username>, --url <text>.
+  --show [field]                  Show item details or one field.
+  --copy [field]                  Copy a field (default: password).
+  --show attachment               List attachments.
+  --copy attachment <name> [path]  Download an attachment.
+  --exposed                       Check the password for known breaches.
+  --trash                         Select with fzf and move to trash.
+  --delete                        Select with fzf and permanently delete after confirmation.
+Without an action, list matches (or show JSON when using --id).
+Example: bwp find --name github --copy username' ;;
+      item) usage='item <id>
+Show the full item as JSON, including secrets.' ;;
+      edit) usage='edit <item|folder|org-collection|item-collections> <id>
+Edit interactively; leave input empty to keep the current value.
+Only login items are supported by "edit item".' ;;
+      move|mv) usage='move <item-id> [folder-id]
+Move an item to a folder; select the destination with fzf if omitted (alias: mv).' ;;
+      attachment) usage='attachment [--all | --itemid <id> [<options>]]
+  --all, -a           List attachments across all items.
+  --itemid <id>       List attachments of one item.
+  --name <filename>   Download the named attachment.
+  --output <path>     Download to this path instead of the current directory.
+  --add --file <path> Upload a file to the specified item.' ;;
+      folder) usage='folder [<id>] [--all | --add | --delete]
+  --all, -a   List folders.
+  <id>        Show folder details as JSON.
+  --add       Create a folder interactively.
+  --delete    Delete the given folder, or select one with fzf.' ;;
+      collection) usage='collection <id> | --all | --add
+Show collection details as JSON, list collections (--all, -a), or create one
+interactively (--add). Creation prompts for an organization ID.' ;;
+      template) usage='template <name> | --all
+Show a template as JSON; --all (-a) lists available template names.' ;;
+      add) usage='add
+Create an item or folder interactively. Item types: login, secure note, card,
+identity, and SSH key. Prompts for fields and an optional destination folder.' ;;
+      generate|gen) usage='generate
+Generate a password or passphrase interactively and copy it to the Wayland
+clipboard (alias: gen). Prompts for length, character sets, or word options.' ;;
+      trash) usage='trash <item-id>
+Move an item to trash; it is automatically deleted after 30 days.' ;;
+      delete) usage='delete [-y | --yes] [item|folder] <id>
+Permanently delete an item (default) or delete a folder.
+  -y, --yes   Skip confirmation. Must precede the optional type and ID.' ;;
+      empty) usage='empty [-y | --yes]
+Permanently delete every item in trash.
+  -y, --yes   Skip confirmation.' ;;
+      restore) usage='restore <item-id>
+Restore an item from trash before it is automatically deleted.' ;;
+      *) echo "Unknown command: $1" >&2; return 2 ;;
+    esac
+    printf 'Usage: bwp %s\n\n  -h, --help   Show this help without accessing the vault.\n' "$usage"
+    return
+  fi
   cat <<'EOF'
 Usage: bwp <command> [arguments]
+       bwp <command> --help
+       bwp help <command>
 
 Session:
   unlock, start, login, lock, sync, status
@@ -1166,7 +1254,17 @@ Environment:
 EOF
 }
 
-# Every command, including a failed one, pushes the auto-lock deadline back.
+# Resolve help before dispatch or the EXIT trap: help must not touch the session.
+case "${1:-}" in
+  help|-h|--help|"") _usage "${2:-}"; exit $? ;;
+esac
+for arg in "${@:2}"; do
+  case "$arg" in
+    -h|--help) _usage "$1"; exit $? ;;
+  esac
+done
+
+# Every non-help command, including a failed one, refreshes the auto-lock deadline.
 trap _arm_autolock EXIT
 
 case "${1:-}" in
@@ -1194,6 +1292,5 @@ case "${1:-}" in
   delete)     shift; bwdelete "$@" ;;
   empty)      shift; bwempty "$@" ;;
   restore)    shift; bwrestore "$@" ;;
-  help|-h|--help|"") _usage ;;
   *) echo "Unknown command: $1" >&2; _usage >&2; exit 2 ;;
 esac
