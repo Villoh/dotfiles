@@ -148,16 +148,26 @@
       "leftWidgets": [
         "launcherButton",
         "workspaceSwitcher",
-        "focusedWindow",
+        {
+          "id": "focusedWindow",
+          "enabled": true,
+          "focusedWindowSize": 0
+        },
         {
           "id": "dankKDEConnect",
           "enabled": true
         }
       ],
       "centerWidgets": [
-        "music",
+        {
+          "id": "music",
+          "enabled": true,
+          "mediaSize": 0
+        },
         "clock",
-        "weather",
+        "weather"
+      ],
+      "rightWidgets": [
         {
           "id": "dankscale",
           "enabled": true
@@ -165,9 +175,7 @@
         {
           "id": "dockerManager",
           "enabled": true
-        }
-      ],
-      "rightWidgets": [
+        },
         {
           "id": "aiOverviewControl",
           "enabled": true
