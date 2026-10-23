@@ -6,7 +6,7 @@
     "catppuccin": {
       "dark": {
         "flavor": "mocha",
-        "accent": "red"
+        "accent": "mauve"
       }
     },
     "astralJourney": {
@@ -37,6 +37,12 @@
       "dark": {
         "flavor": "noir",
         "accent": "mono"
+      }
+    },
+    "cyberdream": {
+      "dark": {
+        "flavor": "cyberdream-muted",
+        "accent": "green"
       }
     }
   },
@@ -166,9 +172,20 @@
           "id": "aiOverviewControl",
           "enabled": true
         },
-        "systemTray",
+        {
+          "id": "mise",
+          "enabled": true
+        },
+        {
+          "id": "systemTray",
+          "enabled": true
+        },
         "cpuUsage",
         "memUsage",
+        {
+          "id": "vpn",
+          "enabled": true
+        },
         "controlCenterButton",
         {
           "id": "bitwarden",
