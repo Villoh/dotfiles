@@ -60,7 +60,43 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `fontman` | Font manager helper |
 | `migrate-aur` / `migrate-flatpak` | Legacy Arch/Flatpak migration helpers; not part of the NixOS workflow |
 | `post-hyde-install` / `pre-hyde-install` | HyDE desktop environment install hooks |
-| `openvpn-*` / `ikev2-*` | VPN management |
+| `ovpn` / `ikev2` | VPN management with `start`, `stop`, `status`, and `help` |
+
+## VPN commands
+
+```bash
+ovpn start                          # Interactive provider/country/city selection
+ovpn start es123 udp nordvpn        # Explicit NordVPN profile
+ovpn stop                           # Select an active provider
+ovpn status
+ikev2 start                            # Interactive NordVPN country/server selection
+ikev2 start es123.nordvpn.com
+ikev2 stop
+ikev2 status
+```
+
+These replace `openvpn-{start,stop,status}` and `ikev2-{start,stop,status}`.
+OpenVPN reads NordVPN profiles from `~/.config/openvpn/nordvpn/ovpn_{udp,tcp}/`
+and vpnd profiles from `~/.config/openvpn/vpnd/{udp,tcp}/`. Credentials stay in
+root-only `/etc/openvpn/<provider>/auth`, outside Git. NixOS must provide the
+`openvpn` executable. Transient `openvpn-vpn-<provider>.service` units own the
+processes; inspect their logs with `journalctl -u`. Status reports process state,
+not proof of a working VPN. Old `/tmp/openvpn-*.pid` sessions are not adopted;
+review and disconnect them before using the replacement.
+
+IKEv2 requires `swanctl`, the existing `strongswan` service, and an existing
+`/etc/swanctl/swanctl.conf` with a connection and child named `nordvpn`.
+It loads a temporary server override without rewriting persistent configuration.
+Stop terminates only `nordvpn`, leaving other tunnels and NetworkManager alone.
+Both scripts use Bash from `PATH`; neither installs dependencies. These are
+standalone clients, not NetworkManager/DMS profile managers or kill switches.
+Do not run them alongside DMS-managed VPNs; verify DNS and IPv6 when connecting.
+
+Run the isolated regression checks without sudo or a network connection:
+
+```bash
+python3 docs/linux/test_vpn.py
+```
 
 ## uv tools
 

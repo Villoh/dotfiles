@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  printf '%s\n' 'Uso: ikev2 start [servidor.nordvpn.com] | stop | status | help' \
+    'Sin servidor, start permite elegir país y servidor NordVPN por carga.' \
+    'Requiere strongSwan configurado con conexión y child llamados nordvpn.' \
+    'No instala paquetes ni habilita servicios. stop solo termina nordvpn.'
+}
+
+die() {
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
+}
+need() { command -v "$1" >/dev/null 2>&1 || die "Falta el comando $1; decláralo en NixOS/Home Manager."; }
+
+valid_server() {
+  [[ ${#1} -le 253 && $1 =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.nordvpn\.com$ ]]
+}
+
+choose() {
+  local selected
+  PS3='Elige una opción (q para cancelar): '
+  select selected in "$@" 'Cancelar'; do
+    if [[ $selected == Cancelar || $REPLY == q || $REPLY == Q || $REPLY == 0 ]]; then
+      printf 'Cancelado.\n' >&2
+      return 130
+    fi
+    if [[ -n $selected ]]; then
+      printf '%s\n' "$selected"
+      return
+    fi
+    printf 'Opción inválida.\n' >&2
+  done
+  printf 'Cancelado.\n' >&2
+  return 130
+}
+
+select_server() {
+  local json rows country country_id server
+  local -a countries servers
+  need curl
+  need jq
+  printf 'Cargando países NordVPN...\n' >&2
+  json=$(curl --fail --silent --show-error --connect-timeout 10 --max-time 30 \
+    'https://api.nordvpn.com/v1/servers/countries') || die 'No se pudieron obtener los países.'
+  rows=$(jq -er '
+        if type == "array" and length > 0 and all(.[];
+            (.id | type == "number" and . > 0 and floor == .) and
+            (.name | type == "string" and length > 0 and (test("[[:cntrl:]]") | not)))
+        then sort_by(.name)[] | "\(.name)\t\(.id)"
+        else error("Respuesta de países inválida") end' <<<"$json") || die 'Respuesta de países inválida.'
+  mapfile -t countries <<<"$rows"
+  country=$(choose "${countries[@]}") || return $?
+  country_id=${country##*$'\t'}
+  printf 'Cargando servidores IKEv2...\n' >&2
+  json=$(curl --globoff --fail --silent --show-error --connect-timeout 10 --max-time 30 \
+    "https://api.nordvpn.com/v1/servers?limit=500&filters[country_id]=$country_id") || die 'No se pudieron obtener los servidores.'
+  rows=$(jq -er '
+        if type != "array" then error("Respuesta de servidores inválida") else
+            [.[] | select(.status == "online") |
+                select(any(.technologies[]?; .identifier == "ikev2")) |
+                select((.load | type == "number") and (.hostname | type == "string"))] |
+            sort_by(.load) | .[].hostname
+        end' <<<"$json") || die 'No hay servidores IKEv2 disponibles o la respuesta es inválida.'
+  mapfile -t servers <<<"$rows"
+  for server in "${servers[@]}"; do
+    valid_server "$server" || die 'La API devolvió un hostname NordVPN inválido.'
+  done
+  printf 'Servidores ordenados por carga:\n' >&2
+  choose "${servers[@]}"
+}
+
+service_active() {
+  local state
+  state=$(systemctl is-active strongswan) || :
+  case "$state" in
+  active) return 0 ;;
+  inactive | failed) return 1 ;;
+  *) die "No se pudo consultar strongswan (estado: ${state:-desconocido})." ;;
+  esac
+}
+
+read_sas() {
+  sas=$(sudo swanctl --list-sas --ike nordvpn) || die 'No se pudo consultar nordvpn con swanctl.'
+}
+
+has_tunnel() { grep -q '^nordvpn:' <<<"$sas"; }
+established() { grep -q '^nordvpn:.*ESTABLISHED' <<<"$sas"; }
+
+start_vpn() {
+  local server=${1:-}
+  need getent
+  need mktemp
+  need sh
+  need rm
+  if [[ $# -eq 0 ]]; then
+    server=$(select_server) || return $?
+  fi
+  server=${server,,}
+  valid_server "$server" || die 'Servidor inválido: usa un hostname de un solo nivel bajo nordvpn.com.'
+  getent ahosts "$server" >/dev/null || die "No se puede resolver $server."
+  if service_active; then
+    read_sas
+    has_tunnel && die 'nordvpn ya está activo; usa ikev2 stop antes de cambiar de servidor.'
+  fi
+  printf 'Iniciando strongSwan...\n'
+  sudo systemctl start strongswan || die 'No se pudo iniciar strongSwan.'
+  printf 'Cargando configuración para %s...\n' "$server"
+  # Keep the override beside swanctl.conf so relative credential paths still work.
+  # It contains no credentials and never rewrites the persistent configuration.
+  sudo sh -c '
+        set -eu
+        config=$(mktemp /etc/swanctl/.ikev2-vpn.XXXXXX.conf)
+        trap '\''rm -f -- "$config"'\'' EXIT
+        trap '\''exit 130'\'' INT
+        trap '\''exit 143'\'' HUP TERM
+        printf "include /etc/swanctl/swanctl.conf\nconnections {\n nordvpn {\n  remote_addrs = %s\n }\n}\n" "$1" > "$config"
+        swanctl --load-all --file "$config"
+    ' sh "$server" || die 'No se pudo cargar la configuración; strongSwan sigue activo.'
+  sudo swanctl --initiate --child nordvpn || die 'No se pudo conectar nordvpn; revisa sudo journalctl -u strongswan -n 50.'
+  read_sas
+  established || die 'swanctl terminó sin confirmar una conexión nordvpn establecida.'
+  printf 'Conectado a %s.\n' "$server"
+}
+
+stop_vpn() {
+  if ! service_active; then
+    printf 'IKEv2: desconectada (strongSwan inactivo).\n'
+    return
+  fi
+  read_sas
+  if ! has_tunnel; then
+    printf 'IKEv2: nordvpn ya está desconectada.\n'
+    return
+  fi
+  sudo swanctl --terminate --ike nordvpn || die 'No se pudo terminar nordvpn.'
+  read_sas
+  has_tunnel && die 'nordvpn todavía aparece activo tras solicitar su terminación.'
+  printf 'nordvpn desconectada; strongSwan y las demás conexiones no se han detenido.\n'
+}
+
+status_vpn() {
+  if ! service_active; then
+    printf 'IKEv2: desconectada (strongSwan inactivo).\n'
+    return
+  fi
+  read_sas
+  if established; then
+    printf 'IKEv2: nordvpn conectada.\n%s\n' "$sas"
+  elif has_tunnel; then
+    printf 'IKEv2: nordvpn existe, pero no está establecida.\n%s\n' "$sas"
+  else
+    printf 'IKEv2: nordvpn desconectada (strongSwan activo).\n'
+  fi
+}
+
+command=${1:-help}
+case "$command" in
+help | -h | --help)
+  [[ $# -le 1 ]] || {
+    usage >&2
+    exit 2
+  }
+  usage
+  exit 0
+  ;;
+start) [[ $# -le 2 ]] || {
+  usage >&2
+  exit 2
+} ;;
+stop | status) [[ $# -eq 1 ]] || {
+  usage >&2
+  exit 2
+} ;;
+*)
+  usage >&2
+  exit 2
+  ;;
+esac
+for dependency in sudo systemctl swanctl grep; do need "$dependency"; done
+case "$command" in
+start)
+  shift
+  start_vpn "$@"
+  ;;
+stop) stop_vpn ;;
+status) status_vpn ;;
+esac

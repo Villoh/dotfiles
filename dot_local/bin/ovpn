@@ -1,0 +1,240 @@
+#!/usr/bin/env bash
+# Personal OpenVPN selector. systemd owns processes; NetworkManager/DMS profiles are separate.
+set -euo pipefail
+shopt -s nullglob
+
+readonly NORDVPN_DIR="${HOME}/.config/openvpn/nordvpn"
+readonly VPND_DIR="${HOME}/.config/openvpn/vpnd"
+readonly API="https://api.nordvpn.com/v1"
+
+usage() {
+  cat <<'HELP'
+Uso: ovpn start [servidor [udp|tcp [nordvpn|vpnd]]] [--limit N]
+     ovpn stop [nordvpn|vpnd|all]
+     ovpn status [nordvpn|vpnd]
+
+Sin servidor, start abre el selector de proveedor, protocolo, país y ciudad.
+En modo directo se conservan los valores por defecto: tcp y vpnd.
+Credenciales locales: /etc/openvpn/<proveedor>/auth (solo root, modo 600).
+Los perfiles se leen de ~/.config/openvpn/{nordvpn,vpnd}/.
+No gestiona conexiones de NetworkManager/DMS ni ofrece kill switch.
+Logs: journalctl -u openvpn-vpn-<proveedor>.service
+HELP
+}
+
+die() {
+  printf 'Error: %s\n' "$*" >&2
+  exit 1
+}
+need() { command -v "$1" >/dev/null || die "Falta el comando $1; instálalo mediante NixOS."; }
+provider_ok() { [[ $1 == nordvpn || $1 == vpnd ]]; }
+unit() { printf 'openvpn-vpn-%s.service' "$1"; }
+running() {
+  local state
+  state=$(systemctl is-active "$(unit "$1")") || :
+  case $state in
+  active | activating | reloading | deactivating) return 0 ;;
+  inactive | failed) return 1 ;;
+  *) die "No se pudo consultar el servicio de $1 (estado: ${state:-desconocido})." ;;
+  esac
+}
+
+pick() {
+  local prompt=$1 item
+  local -a items
+  if command -v fzf >/dev/null; then
+    fzf --prompt="$prompt: " --height=50% --border --cycle
+  else
+    mapfile -t items
+    ((${#items[@]})) || return 1
+    PS3="$prompt: "
+    select item in "${items[@]}"; do
+      if [[ -n $item ]]; then
+        printf '%s\n' "$item"
+        return
+      fi
+      printf 'Selección inválida.\n' >&2
+    done </dev/tty
+    return 1
+  fi
+}
+
+local_servers() {
+  local proto=$1 country=${2:-} file
+  for file in "$NORDVPN_DIR/ovpn_$proto/$country"*.ovpn; do
+    file=${file##*/}
+    printf '%s\n' "${file%%.nordvpn.com.*}"
+  done | sort -u
+}
+
+select_nordvpn() {
+  local countries country code id name servers cities city row
+  # An unavailable or empty API response falls back to local profiles.
+  if countries=$(curl -fsS --max-time 5 "$API/servers/countries" 2>/dev/null |
+    jq -er '.[] | [.code, (.id | tostring), .name] | @tsv' 2>/dev/null | sort -k3) && [[ -n $countries ]]; then
+    :
+  else
+    countries=$(local_servers "$protocol" | sed -nE 's/^([a-z]{2})[0-9]+$/\U\1/p' | sort -u |
+      awk '{printf "%s\t-\t(local)\n", $0}')
+  fi
+  [[ -n $countries ]] || die 'No hay países disponibles ni perfiles locales.'
+  country=$(printf '%s\n' "$countries" | pick 'País') || die 'Selección cancelada.'
+  IFS=$'\t' read -r code id name <<<"$country"
+  [[ $code =~ ^[A-Z]{2}$ && $id =~ ^([0-9]+|-)$ ]] || die 'País inválido.'
+
+  servers=''
+  if [[ $id != - ]]; then
+    servers=$(curl -fsS --max-time 5 \
+      "$API/servers/recommendations?filters%5Bcountry_id%5D=$id&filters%5Bservers_technologies%5D%5Bidentifier%5D=openvpn_$protocol&limit=$limit" 2>/dev/null |
+      jq -er 'sort_by(.load) | .[] | ["load: \(.load)%", (.locations[0].country.city.name // "?"), .hostname] | @tsv' 2>/dev/null) || servers=''
+  fi
+  if [[ -z $servers ]]; then
+    servers=$(local_servers "$protocol" "${code,,}" | awk '{printf "local\t?\t%s\n", $0}')
+  fi
+  [[ -n $servers ]] || die "No hay servidores para $name/$protocol."
+  cities=$(printf '%s\n' "$servers" | cut -f2 | sort -u)
+  if [[ $cities == *$'\n'* ]]; then
+    city=$(printf 'Todas\n%s\n' "$cities" | pick 'Ciudad') || die 'Selección cancelada.'
+    if [[ $city != Todas ]]; then
+      servers=$(printf '%s\n' "$servers" | awk -F '\t' -v city="$city" '$2 == city')
+    fi
+  fi
+  row=$(printf '%s\n' "$servers" | pick 'Servidor') || die 'Selección cancelada.'
+  server=${row##*$'\t'}
+  server=${server%.nordvpn.com}
+}
+
+select_server() {
+  local -a providers=() files=()
+  local file
+  [[ ! -d $NORDVPN_DIR ]] || providers+=(nordvpn)
+  [[ ! -d $VPND_DIR ]] || providers+=(vpnd)
+  ((${#providers[@]})) || die 'No hay directorios de proveedores OpenVPN.'
+  provider=$(printf '%s\n' "${providers[@]}" | pick 'Proveedor') || die 'Selección cancelada.'
+  provider_ok "$provider" || die 'Proveedor inválido.'
+  protocol=$(printf 'udp\ntcp\n' | pick 'Protocolo') || die 'Selección cancelada.'
+  [[ $protocol == udp || $protocol == tcp ]] || die 'Protocolo inválido.'
+  if [[ $provider == nordvpn ]]; then
+    select_nordvpn
+  else
+    files=("$VPND_DIR/$protocol/"*.ovpn)
+    ((${#files[@]})) || die "No hay perfiles vpnd/$protocol."
+    server=$(for file in "${files[@]}"; do
+      file=${file##*/}
+      printf '%s\n' "${file%.ovpn}"
+    done | pick 'Servidor') || die 'Selección cancelada.'
+  fi
+}
+
+start() {
+  local limit=20 server='' protocol=tcp provider=vpnd config auth service binary
+  local -a positional=()
+  while (($#)); do
+    case $1 in
+    --limit)
+      (($# >= 2)) && [[ $2 =~ ^[1-9][0-9]*$ ]] || die '--limit requiere un entero positivo.'
+      limit=$2
+      shift 2
+      ;;
+    -*) die "Opción desconocida: $1" ;;
+    *)
+      positional+=("$1")
+      shift
+      ;;
+    esac
+  done
+  ((${#positional[@]} <= 3)) || die 'Demasiados argumentos para start.'
+  need systemctl
+  need systemd-run
+  need openvpn
+  if ((${#positional[@]})); then
+    server=${positional[0]}
+    protocol=${positional[1]:-tcp}
+    provider=${positional[2]:-vpnd}
+  else
+    select_server
+  fi
+  provider_ok "$provider" || die "Proveedor inválido: $provider"
+  [[ $protocol == udp || $protocol == tcp ]] || die "Protocolo inválido: $protocol"
+  [[ $server =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ && $server != *..* ]] || die 'Servidor inválido.'
+  case $provider in
+  nordvpn) config="$NORDVPN_DIR/ovpn_$protocol/$server.nordvpn.com.$protocol.ovpn" ;;
+  vpnd) config="$VPND_DIR/$protocol/$server.ovpn" ;;
+  esac
+  [[ -f $config ]] || die "Perfil no encontrado: $config"
+  auth="/etc/openvpn/$provider/auth"
+  need sudo
+  sudo test -f "$auth" || die "Faltan las credenciales locales: $auth"
+  # Legacy PID files are untrusted: never feed their contents to sudo kill.
+  [[ ! -e /tmp/openvpn-nordvpn.pid && ! -e /tmp/openvpn-vpnd.pid ]] ||
+    die 'Hay estado de los scripts antiguos en /tmp/openvpn-*.pid; revisa y desconecta esas sesiones primero.'
+  service=$(unit "$provider")
+  binary=$(command -v openvpn)
+  if running "$provider"; then
+    sudo systemctl stop "$service"
+  fi
+  sudo systemd-run --unit="$service" --collect --property=Type=exec --expand-environment=no -- \
+    "$binary" --cd "${config%/*}" --config "$config" --auth-user-pass "$auth" --auth-nocache
+  printf 'Proceso iniciado para %s/%s (%s); esto no confirma que el túnel esté conectado.\n' "$provider" "$server" "$protocol"
+  printf 'Comprueba la conexión en: journalctl -u %s\n' "$service"
+}
+
+stop() {
+  local provider=${1:-} item
+  local -a active=()
+  (($# <= 1)) || die 'Uso: ovpn stop [nordvpn|vpnd|all]'
+  [[ -z $provider || $provider == all ]] || provider_ok "$provider" || die 'Proveedor inválido.'
+  need systemctl
+  if [[ -z $provider ]]; then
+    for item in nordvpn vpnd; do
+      if running "$item"; then active+=("$item"); fi
+    done
+    ((${#active[@]})) || {
+      printf 'No hay servicios OpenVPN activos gestionados por este comando.\n'
+      return
+    }
+    if ((${#active[@]} == 1)); then
+      provider=${active[0]}
+    else
+      provider=$(printf '%s\nall\n' "${active[@]}" | pick 'Desconectar') || die 'Selección cancelada.'
+    fi
+  fi
+  need sudo
+  case $provider in
+  all)
+    for item in nordvpn vpnd; do
+      if running "$item"; then sudo systemctl stop "$(unit "$item")"; fi
+    done
+    ;;
+  nordvpn | vpnd) sudo systemctl stop "$(unit "$provider")" ;;
+  *) die 'Proveedor inválido.' ;;
+  esac
+}
+
+status() {
+  local provider
+  local -a providers=(nordvpn vpnd)
+  (($# <= 1)) || die 'Uso: ovpn status [nordvpn|vpnd]'
+  if (($#)); then
+    provider_ok "$1" || die 'Proveedor inválido.'
+    providers=("$1")
+  fi
+  need systemctl
+  for provider in "${providers[@]}"; do
+    printf '%s (estado del proceso, no del túnel):\n' "$provider"
+    systemctl show "$(unit "$provider")" --property=ActiveState,SubState,Result
+  done
+}
+
+case ${1:-help} in
+help | -h | --help) usage ;;
+start | stop | status)
+  action=$1
+  shift
+  "$action" "$@"
+  ;;
+*)
+  usage >&2
+  exit 2
+  ;;
+esac

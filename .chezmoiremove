@@ -1,0 +1,11 @@
+# Retired VPN entry points; replacements are ovpn and ikev2.
+{{ if eq .chezmoi.os "linux" }}
+.local/bin/openvpn-start
+.local/bin/openvpn-stop
+.local/bin/openvpn-status
+.local/bin/ikev2-start
+.local/bin/ikev2-stop
+.local/bin/ikev2-status
+.local/bin/openvpn-vpn
+.local/bin/ikev2-vpn
+{{ end }}
