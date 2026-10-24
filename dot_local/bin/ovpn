@@ -16,6 +16,13 @@ Uso: ovpn start [servidor [udp|tcp [nordvpn|vpnd]]] [--limit N]
      ovpn creds list
      ovpn creds set    <perfil> | --provider nordvpn|vpnd | --all
      ovpn creds delete <perfil> | --provider nordvpn|vpnd | --all
+     ovpn import [--countries es,de|all] [--servers es114,de920] [--protocol udp|tcp]
+                 [--per-country N] [--yes]
+
+import precarga perfiles NordVPN en NetworkManager (para verlos en DMS) desde los .ovpn locales.
+Por país elige los N servidores con menos carga según la API (defecto 1; sin API, el primero
+local). Protocolo por defecto: udp. Pide confirmación por encima de 20 perfiles (--yes la omite).
+No hace falta para conectar: ovpn start importa el servidor elegido la primera vez.
 
 creds gestiona el usuario de los perfiles de NetworkManager (<proveedor>-<servidor>-<protocolo>).
 set guarda usuario y contraseña (texto plano, solo root) en los perfiles; con la contraseña vacía
@@ -87,8 +94,26 @@ nm_ensure_user() {
   nmcli connection modify id "$name" +vpn.data "username=$user"
 }
 
+# Import one .ovpn as a NetworkManager profile unless it already exists.
+nm_import() {
+  local name=$1 config=$2 tmp
+  if nmcli -t -f NAME connection show | grep -Fxq -- "$name"; then
+    return 0
+  fi
+  tmp=$(mktemp -d)
+  cp -- "$config" "$tmp/$name.ovpn"
+  if ! nmcli connection import type openvpn file "$tmp/$name.ovpn" >/dev/null; then
+    rm -f -- "$tmp/$name.ovpn"
+    rmdir -- "$tmp"
+    return 1
+  fi
+  rm -f -- "$tmp/$name.ovpn"
+  rmdir -- "$tmp"
+  nmcli connection modify id "$name" connection.autoconnect no
+}
+
 nm_start() {
-  local provider=$1 server=$2 protocol=$3 config=$4 name tmp user='' pass='' item
+  local provider=$1 server=$2 protocol=$3 config=$4 name user='' pass='' item
   name="$provider-$server-$protocol"
   if [[ $auth_mode == file ]]; then
     [[ -f $CRED_FILE && $(stat -c %a "$CRED_FILE") == 600 ]] ||
@@ -98,18 +123,7 @@ nm_start() {
     [[ $user =~ ^[A-Za-z0-9._@+-]+$ && -n $pass ]] ||
       die "Credenciales incompletas en $CRED_FILE; repite: ovpn login"
   fi
-  if ! nmcli -t -f NAME connection show | grep -Fxq -- "$name"; then
-    tmp=$(mktemp -d)
-    cp -- "$config" "$tmp/$name.ovpn"
-    if ! nmcli connection import type openvpn file "$tmp/$name.ovpn" >/dev/null; then
-      rm -f -- "$tmp/$name.ovpn"
-      rmdir -- "$tmp"
-      die "No se pudo importar el perfil $name en NetworkManager."
-    fi
-    rm -f -- "$tmp/$name.ovpn"
-    rmdir -- "$tmp"
-    nmcli connection modify id "$name" connection.autoconnect no
-  fi
+  nm_import "$name" "$config" || die "No se pudo importar el perfil $name en NetworkManager."
   [[ $auth_mode == file ]] || nm_ensure_user "$provider" "$name"
   # Only one of our VPNs at a time.
   while IFS= read -r item; do
@@ -178,6 +192,103 @@ login() {
   printf 'Credenciales guardadas en %s (modo 600, fuera de Git).\n' "$CRED_FILE"
 }
 
+# Preload NordVPN profiles into NetworkManager so DMS lists them.
+import_profiles() {
+  local protocol=udp per=1 yes='' countries='' servers='' api='' id='' found='' code server name config answer
+  local imported=0 existing_n=0 missing=0 failed=0 i=0 existing
+  local -a codes=() names=() plan=()
+  while (($#)); do
+    case $1 in
+    --countries | --servers | --protocol | --per-country)
+      (($# >= 2)) || die "$1 requiere un valor."
+      case $1 in
+      --countries) countries=$2 ;;
+      --servers) servers=$2 ;;
+      --protocol) protocol=$2 ;;
+      --per-country) per=$2 ;;
+      esac
+      shift 2
+      ;;
+    --yes)
+      yes=1
+      shift
+      ;;
+    *) die "Opción desconocida: $1" ;;
+    esac
+  done
+  [[ $backend == nm ]] || die 'import solo funciona con --backend nm.'
+  [[ -n $countries || -n $servers ]] || die 'Indica --countries es,de|all y/o --servers es114,de920.'
+  [[ $protocol == udp || $protocol == tcp ]] || die "Protocolo inválido: $protocol"
+  [[ $per =~ ^[1-9][0-9]*$ ]] || die '--per-country requiere un entero positivo.'
+  need nmcli
+  need curl
+  need jq
+  [[ -d $NORDVPN_DIR ]] || die "No existe $NORDVPN_DIR; extrae allí el ZIP de NordVPN."
+
+  api=$(curl -fsS --max-time 10 "$API/servers/countries" 2>/dev/null |
+    jq -er '.[] | [(.code | ascii_downcase), (.id | tostring)] | @tsv' 2>/dev/null) || api=''
+  IFS=, read -r -a codes <<<"${countries,,}"
+  IFS=, read -r -a names <<<"${servers,,}"
+  if [[ ${codes[0]:-} == all ]]; then
+    if [[ -n $api ]]; then
+      mapfile -t codes < <(cut -f1 <<<"$api")
+    else
+      mapfile -t codes < <(local_servers "$protocol" | sed -nE 's/^([a-z]{2})[0-9]+$/\1/p' | sort -u)
+    fi
+  fi
+  [[ -n $api ]] || printf 'Aviso: API de NordVPN no disponible; se usan los perfiles locales.\n' >&2
+  for code in "${codes[@]}"; do
+    [[ $code =~ ^[a-z]{2}$ ]] || die "Código de país inválido: $code"
+    id=$(awk -F '\t' -v c="$code" '$1 == c {print $2; exit}' <<<"$api")
+    found=''
+    if [[ -n $id ]]; then
+      found=$(curl -fsS --max-time 10 \
+        "$API/servers/recommendations?filters%5Bcountry_id%5D=$id&filters%5Bservers_technologies%5D%5Bidentifier%5D=openvpn_$protocol&limit=$per" 2>/dev/null |
+        jq -er '.[].hostname | sub("\\.nordvpn\\.com$"; "")' 2>/dev/null) || found=''
+    fi
+    if [[ -z $found ]]; then
+      found=$(local_servers "$protocol" "$code" | grep -E "^${code}[0-9]+$" | head -n "$per" || true)
+    fi
+    if [[ -z $found ]]; then
+      printf 'Aviso: sin servidores para %s.\n' "$code" >&2
+      continue
+    fi
+    while IFS= read -r server; do names+=("$server"); done <<<"$found"
+  done
+  for server in "${names[@]}"; do
+    [[ $server =~ ^[a-z]{2}(-[a-z]+)?[0-9]+$ ]] || die "Servidor inválido: $server"
+  done
+  ((${#names[@]})) || die 'No hay nada que importar.'
+  mapfile -t plan < <(printf '%s\n' "${names[@]}" | sort -u)
+
+  if ((${#plan[@]} > 20)) && [[ -z $yes ]]; then
+    [[ -t 0 ]] || die "Hay ${#plan[@]} perfiles; confirma con --yes."
+    read -r -p "¿Importar ${#plan[@]} perfiles en NetworkManager? [s/N] " answer
+    [[ $answer == [sSyY] ]] || die 'Cancelado.'
+  fi
+  existing=$(nmcli -t -f NAME connection show)
+  for server in "${plan[@]}"; do
+    i=$((i + 1))
+    name="nordvpn-$server-$protocol"
+    config="$NORDVPN_DIR/ovpn_$protocol/$server.nordvpn.com.$protocol.ovpn"
+    if grep -Fxq -- "$name" <<<"$existing"; then
+      existing_n=$((existing_n + 1))
+    elif [[ ! -f $config ]]; then
+      missing=$((missing + 1))
+      printf 'Aviso: sin perfil local para %s (¿ZIP desactualizado?).\n' "$server" >&2
+    elif nm_import "$name" "$config"; then
+      imported=$((imported + 1))
+    else
+      failed=$((failed + 1))
+      printf 'Error: no se pudo importar %s.\n' "$name" >&2
+    fi
+    if ((i % 10 == 0)); then printf '%d/%d\n' "$i" "${#plan[@]}"; fi
+  done
+  printf 'Importados: %d, ya existían: %d, sin perfil local: %d, fallidos: %d.\n' \
+    "$imported" "$existing_n" "$missing" "$failed"
+  ((failed == 0)) || exit 1
+}
+
 # Our VPN profiles in NetworkManager, one per line.
 nm_profiles() {
   nmcli -t -f NAME,TYPE connection show |
@@ -238,6 +349,8 @@ creds() {
       [[ $answer == [sSyY] ]] || die 'Cancelado.'
       for item in "${list[@]}"; do
         nmcli connection delete id "$item" >/dev/null || die "No se pudo borrar $item."
+        # NetworkManager leaves the imported certificates behind.
+        rm -f -- "$HOME/.local/share/networkmanagement/certificates/nm-openvpn/$item"-*.pem
       done
       printf 'Borrados %d perfil(es). Lo que DMS tenga en su agente de secretos no se borra desde aquí.\n' "${#list[@]}"
     fi
@@ -296,7 +409,9 @@ select_nordvpn() {
       jq -er 'sort_by(.load) | .[] | ["load: \(.load)%", (.locations[0].country.city.name // "?"), .hostname] | @tsv' 2>/dev/null) || servers=''
   fi
   if [[ -z $servers ]]; then
-    servers=$(local_servers "$protocol" "${code,,}" | awk '{printf "local\t?\t%s\n", $0}')
+    # Only plain country servers: "ch*" would also match double-VPN files such as ch-fr12.
+    servers=$(local_servers "$protocol" "${code,,}" | { grep -E "^${code,,}[0-9]+$" || true; } |
+      awk '{printf "local\t?\t%s\n", $0}')
   fi
   [[ -n $servers ]] || die "No hay servidores para $name/$protocol."
   cities=$(printf '%s\n' "$servers" | cut -f2 | sort -u)
@@ -473,6 +588,10 @@ set -- "${args[@]+"${args[@]}"}"
 
 case ${1:-help} in
 help | -h | --help) usage ;;
+import)
+  shift
+  import_profiles "$@"
+  ;;
 start | stop | status | login | creds)
   action=$1
   shift

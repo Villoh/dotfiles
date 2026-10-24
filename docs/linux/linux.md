@@ -73,6 +73,9 @@ ovpn login                          # Store service credentials for --auth file
 ovpn creds list                     # Profiles and their usernames (never passwords)
 ovpn creds set --provider nordvpn   # Set username/password on a profile, a provider, or --all
 ovpn creds delete <profile>         # Delete profiles (and the credentials stored in them)
+ovpn import --countries es,de       # Preload the least-loaded server per country into NetworkManager
+ovpn import --countries all --yes   # One per country (about 155 profiles)
+ovpn import --servers es114,de920   # Specific servers
 ovpn --backend systemd start ...    # Legacy systemd-run backend (needs sudo, not shown in DMS)
 ikev2 start                            # Interactive NordVPN country/server selection
 ikev2 start es123.nordvpn.com
@@ -108,6 +111,17 @@ and vpnd profiles from `~/.config/openvpn/vpnd/{udp,tcp}/`.
   the password to `nmcli` through a temporary `passwd-file` (never argv) and
   stores only the username in the profile. DMS does not use this file and may
   still prompt. Not yet verified against a real connection.
+
+`ovpn start` imports the chosen server on first use, so importing is optional.
+`ovpn import` preloads profiles from the local `.ovpn` files so DMS lists them
+without going through `ovpn` first. `--per-country N` picks the N least-loaded
+servers per country from the NordVPN API (falls back to the first local ones),
+`--protocol udp|tcp` defaults to udp, and more than 20 profiles need confirmation
+or `--yes`. Existing profiles are skipped, so it is safe to repeat. Plain country
+servers only: double-VPN names such as `ch-fr12` are not picked for a country.
+It copies nothing sensitive; set the username with `ovpn creds set`. Servers
+change over time: re-run it after refreshing the ZIP (`downloads.nordcdn.com/
+configs/archives/servers/ovpn.zip`).
 
 `ovpn creds` manages the `<provider>-*` NetworkManager profiles, individually
 or in batch (`--provider`, `--all`). `set` writes the username and, if given,
