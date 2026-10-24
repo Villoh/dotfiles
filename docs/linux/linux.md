@@ -113,12 +113,7 @@ Stop terminates only `nordvpn`, leaving other tunnels and NetworkManager alone.
 Both scripts use Bash from `PATH`; neither installs dependencies. These are
 standalone clients, not NetworkManager/DMS profile managers or kill switches.
 Do not run them alongside DMS-managed VPNs; verify DNS and IPv6 when connecting.
-
-Run the isolated regression checks without sudo or a network connection:
-
-```bash
-python3 docs/linux/test_vpn.py
-```
+They have no automated tests; check them against a real connection.
 
 ## uv tools
 
