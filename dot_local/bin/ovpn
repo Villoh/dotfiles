@@ -12,13 +12,22 @@ usage() {
 Uso: ovpn start [servidor [udp|tcp [nordvpn|vpnd]]] [--limit N]
      ovpn stop [nordvpn|vpnd|all]
      ovpn status [nordvpn|vpnd]
+     ovpn login
+
+Opciones (también OVPN_BACKEND / OVPN_AUTH):
+  --backend nm|systemd   nm (defecto): perfiles de NetworkManager, los mismos que DMS.
+                         systemd: lanza openvpn con systemd-run (sudo, sin DMS).
+  --auth dms|file        dms (defecto): usa lo guardado en NetworkManager y pide en el
+                         terminal lo que falte. file: lee ~/.config/ovpn/credentials
+                         (modo 600, se crea con ovpn login).
 
 Sin servidor, start abre el selector de proveedor, protocolo, país y ciudad.
 En modo directo se conservan los valores por defecto: tcp y vpnd.
-Credenciales locales: /etc/openvpn/<proveedor>/auth (solo root, modo 600).
-Los perfiles se leen de ~/.config/openvpn/{nordvpn,vpnd}/.
-No gestiona conexiones de NetworkManager/DMS ni ofrece kill switch.
-Logs: journalctl -u openvpn-vpn-<proveedor>.service
+Los perfiles se leen de ~/.config/openvpn/{nordvpn,vpnd}/ y se importan a
+NetworkManager como <proveedor>-<servidor>-<protocolo> la primera vez.
+Backend systemd: credenciales en /etc/openvpn/<proveedor>/auth (solo root, modo 600);
+logs con journalctl -u openvpn-vpn-<proveedor>.service
+Sin kill switch.
 HELP
 }
 
@@ -37,6 +46,128 @@ running() {
   inactive | failed) return 1 ;;
   *) die "No se pudo consultar el servicio de $1 (estado: ${state:-desconocido})." ;;
   esac
+}
+
+CRED_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/ovpn/credentials"
+PASSFILE=''
+trap '[[ -z $PASSFILE ]] || rm -f -- "$PASSFILE"' EXIT
+
+# Active NetworkManager VPN profiles created by this script (prefix = provider).
+nm_ours() {
+  nmcli -t -f NAME,TYPE connection show --active |
+    awk -F: -v re="^${1:-(nordvpn|vpnd)}-" '$2 == "vpn" && $1 ~ re {print $1}'
+}
+
+nm_user_of() {
+  nmcli -g vpn.data connection show id "$1" | sed 's/\\,/;/g' | tr ',' '\n' | sed -n 's/^ *username = //p' | head -n 1
+}
+
+# Imported profiles carry no username and nmcli --ask only asks for the password,
+# so copy it from another profile of the provider or ask for it once.
+nm_ensure_user() {
+  local provider=$1 name=$2 user='' other
+  [[ -z $(nm_user_of "$name") ]] || return 0
+  while IFS= read -r other; do
+    user=$(nm_user_of "$other")
+    [[ -z $user ]] || break
+  done < <(nmcli -t -f NAME connection show | awk -v p="$provider-" 'index($0, p) == 1')
+  if [[ -z $user ]]; then
+    [[ -t 0 ]] || die "Falta el usuario de $name; ejecuta ovpn en un terminal o con DMS."
+    read -r -p "Usuario de servicio $provider: " user
+  fi
+  [[ $user =~ ^[A-Za-z0-9._@+-]+$ ]] || die 'Usuario no válido.'
+  nmcli connection modify id "$name" +vpn.data "username=$user"
+}
+
+nm_start() {
+  local provider=$1 server=$2 protocol=$3 config=$4 name tmp user='' pass='' item
+  name="$provider-$server-$protocol"
+  if [[ $auth_mode == file ]]; then
+    [[ -f $CRED_FILE && $(stat -c %a "$CRED_FILE") == 600 ]] ||
+      die "Falta $CRED_FILE con modo 600; créalo con: ovpn login"
+    user=$(sed -n 's/^username=//p' "$CRED_FILE" | head -n 1)
+    pass=$(sed -n 's/^password=//p' "$CRED_FILE" | head -n 1)
+    [[ $user =~ ^[A-Za-z0-9._@+-]+$ && -n $pass ]] ||
+      die "Credenciales incompletas en $CRED_FILE; repite: ovpn login"
+  fi
+  if ! nmcli -t -f NAME connection show | grep -Fxq -- "$name"; then
+    tmp=$(mktemp -d)
+    cp -- "$config" "$tmp/$name.ovpn"
+    if ! nmcli connection import type openvpn file "$tmp/$name.ovpn" >/dev/null; then
+      rm -f -- "$tmp/$name.ovpn"
+      rmdir -- "$tmp"
+      die "No se pudo importar el perfil $name en NetworkManager."
+    fi
+    rm -f -- "$tmp/$name.ovpn"
+    rmdir -- "$tmp"
+    nmcli connection modify id "$name" connection.autoconnect no
+  fi
+  [[ $auth_mode == file ]] || nm_ensure_user "$provider" "$name"
+  # Only one of our VPNs at a time.
+  while IFS= read -r item; do
+    [[ $item == "$name" ]] || nmcli connection down id "$item" >/dev/null
+  done < <(nm_ours)
+  if [[ $auth_mode == file ]]; then
+    nmcli connection modify id "$name" +vpn.data "username=$user"
+    PASSFILE=$(mktemp)
+    printf 'vpn.secrets.password:%s\n' "$pass" >"$PASSFILE"
+    nmcli connection up id "$name" passwd-file "$PASSFILE" || die "No se pudo conectar $name."
+  else
+    # Saved secrets are used silently; missing ones are asked for in the terminal.
+    nmcli --ask connection up id "$name" || die "No se pudo conectar $name."
+  fi
+  printf 'Conectado: %s\n' "$name"
+}
+
+nm_stop() {
+  local provider=${1:-} re='(nordvpn|vpnd)' item
+  local -a active
+  [[ -z $provider || $provider == all ]] || re=$provider
+  mapfile -t active < <(nm_ours "$re")
+  ((${#active[@]})) || {
+    printf 'No hay VPN de NetworkManager activas.\n'
+    return
+  }
+  if [[ -n $provider ]]; then
+    item=all
+  elif ((${#active[@]} == 1)); then
+    item=${active[0]}
+  else
+    item=$(printf '%s\nall\n' "${active[@]}" | pick 'Desconectar') || die 'Selección cancelada.'
+  fi
+  if [[ $item == all ]]; then
+    for item in "${active[@]}"; do nmcli connection down id "$item"; done
+  else
+    nmcli connection down id "$item"
+  fi
+}
+
+nm_status() {
+  local re='(nordvpn|vpnd)'
+  local -a active
+  if (($# == 1)); then re=$1; fi
+  mapfile -t active < <(nm_ours "$re")
+  ((${#active[@]})) || {
+    printf 'VPN desconectada (NetworkManager).\n'
+    return
+  }
+  printf '%s: activa\n' "${active[@]}"
+}
+
+login() {
+  local user pass
+  [[ -t 0 ]] || die 'ovpn login necesita un terminal.'
+  read -r -p 'Usuario de servicio NordVPN: ' user
+  read -r -s -p 'Contraseña de servicio: ' pass
+  printf '\n'
+  [[ $user =~ ^[A-Za-z0-9._@+-]+$ && -n $pass ]] || die 'Usuario o contraseña no válidos.'
+  (
+    umask 077
+    mkdir -p -- "${CRED_FILE%/*}"
+    printf 'username=%s\npassword=%s\n' "$user" "$pass" >"$CRED_FILE"
+  )
+  chmod 600 -- "$CRED_FILE"
+  printf 'Credenciales guardadas en %s (modo 600, fuera de Git).\n' "$CRED_FILE"
 }
 
 pick() {
@@ -144,9 +275,13 @@ start() {
     esac
   done
   ((${#positional[@]} <= 3)) || die 'Demasiados argumentos para start.'
-  need systemctl
-  need systemd-run
-  need openvpn
+  if [[ $backend == nm ]]; then
+    need nmcli
+  else
+    need systemctl
+    need systemd-run
+    need openvpn
+  fi
   if ((${#positional[@]})); then
     server=${positional[0]}
     protocol=${positional[1]:-tcp}
@@ -162,6 +297,10 @@ start() {
   vpnd) config="$VPND_DIR/$protocol/$server.ovpn" ;;
   esac
   [[ -f $config ]] || die "Perfil no encontrado: $config"
+  if [[ $backend == nm ]]; then
+    nm_start "$provider" "$server" "$protocol" "$config"
+    return
+  fi
   auth="/etc/openvpn/$provider/auth"
   need sudo
   sudo test -f "$auth" || die "Faltan las credenciales locales: $auth"
@@ -184,6 +323,11 @@ stop() {
   local -a active=()
   (($# <= 1)) || die 'Uso: ovpn stop [nordvpn|vpnd|all]'
   [[ -z $provider || $provider == all ]] || provider_ok "$provider" || die 'Proveedor inválido.'
+  if [[ $backend == nm ]]; then
+    need nmcli
+    nm_stop "$provider"
+    return
+  fi
   need systemctl
   if [[ -z $provider ]]; then
     for item in nordvpn vpnd; do
@@ -219,6 +363,11 @@ status() {
     provider_ok "$1" || die 'Proveedor inválido.'
     providers=("$1")
   fi
+  if [[ $backend == nm ]]; then
+    need nmcli
+    nm_status "${providers[@]}"
+    return
+  fi
   need systemctl
   for provider in "${providers[@]}"; do
     printf '%s (estado del proceso, no del túnel):\n' "$provider"
@@ -226,9 +375,29 @@ status() {
   done
 }
 
+backend=${OVPN_BACKEND:-nm}
+auth_mode=${OVPN_AUTH:-dms}
+args=()
+while (($#)); do
+  case $1 in
+  --backend | --auth)
+    (($# >= 2)) || die "$1 requiere un valor."
+    if [[ $1 == --backend ]]; then backend=$2; else auth_mode=$2; fi
+    shift 2
+    ;;
+  *)
+    args+=("$1")
+    shift
+    ;;
+  esac
+done
+set -- "${args[@]+"${args[@]}"}"
+[[ $backend == nm || $backend == systemd ]] || die "Backend inválido: $backend (usa nm o systemd)."
+[[ $auth_mode == dms || $auth_mode == file ]] || die "Auth inválido: $auth_mode (usa dms o file)."
+
 case ${1:-help} in
 help | -h | --help) usage ;;
-start | stop | status)
+start | stop | status | login)
   action=$1
   shift
   "$action" "$@"

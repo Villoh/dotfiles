@@ -67,8 +67,10 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 ```bash
 ovpn start                          # Interactive provider/country/city selection
 ovpn start es123 udp nordvpn        # Explicit NordVPN profile
-ovpn stop                           # Select an active provider
+ovpn stop                           # Select an active VPN
 ovpn status
+ovpn login                          # Store service credentials for --auth file
+ovpn --backend systemd start ...    # Legacy systemd-run backend (needs sudo, not shown in DMS)
 ikev2 start                            # Interactive NordVPN country/server selection
 ikev2 start es123.nordvpn.com
 ikev2 stop
@@ -76,13 +78,33 @@ ikev2 status
 ```
 
 These replace `openvpn-{start,stop,status}` and `ikev2-{start,stop,status}`.
-OpenVPN reads NordVPN profiles from `~/.config/openvpn/nordvpn/ovpn_{udp,tcp}/`
-and vpnd profiles from `~/.config/openvpn/vpnd/{udp,tcp}/`. Credentials stay in
-root-only `/etc/openvpn/<provider>/auth`, outside Git. NixOS must provide the
-`openvpn` executable. Transient `openvpn-vpn-<provider>.service` units own the
-processes; inspect their logs with `journalctl -u`. Status reports process state,
-not proof of a working VPN. Old `/tmp/openvpn-*.pid` sessions are not adopted;
-review and disconnect them before using the replacement.
+`ovpn` reads NordVPN profiles from `~/.config/openvpn/nordvpn/ovpn_{udp,tcp}/`
+and vpnd profiles from `~/.config/openvpn/vpnd/{udp,tcp}/`.
+
+`--backend nm|systemd` (or `OVPN_BACKEND`) selects how it connects:
+
+- `nm` (default): NetworkManager, the same profiles DMS shows under Settings,
+  Network, VPN. The first `ovpn start` of a server imports it as
+  `<provider>-<server>-<protocol>` (for example `nordvpn-es114-udp`) with
+  autoconnect off; later runs and DMS reuse it. Only one `ovpn` VPN stays active.
+  Requires the NixOS `networkmanager-openvpn` plugin. `nmcli connection up` waits
+  for the result, so a failed connection fails the command.
+- `systemd`: legacy path. Transient `openvpn-vpn-<provider>.service` units own
+  the processes (logs: `journalctl -u`); credentials in root-only
+  `/etc/openvpn/<provider>/auth`. Status shows process state, not proof of a
+  working VPN. It needs `sudo` and the `openvpn` executable. Old
+  `/tmp/openvpn-*.pid` sessions are not adopted; disconnect them first.
+
+`--auth dms|file` (or `OVPN_AUTH`) applies to the `nm` backend:
+
+- `dms` (default): `nmcli --ask connection up`. Secrets NetworkManager already
+  has (for example saved from the DMS dialog) are used silently; missing ones
+  are asked in the terminal. Where DMS keeps a saved password is not verified.
+- `file`: reads `~/.config/ovpn/credentials` (mode `600`, outside Git, created by
+  `ovpn login`, which hides the password). `ovpn` refuses any other mode, passes
+  the password to `nmcli` through a temporary `passwd-file` (never argv) and
+  stores only the username in the profile. DMS does not use this file and may
+  still prompt. Not yet verified against a real connection.
 
 IKEv2 requires `swanctl`, the existing `strongswan` service, and an existing
 `/etc/swanctl/swanctl.conf` with a connection and child named `nordvpn`.

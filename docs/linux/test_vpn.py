@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import pty
 import shutil
 import subprocess
 import sys
@@ -63,6 +64,34 @@ if name == "swanctl":
         if os.environ.get("TERM_FAIL") == "1": sys.exit(1)
         state["tunnel"] = False
         save()
+if name == "nmcli":
+    verb = next((a for a in args if a in ("show", "import", "modify", "up", "down")), "")
+    profiles, active = state.get("profiles", []), state.get("nm_active", [])
+    if verb == "show" and "-g" in args:
+        u = state.get("users", {}).get(args[args.index("id") + 1])
+        if u: print(f"username = {u}")
+    elif verb == "show":
+        fields = args[args.index("-f") + 1] if "-f" in args else "NAME"
+        for n in (active if "--active" in args else profiles):
+            print(f"{n}:vpn" if "TYPE" in fields else n)
+    elif verb == "import":
+        if os.environ.get("IMPORT_FAIL") == "1": sys.exit(1)
+        state["profiles"] = profiles + [pathlib.Path(args[-1]).stem]
+        save()
+    elif verb == "modify":
+        if "+vpn.data" in args and args[-1].startswith("username="):
+            state.setdefault("users", {})[args[args.index("id") + 1]] = args[-1].split("=", 1)[1]
+            save()
+    elif verb == "up":
+        if os.environ.get("UP_FAIL") == "1": sys.exit(4)
+        if "passwd-file" in args:
+            p = pathlib.Path(args[args.index("passwd-file") + 1])
+            log(["passwd", p.read_text(), oct(p.stat().st_mode & 0o777)])
+        state["nm_active"] = active + [args[args.index("id") + 1]]
+        save()
+    elif verb == "down":
+        state["nm_active"] = [a for a in active if a != args[args.index("id") + 1]]
+        save()
 if name == "curl":
     if os.environ.get("API_FAIL") == "1": sys.exit(22)
     url = args[-1]
@@ -90,7 +119,7 @@ with tempfile.TemporaryDirectory(prefix="vpn-test-") as directory:
     stub = bin_dir / "stub"
     stub.write_text(f"#!{sys.executable}\n" + STUB)
     stub.chmod(0o755)
-    for name in ("sudo", "systemctl", "systemd-run", "openvpn", "swanctl", "getent", "curl", "fzf"):
+    for name in ("sudo", "systemctl", "systemd-run", "openvpn", "swanctl", "getent", "curl", "fzf", "nmcli"):
         (bin_dir / name).symlink_to(stub)
     for relative in ("nordvpn/ovpn_udp/es123.nordvpn.com.udp.ovpn", "nordvpn/ovpn_udp/es123.nordvpn.com.udp_2.6.ovpn", "nordvpn/ovpn_tcp/es123.nordvpn.com.tcp.ovpn", "vpnd/udp/example.ovpn", "vpnd/tcp/example.ovpn"):
         path = home / ".config/openvpn" / relative
@@ -98,11 +127,15 @@ with tempfile.TemporaryDirectory(prefix="vpn-test-") as directory:
         path.write_text("client\n")
     statefile, trace = root / "state.json", root / "trace.jsonl"
 
+    def base_env(env=None):
+        # Systemd backend by default so the legacy tests stay valid; an empty value selects the real default.
+        return {**os.environ, "HOME": str(home), "XDG_CONFIG_HOME": str(home / ".config"), "OVPN_BACKEND": "systemd", "PATH": f"{bin_dir}:{os.environ['PATH']}", "STATE": str(statefile), "TRACE": str(trace), **(env or {})}
+
     def run(script, *args, state=None, env=None, input=None, ok=True):
         statefile.write_text(json.dumps(state or {}))
         trace.write_text("")
-        variables = {**os.environ, "HOME": str(home), "PATH": f"{bin_dir}:{os.environ['PATH']}", "STATE": str(statefile), "TRACE": str(trace), **(env or {})}
-        result = subprocess.run([BASH, str(SCRIPTS / script), *args], input=input, text=True, capture_output=True, env=variables, timeout=10)
+        variables = base_env(env)
+        result = subprocess.run([BASH, str(SCRIPTS / script), *args], input=input, **({} if input is not None else {"stdin": subprocess.DEVNULL}), text=True, capture_output=True, env=variables, timeout=10)
         events = [json.loads(line) for line in trace.read_text().splitlines()]
         assert (result.returncode == 0) == ok, (script, args, result.returncode, result.stdout, result.stderr)
         return result, events
@@ -118,6 +151,76 @@ with tempfile.TemporaryDirectory(prefix="vpn-test-") as directory:
     for args in (("start", "../../bad", "udp", "nordvpn"), ("start", "es123", "invalid", "nordvpn"), ("start", "es123", "udp", "unknown"), ("start", "es123", "--limit", "0"), ("start", "es123", "--limit")):
         _, events = run("ovpn", *args, ok=False)
         assert not any(row[0] == "sudo" for row in events)
+    # NetworkManager backend: an empty OVPN_BACKEND selects the real default.
+    default_nm = {"OVPN_BACKEND": ""}
+    profile = "nordvpn-es123-udp"
+    with_user = {"profiles": ["nordvpn-old-udp"], "users": {"nordvpn-old-udp": "svcuser"}}
+    result, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=default_nm, state=with_user)
+    assert ["nmcli", "connection", "modify", "id", profile, "+vpn.data", "username=svcuser"] in events, "Username copied from another profile"
+    _, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=default_nm, ok=False)
+    assert not any("up" in row for row in events if row[0] == "nmcli"), "No username and no terminal: must not try to connect"
+    result, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=default_nm, state=with_user)
+    assert not any(row[0] in ("sudo", "systemd-run", "systemctl") for row in events)
+    assert any(row[:3] == ["nmcli", "connection", "import"] for row in events)
+    assert ["nmcli", "--ask", "connection", "up", "id", profile] in events
+    _, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=default_nm, state={"profiles": [profile], "users": {profile: "svcuser"}})
+    assert not any(row[:3] == ["nmcli", "connection", "import"] for row in events)
+    other = "nordvpn-xx1-udp"
+    _, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=default_nm, state={"profiles": [profile, other], "nm_active": [other], "users": {profile: "svcuser"}})
+    down = [i for i, row in enumerate(events) if row[:2] == ["nmcli", "connection"] and "down" in row and other in row]
+    up = [i for i, row in enumerate(events) if "up" in row and row[0] == "nmcli"]
+    assert down and up and down[0] < up[0], "Only one VPN at a time"
+    _, events = run("ovpn", "start", "es123", "udp", "nordvpn", env={**default_nm, "IMPORT_FAIL": "1"}, ok=False)
+    assert not any("up" in row for row in events if row[0] == "nmcli")
+    run("ovpn", "start", "es123", "udp", "nordvpn", env={**default_nm, "UP_FAIL": "1"}, state=with_user, ok=False)
+    run("ovpn", "start", "es123", "udp", "nordvpn", env={"OVPN_BACKEND": "nm", "OVPN_AUTH": "bogus"}, ok=False)
+    run("ovpn", "--backend", "bogus", "status", ok=False)
+    _, events = run("ovpn", "--backend", "nm", "start", "es123", "udp", "nordvpn", state=with_user)
+    assert any(row[0] == "nmcli" for row in events), "--backend overrides the environment"
+    # File credentials: strict mode, password only through a temporary passwd-file, never argv.
+    cred = home / ".config/ovpn/credentials"
+    file_mode = {**default_nm, "OVPN_AUTH": "file"}
+    _, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=file_mode, ok=False)
+    assert not any("up" in row for row in events if row[0] == "nmcli")
+    cred.parent.mkdir(parents=True, exist_ok=True)
+    cred.write_text("username=svcuser\npassword=FAKEPW\n")
+    cred.chmod(0o644)
+    run("ovpn", "start", "es123", "udp", "nordvpn", env=file_mode, ok=False)
+    cred.chmod(0o600)
+    _, events = run("ovpn", "start", "es123", "udp", "nordvpn", env=file_mode)
+    passwd = next(row for row in events if row[0] == "passwd")
+    assert passwd[1] == "vpn.secrets.password:FAKEPW\n" and passwd[2] == "0o600"
+    assert ["nmcli", "connection", "modify", "id", profile, "+vpn.data", "username=svcuser"] in events
+    assert not any("FAKEPW" in arg for row in events if row[0] == "nmcli" for arg in row), "Password leaked into argv"
+    assert not any("--ask" in row for row in events if row[0] == "nmcli")
+    cred.write_text("username=svcuser\npassword=\n")
+    cred.chmod(0o600)
+    run("ovpn", "start", "es123", "udp", "nordvpn", env=file_mode, ok=False)
+    cred.unlink()
+    # login needs a terminal, writes mode 600 and never echoes the password.
+    run("ovpn", "login", env=default_nm, ok=False)
+    master, slave = pty.openpty()
+    proc = subprocess.Popen([BASH, str(SCRIPTS / "ovpn"), "login"], stdin=slave, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=base_env(default_nm))
+    os.close(slave)
+    os.write(master, b"svcuser\nSECRETPW\n")
+    out, err = proc.communicate(timeout=10)
+    os.close(master)
+    assert proc.returncode == 0, (out, err)
+    assert cred.read_text() == "username=svcuser\npassword=SECRETPW\n" and oct(cred.stat().st_mode & 0o777) == "0o600"
+    assert "SECRETPW" not in out + err
+    cred.unlink()
+    # stop and status on the NetworkManager backend.
+    _, events = run("ovpn", "stop", env=default_nm)
+    assert not any(row[:3] == ["nmcli", "connection", "down"] for row in events)
+    _, events = run("ovpn", "stop", env=default_nm, state={"nm_active": [profile]})
+    assert ["nmcli", "connection", "down", "id", profile] in events
+    _, events = run("ovpn", "stop", "vpnd", env=default_nm, state={"nm_active": [profile]})
+    assert not any(row[:3] == ["nmcli", "connection", "down"] for row in events), "Provider filter"
+    result, _ = run("ovpn", "status", env=default_nm, state={"nm_active": [profile]})
+    assert profile in result.stdout
+    result, _ = run("ovpn", "status", env=default_nm)
+    assert "desconectada" in result.stdout
+    assert not any(row[0] in ("sudo", "systemd-run", "systemctl") for row in events)
     result, events = run("ovpn", "start", "es123", "udp", "nordvpn")
     launch = next(row for row in events if row[0] == "systemd-run")
     assert "--unit=openvpn-vpn-nordvpn.service" in launch and "--expand-environment=no" in launch
