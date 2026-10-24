@@ -13,6 +13,14 @@ Uso: ovpn start [servidor [udp|tcp [nordvpn|vpnd]]] [--limit N]
      ovpn stop [nordvpn|vpnd|all]
      ovpn status [nordvpn|vpnd]
      ovpn login
+     ovpn creds list
+     ovpn creds set    <perfil> | --provider nordvpn|vpnd | --all
+     ovpn creds delete <perfil> | --provider nordvpn|vpnd | --all
+
+creds gestiona el usuario de los perfiles de NetworkManager (<proveedor>-<servidor>-<protocolo>).
+set guarda usuario y contraseña (texto plano, solo root) en los perfiles; con la contraseña vacía
+solo cambia el usuario. delete borra el perfil entero (la contraseña guardada no se puede quitar
+solo con nmcli); ovpn start lo vuelve a importar y a pedir credenciales cuando haga falta.
 
 Opciones (también OVPN_BACKEND / OVPN_AUTH):
   --backend nm|systemd   nm (defecto): perfiles de NetworkManager, los mismos que DMS.
@@ -168,6 +176,74 @@ login() {
   )
   chmod 600 -- "$CRED_FILE"
   printf 'Credenciales guardadas en %s (modo 600, fuera de Git).\n' "$CRED_FILE"
+}
+
+# Our VPN profiles in NetworkManager, one per line.
+nm_profiles() {
+  nmcli -t -f NAME,TYPE connection show |
+    awk -F: '$2 == "vpn" && $1 ~ /^(nordvpn|vpnd)-/ {print $1}'
+}
+
+# Targets of creds set/delete: a profile name, --provider nordvpn|vpnd, or --all.
+creds_targets() {
+  case ${1:-} in
+  --all) nm_profiles ;;
+  --provider)
+    provider_ok "${2:-}" || die 'Uso: --provider nordvpn|vpnd'
+    nm_profiles | grep -E "^$2-" || true
+    ;;
+  '') die 'Indica un perfil, --provider nordvpn|vpnd o --all.' ;;
+  -*) die "Opción desconocida: $1" ;;
+  *) nm_profiles | grep -Fx -- "$1" || die "Perfil no encontrado (solo nordvpn-* / vpnd-*): $1" ;;
+  esac
+}
+
+creds() {
+  local action=${1:-} targets user pass='' item answer
+  local -a list
+  shift || true
+  need nmcli
+  case $action in
+  list)
+    while IFS= read -r item; do
+      user=$(nm_user_of "$item")
+      printf '%s\t%s\n' "$item" "${user:--}"
+    done < <(nm_profiles)
+    ;;
+  set | delete)
+    targets=$(creds_targets "$@") || exit 1
+    [[ -n $targets ]] || die 'No hay perfiles que coincidan.'
+    mapfile -t list <<<"$targets"
+    [[ -t 0 ]] || die "creds $action necesita un terminal."
+    if [[ $action == set ]]; then
+      read -r -p "Usuario de servicio para ${#list[@]} perfil(es): " user
+      [[ $user =~ ^[A-Za-z0-9._@+-]+$ ]] || die 'Usuario no válido.'
+      read -r -s -p 'Contraseña de servicio (vacía = no cambiarla): ' pass
+      printf '\n'
+      # nmcli splits dictionary values on commas, so they cannot be stored safely.
+      [[ -z $pass || $pass =~ ^[^,[:space:]\\]+$ ]] || die 'La contraseña no puede llevar comas, espacios ni barras invertidas.'
+      for item in "${list[@]}"; do
+        if [[ -z $pass ]]; then
+          nmcli connection modify id "$item" +vpn.data "username=$user"
+        else
+          nmcli connection modify id "$item" +vpn.data "username=$user,password-flags=0"
+          # Through stdin so the password never appears in the process list.
+          printf 'set vpn.secrets password=%s\nsave\nquit\n' "$pass" |
+            nmcli connection edit id "$item" >/dev/null || die "No se pudo guardar la contraseña en $item."
+        fi
+      done
+      printf 'Actualizados %d perfil(es).\n' "${#list[@]}"
+    else
+      read -r -p "¿Borrar ${#list[@]} perfil(es) de NetworkManager, con su usuario y contraseña? [s/N] " answer
+      [[ $answer == [sSyY] ]] || die 'Cancelado.'
+      for item in "${list[@]}"; do
+        nmcli connection delete id "$item" >/dev/null || die "No se pudo borrar $item."
+      done
+      printf 'Borrados %d perfil(es). Lo que DMS tenga en su agente de secretos no se borra desde aquí.\n' "${#list[@]}"
+    fi
+    ;;
+  *) die 'Uso: ovpn creds list | set <perfil|--provider P|--all> | delete <perfil|--provider P|--all>' ;;
+  esac
 }
 
 pick() {
@@ -397,7 +473,7 @@ set -- "${args[@]+"${args[@]}"}"
 
 case ${1:-help} in
 help | -h | --help) usage ;;
-start | stop | status | login)
+start | stop | status | login | creds)
   action=$1
   shift
   "$action" "$@"

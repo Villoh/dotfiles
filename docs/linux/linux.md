@@ -70,6 +70,9 @@ ovpn start es123 udp nordvpn        # Explicit NordVPN profile
 ovpn stop                           # Select an active VPN
 ovpn status
 ovpn login                          # Store service credentials for --auth file
+ovpn creds list                     # Profiles and their usernames (never passwords)
+ovpn creds set --provider nordvpn   # Set username/password on a profile, a provider, or --all
+ovpn creds delete <profile>         # Delete profiles (and the credentials stored in them)
 ovpn --backend systemd start ...    # Legacy systemd-run backend (needs sudo, not shown in DMS)
 ikev2 start                            # Interactive NordVPN country/server selection
 ikev2 start es123.nordvpn.com
@@ -105,6 +108,18 @@ and vpnd profiles from `~/.config/openvpn/vpnd/{udp,tcp}/`.
   the password to `nmcli` through a temporary `passwd-file` (never argv) and
   stores only the username in the profile. DMS does not use this file and may
   still prompt. Not yet verified against a real connection.
+
+`ovpn creds` manages the `<provider>-*` NetworkManager profiles, individually
+or in batch (`--provider`, `--all`). `set` writes the username and, if given,
+the password; passwords go through `nmcli connection edit` on stdin, never argv,
+and cannot contain commas, spaces or backslashes. A password saved this way sits
+in the root-only NetworkManager profile, unencrypted, and `nmcli connection up`
+sends it without prompting (checked with fake credentials: NordVPN rejects them,
+so NetworkManager did send the stored password; DMS not checked). `delete`
+removes the whole profile because `-vpn.secrets` and an empty `vpn.secrets` did
+not clear a stored password in tests; secrets DMS keeps in its own agent are
+not touched.
+`ovpn start` reimports a deleted server and asks again as needed.
 
 IKEv2 requires `swanctl`, the existing `strongswan` service, and an existing
 `/etc/swanctl/swanctl.conf` with a connection and child named `nordvpn`.
