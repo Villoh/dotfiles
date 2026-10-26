@@ -1,0 +1,3 @@
+[templates.zapfast]
+input_path = '/home/mikel/.config/matugen/dms/templates/zapfast.json'
+output_path = '/home/mikel/.config/zapfast/themes/DMS.json'
