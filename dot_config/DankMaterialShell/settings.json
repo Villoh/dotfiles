@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "registry",
-  "customThemeFile": "/home/mikel/.config/DankMaterialShell/themes/tokyoNightDark/theme.json",
+  "customThemeFile": "/home/mikel/.config/DankMaterialShell/themes/omarchy-periphery/theme.json",
   "registryThemeVariants": {
     "catppuccin": {
       "dark": {
@@ -43,6 +43,116 @@
       "dark": {
         "flavor": "cyberdream-muted",
         "accent": "green"
+      }
+    },
+    "omarchy-catppuccin": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-catppuccin-latte": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-ethereal": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-everforest": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-flexoki-light": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-gruvbox": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-hackerman": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-jade-horse": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-kanagawa": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-last-horizon": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
+      }
+    },
+    "omarchy-periphery": {
+      "dark": {
+        "flavor": "default",
+        "accent": "default"
+      },
+      "light": {
+        "flavor": "default",
+        "accent": "default"
       }
     }
   },
