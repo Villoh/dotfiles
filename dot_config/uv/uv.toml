@@ -1,1 +1,5 @@
 exclude-newer = "3 days"
+
+# Own package (Villoh/goopdl): install new releases without the cooldown.
+[exclude-newer-package]
+goopdl = false
