@@ -10,4 +10,4 @@ manage files Omarchy owns.
 
 ## Contents
 
-- [Hotkeys](hotkeys.md): official keybindings table (Omarchy v4.0.4)
+- [Hotkeys](hotkeys.md): official keybindings table (Omarchy v4.0.6)
