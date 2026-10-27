@@ -1280,6 +1280,12 @@
         },
         "JumpToTop": {
             "enabled": false
+        },
+        "BetterBackreading": {
+            "enabled": false
+        },
+        "ExternalPlayer": {
+            "enabled": false
         }
     },
     "uiElements": {
@@ -1297,7 +1303,7 @@
         "authenticated": false,
         "url": "https://api.vencord.dev/",
         "settingsSync": false,
-        "settingsSyncVersion": 1792784373699
+        "settingsSyncVersion": 1793048715322
     },
     "windowsMaterial": "none",
     "enabledThemeLinks": [],
