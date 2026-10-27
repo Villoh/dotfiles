@@ -1,9 +1,10 @@
 {
-  "lastChangelogVersion": "0.99.2",
+  "lastChangelogVersion": "1.4.0",
   "defaultThinkingLevel": "high",
-  "defaultTools": ["+codemode"],
+  "defaultTools": [
+    "+codemode"
+  ],
   "packages": [
-    "npm:pi-mcp-adapter",
     "npm:pi-rtk-optimizer",
     "npm:@ff-labs/pi-fff",
     "npm:pi-caveman",
@@ -24,15 +25,14 @@
     "npm:@villoh/pi-btw",
     "npm:@villoh/pi-extensions-manager",
     "npm:@villoh/pi-skills-manager",
-    "npm:pi-cliproxy-usage",
-    "npm:@osolmaz/pi-workflows",
     "npm:@narumitw/pi-plan-mode",
     "npm:@injaneity/pi-computer-use",
     "npm:@narumitw/pi-goal",
     "npm:@juicesharp/rpiv-todo",
-    "git:github.com/mizorewww/pi-devin",
     "npm:@villoh/pi-auto-name-session",
-    "npm:pi-web-access"
+    "npm:pi-web-access",
+    "npm:pi-claude-marketplace",
+    "npm:pi-context-view"
   ],
   "powerline": {
     "preset": "default",
@@ -53,5 +53,11 @@
   "defaultProvider": "cliproxyapi",
   "defaultModel": "claude-sonnet-5-5",
   "enableSkillCommands": false,
-  "showHardwareCursor": false
+  "showHardwareCursor": false,
+  "images": {
+    "blockImages": false
+  },
+  "terminal": {
+    "images": "kitty"
+  }
 }
