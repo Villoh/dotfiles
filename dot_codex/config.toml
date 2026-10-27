@@ -68,7 +68,7 @@ source = "https://github.com/JuliusBrussee/caveman.git"
 
 [marketplaces.openai-primary-runtime]
 source_type = "local"
-source = '\\?\C:\Users\mikel\.cache\codex-runtimes\codex-primary-runtime\plugins\openai-primary-runtime'
+source = "/home/mikel/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
 [marketplaces.ponytail]
 last_updated = "2026-08-09T16:14:21Z"
@@ -287,6 +287,9 @@ trust_level = "trusted"
 trust_level = "trusted"
 
 [projects."/home/mikel/Documents/Codex/2026-10-01/realtime-voice-chat"]
+trust_level = "trusted"
+
+[projects."/home/mikel/Documents/Codex/2026-10-06/new-chat"]
 trust_level = "trusted"
 
 [shell_environment_policy.set]
