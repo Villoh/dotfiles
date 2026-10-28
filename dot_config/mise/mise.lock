@@ -244,63 +244,63 @@ url_api = "https://api.github.com/repos/PrimeIntellect-ai/prime-agent/releases/a
 provenance = "github-attestations"
 
 [[tools."github:router-for-me/CLIProxyAPI"]]
-version = "8.0.42"
+version = "8.0.43"
 backend = "github:router-for-me/CLIProxyAPI"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-arm64"]
-checksum = "sha256:0fcd48eebaadfaa1ca44109b6e1c05bb14c92ebcc015165d9351ff24e442bf0c"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_linux_aarch64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672460289"
+checksum = "sha256:df5e6c09bb942f281f036b443cb260d844f96002cf30f57869a5d3770c7c553e"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_linux_aarch64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675410911"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-arm64-musl"]
-checksum = "sha256:0fcd48eebaadfaa1ca44109b6e1c05bb14c92ebcc015165d9351ff24e442bf0c"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_linux_aarch64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672460289"
+checksum = "sha256:df5e6c09bb942f281f036b443cb260d844f96002cf30f57869a5d3770c7c553e"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_linux_aarch64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675410911"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64"]
-checksum = "sha256:1e10566fe0042ed5a9b80306cf296bf86a83de590cd967a8b177988b896c8d31"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672460076"
+checksum = "sha256:7825540634898e11fe9baf255b683856da5d9e75b95c66835891ebb40a79b526"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675412448"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64-baseline"]
-checksum = "sha256:1e10566fe0042ed5a9b80306cf296bf86a83de590cd967a8b177988b896c8d31"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672460076"
+checksum = "sha256:7825540634898e11fe9baf255b683856da5d9e75b95c66835891ebb40a79b526"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675412448"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64-musl"]
-checksum = "sha256:1e10566fe0042ed5a9b80306cf296bf86a83de590cd967a8b177988b896c8d31"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672460076"
+checksum = "sha256:7825540634898e11fe9baf255b683856da5d9e75b95c66835891ebb40a79b526"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675412448"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:1e10566fe0042ed5a9b80306cf296bf86a83de590cd967a8b177988b896c8d31"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672460076"
+checksum = "sha256:7825540634898e11fe9baf255b683856da5d9e75b95c66835891ebb40a79b526"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675412448"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.macos-arm64"]
-checksum = "sha256:7d5a78923786dd20a6854e834228d138245142101e8cb02b2614311514a478ff"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_darwin_aarch64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672459211"
+checksum = "sha256:3c2df9d8036507618754fdc01aa18f5dda2e1b16f5a3e48bae9a88d08a668e89"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_darwin_aarch64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675411321"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.macos-x64"]
-checksum = "sha256:730bd33a6943bb1fdb011c65120b529516f6e7b4ebad1cc819e3f0eddd48f5a6"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672461648"
+checksum = "sha256:45a890650badaabb24d403535d792a89d21a8c75c2f2d516ace219e9c14560e8"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675413688"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.macos-x64-baseline"]
-checksum = "sha256:730bd33a6943bb1fdb011c65120b529516f6e7b4ebad1cc819e3f0eddd48f5a6"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672461648"
+checksum = "sha256:45a890650badaabb24d403535d792a89d21a8c75c2f2d516ace219e9c14560e8"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675413688"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.windows-x64"]
-checksum = "sha256:c83881bc1cd0c3b4f1d9ba2d504ee6d8d741ed96d4c45abc7b9ced1c6fb85a64"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_windows_amd64.zip"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672464033"
+checksum = "sha256:332cc8e0cd7370c841ce96b37cb1ae380136f1e4d7d54a610080ab81b5f6aec2"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_windows_amd64.zip"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675412711"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.windows-x64-baseline"]
-checksum = "sha256:c83881bc1cd0c3b4f1d9ba2d504ee6d8d741ed96d4c45abc7b9ced1c6fb85a64"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.42/CLIProxyAPI_8.0.42_windows_amd64.zip"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/672464033"
+checksum = "sha256:332cc8e0cd7370c841ce96b37cb1ae380136f1e4d7d54a610080ab81b5f6aec2"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.43/CLIProxyAPI_8.0.43_windows_amd64.zip"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/675412711"
 
 [[tools."http:devin"]]
 version = "3000.11.228"
@@ -363,7 +363,7 @@ backend = "npm:@opencode/cli"
 allow_builds = '["@opencode/cli"]'
 
 [[tools."npm:@piewf/cli"]]
-version = "6.2.2"
+version = "6.3.0"
 backend = "npm:@piewf/cli"
 
 [tools."npm:@piewf/cli".options]
@@ -549,10 +549,6 @@ backend = "pipx:gamepadla-plus"
 [tools."pipx:gamepadla-plus".options]
 uvx_args = "--python 3.11"
 
-[[tools."pipx:goopdl"]]
-version = "1.3.0"
-backend = "pipx:goopdl"
-
 [[tools."pipx:harlequin"]]
 version = "2.16.2"
 backend = "pipx:harlequin"
@@ -567,20 +563,6 @@ backend = "pipx:headroom-ai"
 
 [tools."pipx:headroom-ai".options]
 uvx_args = "--python 3.14 --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1'"
-
-[[tools."pipx:holded-tt"]]
-version = "1.3.0"
-backend = "pipx:holded-tt"
-
-[tools."pipx:holded-tt".options]
-uvx_args = "--python 3.14"
-
-[[tools."pipx:masamune-tui"]]
-version = "1.1.0"
-backend = "pipx:masamune-tui"
-
-[tools."pipx:masamune-tui".options]
-uvx_args = "--python 3.14"
 
 [[tools."pipx:serena-agent"]]
 version = "2.1.0"
@@ -667,73 +649,73 @@ url_api = "https://api.github.com/repos/astral-sh/ruff/releases/assets/666735367
 provenance = "github-attestations"
 
 [[tools.ty]]
-version = "0.0.91"
+version = "0.0.92"
 backend = "aqua:astral-sh/ty"
 
 [tools.ty."platforms.linux-arm64"]
-checksum = "sha256:64f2e2cf5b4c48abfbc3da927c1f4d973cc58237dc6a81951d59a34da2b4b538"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700752"
+checksum = "sha256:f464804dd401e8971828c56081d9418786073015c85a2049c07fd06052f049a0"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856274"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-arm64-musl"]
-checksum = "sha256:238dd696f23fb81fc2509f66ebec4b9977441c21f52bc1991dea98b27861ccf4"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-aarch64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700770"
+checksum = "sha256:ad762b522fbb78f4340f186342761f71ae9f33fd250931106ef81a7e1442f71e"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856283"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64"]
-checksum = "sha256:f9ab9cef6d2d96ea4d8bac06aa464bbe6622e57d0476e91156bc0df3478b2c08"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666701025"
+checksum = "sha256:c5c1278e43201d05838c3787df89658785fbd5c32c68b6d63202ff334ac86761"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856443"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64-baseline"]
-checksum = "sha256:f9ab9cef6d2d96ea4d8bac06aa464bbe6622e57d0476e91156bc0df3478b2c08"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666701025"
+checksum = "sha256:c5c1278e43201d05838c3787df89658785fbd5c32c68b6d63202ff334ac86761"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856443"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64-musl"]
-checksum = "sha256:b662ade01d92fa8914bffc445e6a85b034dde3eaecde501d94e05128db09637e"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666701064"
+checksum = "sha256:dc5415e1c0bf1f6f7093f04cba7dda201b25fe41bad091c0de63764264dac98c"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856451"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:b662ade01d92fa8914bffc445e6a85b034dde3eaecde501d94e05128db09637e"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666701064"
+checksum = "sha256:dc5415e1c0bf1f6f7093f04cba7dda201b25fe41bad091c0de63764264dac98c"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856451"
 provenance = "github-attestations"
 
 [tools.ty."platforms.macos-arm64"]
-checksum = "sha256:8ec3e0315cab3f8969a974db1fb1d431ef38525793455dda411089e733c71fbe"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700720"
+checksum = "sha256:8db29940906b7c9627d43f2dd458dbe11a975577ec7748a63a3c83bc84c9f957"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856243"
 provenance = "github-attestations"
 
 [tools.ty."platforms.macos-x64"]
-checksum = "sha256:1e2f914b23b45f753cd1f2e7e6e0b1db05c9ad7c960ba7f90f2e5744338e5855"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700957"
+checksum = "sha256:a8fbaf3bb604c3ce82d3a654fe5d75c5c01d9b53f36e90d50eab9456dc83fa2d"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856426"
 provenance = "github-attestations"
 
 [tools.ty."platforms.macos-x64-baseline"]
-checksum = "sha256:1e2f914b23b45f753cd1f2e7e6e0b1db05c9ad7c960ba7f90f2e5744338e5855"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700957"
+checksum = "sha256:a8fbaf3bb604c3ce82d3a654fe5d75c5c01d9b53f36e90d50eab9456dc83fa2d"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856426"
 provenance = "github-attestations"
 
 [tools.ty."platforms.windows-x64"]
-checksum = "sha256:e25d02eba8a3d3a850a2775ae5a391f86485ec8aeace6ea02872ca77a183812a"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700982"
+checksum = "sha256:6cc04731c49d9c020242ebfd453aba877b56f98871184f9d6fa7e9554dab8294"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856432"
 provenance = "github-attestations"
 
 [tools.ty."platforms.windows-x64-baseline"]
-checksum = "sha256:e25d02eba8a3d3a850a2775ae5a391f86485ec8aeace6ea02872ca77a183812a"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.91/ty-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/666700982"
+checksum = "sha256:6cc04731c49d9c020242ebfd453aba877b56f98871184f9d6fa7e9554dab8294"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.92/ty-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/676856432"
 provenance = "github-attestations"
 
 [[tools.vercel]]
