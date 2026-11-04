@@ -25,6 +25,24 @@ configuration. Keep `pi.toml` as a `[templates.pi]` fragment. Do **not** add a
 `[config]` table: DMS already provides one, and duplicate tables fail Matugen
 with `duplicate key \`config\` in document root`, breaking every theme worker.
 
+### Two ways to register a template (both work, DMS 1.6.2)
+
+| | `~/.config/matugen/dms/configs/<app>.toml` (used here) | `~/.config/matugen/config.toml` (documented at duxlabs.dev/docs/dms/application-themes) |
+|---|---|---|
+| `[config]` table | **Forbidden** (DMS already adds it) | Required; templates go under it |
+| Loaded when | Always | Only if the DMS setting "run user Matugen templates" is on (default on) |
+| Layout | One file per app | One central file |
+
+The `dms/configs/` route is DMS's plugin mechanism (`userPluginConfigDir` in
+`core/internal/matugen/matugen.go`); it is not in the public docs page. If a
+DMS update stops loading it, move the `[templates.<name>]` entries into
+`config.toml` under a single `[config]` table. Existing fragments to copy from:
+`pi.toml`, `strata.toml`, `zapfast.toml`.
+
+To theme a new app: add `configs/<app>.toml` and `templates/<app>.*` under
+`dot_config/matugen/dms/`, then `chezmoi apply`; DMS picks it up on the next
+wallpaper/theme change.
+
 Use absolute paths in `input_path` and `output_path`. Use standard Matugen
 colors such as `{{colors.primary.default.hex}}` for surfaces and text, and DMS
 palette colors such as `{{dank16.color2.default.hex}}` for distinct ANSI,
