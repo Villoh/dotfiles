@@ -1,0 +1,3 @@
+[templates.strata]
+input_path = '/home/mikel/.config/matugen/dms/templates/strata.toml'
+output_path = '/home/mikel/.config/strata/themes/dankcolors.toml'
