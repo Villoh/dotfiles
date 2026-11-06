@@ -1,5 +1,12 @@
 {
   "mcpServers": {
+    "atlassian": {
+      "url": "https://mcp.atlassian.com/v2/mcp?tools=all",
+      "description": "Wannme Jira and Confluence (wannme.atlassian.net): attach files to issues, read and search",
+      "toolExposure": {
+        "delete*": "hidden"
+      }
+    },
     "shadcn": {
       "command": "npx",
       "args": [
