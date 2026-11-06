@@ -1,0 +1,4 @@
+[templates.yapfast]
+input_path = '/home/mikel/.config/matugen/dms/templates/yapfast.json'
+output_path = '/home/mikel/.cache/matugen-dms/yapfast.json'
+post_hook = 'bash /home/mikel/.config/matugen/dms/scripts/yapfast.sh'

@@ -1,0 +1,58 @@
+{
+  "manifest": {
+    "api_version": 1,
+    "id": "dankcolors",
+    "name": "DMS",
+    "version": "1.0.0",
+    "author": "DMS Matugen",
+    "license": "MIT",
+    "source": "",
+    "kind": "theme"
+  },
+  "theme": {
+    "dark": {
+      "colors": {
+        "base": "{{colors.surface_container_lowest.dark.hex}}",
+        "sidebar": "{{colors.surface_container_low.dark.hex}}",
+        "chat": "{{colors.surface.dark.hex}}",
+        "raised": "{{colors.surface_container.dark.hex}}",
+        "hover": "{{colors.surface_container_high.dark.hex}}",
+        "selected": "{{colors.surface_container_highest.dark.hex}}",
+        "border": "{{colors.outline_variant.dark.hex}}",
+        "text_strong": "{{colors.on_surface.dark.hex}}",
+        "text": "{{colors.on_surface_variant.dark.hex}}",
+        "muted": "{{colors.outline.dark.hex}}",
+        "link": "{{colors.tertiary.dark.hex}}",
+        "accent": "{{colors.primary.dark.hex}}",
+        "accent_text": "{{colors.on_primary.dark.hex}}",
+        "positive": "{{dank16.color2.dark.hex}}",
+        "warning": "{{dank16.color3.dark.hex}}",
+        "danger": "{{colors.error.dark.hex}}",
+        "mention_bg": "{{colors.primary_container.dark.hex}}",
+        "mention_text": "{{colors.on_primary_container.dark.hex}}"
+      }
+    },
+    "light": {
+      "colors": {
+        "base": "{{colors.surface_container_lowest.light.hex}}",
+        "sidebar": "{{colors.surface_container_low.light.hex}}",
+        "chat": "{{colors.surface.light.hex}}",
+        "raised": "{{colors.surface_container.light.hex}}",
+        "hover": "{{colors.surface_container_high.light.hex}}",
+        "selected": "{{colors.surface_container_highest.light.hex}}",
+        "border": "{{colors.outline_variant.light.hex}}",
+        "text_strong": "{{colors.on_surface.light.hex}}",
+        "text": "{{colors.on_surface_variant.light.hex}}",
+        "muted": "{{colors.outline.light.hex}}",
+        "link": "{{colors.tertiary.light.hex}}",
+        "accent": "{{colors.primary.light.hex}}",
+        "accent_text": "{{colors.on_primary.light.hex}}",
+        "positive": "{{dank16.color2.light.hex}}",
+        "warning": "{{dank16.color3.light.hex}}",
+        "danger": "{{colors.error.light.hex}}",
+        "mention_bg": "{{colors.primary_container.light.hex}}",
+        "mention_text": "{{colors.on_primary_container.light.hex}}"
+      }
+    }
+  }
+}
