@@ -1,0 +1,77 @@
+arrow_navigation_scoped = false
+browser_density = "compact"
+browser_density_custom_px = 5
+browser_mode = "icons"
+check_for_updates = true
+columns_mirror_selection = true
+cross_volume_drop_strategy = "always-ask"
+date_format = "relative"
+element_glow = true
+explorer_file_clicks = 2
+explorer_folder_clicks = 2
+file_icon_colors = "brand"
+filter_include_subfolders = true
+folder_peeking = true
+folders_first = true
+frame_density = "compact"
+frame_density_custom_px = 1
+grid_file_clicks = 2
+grid_folder_clicks = 2
+group_by_type = false
+icons_thumbnail_size = 64
+interface_renderer = "system"
+list_file_clicks = 2
+list_folder_clicks = 1
+mode = "theme"
+open_folder_after_drop = false
+preview_autoplay = false
+preview_muted = false
+preview_text_wrap = false
+preview_volume = 1.0
+reduce_motion = false
+release_channel = "stable"
+render_documents_by_default = true
+search_open_files_directly = false
+show_hidden = false
+show_keybinding_hints = true
+sidebar_compact = false
+sidebar_devices_collapsed = false
+sidebar_expanded = true
+sidebar_order = [
+    "home",
+    "trash",
+    "network",
+    "recent",
+    "desktop",
+    "documents",
+    "downloads",
+    "music",
+    "pictures",
+    "videos",
+]
+sidebar_show_desktop = true
+sidebar_show_documents = true
+sidebar_show_downloads = true
+sidebar_show_home = true
+sidebar_show_music = true
+sidebar_show_network = true
+sidebar_show_pictures = true
+sidebar_show_recent = true
+sidebar_show_trash = true
+sidebar_show_videos = true
+single_click_previews = true
+sort_direction = "ascending"
+sort_key = "name"
+tenxer_mode = false
+text_size = 14
+theme = "dankcolors"
+thumbnail_workers = 4
+type_to_search = true
+video_preview_backend = "automatic"
+
+[browser_list_columns]
+mode = 160
+modified = 150
+name = 320
+size = 90
+type = 120

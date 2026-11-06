@@ -42,6 +42,7 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}.config/vesktop/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_concord) }}.config/concord/**{{ end }}
+{{ if ne .chezmoi.os "linux" }}.config/strata/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/himalaya/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/meli/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
