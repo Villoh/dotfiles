@@ -1,13 +1,7 @@
-[flavor]
-dark = "kanagawa-dragon"
+#:schema https://yazi-rs.github.io/schemas/theme.json
 
-# Keep git signs on the canonical Kanagawa Dragon palette.
-[git]
-unknown = { fg = "#a6a69c" }
-modified = { fg = "#b6927b" }
-added = { fg = "#8a9a7b" }
-untracked = { fg = "#8ea4a2" }
-ignored = { fg = "#625e5a" }
-deleted = { fg = "#c4746e", bold = true }
-updated = { fg = "#8ba4b0" }
-clean = { fg = "#8a9a7b" }
+# Colours live in the DMS/matugen flavor (see dot_config/matugen/dms/). Same
+# flavor for both modes: matugen already follows the DMS light/dark choice.
+[flavor]
+dark  = "DMS"
+light = "DMS"

@@ -1,55 +1,93 @@
+#:schema https://yazi-rs.github.io/schemas/keymap.json
+
+# Vim keys stay as the base; the extra bindings mirror Strata's default map
+# (docs/keyboard-shortcuts.md) so both file managers feel alike.
+
 [mgr]
-
 prepend_keymap = [
-  { on = [
-    "!",
-  ], run = 'shell "$SHELL" --block', desc = "Open shell here" },
-  { on = "<C-u>", run = "seek -5", desc = "Seek up 5 units in the preview" },
-  { on = "<C-d>", run = "seek 5", desc = "Seek down 5 units in the preview" },
-  { on = "K", run = "arrow -50%", desc = "Move cursor up half page" },
-  { on = "J", run = "arrow 50%", desc = "Move cursor down half page" },
-  { on = "<A-k>", run = "arrow -5", desc = "Move cursor up half page" },
-  { on = "<A-j>", run = "arrow 5", desc = "Move cursor down half page" },
-  { on = [
-    "s",
-  ], run = "plugin searchjump -- autocd", desc = "Flash" },
-  { on = "S", run = "search --via=fd", desc = "Search files by name using fd" },
-  { on = "l", run = "plugin smart-enter", desc = "Enter directory or open file" },
-  { on = "+", run = "plugin zoom 1", desc = "Zoom in preview" },
-  { on = "-", run = "plugin zoom -1", desc = "Zoom out preview" },
-  { on = [
-    ".",
-    "s",
-  ], run = "plugin what-size", desc = "Calculate selection or directory size" },
-  { on = [
-    "<C-y>",
-  ], run = 'shell -- for path in "$@"; do echo "file://$path"; done | wl-copy -t text/uri-list', desc = "Copy to clipboard" },
-  { on = "A", run = "create --dir", desc = "Create a dir" },
-  { on = [
-    "g",
-    "r",
-  ], run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"', desc = "Root of Git Repo" },
-  { on = "H", run = "tab_switch -1 --relative", desc = "Switch to the previous tab" },
-  { on = "L", run = "tab_switch 1 --relative", desc = "Switch to the next tab" },
-  { on = "<", run = "tab_swap -1", desc = "Swap current tab with previous tab" },
-  { on = ">", run = "tab_swap 1", desc = "Swap current tab with next tab" },
-  { on = [
-    "c",
-    "a",
-  ], run = "plugin ouch", desc = "Archive selected files" },
+	# ── Personal tweaks ──────────────────────────────────────────────────────
+	{ on = "!", run = 'shell "$SHELL" --block', desc = "Open shell here" },
+	{ on = "<C-u>", run = "seek -5", desc = "Seek up 5 units in the preview" },
+	{ on = "<C-d>", run = "seek 5", desc = "Seek down 5 units in the preview" },
+	{ on = "K", run = "arrow -50%", desc = "Move cursor up half page" },
+	{ on = "J", run = "arrow 50%", desc = "Move cursor down half page" },
+	{ on = "<A-k>", run = "arrow -5", desc = "Move cursor up 5 lines" },
+	{ on = "<A-j>", run = "arrow 5", desc = "Move cursor down 5 lines" },
+	{ on = "A", run = "create --dir", desc = "Create a dir" },
+	{ on = "H", run = "tab_switch -1 --relative", desc = "Switch to the previous tab" },
+	{ on = "L", run = "tab_switch 1 --relative", desc = "Switch to the next tab" },
+	{ on = "<", run = "tab_swap -1", desc = "Swap current tab with previous tab" },
+	{ on = ">", run = "tab_swap 1", desc = "Swap current tab with next tab" },
+	{ on = [ "g", "r" ], run = 'shell -- ya emit cd "$(git rev-parse --show-toplevel)"', desc = "Root of Git repo" },
+
+	# ── Enter / open (Strata: Enter opens, Alt+Enter is Properties) ──────────
+	{ on = "l", run = "plugin smart-enter", desc = "Enter directory or open file" },
+	{ on = "<Right>", run = "plugin smart-enter", desc = "Enter directory or open file" },
+	{ on = "<Enter>", run = "plugin smart-enter", desc = "Enter directory or open file" },
+	{ on = "<A-Enter>", run = "spot", desc = "Properties (spot hovered file)" },
+	{ on = "e", run = "open", desc = "Open the selected files" },
+	{ on = "E", run = "open --interactive", desc = "Open the selected files interactively" },
+
+	# ── Search, filter, location (Strata: Ctrl+K / Ctrl+F / Ctrl+L) ──────────
+	{ on = "<C-k>", run = "plugin fzf", desc = "Search files and folders with fzf" },
+	{ on = "<C-f>", run = "plugin smart-filter", desc = "Filter files" },
+	{ on = "f", run = "plugin smart-filter", desc = "Filter files" },
+	{ on = "F", run = "plugin jump-to-char", desc = "Jump to a character" },
+	{ on = "<C-l>", run = "cd --interactive", desc = "Go to a location" },
+
+	# ── History, parent (Strata: Alt+arrows) ─────────────────────────────────
+	{ on = "<A-Left>", run = "back", desc = "Back to previous directory" },
+	{ on = "<A-Right>", run = "forward", desc = "Forward to next directory" },
+	{ on = "<A-Up>", run = "leave", desc = "Back to the parent directory" },
+
+	# ── Files (Strata: F2 rename, Delete trash, Ctrl+H hidden) ───────────────
+	{ on = "<F2>", run = "rename --cursor=before_ext", desc = "Rename selected file(s)" },
+	{ on = "<Delete>", run = "remove", desc = "Trash selected files" },
+	{ on = "<S-Delete>", run = "remove --permanently", desc = "Permanently delete selected files" },
+	{ on = "<C-h>", run = "hidden toggle", desc = "Toggle the visibility of hidden files" },
+	# ucp.yazi shares copy/paste with the system clipboard (Strata, browsers, editors)
+	# and asks Overwrite / Merge / Create copy on name clashes.
+	{ on = "y", run = "plugin ucp copy notify", desc = "Copy to Yazi and the system clipboard" },
+	{ on = "p", run = "plugin ucp paste notify", desc = "Paste from Yazi or the system clipboard" },
+	{ on = "P", run = "plugin smart-paste", desc = "Paste into the hovered directory" },
+	{ on = [ "c", "a" ], run = "plugin ouch", desc = "Archive selected files" },
+	{ on = [ "c", "m" ], run = "plugin chmod", desc = "Change permissions of selected files" },
+	{ on = "<A-d>", run = "plugin diff", desc = "Diff the selected file with the hovered one" },
+	{ on = "<A-s>", run = "plugin what-size", desc = "Calculate selection or directory size" },
+
+	# ── Phone (Strata: Send to… / Devices) via KDE Connect ───────────────────────
+	{ on = [ "g", "p" ], run = "plugin kdeconnect browse", desc = "Browse the phone via KDE Connect" },
+	{ on = [ "c", "s" ], run = "plugin kdeconnect send", desc = "Send selected files to the phone" },
+
+	# ── Tabs (Strata: Ctrl+T / Ctrl+W / Ctrl+PageUp/PageDown) ────────────────
+	{ on = "<C-t>", run = "tab_create --current", desc = "Create a new tab in CWD" },
+	{ on = "<C-w>", run = "close", desc = "Close the current tab, or quit if it's last" },
+	{ on = "<C-PageDown>", run = "tab_switch 1 --relative", desc = "Switch to the next tab" },
+	{ on = "<C-PageUp>", run = "tab_switch -1 --relative", desc = "Switch to the previous tab" },
+
+	# ── Panes (Strata: Ctrl+B toggles the sidebar) ───────────────────────────
+	{ on = "<C-b>", run = "plugin toggle-pane min-parent", desc = "Show or hide the parent pane" },
+	{ on = "T", run = "plugin toggle-pane min-preview", desc = "Show or hide the preview pane" },
+	{ on = "<A-t>", run = "plugin toggle-pane max-preview", desc = "Maximize or restore the preview pane" },
+
+	# ── Pins and devices (Strata: sidebar places, pins, Devices) ─────────────
+	{ on = "b", run = "plugin bunny", desc = "Places and bookmarks menu" },
+	{ on = "B", run = "plugin bunny fuzzy", desc = "Fuzzy search places and bookmarks" },
+	{ on = "M", run = "plugin mount", desc = "Mount, unmount and eject devices" },
+
+	# ── Dual pane (split-tabs.yazi: two tabs side by side, Dolphin's F3) ─────
+	{ on = "\\", run = "plugin split-tabs spl_toggle", desc = "Toggle dual-pane mode" },
+	{ on = "<Tab>", run = "plugin split-tabs spl_switch_tab", desc = "Switch to the other pane (dual-pane mode)" },
+	{ on = "<F5>", run = [ "escape --visual", "plugin split-tabs spl_copy" ], desc = "Copy to the other pane" },
+	{ on = "<F6>", run = [ "escape --visual", "plugin split-tabs spl_move" ], desc = "Move to the other pane" },
+	{ on = "<A-p>", run = "plugin split-tabs spl_preview", desc = "Toggle the bottom preview in dual-pane mode" },
+
+	# ── Terminal here (Strata: Ctrl+Alt+T) ───────────────────────────────────
+	{ on = "<C-A-t>", run = 'shell --orphan -- ghostty "--working-directory=$(pwd -P)"', desc = "Open a terminal here" },
 ]
 
-append_keymap = [
-  { on = [
-    "e",
-  ], run = "open", desc = "Open the selected files" },
-  { on = [
-    "E",
-  ], run = "open --interactive", desc = "Open the selected files interactively" },
-]
-
-[completion]
+[cmp]
 prepend_keymap = [
-  { on = "<C-k>", run = "arrow -1", desc = "Move cursor up" },
-  { on = "<C-j>", run = "arrow 1", desc = "Move cursor down" },
+	{ on = "<C-k>", run = "arrow -1", desc = "Move cursor up" },
+	{ on = "<C-j>", run = "arrow 1", desc = "Move cursor down" },
 ]

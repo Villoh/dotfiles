@@ -1,54 +1,97 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:full-border"
-rev = "b9598e6"
-hash = "1e3b6c8b03dae81c3672ec9e9700b666"
+rev = "c0529fc"
+hash = "17ebde15c4349f90aedbc45984b98db2"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "b9598e6"
-hash = "384871a15250af3a8f9b3c0289a858ef"
-
-[[plugin.deps]]
-use = "DreamMaoMao/searchjump"
-rev = "8a1a785"
-hash = "36bf4d772125a51af4ef440c06820e32"
+rev = "c0529fc"
+hash = "347cc6b190eb0c2fd60513cc7ae37412"
 
 [[plugin.deps]]
 use = "Rolv-Apneseth/starship"
-rev = "159eaba"
-hash = "799a47be8755dc0329e6de68a508facc"
+rev = "ea92cf4"
+hash = "9776f378459072b6c2875eae5addc49d"
 
 [[plugin.deps]]
 use = "ndtoan96/ouch"
-rev = "406ce6c"
-hash = "c30dfd49121b0860ce41ebf6765c6e6e"
+rev = "596b666"
+hash = "c2f4f4aca257dcceafa9e3b828dbf1c9"
 
 [[plugin.deps]]
 use = "boydaihungst/mediainfo"
-rev = "e079a00"
-hash = "d3dfd2196e54cef090ff02f7f881f135"
+rev = "f1cec0b"
+hash = "fd9312e974c63438b1f8737711462d52"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:piper"
-rev = "b9598e6"
-hash = "8ba891b675bd881552e29cd3eb976d1b"
+rev = "c0529fc"
+hash = "d1e0499cae5f3aeb628c267616d4b682"
 
 [[plugin.deps]]
 use = "yazi-rs/plugins:smart-enter"
-rev = "b9598e6"
-hash = "2ede7b0f1beade8390be1b52cfed6a49"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:zoom"
-rev = "b9598e6"
-hash = "fe0069ca878b44cee782f24fca5afc76"
+rev = "c0529fc"
+hash = "187cc58ba7ac3befd49c342129e6f1b6"
 
 [[plugin.deps]]
 use = "pirafrank/what-size"
-rev = "c1a8cb6"
-hash = "38c0d8cdd02e7e52655e168dc07cd87"
+rev = "1cb456f"
+hash = "7699acf73a1079f8a4afef5cec84ce73"
 
-[[flavor.deps]]
-use = "marcosvnmelo/kanagawa-dragon"
-rev = "b433f4a"
-hash = "27b78dc4da505f07941d9592f1bb1f17"
+[[plugin.deps]]
+use = "stelcodes/bunny"
+rev = "8f3f84e"
+hash = "18a2829738214fe9bca99a2fef19113d"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:toggle-pane"
+rev = "c0529fc"
+hash = "5b2fbef7d1513ce38ff72623a071a5e"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:mount"
+rev = "c0529fc"
+hash = "dbfc342600993eefbb055bff145fa22a"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:chmod"
+rev = "c0529fc"
+hash = "87472b05a8c420100f6a2b9cde1e7746"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:diff"
+rev = "c0529fc"
+hash = "14558d2829c0aa05e99c57de8f74d199"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:jump-to-char"
+rev = "c0529fc"
+hash = "7a4b4237223aaa94e589d1c01a23542a"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-filter"
+rev = "c0529fc"
+hash = "d6f7351ea25a43c9b5f4315fa1e23935"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:smart-paste"
+rev = "c0529fc"
+hash = "5be02722d97561b6f7aec22429aa00be"
+
+[[plugin.deps]]
+use = "terrakok/split-tabs"
+rev = "d0531f4"
+hash = "4298f0a23f6109a92334eef06fc7ffb9"
+
+[[plugin.deps]]
+use = "simla33/ucp"
+rev = "5ef8203"
+hash = "e9c94e81b3159dd283822811b0276367"
+
+[[plugin.deps]]
+use = "PHONE1X/kdeconnect"
+rev = "48ee5b4"
+hash = "f5350e79a5995c0690f7d1a2737cc0dd"
+
+[flavor]
+deps = []
