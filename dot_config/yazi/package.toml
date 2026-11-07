@@ -93,5 +93,10 @@ use = "PHONE1X/kdeconnect"
 rev = "48ee5b4"
 hash = "f5350e79a5995c0690f7d1a2737cc0dd"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:zoom"
+rev = "c0529fc"
+hash = "558bbb58e3dd36d488280a8f10e7b904"
+
 [flavor]
 deps = []

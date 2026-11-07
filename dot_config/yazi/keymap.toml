@@ -69,6 +69,8 @@ prepend_keymap = [
 	{ on = "<C-b>", run = "plugin toggle-pane min-parent", desc = "Show or hide the parent pane" },
 	{ on = "T", run = "plugin toggle-pane min-preview", desc = "Show or hide the preview pane" },
 	{ on = "<A-t>", run = "plugin toggle-pane max-preview", desc = "Maximize or restore the preview pane" },
+	{ on = "+", run = "plugin zoom 1", desc = "Zoom in the preview image" },
+	{ on = "-", run = "plugin zoom -1", desc = "Zoom out the preview image" },
 
 	# ── Pins and devices (Strata: sidebar places, pins, Devices) ─────────────
 	{ on = "b", run = "plugin bunny", desc = "Places and bookmarks menu" },
