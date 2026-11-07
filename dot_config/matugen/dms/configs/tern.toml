@@ -1,0 +1,3 @@
+[templates.tern]
+input_path = '/home/mikel/.config/matugen/dms/templates/tern.css'
+output_path = '/home/mikel/.config/tern/themes/dms.css'
