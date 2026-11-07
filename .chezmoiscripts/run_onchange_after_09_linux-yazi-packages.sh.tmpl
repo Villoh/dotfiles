@@ -1,0 +1,14 @@
+{{ if and (eq .chezmoi.os "linux") .enable_yazi -}}
+#!/usr/bin/env bash
+# package.toml {{ include "dot_config/yazi/package.toml" | sha256sum }}
+# Installs the Yazi plugins and flavors pinned in package.toml (they are not tracked
+# in git, only their revisions are).
+set -euo pipefail
+
+if ! command -v ya >/dev/null 2>&1; then
+  echo "  [SKIP] ya not found, install yazi first"
+  exit 0
+fi
+
+ya pkg install
+{{ end -}}
