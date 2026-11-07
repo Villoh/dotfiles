@@ -12,6 +12,10 @@ require("starship"):setup()
 -- Git status signs next to the file names (fetchers are in yazi.toml).
 require("git"):setup({ order = 1500 })
 
+-- Report the current directory to the terminal (OSC 7), so new Ghostty tabs and
+-- splits opened from here start in the folder you are browsing.
+require("term-cwd"):setup()
+
 -- Linemode used by `linemode = "size_and_mtime"` in yazi.toml, shaped like
 -- Strata's List view: size (item count for folders) then modification date.
 function Linemode:size_and_mtime()

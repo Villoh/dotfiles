@@ -98,5 +98,15 @@ use = "yazi-rs/plugins:zoom"
 rev = "c0529fc"
 hash = "558bbb58e3dd36d488280a8f10e7b904"
 
+[[plugin.deps]]
+use = "yazi-rs/plugins:vcs-files"
+rev = "c0529fc"
+hash = "4f2a05edce73aef2bceb2ee2c134c8f2"
+
+[[plugin.deps]]
+use = "yazi-rs/plugins:term-cwd"
+rev = "c0529fc"
+hash = "ea4d7108bc2c02738ab652064095905f"
+
 [flavor]
 deps = []
