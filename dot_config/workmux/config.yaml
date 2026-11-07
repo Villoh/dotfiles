@@ -1,0 +1,13 @@
+# workmux global config. Binary: nixos-config (modules/home/shell/tmux.nix).
+# Pi status comes from ~/.pi/agent/extensions/workmux-status.ts (dot_pi/agent/extensions/).
+
+# Worktrees for tmux live apart from Herdr's, so the two never share a checkout.
+worktree_dir: ~/.tmux-worktrees/{project}
+
+# Agent that replaces <agent> in the pane layout.
+agent: pi
+
+nerdfont: true
+
+# Do not rewrite window-status-format per session; plugins.conf sets it with Omarchy's colors.
+status_format: false

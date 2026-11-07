@@ -248,6 +248,13 @@ git history. tmux itself is installed by NixOS (`modules/home/shell/packages.nix
   `~/.config/tmux/plugins/tpm`, then `prefix+I`). `.chezmoiignore` skips it when
   `osRelease.id` is `nixos`, so Home Manager's file never collides with it. Keep both in sync.
   Windows psmux has no plugins here; `dot_psmux.conf` has no such line.
+- workmux (git worktrees plus agent status in tmux) is a flake input in nixos-config, installed
+  with the tmux module. `dot_config/workmux/config.yaml` keeps its worktrees in
+  `~/.tmux-worktrees/{project}`, apart from Herdr's, and sets `status_format: false` because
+  `plugins.conf` already draws the status icon with Omarchy's tab colors. Pi reports its state
+  through `dot_pi/agent/extensions/workmux-status.ts` (upstream `resources/pi/extensions/`, rev
+  `355ff46`, reviewed). `prefix+B` toggles the sidebar and `prefix+W` opens the dashboard. Run
+  `workmux setup` never: it writes into `~/.claude`, `~/.codex` and `~/.pi`, which chezmoi owns.
 - `prefix+?` calls `omarchy-menu-tmux-keybindings --print`. `dot_local/bin/` ships a
   trimmed port (print mode only, no Hyprland/Walker menu) under the same name so the
   config needs no edit.

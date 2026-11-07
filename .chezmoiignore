@@ -65,6 +65,8 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.config/tmux/**
 .local/bin/omarchy-menu-tmux-keybindings{{ end }}
 {{ if eq .chezmoi.os "linux" }}{{ if eq .chezmoi.osRelease.id "nixos" }}.config/tmux/plugins.conf{{ end }}{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/workmux/**
+.pi/agent/extensions/workmux-status.ts{{ end }}
 {{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
