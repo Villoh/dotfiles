@@ -9,3 +9,13 @@ Host github-work
     User git
     IdentityFile ~/.ssh/id_work.pub
     IdentitiesOnly yes
+
+Host gitlab.com
+    User git
+    IdentityFile ~/.ssh/id_personal.pub
+    IdentitiesOnly yes
+
+Host codeberg.org
+    User git
+    IdentityFile ~/.ssh/id_personal.pub
+    IdentitiesOnly yes
