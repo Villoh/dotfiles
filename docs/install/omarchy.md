@@ -230,6 +230,33 @@ settings are handled inside its template.
 
 Herdr deployment is controlled by `enable_herdr` on both platforms.
 
+### Decision — tmux config is Omarchy's, verbatim (reverses "Windows-only")
+
+Linux deploys `dot_config/tmux/tmux.conf`, Omarchy's `config/tmux/tmux.conf`
+(upstream commit `5cf852c`) plus a trailing `source-file -q ~/.config/tmux/plugins.conf`.
+Update it with `cp <omarchy>/config/tmux/tmux.conf dot_config/tmux/tmux.conf` and re-append
+that line (`diff` against upstream must show only those 3 lines). The old
+Ctrl+g/TPM config (`dot_tmux.conf.tmpl`, `dot_tmux-keys`) is gone; it lives in
+git history. tmux itself is installed by NixOS (`modules/home/shell/packages.nix`).
+
+- Plugins are NixOS-owned: `modules/home/shell/tmux.nix` in nixos-config generates
+  `~/.config/tmux/plugins.conf` (which-key, tmux-fzf, fingers, extrakto, floax, resurrect,
+  continuum, plus a `prefix+T` sesh picker). No TPM; chezmoi never touches that file. It lives
+  in Nix because the binds point at wrapped store binaries (fingers, extrakto's python and
+  clipboard tools, which-key's python). Other Linux distros get `dot_config/tmux/plugins.conf`
+  from chezmoi instead: same plugins, options and keys, loaded by TPM (clone it to
+  `~/.config/tmux/plugins/tpm`, then `prefix+I`). `.chezmoiignore` skips it when
+  `osRelease.id` is `nixos`, so Home Manager's file never collides with it. Keep both in sync.
+  Windows psmux has no plugins here; `dot_psmux.conf` has no such line.
+- `prefix+?` calls `omarchy-menu-tmux-keybindings --print`. `dot_local/bin/` ships a
+  trimmed port (print mode only, no Hyprland/Walker menu) under the same name so the
+  config needs no edit.
+- Windows (psmux) deploys `dot_psmux.conf` → `~/.psmux.conf`, which psmux reads before
+  `~/.tmux.conf`. It is Omarchy's file with three deltas, listed in its header.
+- Pi keeps `Shift+Enter` = newline inside tmux because `extended-keys-format csi-u`
+  stays on. Alt+Enter, Alt+Up and friends are tmux's, so Pi's follow-up and dequeue
+  keys are `ctrl+q` and `alt+q` (`dot_pi/agent/keybindings.json`).
+
 ### Fixed — `dot_config/zsh` was mostly HyDE boilerplate
 
 - [x] Deleted `plugin.zsh` and `prompt.zsh` outright — both start with

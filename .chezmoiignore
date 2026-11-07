@@ -9,7 +9,7 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}AppData/Roaming/Rainmeter/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}Documents/Rainmeter/**{{ end }}
 {{ if not .enable_herdr }}.config/herdr/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.config/psmux/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.psmux.conf{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_starship) }}.config/starship.toml{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_alacritty) }}.config/alacritty/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_btop) }}.config/btop/**{{ end }}
@@ -62,8 +62,9 @@ scoop/
 {{ if not .enable_uv }}.config/uv/**{{ end }}
 {{ if not .enable_zellij }}.config/zellij/**{{ end }}
 {{ if not .enable_ytm_player }}.config/ytm-player/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.tmux.conf
-.tmux-keys{{ end }}
+{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.config/tmux/**
+.local/bin/omarchy-menu-tmux-keybindings{{ end }}
+{{ if eq .chezmoi.os "linux" }}{{ if eq .chezmoi.osRelease.id "nixos" }}.config/tmux/plugins.conf{{ end }}{{ end }}
 {{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
