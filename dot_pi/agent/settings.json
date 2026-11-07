@@ -42,7 +42,7 @@
     "npm"
   ],
   "hideThinkingBlock": false,
-  "theme": "dankcolors",
+  "theme": "DMS",
   "modelRoles": {
     "steward": "cliproxyapi/gpt-6-luna",
     "expert": "cliproxyapi/claude-opus-5-5",

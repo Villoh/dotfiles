@@ -1,0 +1,3 @@
+[templates.herdr_app]
+input_path = '/home/mikel/.config/matugen/dms/templates/herdr-app.json'
+output_path = '/home/mikel/.config/herdr-app/themes/DMS.json'

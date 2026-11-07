@@ -1,0 +1,3 @@
+[templates.sheprd]
+input_path = '/home/mikel/.config/matugen/dms/templates/sheprd.conf'
+output_path = '/home/mikel/.config/herdr/themes/DMS'

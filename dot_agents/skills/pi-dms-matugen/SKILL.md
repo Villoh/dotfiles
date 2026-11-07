@@ -8,14 +8,14 @@ description: >-
 
 # Pi theme from DMS Matugen
 
-DMS generates Pi's `dankcolors` theme from the active Material palette:
+DMS generates Pi's `DMS` theme from the active Material palette:
 
 - Matugen config fragment: `dot_config/matugen/dms/configs/pi.toml`
 - JSON template: `dot_config/matugen/dms/templates/pi.json`
-- Generated theme: `~/.pi/agent/themes/dankcolors.json` (do not track; DMS owns it)
+- Generated theme: `~/.pi/agent/themes/DMS.json` (do not track; DMS owns it)
 
 Chezmoi symlinks the config and template into `~/.config/matugen/dms/`. DMS
-regenerates the theme when wallpaper or theme changes. Select `dankcolors` in Pi
+regenerates the theme when wallpaper or theme changes. Select `DMS` in Pi
 once through `/settings`.
 
 ## Important config rule
@@ -58,4 +58,4 @@ Matugen; inject it when testing the template standalone.
   one `[config]` table plus the custom `[templates.<name>]` entry. Render to a
   temporary output path so the real Pi theme is untouched.
 - Change wallpaper/theme in DMS to regenerate; then check
-  `~/.pi/agent/themes/dankcolors.json` and select it with Pi `/settings`.
+  `~/.pi/agent/themes/DMS.json` and select it with Pi `/settings`.
