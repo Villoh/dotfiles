@@ -5,3 +5,7 @@ output_path = '/home/mikel/.config/yazi/flavors/DMS.yazi/flavor.toml'
 [templates.yazi_tmtheme]
 input_path = '/home/mikel/.config/matugen/dms/templates/yazi-tmtheme.xml'
 output_path = '/home/mikel/.config/yazi/flavors/DMS.yazi/tmtheme.xml'
+
+[templates.yazi_glow]
+input_path = '/home/mikel/.config/matugen/dms/templates/yazi-glow.json'
+output_path = '/home/mikel/.config/glow/styles/dms.json'
