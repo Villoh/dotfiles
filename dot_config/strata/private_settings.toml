@@ -1,7 +1,7 @@
 arrow_navigation_scoped = false
 browser_density = "compact"
 browser_density_custom_px = 5
-browser_mode = "icons"
+browser_mode = "list"
 check_for_updates = true
 columns_mirror_selection = true
 cross_volume_drop_strategy = "always-ask"
@@ -49,6 +49,7 @@ sidebar_order = [
     "pictures",
     "videos",
 ]
+sidebar_pinned_collapsed = false
 sidebar_show_desktop = true
 sidebar_show_documents = true
 sidebar_show_downloads = true
