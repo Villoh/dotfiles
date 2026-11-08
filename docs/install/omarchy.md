@@ -255,6 +255,7 @@ git history. tmux itself is installed by NixOS (`modules/home/shell/packages.nix
   through `dot_pi/agent/extensions/workmux-status.ts` (upstream `resources/pi/extensions/`, rev
   `355ff46`, reviewed). `prefix+B` toggles the sidebar and `prefix+W` opens the dashboard. Run
   `workmux setup` never: it writes into `~/.claude`, `~/.codex` and `~/.pi`, which chezmoi owns.
+- `prefix+a` / `prefix+A` call `workmux last-done` / `last-agent`; `prefix+u` is tmux-fzf-url.
 - `prefix+?` calls `omarchy-menu-tmux-keybindings --print`. `dot_local/bin/` ships a
   trimmed port (print mode only, no Hyprland/Walker menu) under the same name so the
   config needs no edit.
