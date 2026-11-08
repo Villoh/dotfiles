@@ -140,7 +140,13 @@ rules = [
 	{ url = "*/", fg = "{{colors.primary.default.hex}}" },
 ]
 
-# BEGIN generated icons (docs/linux/yazi-icons-gen.py)
+# Icons. Folders follow the DMS palette; file icons keep Yazi v26.9.1's brand colours.
+# The lists are written out in full for both modes and picked by DMS's mode, not by Yazi's
+# own light/dark detection: Ghostty (GTK) always answers "light" to CSI ?996n, so Yazi would
+# load its light preset's dark icons. In dark mode, colours with too little contrast are
+# lightened (same hue, contrast >= 5.5 against #0b0d15).
+# Generated once from the presets' theme-dark.toml and theme-light.toml. The script that
+# did it is in git history: git show cdda57a:docs/linux/yazi-icons-gen.py
 [icon]
 dirs = [
 	{ name = ".config", text = "", fg = "{{colors.primary.default.hex}}" },
@@ -1595,4 +1601,3 @@ conds = [
 	{ if = "!dir", text = "", fg = "#000000" },
 ]
 <* endif *>
-# END generated icons
