@@ -8,7 +8,7 @@ locked = true
 [settings.npm]
 package_manager = "aube_cli"
 
-[settings.pipx]
+[settings.pypi]
 uvx = true
 
 [settings.github]
@@ -35,12 +35,12 @@ oh-my-pi = { version = "latest", rename_exe = "omp" }
 "npm:openwiki" = { version = "latest", allow_builds = ["better-sqlite3"] }
 "npm:tokscale" = "latest"
 vercel = { version = "latest", allow_builds = ["esbuild"], trust_policy_excludes = [] }
-"pipx:gamepadla-plus" = { version = "latest", uvx_args = "--python 3.11" }
-"pipx:harlequin" = { version = "latest", extras = "mysql", uvx_args = "--python 3.13" }
+"pypi:gamepadla-plus" = { version = "latest", uvx_args = "--python 3.11" }
+"pypi:harlequin" = { version = "latest", extras = "mysql", uvx_args = "--python 3.13" }
 # Preserve the excluded ast-grep-cli releases during installation and upgrades.
-"pipx:headroom-ai" = { version = "latest", uvx_args = "--python 3.14 --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1'" }
-"pipx:serena-agent" = { version = "latest", uvx_args = "--python 3.14" }
-"pipx:trafilatura" = { version = "latest", uvx_args = "--python 3.14" }
+"pypi:headroom-ai" = { version = "latest", uvx_args = "--python 3.14 --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1'" }
+"pypi:serena-agent" = { version = "latest", uvx_args = "--python 3.14" }
+"pypi:trafilatura" = { version = "latest", uvx_args = "--python 3.14" }
 bun = "latest"
 ruff = "latest"
 ty = "latest"

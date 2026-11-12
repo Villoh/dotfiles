@@ -33,8 +33,8 @@ run_harness() {
     fi
 
     if command_exists mise; then
-        run_harness_step 'headroom' mise upgrade --bump pipx:headroom-ai
-        run_harness_step 'serena' mise upgrade --bump pipx:serena-agent
+        run_harness_step 'headroom' mise upgrade --bump pypi:headroom-ai
+        run_harness_step 'serena' mise upgrade --bump pypi:serena-agent
     else
         printf '→ Skipping headroom and serena: mise not found\n' >&2
     fi
@@ -185,8 +185,8 @@ while IFS= read -r choice <&3; do
         "🧩 Impeccable") run "Impeccable" npx impeccable update -y --providers=codex,cursor,opencode,pi --scope=global ;;
         "📚 Context7 (CLI skills)") run "Context7 CLI skills" ctx7 setup --cli --opencode --claude --codex --yes ;;
         # Keep Headroom's dependency exclusions in the mise tool configuration.
-        "🗜️  headroom") run "headroom" mise upgrade --bump pipx:headroom-ai ;;
-        "🧭 serena") run "serena" mise upgrade --bump pipx:serena-agent ;;
+        "🗜️  headroom") run "headroom" mise upgrade --bump pypi:headroom-ai ;;
+        "🧭 serena") run "serena" mise upgrade --bump pypi:serena-agent ;;
     esac
 done 3<<< "$selected"
 

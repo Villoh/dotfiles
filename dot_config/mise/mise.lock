@@ -542,40 +542,40 @@ checksum = "sha256:ee0c0d971c3d3db1a310a28113281d440b643008ea9842f74c33124e18e28
 url = "https://github.com/earendil-works/pi/releases/download/v1.5.1/pi-windows-x64.zip"
 url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/729363009"
 
-[[tools."pipx:gamepadla-plus"]]
+[[tools."pypi:gamepadla-plus"]]
 version = "1.9.0"
-backend = "pipx:gamepadla-plus"
+backend = "pypi:gamepadla-plus"
 
-[tools."pipx:gamepadla-plus".options]
+[tools."pypi:gamepadla-plus".options]
 uvx_args = "--python 3.11"
 
-[[tools."pipx:harlequin"]]
+[[tools."pypi:harlequin"]]
 version = "2.17.0"
-backend = "pipx:harlequin"
+backend = "pypi:harlequin"
 
-[tools."pipx:harlequin".options]
+[tools."pypi:harlequin".options]
 extras = "mysql"
 uvx_args = "--python 3.13"
 
-[[tools."pipx:headroom-ai"]]
+[[tools."pypi:headroom-ai"]]
 version = "0.44.0"
-backend = "pipx:headroom-ai"
+backend = "pypi:headroom-ai"
 
-[tools."pipx:headroom-ai".options]
+[tools."pypi:headroom-ai".options]
 uvx_args = "--python 3.14 --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1'"
 
-[[tools."pipx:serena-agent"]]
+[[tools."pypi:serena-agent"]]
 version = "2.1.0"
-backend = "pipx:serena-agent"
+backend = "pypi:serena-agent"
 
-[tools."pipx:serena-agent".options]
+[tools."pypi:serena-agent".options]
 uvx_args = "--python 3.14"
 
-[[tools."pipx:trafilatura"]]
+[[tools."pypi:trafilatura"]]
 version = "2.3.1"
-backend = "pipx:trafilatura"
+backend = "pypi:trafilatura"
 
-[tools."pipx:trafilatura".options]
+[tools."pypi:trafilatura".options]
 uvx_args = "--python 3.14"
 
 [[tools.ruff]]

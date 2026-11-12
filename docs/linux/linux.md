@@ -186,7 +186,7 @@ The mise executable itself must be updated through NixOS or its package manager.
 
 Linux user CLI configuration lives in `dot_config/mise/config.toml` and is
 excluded on Windows. `npm:` tools use the Nix-provided standalone aube CLI
-(`npm.package_manager = "aube_cli"`); Python tools use uv through `pipx:`.
+(`npm.package_manager = "aube_cli"`); Python tools use uv through `pypi:`.
 Nix still provides Node, uv, and pnpm. Bun is declared in mise for tools such
 as ocx. Zsh activates mise, and the login profile exposes shims to desktop apps;
 pnpm's former global bin directory is no longer added to PATH.
