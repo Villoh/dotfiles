@@ -648,7 +648,8 @@
         {
           "id": "dock_apps",
           "widgetId": "appsDock",
-          "enabled": true
+          "enabled": true,
+          "appsDockColorizeActive": false
         },
         {
           "id": "dock_trash",
@@ -710,7 +711,7 @@
   "systemTrayIconTintMode": "none",
   "systemTrayIconTintSaturation": 50,
   "systemTrayIconTintStrength": 135,
-  "iconThemeDark": "System Default",
+  "iconThemeDark": "Colloid-Dark",
   "iconThemeLight": "System Default",
   "iconThemePerMode": false,
   "fontFamily": "Inter Variable",
