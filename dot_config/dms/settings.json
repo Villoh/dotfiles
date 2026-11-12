@@ -739,7 +739,6 @@
   "popoutAnimationDuration": 150,
   "modalAnimationDuration": 150,
   "blurBorderSeeded": false,
-  "cornerRadius": 9,
   "radiusMode": "scale",
   "fixedRadius": 16,
   "notificationAnimationDuration": 200,
