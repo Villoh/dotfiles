@@ -1,7 +1,7 @@
 {
   "currentThemeName": "custom",
   "currentThemeCategory": "registry",
-  "customThemeFile": "/home/mikel/.config/dms/themes/omarchy-bellerophon/theme.json",
+  "customThemeFile": "/home/mikel/.config/dms/profiles/vantablack/theme.json",
   "registryThemeVariants": {
     "catppuccin": {
       "dark": {
@@ -738,5 +738,24 @@
   "animationDuration": 250,
   "popoutAnimationDuration": 150,
   "modalAnimationDuration": 150,
-  "blurBorderSeeded": false
+  "blurBorderSeeded": false,
+  "cornerRadius": 9,
+  "radiusMode": "scale",
+  "fixedRadius": 16,
+  "notificationAnimationDuration": 200,
+  "blurStrength": 0,
+  "containerSaturation": 100,
+  "displayFontFamily": "DM Serif Display",
+  "hostSurfaceColor": "default",
+  "hostSurfaceCustomColor": "#6750A4",
+  "cardSurfaceColor": "default",
+  "cardSurfaceCustomColor": "#6750A4",
+  "chipSurfaceColor": "default",
+  "chipSurfaceCustomColor": "#6750A4",
+  "chipSurfaceNestedColor": "default",
+  "chipSurfaceNestedCustomColor": "#6750A4",
+  "matugenSeedColor": "",
+  "matugenSpec": "2021",
+  "terminalOpacity": 100,
+  "terminalPalette": "default"
 }
