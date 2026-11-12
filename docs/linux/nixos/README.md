@@ -50,7 +50,7 @@ repo under `docs/maintenance/` (updates, `nh`, recovery, cleanup).
 - Compositor defaults are deployed once with
   `dms setup headless --compositor hyprland --skip-existing`. Generated files live
   in `~/.config/hypr/dms/`; do not manage them with chezmoi or Home Manager.
-- DMS settings tracked here: `dot_config/DankMaterialShell/settings.json` and the
+- Dux Shell (DMS) settings tracked here: `dot_config/dms/settings.json` and the
   GPG-encrypted `encrypted_plugin_settings.json.asc`. Both are ignored when
   `enable_dms` is off.
 - Matugen templates: `dot_config/matugen/`.

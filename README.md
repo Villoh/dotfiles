@@ -68,7 +68,7 @@
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
 | Desktop | [NixOS](https://nixos.org/) + [Hyprland](https://hyprland.org/) + [DMS](https://danklinux.com/) | [Villoh/nixos-config](https://github.com/Villoh/nixos-config) |
-| Shell UI (bar, dock, notifications, OSD, launcher, clipboard) | [Dank Material Shell](https://danklinux.com/) | [⚙️](dot_config/DankMaterialShell/) |
+| Shell UI (bar, dock, notifications, OSD, launcher, clipboard) | [Dux Shell](https://duxlabs.dev/) | [⚙️](dot_config/dms/) |
 | Dynamic Theming | [Matugen](https://github.com/InioX/matugen) | [⚙️](dot_config/matugen/) |
 | Shell | [Zsh](https://www.zsh.org/) + [Oh My Zsh](https://ohmyz.sh/) | [⚙️](dot_zshrc) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/shell/zsh.nix) |
 | Prompt | [Starship](https://starship.rs/) | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/shell/zsh.nix) |
