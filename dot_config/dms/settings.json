@@ -511,7 +511,8 @@
         {
           "id": "controlCenterButton",
           "enabled": true,
-          "showMicPercent": true
+          "showMicPercent": true,
+          "showBluetoothIcon": false
         },
         {
           "id": "bitwarden",
