@@ -136,23 +136,24 @@ args = []
 
 [mcp_servers.node_repl]
 args = []
-command = "/nix/store/5knpkkrns16l98vg9v4x7h9psjcs6b4x-codex-desktop-26.915.31945/opt/codex-desktop/resources/cua_node/bin/node_repl"
+command = "/nix/store/pxjnmzs51c708bfwv11v8b99xhjb32ka-codex-desktop-26.1111.21308/opt/codex-desktop/resources/cua_node/bin/node_repl"
+env_vars = ["BROWSER_USE_ACCESS_EXECUTOR_ID", "BROWSER_USE_ACCESS_PIPE_PATH", "BROWSER_USE_ACCESS_VERIFYING_IDENTITY"]
 startup_timeout_sec = 120
 
 [mcp_servers.node_repl.env]
 NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
-NODE_REPL_NODE_MODULE_DIRS = "/nix/store/5knpkkrns16l98vg9v4x7h9psjcs6b4x-codex-desktop-26.915.31945/opt/codex-desktop/resources/cua_node/lib/node_modules"
-NODE_REPL_NODE_PATH = "/nix/store/5knpkkrns16l98vg9v4x7h9psjcs6b4x-codex-desktop-26.915.31945/opt/codex-desktop/resources/cua_node/bin/node"
-NODE_REPL_TRUSTED_CODE_PATHS = "/home/mikel/.codex:/nix/store/5knpkkrns16l98vg9v4x7h9psjcs6b4x-codex-desktop-26.915.31945/opt/codex-desktop/resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_MODULE_DIRS = "/nix/store/pxjnmzs51c708bfwv11v8b99xhjb32ka-codex-desktop-26.1111.21308/opt/codex-desktop/resources/cua_node/lib/node_modules"
+NODE_REPL_NODE_PATH = "/nix/store/pxjnmzs51c708bfwv11v8b99xhjb32ka-codex-desktop-26.1111.21308/opt/codex-desktop/resources/cua_node/bin/node"
+NODE_REPL_TRUSTED_CODE_PATHS = "/home/mikel/.codex:/nix/store/pxjnmzs51c708bfwv11v8b99xhjb32ka-codex-desktop-26.1111.21308/opt/codex-desktop/resources/cua_node/lib/node_modules"
 CODEX_HOME = "/home/mikel/.codex"
-BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab,mcpapps"
 BROWSER_USE_TINYSKY_ENABLED = "1"
 NODE_REPL_INSTRUCTIONS_USE_CASE_BROWSER = ""
 NODE_REPL_INSTRUCTIONS_USE_CASE_CHROME = ""
 BROWSER_USE_CODEX_APP_BUILD_FLAVOR = "prod"
-BROWSER_USE_CODEX_APP_VERSION = "26.915.31945"
-NODE_REPL_TRUSTED_SERVICES = '{"browser":"/home/mikel/.codex/plugins/cache/openai-bundled/browser/26.915.31945/scripts/browser-service.mjs"}'
-CODEX_CLI_PATH = "/nix/store/5knpkkrns16l98vg9v4x7h9psjcs6b4x-codex-desktop-26.915.31945/opt/codex-desktop/resources/codex"
+BROWSER_USE_CODEX_APP_VERSION = "26.1111.21308"
+NODE_REPL_TRUSTED_SERVICES = '{"browser":"/home/mikel/.codex/plugins/cache/openai-bundled/browser/26.1111.21308/scripts/browser-service.mjs"}'
+CODEX_CLI_PATH = "/nix/store/pxjnmzs51c708bfwv11v8b99xhjb32ka-codex-desktop-26.1111.21308/opt/codex-desktop/resources/codex"
 
 [windows]
 sandbox = "elevated"
