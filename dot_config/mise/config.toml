@@ -46,6 +46,5 @@ ruff = "latest"
 ty = "latest"
 git-filter-repo = "latest"
 "github:PrimeIntellect-ai/prime-agent" = { version = "latest", asset_pattern = "prime-agent-*-linux-x64.tar.gz", filter_bins = "prime-agent" }
-"http:devin" = { version = "latest", url = "https://static.devin.ai/cli/{{ version }}/devin-{{ version }}-x86_64-unknown-linux.tar.gz", version_list_url = "https://static.devin.ai/cli/current/manifest.json", version_json_path = ".version" }
 "npm:socket" = "latest"
 "github:router-for-me/CLIProxyAPI" = "latest"
