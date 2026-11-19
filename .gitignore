@@ -76,6 +76,7 @@ dot_config/ytm-player/*
 # herdr — %APPDATA%\herdr\config.toml links to rendered config.toml; runtime state is live
 dot_config/herdr/*
 !dot_config/herdr/config.toml.tmpl
+!dot_config/herdr/modify_private_config-gpui.local.toml.tmpl
 # Local Pi runtime state
 .atl/
 .pi-subagents/

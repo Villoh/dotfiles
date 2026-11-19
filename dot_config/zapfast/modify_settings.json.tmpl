@@ -1,0 +1,4 @@
+#!/bin/sh
+# Pin only the custom theme; the app owns the rest of settings.json (window
+# geometry, last chat, palette cache), so it is not tracked as a whole file.
+jq -n '(try input catch {}) | .custom_theme = "DMS.json"'

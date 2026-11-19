@@ -1,0 +1,8 @@
+#!/bin/sh
+# Pin only the Sheprd theme; the app owns the other keys (layout, ...).
+# shortcut: assumes a top-level `theme = ...` line or none, when the file grows tables, use a TOML-aware tool.
+awk '
+  /^theme[[:space:]]*=/ { print "theme = \"DMS\""; done = 1; next }
+  { print }
+  END { if (!done) print "theme = \"DMS\"" }
+'
