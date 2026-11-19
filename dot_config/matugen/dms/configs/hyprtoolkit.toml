@@ -1,0 +1,3 @@
+[templates.hyprtoolkit]
+input_path = '/home/mikel/.config/matugen/dms/templates/hyprtoolkit.conf'
+output_path = '/home/mikel/.config/hypr/hyprtoolkit.conf'
