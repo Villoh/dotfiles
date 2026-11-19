@@ -1,6 +1,6 @@
 {
-  "currentThemeName": "custom",
-  "currentThemeCategory": "registry",
+  "currentThemeName": "dynamic",
+  "currentThemeCategory": "dynamic",
   "customThemeFile": "/home/mikel/.config/dms/profiles/vantablack/theme.json",
   "registryThemeVariants": {
     "catppuccin": {
@@ -772,7 +772,7 @@
   "chipSurfaceNestedColor": "default",
   "chipSurfaceNestedCustomColor": "#6750A4",
   "matugenSeedColor": "",
-  "matugenSpec": "2021",
+  "matugenSpec": "dms",
   "terminalOpacity": 100,
   "terminalPalette": "default",
   "lockBeforeSuspend": true
