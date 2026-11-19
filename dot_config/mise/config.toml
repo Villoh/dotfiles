@@ -19,7 +19,6 @@ credential_command = "gh auth token"
 [tools]
 claude = "latest"
 codex = "latest"
-pi = "latest"
 oh-my-pi = { version = "latest", rename_exe = "omp" }
 "npm:happy" = { version = "latest", allow_builds = ["happy"] }
 "npm:@opencode/cli" = { version = "latest", allow_builds = ["@opencode/cli"] }

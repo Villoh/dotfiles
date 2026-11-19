@@ -62,14 +62,18 @@
   },
   "extensionChangelogVersions": {
     "{\"source\":\"npm:pi-rtk-optimizer\",\"scope\":\"user\"}": "0.9.0",
-    "{\"source\":\"npm:pi-lens\",\"scope\":\"user\"}": "4.3.0",
-    "{\"source\":\"npm:pi-rewind-hook\",\"scope\":\"user\"}": "1.8.7",
+    "{\"source\":\"npm:pi-lens\",\"scope\":\"user\"}": "4.5.0",
+    "{\"source\":\"npm:pi-rewind-hook\",\"scope\":\"user\"}": "1.8.8",
     "{\"source\":\"npm:pi-messenger\",\"scope\":\"user\"}": "0.15.2",
-    "{\"source\":\"npm:@gotgenes/pi-permission-system\",\"scope\":\"user\"}": "39.0.2",
-    "{\"source\":\"npm:@gotgenes/pi-subagents\",\"scope\":\"user\"}": "22.0.0",
-    "{\"source\":\"npm:@howaboua/pi-codex-conversion\",\"scope\":\"user\"}": "3.0.43",
+    "{\"source\":\"npm:@gotgenes/pi-permission-system\",\"scope\":\"user\"}": "42.0.0",
+    "{\"source\":\"npm:@gotgenes/pi-subagents\",\"scope\":\"user\"}": "25.0.5",
+    "{\"source\":\"npm:@howaboua/pi-codex-conversion\",\"scope\":\"user\"}": "5.0.0",
     "{\"source\":\"npm:@villoh/pi-auto-name-session\",\"scope\":\"user\"}": "0.1.3",
-    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.35.0",
-    "{\"source\":\"npm:pi-claude-marketplace\",\"scope\":\"user\"}": "0.20.1"
-  }
+    "{\"source\":\"npm:pi-web-access\",\"scope\":\"user\"}": "0.47.0",
+    "{\"source\":\"npm:pi-claude-marketplace\",\"scope\":\"user\"}": "0.23.0",
+    "{\"source\":\"npm:@narumitw/pi-plan-mode\",\"scope\":\"user\"}": "0.60.1",
+    "{\"source\":\"npm:@narumitw/pi-goal\",\"scope\":\"user\"}": "0.55.3",
+    "{\"source\":\"npm:pi-context-view\",\"scope\":\"user\"}": "0.8.4"
+  },
+  "deviceId": "a1070be0-b6bf-4894-bb4d-9987e2e0bc14"
 }

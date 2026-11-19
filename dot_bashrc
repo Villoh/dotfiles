@@ -1,3 +1,6 @@
 # Load Wannme/HSQL environment (no interactive guard: coding agents use non-interactive shells).
 wannme-env() { source "$HOME/development/work/wannme/keys/credentials.sh" "$@"; }
 [[ -r "$HOME/development/work/wannme/keys/credentials.sh" ]] && wannme-env
+
+# Bitwarden-managed terminal secrets
+[ -r "${XDG_CONFIG_HOME:-$HOME/.config}/secrets/terminal-env.sh" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/secrets/terminal-env.sh"
