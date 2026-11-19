@@ -28,7 +28,7 @@ Never reuse one host's `hardware-configuration.nix` on another machine.
 ## Daily commands
 
 Run from the NixOS repo. `NH_OS_FLAKE` is already exported in `dot_zshrc`
-(`~/development/personal/projects/nixos-config#desktop`).
+(`~/nixos-config#desktop`, or `#zenbook` when the hostname is `nixos-zenbook`).
 
 ```bash
 git diff                              # review before applying

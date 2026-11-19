@@ -37,7 +37,11 @@ if [[ "$OMARCHY_ZSH" == true ]]; then
 fi
 
 export PATH="$HOME/.local/bin:$PATH"
-export NH_OS_FLAKE="$HOME/development/personal/projects/nixos-config#desktop"
+# nh: repo lives in ~/nixos-config; flake attr (desktop/zenbook) differs from the hostname.
+case "$HOST" in
+  nixos-zenbook) export NH_OS_FLAKE="$HOME/nixos-config#zenbook" ;;
+  *)             export NH_OS_FLAKE="$HOME/nixos-config#desktop" ;;
+esac
 
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
