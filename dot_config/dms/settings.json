@@ -443,6 +443,10 @@
           "launcherLogoSizeOffset": 0
         },
         {
+          "id": "mise",
+          "enabled": true
+        },
+        {
           "id": "workspaceSwitcher",
           "enabled": true,
           "workspaceColorMode": "default",
@@ -479,7 +483,13 @@
           "mediaSize": 0
         },
         "clock",
-        "weather"
+        "weather",
+        {
+          "id": "keyboard_layout_name",
+          "enabled": true,
+          "keyboardLayoutNameShowIcon": true,
+          "keyboardLayoutNameCompactMode": true
+        }
       ],
       "rightWidgets": [
         {
@@ -488,11 +498,7 @@
         },
         {
           "id": "dockerManager",
-          "enabled": true
-        },
-        {
-          "id": "mise",
-          "enabled": true
+          "enabled": false
         },
         {
           "id": "systemTray",
@@ -502,7 +508,7 @@
         "memUsage",
         {
           "id": "vpn",
-          "enabled": true
+          "enabled": false
         },
         {
           "id": "orbitBluetooth",
@@ -518,7 +524,12 @@
           "id": "bitwarden",
           "enabled": true
         },
-        "notificationButton"
+        "notificationButton",
+        {
+          "id": "battery",
+          "enabled": true,
+          "showBatteryPercent": true
+        }
       ],
       "spacing": 4,
       "innerPadding": 4,
@@ -763,5 +774,6 @@
   "matugenSeedColor": "",
   "matugenSpec": "2021",
   "terminalOpacity": 100,
-  "terminalPalette": "default"
+  "terminalPalette": "default",
+  "lockBeforeSuspend": true
 }
