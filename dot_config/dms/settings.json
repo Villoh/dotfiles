@@ -1,7 +1,7 @@
 {
-  "currentThemeName": "dynamic",
-  "currentThemeCategory": "dynamic",
-  "customThemeFile": "/home/mikel/.config/dms/profiles/vantablack/theme.json",
+  "currentThemeName": "custom",
+  "currentThemeCategory": "registry",
+  "customThemeFile": "/home/mikel/.config/dms/themes/omarchy-bellerophon/theme.json",
   "registryThemeVariants": {
     "catppuccin": {
       "dark": {
@@ -483,13 +483,7 @@
           "mediaSize": 0
         },
         "clock",
-        "weather",
-        {
-          "id": "keyboard_layout_name",
-          "enabled": true,
-          "keyboardLayoutNameShowIcon": true,
-          "keyboardLayoutNameCompactMode": true
-        }
+        "weather"
       ],
       "rightWidgets": [
         {
@@ -772,8 +766,19 @@
   "chipSurfaceNestedColor": "default",
   "chipSurfaceNestedCustomColor": "#6750A4",
   "matugenSeedColor": "",
-  "matugenSpec": "dms",
+  "matugenSpec": "2021",
   "terminalOpacity": 100,
   "terminalPalette": "default",
-  "lockBeforeSuspend": true
+  "lockBeforeSuspend": true,
+  "powerMenuActions": [
+    "reboot",
+    "logout",
+    "poweroff",
+    "lock",
+    "suspend",
+    "restart",
+    "hibernate"
+  ],
+  "acProfileName": "2",
+  "batteryProfileName": "0"
 }
