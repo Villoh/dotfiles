@@ -76,3 +76,9 @@ modified = 150
 name = 320
 size = 90
 type = 120
+
+[custom_icons]
+"/home/mikel/Development" = "strata-file-code"
+
+[folder_colors]
+"/home/mikel/Development" = "yellow"
