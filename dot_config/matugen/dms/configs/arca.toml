@@ -1,0 +1,3 @@
+[templates.arca]
+input_path = '/home/mikel/.config/matugen/dms/templates/arca.conf'
+output_path = '/home/mikel/.config/Arca/themes/dms.conf'
