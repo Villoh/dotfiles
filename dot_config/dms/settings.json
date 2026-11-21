@@ -780,5 +780,8 @@
     "hibernate"
   ],
   "acProfileName": "2",
-  "batteryProfileName": "0"
+  "batteryProfileName": "0",
+  "batteryChargeLimit": 80,
+  "batteryNotifyChargeLimit": true,
+  "batteryChargeLimitNotificationType": 1
 }
