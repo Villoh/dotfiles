@@ -113,7 +113,7 @@ Arrow keys and Vim keys (`H J K L`) are equivalent.
 | `Super + Scroll Down/Up` | Next / previous workspace |
 | `Super + Ctrl + Scroll Down/Up` | Move window to next / previous workspace |
 | `Ctrl + Shift + R` | Rename workspace |
-| 3-finger horizontal swipe | Switch workspace |
+| 3-finger horizontal swipe | Switch workspace (see [Touchpad gestures](#touchpad-gestures)) |
 
 ### Screenshots and display
 
@@ -136,3 +136,49 @@ Arrow keys and Vim keys (`H J K L`) are equivalent.
 | `Previous` / `Next` | Previous / next track |
 | `Ctrl + Volume Up/Down` | Media player volume +/- 3% |
 | `Brightness Up/Down` | Brightness +/- 5% |
+
+## Touchpad gestures
+
+Declared in `modules/home/desktop/hyprland/gestures.nix` (nixos-config) and rendered
+to `hl.gesture()` Lua. Only the 3-finger horizontal workspace swipe comes from DMS
+(`dms/binds.lua`).
+
+The ASUP1415 touchpad reports up to 5 contacts, but libinput only emits swipes with
+3+ fingers and pinches with 2+, and 5-finger gestures fire nothing (tested), so 3 and 4
+fingers are what is bound. A 2-finger swipe is scrolling, and Hyprland has no hold or
+tap gestures. A 2-finger pinch needs `Super`, otherwise it would take the zoom of the
+browser and maps.
+
+`Super + Ctrl + Shift + /` (docked AL68) or `Super + Ctrl + Alt + G` (laptop keyboard) open
+DMS's keybind viewer on the gestures alone. The full viewer (`Super + Shift + /`, and
+`Super + Ctrl + K` on the Zenbook) lists them together with the keybinds.
+
+The viewer parses `hyprland.lua` without running it and reads `hl.bind` only, so
+`gestures.nix` writes the gestures as `hl.bind` lines in two places: an `if false then`
+block of the main config (the full viewer lists it, Hyprland never registers it) and a
+sheet of its own that the two gesture keys open with `keybinds toggleWithPath`.
+
+Same plane rule as the keys: no modifier is navigation, `Super` moves, resizes and
+captures, `Alt` acts on the window, `Ctrl` is continuous controls and monitor/group
+moves, `Shift` is media and shell toggles. The modifier is held on the keyboard while
+swiping.
+
+| Gesture | No modifier | `Super` | `Alt` | `Ctrl` | `Shift` |
+| ------- | ----------- | ------- | ----- | ------ | ------- |
+| 3 fingers left / right | Workspace (DMS, 1:1) | Move window 1:1 (horizontal) | Move window to previous / next workspace | Move window to left / right monitor | Previous / next track |
+| 3 fingers up | DMS overview | Region screenshot to clipboard | Pop window out (float and pin) | Volume (live, vertical) | Play / pause |
+| 3 fingers down | Scratchpad | Quake terminal | Close window | Volume (live, vertical) | Toggle microphone mute |
+| 4 fingers left / right | Previous / next window | Resize window 1:1 (any direction) | Scroll the tape (scrolling layout) | Previous / next window in group | Focus previous / next monitor |
+| 4 fingers up | Fullscreen | Resize window 1:1 | Maximize | Brightness (live, vertical) | Toggle bar |
+| 4 fingers down | Toggle floating | Resize window 1:1 | Toggle dwindle / scrolling layout | Brightness (live, vertical) | Lock |
+| 3-finger pinch / spread | Launcher / notification center | | | | |
+| 4-finger pinch / spread | Control Center / quake terminal | | | | |
+| 2-finger pinch or spread | | Zoom the screen at the cursor (live) | | | |
+
+"Pinch" is fingers together and "spread" fingers apart. Hyprland names them `zoomout` and
+`zoomin` (aliases of `pinchout` and `pinchin`); its wiki describes `pinchin` and `pinchout`
+the other way round, but the source treats fingers together as `PINCH_OUT`.
+
+Volume and brightness gestures are continuous: the swipe distance is accumulated and
+fires one step (2 %) per `STEP` units, a constant at the top of `gestures.nix`. Raise it
+if they feel twitchy.
