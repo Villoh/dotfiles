@@ -150,7 +150,8 @@ tap gestures. A 2-finger pinch needs `Super`, otherwise it would take the zoom o
 browser and maps.
 
 `Super + Ctrl + Shift + /` (docked AL68) or `Super + Ctrl + Alt + G` (laptop keyboard) open
-DMS's keybind viewer on the gestures alone. The full viewer (`Super + Shift + /`, and
+DMS's keybind viewer on the gestures alone: the touchpad ones and, on the Zenbook, the
+[touchscreen ones](#touchscreen-gestures-zenbook). The full viewer (`Super + Shift + /`, and
 `Super + Ctrl + K` on the Zenbook) lists them together with the keybinds.
 
 The viewer parses `hyprland.lua` without running it and reads `hl.bind` only, so
@@ -182,3 +183,48 @@ the other way round, but the source treats fingers together as `PINCH_OUT`.
 Volume and brightness gestures are continuous: the swipe distance is accumulated and
 fires one step (2 %) per `STEP` units, a constant at the top of `gestures.nix`. Raise it
 if they feel twitchy.
+
+## Touchscreen gestures (Zenbook)
+
+Declared in `modules/home/desktop/hyprland/touchscreen.nix` (nixos-config). Hyprland only
+turns touchpad swipes into gestures, so the Zenbook loads the
+[hyprgrass](https://github.com/horriblename/hyprgrass) plugin
+(`hosts/zenbook/touchscreen.nix`, built from `packages/hyprgrass`). The desktop has no
+touchscreen and gets none of this. The panel (WDHT1F01) reports 10 contacts. Not tested
+yet.
+
+There is no modifier under the fingers, so the shape of the gesture is the plane: 3 fingers
+navigate, 4 act on windows, 5 are destructive, and the screen edges open shell panels. 1
+and 2 fingers stay with the apps (touch, scroll, zoom); hyprgrass always keeps 3 or more
+from them. The viewer lists them under "Touch", in the full one (`Super + Shift + /`) and
+in the gestures-only one (`Super + Ctrl + Shift + /`, `Super + Ctrl + Alt + G`).
+
+| Gesture | 3 fingers | 4 fingers | 5 fingers |
+| ------- | --------- | --------- | --------- |
+| Swipe left / right | Workspace (follows the fingers) | Previous / next window | Move window to previous / next workspace |
+| Swipe up | DMS overview | Fullscreen | Pop window out (float and pin) |
+| Swipe down | Scratchpad | Toggle floating | Close window |
+| Pinch (fingers together) | Launcher | Control Center | Lock |
+| Spread (fingers apart) | Notification center | Quake terminal | |
+| Tap | Play / pause | Region screenshot to clipboard | |
+| Hold, then drag | Move window | Resize window | |
+
+Edge swipes use one finger that starts within 30 px of the border (`edge_margin`):
+
+| Edge | Swipe | Function |
+| ---- | ----- | -------- |
+| Bottom | Up | Launcher |
+| Top | Down | Control Center |
+| Left | Right | DMS overview |
+| Right | Left | Notification center |
+| Right | Along the edge (up / down) | Volume (live) |
+| Left | Along the edge (up / down) | Brightness (live) |
+
+Pinch and spread match the touchpad: fingers together (`zoomout`) opens the launcher and
+the Control Center, fingers apart (`zoomin`) the notifications and the quake terminal.
+hyprgrass reads the name with Hyprland's own parser, so they are the same aliases as in
+`gestures.nix`.
+
+The edge swipes and the live volume and brightness steps (the `STEP` constant in
+`touchscreen.nix`) are the likeliest to need tuning: an edge swipe can collide with the bar
+or an app's own edge.
