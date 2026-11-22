@@ -24,5 +24,15 @@
       },
       "enabled": false
     }
+    },
+    "wallapop": {
+      "command": "wallapop-mcp",
+      "args": [
+        "--allow-writes"
+      ],
+      "description": "Wallapop: search, manage and publish listings (unofficial; installed via mise, v0.3.0 audited; log in with `wallapop login`)",
+      "toolExposure": {
+        "delete*": "hidden"
+      }
   }
 }
