@@ -5,7 +5,8 @@
       "description": "Wannme Jira and Confluence (wannme.atlassian.net): attach files to issues, read and search",
       "toolExposure": {
         "delete*": "hidden"
-      }
+      },
+      "enabled": false
     },
     "shadcn": {
       "command": "npx",
@@ -23,7 +24,6 @@
         "Authorization": "Bearer ${WEALTHFOLIO_TOKEN}"
       },
       "enabled": false
-    }
     },
     "wallapop": {
       "command": "wallapop-mcp",
@@ -34,5 +34,6 @@
       "toolExposure": {
         "delete*": "hidden"
       }
+    }
   }
 }
