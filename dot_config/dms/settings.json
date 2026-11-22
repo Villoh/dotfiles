@@ -783,5 +783,8 @@
   "batteryProfileName": "0",
   "batteryChargeLimit": 80,
   "batteryNotifyChargeLimit": true,
-  "batteryChargeLimitNotificationType": 1
+  "batteryChargeLimitNotificationType": 1,
+  "batteryNotifyLow": true,
+  "batteryLowNotificationType": 1,
+  "cornerRadius": 9
 }
