@@ -34,7 +34,6 @@ oh-my-pi = { version = "latest", rename_exe = "omp" }
 "npm:openwiki" = { version = "latest", allow_builds = ["better-sqlite3"] }
 "npm:tokscale" = "latest"
 vercel = { version = "latest", allow_builds = ["esbuild"], trust_policy_excludes = [] }
-"pypi:gamepadla-plus" = { version = "latest", uvx_args = "--python 3.11" }
 "pypi:harlequin" = { version = "latest", extras = "mysql", uvx_args = "--python 3.13" }
 # Preserve the excluded ast-grep-cli releases during installation and upgrades.
 "pypi:headroom-ai" = { version = "latest", uvx_args = "--python 3.14 --with 'ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1'" }

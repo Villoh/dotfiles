@@ -504,13 +504,6 @@ checksum = "sha256:e6adb8cb8c84eca14391ad24b363de9d2be98a89ca3ba3fdee1fa4de32b7f
 url = "https://github.com/earendil-works/pi/releases/download/v1.5.2/pi-windows-x64.zip"
 url_api = "https://api.github.com/repos/earendil-works/pi/releases/assets/731292654"
 
-[[tools."pypi:gamepadla-plus"]]
-version = "1.9.1"
-backend = "pypi:gamepadla-plus"
-
-[tools."pypi:gamepadla-plus".options]
-uvx_args = "--python 3.11"
-
 [[tools."pypi:harlequin"]]
 version = "2.17.0"
 backend = "pypi:harlequin"
