@@ -44,6 +44,5 @@ bun = "latest"
 ruff = "latest"
 ty = "latest"
 git-filter-repo = "latest"
-"github:PrimeIntellect-ai/prime-agent" = { version = "latest", os = ["linux"], asset_pattern = "prime-agent-*-linux-x64.tar.gz", filter_bins = "prime-agent" }
 "npm:socket" = "latest"
 "github:router-for-me/CLIProxyAPI" = "latest"

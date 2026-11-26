@@ -1,0 +1,3 @@
+# Linux-only tools, merged with config.toml by mise (conf.d). Ignored on Windows.
+[tools]
+"github:PrimeIntellect-ai/prime-agent" = { version = "latest", asset_pattern = "prime-agent-*-linux-x64.tar.gz", filter_bins = "prime-agent" }

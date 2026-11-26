@@ -100,7 +100,8 @@ Windows reads two chezmoi-managed files:
   platform-specific tools).
 - `dot_config/mise/conf.d/windows.toml` — Windows-only tools (aube, GitHub
   release apps, cargo tools). Ignored on Linux so its tools never show up as
-  missing from the Linux lockfile.
+  missing from the Linux lockfile. The Linux counterpart is
+  `conf.d/linux.toml`, ignored here.
 
 Settings in `config.toml` use `locked = true`: after adding a tool run
 `mise lock` on Windows to record it. Restore with:
