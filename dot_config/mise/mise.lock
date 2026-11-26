@@ -379,7 +379,7 @@ backend = "npm:openwiki"
 allow_builds = '["better-sqlite3"]'
 
 [[tools."npm:socket"]]
-version = "1.16.0"
+version = "1.16.1"
 backend = "npm:socket"
 
 [[tools."npm:tokscale"]]
