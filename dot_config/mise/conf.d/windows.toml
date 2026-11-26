@@ -11,5 +11,4 @@ aube = "latest"
 "github:nexu-io/open-design" = "latest"
 "github:stablyai/orca" = "latest"
 # Former `cargo` inventory.
-"cargo:https://github.com/Dutch-Raptor/GAT-GWM" = "branch:master"
 "cargo:pexels" = "latest"

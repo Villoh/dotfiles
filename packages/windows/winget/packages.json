@@ -17,12 +17,6 @@
           "PackageIdentifier": "SpanishGovernment.Autofirma"
         },
         {
-          "PackageIdentifier": "Ditto.Ditto"
-        },
-        {
-          "PackageIdentifier": "KRTirtho.Flemozi"
-        },
-        {
           "PackageIdentifier": "GnuPG.Gpg4win"
         },
         {
@@ -39,9 +33,6 @@
         },
         {
           "PackageIdentifier": "IDRIX.VeraCrypt"
-        },
-        {
-          "PackageIdentifier": "AmN.yasb"
         },
         {
           "PackageIdentifier": "Nilesoft.Shell"
@@ -74,9 +65,6 @@
           "PackageIdentifier": "TechPowerUp.NVCleanstall"
         },
         {
-          "PackageIdentifier": "namazso.SecureUXTheme"
-        },
-        {
           "PackageIdentifier": "Nickvision.Parabolic"
         },
         {
@@ -92,16 +80,10 @@
           "PackageIdentifier": "CreativeTechnology.OpenAL"
         },
         {
-          "PackageIdentifier": "Rainmeter.Rainmeter"
-        },
-        {
           "PackageIdentifier": "RockstarGames.Launcher"
         },
         {
           "PackageIdentifier": "Valve.Steam"
-        },
-        {
-          "PackageIdentifier": "RamenSoftware.Windhawk"
         },
         {
           "PackageIdentifier": "qBittorrent.qBittorrent"
@@ -140,9 +122,6 @@
           "PackageIdentifier": "AltSnap.AltSnap"
         },
         {
-          "PackageIdentifier": "AmN.YASBGUI"
-        },
-        {
           "PackageIdentifier": "AutoHotkey.AutoHotkey"
         },
         {
@@ -162,9 +141,6 @@
         },
         {
           "PackageIdentifier": "Figma.FigmaAgent"
-        },
-        {
-          "PackageIdentifier": "Flow-Launcher.Flow-Launcher"
         },
         {
           "PackageIdentifier": "Logitech.OnboardMemoryManager"
@@ -228,9 +204,6 @@
         },
         {
           "PackageIdentifier": "Anthropic.Claude"
-        },
-        {
-          "PackageIdentifier": "MicaForEveryone.MicaForEveryone"
         },
         {
           "PackageIdentifier": "Microsoft.DirectX"

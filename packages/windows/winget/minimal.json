@@ -5,14 +5,7 @@
       "Packages": [
         { "PackageIdentifier": "Microsoft.PowerShell" },
         { "PackageIdentifier": "Microsoft.WindowsTerminal" },
-        { "PackageIdentifier": "Flow-Launcher.Flow-Launcher" },
-        { "PackageIdentifier": "Ditto.Ditto" },
-        { "PackageIdentifier": "Rainmeter.Rainmeter" },
-        { "PackageIdentifier": "AltSnap.AltSnap" },
-        { "PackageIdentifier": "RamenSoftware.Windhawk" },
-        { "PackageIdentifier": "MicaForEveryone.MicaForEveryone" },
-        { "PackageIdentifier": "namazso.SecureUXTheme" },
-        { "PackageIdentifier": "KRTirtho.Flemozi" }
+        { "PackageIdentifier": "AltSnap.AltSnap" }
       ],
       "SourceDetails": {
         "Argument": "https://cdn.winget.microsoft.com/cache",

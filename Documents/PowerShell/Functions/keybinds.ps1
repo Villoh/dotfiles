@@ -16,22 +16,9 @@ function Show-Keybinds-Zellij {
     Get-ConfigKeybinds "$env:USERPROFILE\.config\zellij\config.kdl" "bind" | less
 }
 
-function Show-Keybinds-GlazeWM {
-    $lines = Get-Content "$env:USERPROFILE\.glzr\glazewm\config.yaml"
-    $output = @()
-    $currentCommands = $null
-
-    foreach ($line in $lines) {
-        $trimmed = $line.Trim()
-        if ($trimmed -match "^-?\s*commands:\s*(.+)$") {
-            $currentCommands = $Matches[1]
-        } elseif ($trimmed -match "^bindings:\s*(.+)$" -and $currentCommands) {
-            $output += "$($Matches[1].PadRight(40)) -> $currentCommands"
-            $currentCommands = $null
-        }
-    }
-
-    $output | less
+function Show-Keybinds-Aether {
+    # AetherWM reads Hyprland's own config, so the binds are the `bind` lines of hyprland.conf.
+    Get-ConfigKeybinds "$env:USERPROFILE\.config\hypr\hyprland.conf" "^\s*bind[a-z]*\s*=" | less
 }
 
 function Show-Keybinds {
@@ -40,12 +27,12 @@ function Show-Keybinds {
     $output += Get-ConfigKeybinds "$env:APPDATA\alacritty\alacritty.toml" "key\s*="
     $output += "`n=== ZELLIJ ==="
     $output += Get-ConfigKeybinds "$env:USERPROFILE\.config\zellij\config.kdl" "bind"
-    $output += "`n=== GLAZEWM ==="
-    $output += Get-ConfigKeybinds "$env:USERPROFILE\.glzr\glazewm\config.yaml" "bindings:"
+    $output += "`n=== AETHERWM ==="
+    $output += Get-ConfigKeybinds "$env:USERPROFILE\.config\hypr\hyprland.conf" "^\s*bind[a-z]*\s*="
     $output | less
 }
 
 Set-Alias keybinds     Show-Keybinds
 Set-Alias keybinds-al  Show-Keybinds-Alacritty
 Set-Alias keybinds-zj  Show-Keybinds-Zellij
-Set-Alias keybinds-gwm Show-Keybinds-GlazeWM
+Set-Alias keybinds-aw  Show-Keybinds-Aether

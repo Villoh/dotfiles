@@ -48,13 +48,6 @@
             "Source": "main"
         },
         {
-            "Name": "buttery-taskbar",
-            "Updated": "2026-04-25T16:48:52.0047484+02:00",
-            "Info": "",
-            "Version": "2.3.1",
-            "Source": "CrypticButter"
-        },
-        {
             "Name": "cacert",
             "Updated": "2026-08-13T10:15:18.8920923+02:00",
             "Info": "",
@@ -235,13 +228,6 @@
             "Info": "",
             "Version": "0.28.1",
             "Source": "main"
-        },
-        {
-            "Name": "glazewm",
-            "Updated": "2026-09-24T17:19:40.3148049+02:00",
-            "Info": "",
-            "Version": "3.10.1",
-            "Source": "extras"
         },
         {
             "Name": "glow",
@@ -732,12 +718,6 @@
             "Name": "clevercloud",
             "Source": "https://github.com/CleverCloud/scoop-bucket",
             "Updated": "2026-09-07T20:07:43+02:00",
-            "Manifests": 1
-        },
-        {
-            "Name": "CrypticButter",
-            "Source": "https://github.com/CrypticButter/ScoopBucket",
-            "Updated": "2024-05-01T14:51:07+02:00",
             "Manifests": 1
         },
         {

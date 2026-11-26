@@ -1,47 +1,17 @@
 {
   "registry": [
     {
-      "name": "GlazeWM",
-      "path": "%USERPROFILE%\\scoop\\apps\\glazewm\\current\\glazewm.exe"
-    },
-    {
-      "name": "YASB",
-      "path": "%USERPROFILE%\\scoop\\apps\\yasb\\current\\yasb.exe"
-    },
-    {
       "name": "AltSnap",
       "path": "%APPDATA%\\AltSnap\\AltSnap.exe",
       "args": "-hide"
-    },
-    {
-      "name": "Ditto",
-      "path": "%ProgramFiles%\\Ditto\\Ditto.exe"
-    },
-    {
-      "name": "Flow.Launcher",
-      "path": "%LOCALAPPDATA%\\FlowLauncher\\Flow.Launcher.exe"
-    },
-    {
-      "name": "Rainmeter",
-      "path": "%ProgramFiles%\\Rainmeter\\Rainmeter.exe"
     },
     {
       "name": "Handy",
       "path": "%LOCALAPPDATA%\\Handy\\handy.exe"
     }
   ],
-  "msix": [
-    {
-      "name": "MicaForEveryone",
-      "package": "MicaForEveryone.MicaForEveryone2"
-    }
-  ],
+  "msix": [],
   "scheduler": [
-    {
-      "name": "ButteryTaskbar",
-      "path": "%USERPROFILE%\\scoop\\apps\\buttery-taskbar\\current\\buttery-taskbar.exe",
-      "runLevel": "Highest"
-    },
     {
       "name": "LibreHardwareMonitor",
       "path": "%LOCALAPPDATA%\\Microsoft\\WinGet\\Packages\\LibreHardwareMonitor.LibreHardwareMonitor_Microsoft.Winget.Source_8wekyb3d8bbwe\\LibreHardwareMonitor.exe",

@@ -1,0 +1,42 @@
+{{ if and (eq .chezmoi.os "windows") .enable_nilesoft -}}
+# run_onchange_ triggers when any of these change:
+{{ range (glob "program_files/nilesoft/imports/*.nss") -}}
+# {{ . }} {{ include . | sha256sum }}
+{{ end -}}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$logFile    = "$env:TEMP\chezmoi-nilesoft-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+$tmpScript  = "$env:TEMP\chezmoi-nilesoft.ps1"
+
+# Copying into Program Files needs elevation, so the copy runs in an elevated child and logs to a file.
+@"
+`$chezmoisrc = "$chezmoisrc"
+`$logFile    = "$logFile"
+
+function Log { param([string]`$pfx, [string]`$msg) Add-Content -Path "`$logFile" -Value "[`$(Get-Date -Format 'HH:mm:ss')] [`$pfx] `$msg" }
+
+if (-not (Test-Path "C:\Program Files\Nilesoft Shell")) {
+    Log "SKIP" "Nilesoft Shell - not installed at 'C:\Program Files\Nilesoft Shell'"
+} else {
+    New-Item -ItemType Directory -Force -Path "C:\Program Files\Nilesoft Shell\imports" | Out-Null
+    `$files = Get-ChildItem "`$chezmoisrc\program_files\nilesoft\imports\*.nss" -ErrorAction SilentlyContinue
+    `$files | ForEach-Object { Copy-Item `$_.FullName -Destination "C:\Program Files\Nilesoft Shell\imports\`$(`$_.Name)" -Force }
+    Log "OK" "Nilesoft Shell - `$(`$files.Count) file(s) installed"
+}
+"@ | Set-Content $tmpScript
+
+Write-Host "[windows-nilesoft] Requesting elevation..." -ForegroundColor Cyan
+Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
+
+if (Test-Path $logFile) {
+    foreach ($line in Get-Content $logFile) {
+        if     ($line -match '\[OK\]')   { Write-Host $line -ForegroundColor Green  }
+        elseif ($line -match '\[SKIP\]') { Write-Host $line -ForegroundColor Yellow }
+        else                             { Write-Host $line -ForegroundColor Gray   }
+    }
+    Remove-Item $logFile
+} else {
+    Write-Warning "windows-nilesoft: no output received (UAC cancelled or script failed)"
+}
+Remove-Item $tmpScript -ErrorAction SilentlyContinue
+
+{{ end -}}

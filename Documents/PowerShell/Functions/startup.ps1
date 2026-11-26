@@ -33,7 +33,7 @@ function Get-StartupEntries {
     Name of the entry as defined in startup.json. Optional — omit to pick with fzf.
 .EXAMPLE
     Disable-StartupEntry
-    Disable-StartupEntry MicaForEveryone
+    Disable-StartupEntry AltSnap
 #>
 function Disable-StartupEntry {
     param (
@@ -54,7 +54,7 @@ function Disable-StartupEntry {
     Name of the entry as defined in startup.json. Optional — omit to pick with fzf.
 .EXAMPLE
     Enable-StartupEntry
-    Enable-StartupEntry MicaForEveryone
+    Enable-StartupEntry AltSnap
 #>
 function Enable-StartupEntry {
     param (
