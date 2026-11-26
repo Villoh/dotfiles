@@ -4,9 +4,10 @@
 
 {{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" -}}
 {{- $linuxOnly := list "zsh" "aerc" "nchat" "freetube" "vesktop" "concord" "dms" -}}
-{{- $windowsOnly := list "glazewm" "yasb" "flow_launcher" "ditto" "nilesoft" "autohotkey" "rainmeter" "warp" "windhawk" "windows_terminal" "mica" "junctions" "startup" "cursors" "wallpaper" "theme" -}}
+{{- /* aether = the desktop shell (Aether: Caelestia on Quickshell + AetherWM) and its ~/.config/{caelestia,hypr} */ -}}
+{{- $windowsOnly := list "aether" "nilesoft" "autohotkey" "warp" "windows_terminal" "junctions" "startup" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
-{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "glazewm" "yasb" "flow_launcher" "ditto" "nilesoft" "autohotkey" "rainmeter" "warp" "windhawk" "mica" "startup" "cursors" "wallpaper" "theme" -}}
+{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "aether" "nilesoft" "autohotkey" "warp" "startup" -}}
 {{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
 {{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"
@@ -46,8 +47,4 @@ mode = "symlink"
     # ── Modules that do not exist on this OS ─────────────────────────────────
 {{- range $inactive }}
     enable_{{ . }} = false
-{{- end }}
-{{- if $isWindows }}
-
-    cursor_scheme = "Kanagawa-Cursors"
 {{- end }}

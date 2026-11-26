@@ -42,7 +42,7 @@ imperative package-bootstrap logic here.
 ## Key instructions
 
 - When adding a new config file, check if it needs a platform guard in `.chezmoiignore`. Repo metadata files (docs, scripts, package lists, reference configs) must also be listed there so chezmoi never deploys them to `$HOME`
-- Windows apps that can't use chezmoi symlinks directly get a **junction** via `.chezmoiscripts/run_once_setup-windows-symlinks.ps1.tmpl` — junctions always point to the chezmoi source dir, never to `~/.config/` as intermediary
+- Windows apps that can't use chezmoi symlinks directly get a **junction** via `.chezmoiscripts/run_onchange_02_windows-junctions.ps1.tmpl` — junctions always point to the chezmoi source dir, never to `~/.config/` as intermediary
 - When purging large files from git history, use `git filter-repo` (installed via scoop). Python at `~/AppData/Local/Programs/Python/Python314/python.exe` — the `python` command redirects to the Microsoft Store on Windows
 - After `filter-repo`, the `origin` remote is removed and must be re-added manually
 - For global CLI tools (Python, npm, cargo, GitHub binaries), add them to the mise config (`dot_config/mise/config.toml`, or `conf.d/windows.toml` for Windows-only) instead of using uv/npm/bun/pnpm/cargo/bin directly (not pip, not scoop)

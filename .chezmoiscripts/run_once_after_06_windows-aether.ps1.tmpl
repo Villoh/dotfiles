@@ -1,0 +1,38 @@
+{{ if and (eq .chezmoi.os "windows") .enable_aether -}}
+# Runs after chezmoi has applied the files, on purpose: Aether's AetherWM build writes a starter
+# ~/.config/hypr/hyprland.conf only when there is none, so ours (dot_config/hypr) is already in place
+# and the starter is skipped.
+#
+# AetherSetup.exe has no silent mode: it opens its own setup window, so this step waits for you.
+# In that window tick "I agree to the license ... build AetherWM after installing": AetherWM is
+# opt-in, it is built from source on this PC (it installs Rust if missing) and is personal-use only.
+# The version and SHA-256 are pinned in packages/windows/system/aether.json; bump both together.
+$pkgDir = ("{{ .chezmoi.sourceDir }}").Replace('/', '\') + "\packages\windows"
+$aether = Get-Content "$pkgDir\system\aether.json" | ConvertFrom-Json
+$aetherExe = [System.Environment]::ExpandEnvironmentVariables($aether.installedExe)
+
+Write-Host ""
+Write-Host "-- Aether --" -ForegroundColor Cyan
+
+if (Test-Path $aetherExe) {
+    Write-Host "  [SKIP] Aether already installed ($aetherExe)" -ForegroundColor Yellow
+    return
+}
+
+try {
+    $setup = Join-Path $env:TEMP "AetherSetup-$($aether.version).exe"
+    Invoke-WebRequest -Uri $aether.url -OutFile $setup -UseBasicParsing
+    $hash = (Get-FileHash $setup -Algorithm SHA256).Hash
+    if ($hash -ne $aether.sha256.ToUpper()) {
+        Remove-Item $setup -ErrorAction SilentlyContinue
+        throw "SHA-256 mismatch (got $hash)"
+    }
+    Write-Host "  Running the Aether setup: finish it in its window (tick AetherWM to get tiling)" -ForegroundColor Cyan
+    Start-Process -FilePath $setup -Wait
+    if (-not (Test-Path $aetherExe)) { throw "setup finished but $aetherExe is missing" }
+    Write-Host "  [OK]   Aether $($aether.version)" -ForegroundColor Green
+} catch {
+    Write-Host "  [FAIL] Aether - $($_.Exception.Message)" -ForegroundColor Red
+}
+
+{{ end -}}

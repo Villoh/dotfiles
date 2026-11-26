@@ -1,13 +1,10 @@
 # ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
-{{ if or (ne .chezmoi.os "windows") (not .enable_glazewm) }}.glzr/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_yasb) }}.config/yasb/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_flow_launcher) }}AppData/Roaming/FlowLauncher/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_autohotkey) }}Documents/AutoHotkey/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}AppData/Roaming/Rainmeter/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_rainmeter) }}Documents/Rainmeter/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_aether) }}.config/caelestia/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_aether) }}.config/hypr/**{{ end }}
 {{ if not .enable_herdr }}.config/herdr/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_tmux) }}.psmux.conf{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_starship) }}.config/starship.toml{{ end }}
@@ -48,7 +45,6 @@ scoop/
 {{ if eq .chezmoi.os "windows" }}.config/himalaya/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/meli/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_wallpaper) }}Pictures/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
 {{ if not .enable_zed }}.config/zed/**{{ end }}
@@ -124,16 +120,6 @@ README.md
 AppData/Roaming/warp/**/previews/**
 .config/micro/backups/**
 .config/micro/buffers/**
-AppData/Roaming/FlowLauncher/Cache/**
-AppData/Roaming/FlowLauncher/Settings/Cache/**
-AppData/Roaming/FlowLauncher/Settings/Plugins/**
-AppData/Roaming/FlowLauncher/Settings/History.json
-AppData/Roaming/FlowLauncher/Settings/History.json.bak
-AppData/Roaming/FlowLauncher/Settings/MultipleTopMostRecord.json
-AppData/Roaming/FlowLauncher/Settings/MultipleTopMostRecord.json.bak
-AppData/Roaming/FlowLauncher/Settings/UserSelectedRecord.json
-AppData/Roaming/FlowLauncher/Settings/UserSelectedRecord.json.bak
-AppData/Roaming/FlowLauncher/Settings/Settings.json.bak
 AppData/Roaming/Vencord/**
 AppData/Roaming/spicetify/**
 dot_config/ytm-player/auth.json
@@ -146,7 +132,3 @@ dot_config/ytm-player/recent_playlists.json
 dot_config/ytm-player/session.json
 dot_config/ytm-player/ytm.pid
 AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/*.tmp
-AppData/Roaming/Rainmeter/Rainmeter.data
-AppData/Roaming/Rainmeter/Rainmeter.exe
-AppData/Roaming/Rainmeter/Rainmeter.stats
-AppData/Roaming/Rainmeter/Layouts/@Backup/**

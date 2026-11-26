@@ -351,9 +351,8 @@ Went through every `Documents/PowerShell/Functions/*.ps1` against its
 `backup-packages`, `restore.ps1` ↔ `restore-packages`, `secrets.ps1` ↔
 `secrets`, `chezmoi.ps1` ↔ `dotfiles-sync`, `upgrade.ps1`/`upgrade-harness.ps1`
 ↔ `update-packages`/`--harness`, `bitwarden.ps1` ↔ `bwp`, `claude.ps1` ↔
-`install-claude-plugins`. `devmode.ps1`, `win-keys.ps1`, `windhawk.ps1`,
-`wsl-arch-setup.ps1`, `startup.ps1` are genuinely Windows-only concepts
-(registry, GlazeWM, Windhawk, WSL) — correctly have no Linux counterpart.
+`install-claude-plugins`. `devmode.ps1`, `wsl-arch-setup.ps1`, `startup.ps1` are
+genuinely Windows-only concepts (registry, WSL) — correctly have no Linux counterpart.
 
 **3 real findings:**
 

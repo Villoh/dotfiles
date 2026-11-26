@@ -1,7 +1,8 @@
 <div align="center">
-  <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers/blob/main/kanagawa.svg"><img src=".github/assets/kanagawa.svg" width="100" alt="Kanagawa logo"/></a>
-  <h1>dotfiles — Kanagawa Dragon</a> edition</h1>
-  <p>Personal Kanagawa Dragon dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://nixos.org/">NixOS</a> + <a href="https://danklinux.com/">Dank Material Shell</a> + <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
+  <a href="https://duxlabs.dev/"><img src=".github/assets/dux-shell.svg" height="100" alt="Dux Shell logo"/></a>&ensp;&ensp;
+  <a href="https://github.com/crszy/aether"><img src=".github/assets/aether.png" height="100" alt="Aether logo"/></a>
+  <h1>dotfiles — NixOS + Aether</h1>
+  <p>Personal dotfiles for <strong>Linux</strong> (<a href="https://nixos.org/">NixOS</a> + <a href="https://duxlabs.dev/">Dux Shell</a> (<a href="https://danklinux.com/">Dank Material Shell</a>) + <a href="https://hypr.land/">Hyprland</a>) and <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a> + <a href="https://github.com/crszy/aether">Aether</a>, the Caelestia shell for Windows), managed with <a href="https://www.chezmoi.io/">chezmoi</a>. Linux uses the Kanagawa Dragon theme.</p>
   <p>
     <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=C5C9C5&label=Last%20Commit&labelColor=1D1C19&color=8992A7"/></a>&nbsp;&nbsp;
     <a href="https://github.com/Villoh/dotfiles"><img src="https://img.shields.io/github/repo-size/Villoh/dotfiles?style=for-the-badge&logo=files&logoColor=C5C9C5&label=Size&labelColor=1D1C19&color=C4B28A" alt="Repo Size"/></a>&nbsp;&nbsp;
@@ -10,7 +11,6 @@
   </p>
   <a href="#preview"><kbd>&nbsp;<br>&nbsp;Preview&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="INSTALL.md"><kbd>&nbsp;<br>&nbsp;Install&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
-  <a href="#extra-optional-setup-windows"><kbd>&nbsp;<br>&nbsp;Extras&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="#overview"><kbd>&nbsp;<br>&nbsp;Features&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="#credits"><kbd>&nbsp;<br>&nbsp;Credits&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
 </div>
@@ -32,7 +32,7 @@
 
 ## Overview
 
-- **Theme:** Kanagawa Dragon across active Windows and Linux surfaces; Kanagawa Wave is used where Windows requires a native theme fallback
+- **Theme:** Kanagawa Dragon on the Linux surfaces; on Windows Aether colours the shell itself
 - **Manager:** chezmoi with `mode = "symlink"` — every managed file is a symlink to the chezmoi source, so edits take effect immediately without re-adding
 - **Secrets scanning:** gitleaks via pre-commit hook
 - **Submodules:** sddm and plymouth themes (run `git submodule update --init --recursive` after cloning)
@@ -41,19 +41,15 @@
 
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
-| Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) | [⚙️](dot_glzr/) |
-| Status Bar | [YASB](https://github.com/amnweb/yasb) | [⚙️](dot_config/yasb/) |
+| Desktop Shell | [Aether](https://github.com/crszy/aether) (Caelestia on Quickshell) | [⚙️](packages/windows/system/aether.json) |
+| Window Manager | AetherWM (Hyprland-compatible) | [⚙️](dot_config/hypr/) |
 | Shell | PowerShell 7 | [⚙️](Documents/PowerShell/) |
 | Prompt | [Starship](https://starship.rs/) · [Oh My Posh](https://ohmyposh.dev/) | [⚙️](dot_config/starship.toml) · [⚙️](dot_config/ohmyposh/) |
 | Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) | [⚙️](dot_config/wezterm/) · [⚙️](AppData/Roaming/alacritty/) · [⚙️](AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/) |
 | Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
 | File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
-| App Launcher | [Flow Launcher](https://www.flowlauncher.com/) | [⚙️](AppData/Roaming/FlowLauncher/) |
-| Clipboard | [Ditto](https://ditto-cp.sourceforge.io/) | [⚙️](program_files/ditto/) |
 | Context Menu | [Nilesoft Shell](https://nilesoft.org/) | [⚙️](program_files/nilesoft/) |
 | Hotkeys | [AutoHotkey](https://www.autohotkey.com/) | [⚙️](Documents/AutoHotkey/) |
-| Desktop Widgets | [Rainmeter](https://www.rainmeter.net/) | [⚙️](Documents/Rainmeter/) |
-| Customization | [Windhawk](https://windhawk.net/) | [⚙️](packages/windows/) |
 | Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
 
 ### Linux
@@ -96,9 +92,10 @@ common GPG/SSH/Git/chezmoi bootstrap.
 ## Wallpapers
 
 - [Gurjaka/Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers)
-- Active desktop wallpaper: `Pictures/Wallpapers/main-wallpaper.png`
 
 ## Credits
+
+The Windows desktop is [Aether](https://github.com/crszy/aether) (Caelestia on Quickshell, with AetherWM), a port of [Caelestia](https://github.com/caelestia-dots/shell). The header logos are Dux Shell's and Aether's own.
 
 Windows setup inspired by and borrowed from:
 
@@ -131,16 +128,15 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | Command | Description |
 | --------- | ------------- |
 | `backup` / `backup-pkgs` | Export package lists to `packages/windows/` |
-| `backup-<manager>` | Back up a single manager; also `backup-windhawk` |
+| `backup-<manager>` | Back up a single manager |
 | `restore` / `restore-pkgs` | Reinstall from the saved lists (fzf picker, or `-Manager`) |
-| `restore-<manager>` | Restore a single manager; also `restore-winget-elevated` and `restore-windhawk` |
+| `restore-<manager>` | Restore a single manager; also `restore-winget-elevated` |
 | `update` / `update-all` / `upgrade-all` | Upgrade every manager (`-Manager` to pick some) |
 | `update-<manager>` / `upgrade-<manager>` | Upgrade one manager (`winget`, `scoop`, `mise`) |
 | `winget-reinstall <id>` | Uninstall and reinstall a winget package in an elevated window |
 | `migrate [-Source] [-Target]` | Move packages between managers: `winget` <-> `scoop` |
 | `prune [target]` | Clean package manager caches (scoop, mise, go, nuget, docker) |
 | `clear-pip` | Clear the pip environment (asks for confirmation) |
-| `restore-windhawk` | Import Windhawk settings from the registry file; close Windhawk first |
 
 ### AI agents
 
@@ -185,8 +181,8 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | `y` | Launch yazi and `cd` to the last directory on exit (`q`; `Q` quits without changing it) |
 | `zj [query]` | Attach to or create a zellij session named after the directory (resolved with zoxide if `query` is given) |
 | `zwork [query]` | Attach to or create the persistent `villoh` zellij session |
-| `keybinds` | Show Alacritty, Zellij and GlazeWM keybindings in `less` |
-| `keybinds-al` / `keybinds-zj` / `keybinds-gwm` | Show only the Alacritty, Zellij or GlazeWM ones |
+| `keybinds` | Show Alacritty, Zellij and AetherWM keybindings in `less` |
+| `keybinds-al` / `keybinds-zj` / `keybinds-aw` | Show only the Alacritty, Zellij or AetherWM ones |
 | `npm` | Wrapper: runs `socket npm` |
 
 ### Windows setup
@@ -196,8 +192,6 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | `setup-wsl` | Install a WSL distro (fzf picker), configure locale and packages (Arch-specific) |
 | `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
 | `enable-devmode` / `disable-devmode` | Toggle Windows Developer Mode (required for chezmoi symlinks) |
-| `disable-win-keys` / `enable-win-keys` | Disable or restore Windows key shortcuts so GlazeWM can use `Win` (`-Scope User\|System`) |
-| `win-keys-status` | Show whether the Windows key shortcuts are disabled (user, system and effective) |
 | `startup-entries` | List all startup.json entries and their current enabled/disabled state |
 | `disable-startup [name]` / `enable-startup [name]` | Disable or enable a startup entry (fzf picker if no name given) |
 
@@ -236,9 +230,9 @@ chezmoi status
 
 # Run a run_once script manually (renders the template and executes it)
 # Windows (PowerShell):
-Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages.ps1.tmpl" | chezmoi execute-template | powershell -NoProfile -Command -
+Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_windows-install.ps1.tmpl" | chezmoi execute-template | powershell -NoProfile -Command -
 # Linux (bash):
-chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_install-packages.sh.tmpl" | bash
+chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_onchange_01_linux-secrets.sh.tmpl" | bash
 
 # chezmoi script state buckets:
 #   scriptState → run_once_     (keyed by content hash, cannot target individually)
@@ -248,7 +242,7 @@ chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_instal
 reset-run-once-scripts && chezmoi apply
 
 # Re-run a specific run_onchange_ script on next apply
-reset-run-onchange-script windows-setup && chezmoi apply
+reset-run-onchange-script windows-junctions && chezmoi apply
 
 # Re-run all run_onchange_ scripts on next apply
 reset-run-onchange-script && chezmoi apply

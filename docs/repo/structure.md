@@ -14,11 +14,11 @@ chezmoi/
 ├── AppData/                    # → ~/AppData/ (Windows)
 ├── Documents/                  # → ~/Documents/ (Windows)
 ├── scoop/                      # → ~/scoop/ (Windows, Scoop package manager)
-├── program_files/              # Portable Windows programs (Ditto, Nilesoft) — not deployed
+├── program_files/              # Portable Windows programs (Nilesoft) — not deployed
 │
 ├── packages/                   # Package lists — reference only, not deployed
 │   ├── linux/                  # Linux package lists and Herdr plugin inventory
-│   └── windows/                # Windows package lists, Herdr inventory, Windhawk settings
+│   └── windows/                # Windows package lists, Herdr inventory, startup/junction lists, pinned Aether release
 │
 ├── other_config/               # Reference configs not deployed by chezmoi
 │   ├── plymouth/themes/        # Boot splash themes (4 submodules)

@@ -98,12 +98,12 @@ During initialization, chezmoi will:
 | Profile | Result |
 |---------|--------|
 | `full` | Every module for the current OS. Windows package profile = `full`. |
-| `minimal` | CLI + shell configs only. Windows: no GlazeWM, YASB, Flow Launcher, Ditto, Nilesoft, AutoHotkey, Rainmeter, Warp, Windhawk, Mica, startup, cursors, wallpaper or theme. Windows package profile = `minimal`. |
+| `minimal` | CLI + shell configs only. Windows: no Aether, Nilesoft, AutoHotkey, Warp or startup entries. Windows package profile = `minimal`. |
 | `custom` | Asks `Enable <module>` for each module (Enter keeps the previous answer, default `true`). Windows package profile is chosen in fzf. |
 
 Each answer lives in `[data]` as `enable_<module>`; edit `~/.config/chezmoi/chezmoi.toml`
-before `chezmoi apply` to change one without re-running init. Windows-only toggles include
-`enable_wallpaper` (desktop + lock screen) and `enable_theme` (Kanagawa theme + accent color).
+before `chezmoi apply` to change one without re-running init. The Windows desktop is one toggle,
+`enable_aether`: it installs Aether and deploys `~/.config/hypr/hyprland.conf` for AetherWM.
 Re-running `chezmoi init` keeps the stored profile; to pick another, edit `install_profile`.
 
 chezmoi runs scripts automatically in this order:
@@ -114,13 +114,11 @@ chezmoi runs scripts automatically in this order:
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, mise, Dev Mode) + interactive package install (winget, scoop, PowerShell modules) + `mise install` for every global CLI tool + GlazeWM win-keys |
+| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, mise, Dev Mode) + interactive package install (winget, scoop, PowerShell modules) + `mise install` for every global CLI tool |
 | `run_onchange_01_windows-secrets` | (needs `enable_secrets`) Fetches API keys from Bitwarden (or prompts manually) and writes them to `~/Documents/PowerShell/Secrets/api-keys.ps1` |
 | `run_onchange_02_windows-junctions` | Junctions for apps that can't use chezmoi symlinks |
 | `run_onchange_03_windows-startup` | Startup registry entries |
-| `run_onchange_04_windows-program-files` | Deploys Ditto/Nilesoft configs and Windows themes |
-| `run_onchange_05_windows-cursors` | Installs cursor theme |
-| `run_onchange_06_windows-windhawk` | Deploys Windhawk mod configs and registry settings |
+| `run_onchange_04_windows-nilesoft` | Copies the Nilesoft Shell imports into Program Files |
 
 **Linux:**
 
@@ -137,8 +135,8 @@ updates the system and its packages declaratively.
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_after_07_windows-setup` | Theme + accent color (`enable_theme`), GlazeWM win-keys (`enable_glazewm`), startup apps |
-| `run_onchange_after_08_windows-wallpaper` | Desktop wallpaper + lock screen (`enable_wallpaper`; requires `~/Pictures/Wallpapers/` symlink to exist) |
+| `run_once_after_06_windows-aether` | Downloads `AetherSetup.exe` at the version and SHA-256 pinned in `packages/windows/system/aether.json` and runs its setup window (it has no silent mode). Runs after the files are applied so your `hyprland.conf` exists before AetherWM's build could write a starter one. Tick the AetherWM box in that window to get tiling: it is opt-in, built from source and personal-use only |
+| `run_once_after_07_windows-setup` | Starts the apps in `startup.json` once (`enable_startup`) |
 
 ---
 
