@@ -28,7 +28,11 @@ chezmoi/
 │   └── linux-cachyos-pollrate.toml
 │
 ├── docs/                       # Context docs for Claude
+├── installer/                  # Windows installer GUI (Go + MyGo) — not deployed
+├── install.ps1                 # One-shot CLI `irm … | iex` bootstrap — not deployed
+├── install-gui.ps1             # Downloads and runs the installer GUI — not deployed
 ├── .github/assets/             # README screenshots and logos
+├── .github/workflows/          # installer.yml: builds and releases the installer GUI
 ├── .gitmodules                 # Submodule definitions
 ├── .gitleaks.toml              # Gitleaks config (allowlists Vencord/Vesktop)
 ├── .pre-commit-config.yaml     # Pre-commit: gitleaks on every commit
