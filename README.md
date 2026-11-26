@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://duxlabs.dev/"><img src=".github/assets/dux-shell.svg" height="100" alt="Dux Shell logo"/></a>&ensp;&ensp;
   <a href="https://github.com/crszy/aether"><img src=".github/assets/aether.png" height="100" alt="Aether logo"/></a>
-  <h1>dotfiles — NixOS + Aether</h1>
+  <h1>dotfiles</h1>
   <p>Personal dotfiles for <strong>Linux</strong> (<a href="https://nixos.org/">NixOS</a> + <a href="https://duxlabs.dev/">Dux Shell</a> (<a href="https://danklinux.com/">Dank Material Shell</a>) + <a href="https://hypr.land/">Hyprland</a>) and <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a> + <a href="https://github.com/crszy/aether">Aether</a>, the Caelestia shell for Windows), managed with <a href="https://www.chezmoi.io/">chezmoi</a>. Linux uses the Kanagawa Dragon theme.</p>
   <p>
     <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=C5C9C5&label=Last%20Commit&labelColor=1D1C19&color=8992A7"/></a>&nbsp;&nbsp;
