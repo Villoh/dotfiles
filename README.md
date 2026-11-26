@@ -92,7 +92,6 @@ common GPG/SSH/Git/chezmoi bootstrap.
 ## Wallpapers
 
 - [Gurjaka/Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers)
-- Active desktop wallpaper: `Pictures/Wallpapers/main-wallpaper.png`
 
 ## Credits
 
