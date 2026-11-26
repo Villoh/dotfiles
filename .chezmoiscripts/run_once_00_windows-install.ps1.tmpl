@@ -1,6 +1,8 @@
 {{ if eq .chezmoi.os "windows" -}}
 $pkgDir = "{{ .chezmoi.sourceDir }}\packages\windows"
 $logFile = "$env:TEMP\chezmoi-install-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+# full/minimal come from the chezmoi init prompt; custom (or unset) asks per manager below
+$installProfile = "{{ get . "install_profile" }}"
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 
 # -- Logging helpers -----------------------------------------------------------
@@ -177,8 +179,11 @@ if ($selectedManagers -contains "winget") {
     if (Test-Path "$pkgDir\winget\minimal.json")  { $wingetProfiles += "minimal  |  necessary packages to replicate the setup (recommended)" }
     if (Test-Path "$pkgDir\winget\packages.json") { $wingetProfiles += "full     |  personal complete setup" }
 
-    $profileChoice = Select-OneFzf $wingetProfiles "winget profile>"
-    $profileKey    = if ($profileChoice) { ($profileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $profileKey = $installProfile
+    if ($profileKey -notin @("full", "minimal")) {
+        $profileChoice = Select-OneFzf $wingetProfiles "winget profile>"
+        $profileKey    = if ($profileChoice) { ($profileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    }
     $wingetFile    = if ($profileKey -eq "minimal") { "$pkgDir\winget\minimal.json" } else { "$pkgDir\winget\packages.json" }
     Log "  winget profile: $(Split-Path $wingetFile -Leaf)" "Cyan"
 
@@ -203,8 +208,11 @@ if ($selectedManagers -contains "scoop") {
     if (Test-Path "$pkgDir\scoop\minimal.json")  { $scoopProfiles += "minimal  |  essential tools to bootstrap the setup" }
     if (Test-Path "$pkgDir\scoop\packages.json") { $scoopProfiles += "full     |  personal complete setup" }
 
-    $scoopProfileChoice = Select-OneFzf $scoopProfiles "scoop profile>"
-    $scoopProfileKey    = if ($scoopProfileChoice) { ($scoopProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    $scoopProfileKey = $installProfile
+    if ($scoopProfileKey -notin @("full", "minimal")) {
+        $scoopProfileChoice = Select-OneFzf $scoopProfiles "scoop profile>"
+        $scoopProfileKey    = if ($scoopProfileChoice) { ($scoopProfileChoice -split '\s*\|')[0].Trim() } else { "full" }
+    }
     $scoopFile          = if ($scoopProfileKey -eq "minimal") { "$pkgDir\scoop\minimal.json" } else { "$pkgDir\scoop\packages.json" }
     Log "  scoop profile: $(Split-Path $scoopFile -Leaf)" "Cyan"
 

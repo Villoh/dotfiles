@@ -13,6 +13,9 @@ function TryRun  {
     catch { LogFail "$name - $($_.Exception.Message)" }
 }
 
+$restartExplorer = $false
+
+{{ if .enable_theme -}}
 # == PERSONALIZATION ===========================================================
 LogSec "Personalization"
 
@@ -50,7 +53,6 @@ function Set-RegValue($path, $name, $value, $type) {
 
 $paletteHex      = 'c5,c9,c5,ff,b1,b6,c6,ff,8b,a4,b0,ff,89,92,a7,ff,c4,b2,8a,ff,b6,92,7b,ff,c4,74,6e,ff,8a,9a,7b,ff'
 $palette         = [byte[]]($paletteHex.Split(',') | ForEach-Object { "0x$_" })
-$restartExplorer = $false
 
 TryRun "Accent color #8992A7 (Kanagawa Dragon violet)" {
     Set-RegValue $accentPath "AccentColor"          '0xffa79289' "DWORD"
@@ -60,7 +62,9 @@ TryRun "Accent color #8992A7 (Kanagawa Dragon violet)" {
     Set-RegValue $accentPath "MotionAccentId_v1.00" '0x000000db' "DWORD"
     $script:restartExplorer = $true
 }
+{{ end -}}
 
+{{ if .enable_glazewm -}}
 # == GLAZEWM — DISABLE WIN KEYS ===============================================
 LogSec "GlazeWM"
 
@@ -86,6 +90,7 @@ if (-not (Test-Path $winKeys)) {
         $restartExplorer = $true
     }
 }
+{{ end -}}
 
 if ($restartExplorer) {
     Stop-Process -Name explorer -Force -ErrorAction SilentlyContinue

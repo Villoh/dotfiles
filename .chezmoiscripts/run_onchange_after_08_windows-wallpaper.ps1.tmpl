@@ -1,4 +1,4 @@
-{{ if eq .chezmoi.os "windows" -}}
+{{ if and (eq .chezmoi.os "windows") .enable_wallpaper -}}
 # run_onchange_after_ triggers when wallpaper changes:
 {{ range (glob "Pictures/Wallpapers/main-wallpaper.*") -}}
 # {{ . }} {{ include . | sha256sum }}

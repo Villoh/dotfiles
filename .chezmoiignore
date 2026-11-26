@@ -48,7 +48,7 @@ scoop/
 {{ if eq .chezmoi.os "windows" }}.config/himalaya/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/meli/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
-{{ if ne .chezmoi.os "windows" }}Pictures/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_wallpaper) }}Pictures/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
 {{ if not .enable_zed }}.config/zed/**{{ end }}

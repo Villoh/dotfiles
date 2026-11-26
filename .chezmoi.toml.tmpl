@@ -1,4 +1,14 @@
 {{- $isWindows := eq .chezmoi.os "windows" -}}
+{{- /* Profile: full = everything, minimal = CLI + shell only, custom = ask per module */ -}}
+{{- $profile := promptChoiceOnce . "install_profile" "Install profile" (list "full" "minimal" "custom") "full" -}}
+
+{{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" -}}
+{{- $linuxOnly := list "zsh" "aerc" "nchat" "freetube" "vesktop" "concord" "dms" -}}
+{{- $windowsOnly := list "glazewm" "yasb" "flow_launcher" "ditto" "nilesoft" "autohotkey" "rainmeter" "warp" "windhawk" "windows_terminal" "mica" "junctions" "startup" "cursors" "wallpaper" "theme" -}}
+{{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
+{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "glazewm" "yasb" "flow_launcher" "ditto" "nilesoft" "autohotkey" "rainmeter" "warp" "windhawk" "mica" "startup" "cursors" "wallpaper" "theme" -}}
+{{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
+{{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"
 mode = "symlink"
 
@@ -14,81 +24,30 @@ mode = "symlink"
 
 [data]
     isWindows = {{ $isWindows }}
+    install_profile = {{ $profile | quote }}
 
     # ── Owner-only — do NOT enable unless you are Villoh ─────────────────────
     enable_secrets = {{ promptBool "Enable personal secrets (owner only — requires Bitwarden)" false }}
 
-    # ── Cross-platform modules ─────────────────────────────────────────────
-    enable_zed        = true
-    enable_yazi       = true
-    enable_btop       = true
-    enable_fastfetch  = true
-    enable_cava       = true
-    enable_gh_dash    = true
-    enable_micro      = true
-    enable_opencode   = true
-    enable_starship   = true
-    enable_ohmyposh   = true
-    enable_bun        = true
-    enable_git        = true
-    enable_gitui      = true
-    enable_uv         = true
-    enable_zellij     = true
-    enable_ytm_player = true
-    enable_tmux       = true
-    enable_herdr      = true
-    enable_wezterm    = true
-    enable_alacritty  = true
+    # ── Modules for this OS (custom profile asks one by one; Enter keeps the previous answer) ──
+{{- range $active }}
+{{- $key := printf "enable_%s" . }}
+{{- $val := true }}
+{{- if eq $profile "minimal" }}
+{{- $val = not (has . $minimalOff) }}
+{{- else if eq $profile "custom" }}
+{{- $default := true }}
+{{- if hasKey $ $key }}{{ $default = get $ $key }}{{ end }}
+{{- $val = promptBool (printf "Enable %s" .) $default }}
+{{- end }}
+    {{ $key }} = {{ $val }}
+{{- end }}
 
-    # ── Linux-only modules ─────────────────────────────────────────────────
-    {{ if not $isWindows -}}
-    enable_zsh        = true
-    enable_aerc       = true
-    enable_nchat      = true
-    enable_freetube   = true
-    enable_vesktop    = true
-    enable_concord    = true
-    enable_dms        = true
-    {{- else }}
-    enable_zsh        = false
-    enable_aerc       = false
-    enable_nchat      = false
-    enable_freetube   = false
-    enable_vesktop    = false
-    enable_concord    = false
-    enable_dms        = false
-    {{- end }}
+    # ── Modules that do not exist on this OS ─────────────────────────────────
+{{- range $inactive }}
+    enable_{{ . }} = false
+{{- end }}
+{{- if $isWindows }}
 
-    # ── Windows-only modules ───────────────────────────────────────────────
-    {{ if $isWindows -}}
-    enable_glazewm          = true
-    enable_yasb             = true
-    enable_flow_launcher    = true
-    enable_ditto            = true
-    enable_nilesoft         = true
-    enable_autohotkey       = true
-    enable_rainmeter        = true
-    enable_warp             = true
-    enable_windhawk         = true
-    enable_windows_terminal = true
-    enable_mica             = true
-    enable_junctions        = true
-    enable_startup          = true
-    enable_cursors          = true
-    cursor_scheme           = "Kanagawa-Cursors"
-    {{- else }}
-    enable_glazewm          = false
-    enable_yasb             = false
-    enable_flow_launcher    = false
-    enable_ditto            = false
-    enable_nilesoft         = false
-    enable_autohotkey       = false
-    enable_rainmeter        = false
-    enable_warp             = false
-    enable_windhawk         = false
-    enable_windows_terminal = false
-    enable_mica             = false
-    enable_junctions        = false
-    enable_startup          = false
-    enable_cursors          = false
-    {{- end }}
+    cursor_scheme = "Kanagawa-Cursors"
+{{- end }}
