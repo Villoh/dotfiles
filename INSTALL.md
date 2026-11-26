@@ -114,7 +114,7 @@ chezmoi runs scripts automatically in this order:
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, mise, Dev Mode) + interactive package install (winget, scoop, PowerShell modules) + `mise install` for every global CLI tool + Aether (downloads `AetherSetup.exe` at the version and SHA-256 pinned in `packages/windows/system/aether.json`, then waits for its setup window) |
+| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, mise, Dev Mode) + interactive package install (winget, scoop, PowerShell modules) + `mise install` for every global CLI tool |
 | `run_onchange_01_windows-secrets` | (needs `enable_secrets`) Fetches API keys from Bitwarden (or prompts manually) and writes them to `~/Documents/PowerShell/Secrets/api-keys.ps1` |
 | `run_onchange_02_windows-junctions` | Junctions for apps that can't use chezmoi symlinks |
 | `run_onchange_03_windows-startup` | Startup registry entries |
@@ -135,6 +135,7 @@ updates the system and its packages declaratively.
 
 | Script | What it does |
 |--------|--------------|
+| `run_once_after_06_windows-aether` | Downloads `AetherSetup.exe` at the version and SHA-256 pinned in `packages/windows/system/aether.json` and runs its setup window (it has no silent mode). Runs after the files are applied so your `hyprland.conf` exists before AetherWM's build could write a starter one. Tick the AetherWM box in that window to get tiling: it is opt-in, built from source and personal-use only |
 | `run_once_after_07_windows-setup` | Starts the apps in `startup.json` once (`enable_startup`) |
 
 ---

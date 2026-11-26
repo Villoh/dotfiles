@@ -119,11 +119,12 @@ installs and the `uv` calls mise makes for `pypi:` tools.
 
 | Script | Description |
 |--------|-------------|
-| `.chezmoiscripts/run_once_00_windows-install.ps1.tmpl` | Bootstrap, interactive winget/scoop/mise install, and the Aether setup (pinned in `packages/windows/system/aether.json`) |
+| `.chezmoiscripts/run_once_00_windows-install.ps1.tmpl` | Bootstrap and interactive winget/scoop/mise install |
 | `.chezmoiscripts/run_onchange_01_windows-secrets.ps1.tmpl` | Writes API keys from Bitwarden (needs `enable_secrets`) |
 | `.chezmoiscripts/run_onchange_02_windows-junctions.ps1.tmpl` | Creates the junctions in `junctions.json` |
 | `.chezmoiscripts/run_onchange_03_windows-startup.ps1.tmpl` | Registers the entries in `startup.json` |
 | `.chezmoiscripts/run_onchange_04_windows-nilesoft.ps1.tmpl` | Nilesoft Shell context menu imports |
+| `.chezmoiscripts/run_once_after_06_windows-aether.ps1.tmpl` | Installs Aether (pinned in `packages/windows/system/aether.json`) after the files are applied |
 | `.chezmoiscripts/run_once_after_07_windows-setup.ps1.tmpl` | Starts the `startup.json` apps once |
 
 ## Desktop shell

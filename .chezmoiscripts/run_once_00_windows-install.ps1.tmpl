@@ -356,32 +356,6 @@ if ($selectedManagers -contains "mise") {
     TryInstall "mise install" { mise install }
 }
 
-{{ if .enable_aether -}}
-# -- Aether (desktop shell) ----------------------------------------------------
-# AetherSetup.exe has no silent mode: it opens its own setup window, so this step waits for you.
-# The version and SHA-256 are pinned in packages/windows/system/aether.json; bump both together.
-LogSection "Aether"
-$aether    = Get-Content "$pkgDir\system\aether.json" | ConvertFrom-Json
-$aetherExe = [System.Environment]::ExpandEnvironmentVariables($aether.installedExe)
-if (Test-Path $aetherExe) {
-    LogSkip "Aether already installed ($aetherExe)"
-    $summary.skip++
-} else {
-    TryInstall "Aether $($aether.version)" {
-        $setup = Join-Path $env:TEMP "AetherSetup-$($aether.version).exe"
-        Invoke-WebRequest -Uri $aether.url -OutFile $setup -UseBasicParsing
-        $hash = (Get-FileHash $setup -Algorithm SHA256).Hash
-        if ($hash -ne $aether.sha256.ToUpper()) {
-            Remove-Item $setup -ErrorAction SilentlyContinue
-            throw "SHA-256 mismatch (got $hash)"
-        }
-        Log "  Running the Aether setup: finish it in its window" "Cyan"
-        Start-Process -FilePath $setup -Wait
-        if (-not (Test-Path $aetherExe)) { throw "setup finished but $aetherExe is missing" }
-    }
-}
-{{ end -}}
-
 # -- Summary -------------------------------------------------------------------
 Write-Host ""; Add-Content -Path $logFile -Value ""
 Log "======================================" "Cyan"
