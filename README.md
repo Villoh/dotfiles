@@ -202,6 +202,7 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | --------- | ------------- |
 | `setup-wsl` | Install a WSL distro (fzf picker), configure locale and packages (Arch-specific) |
 | `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
+| `install-atlas` | Download AtlasManager at the pinned version, verify its SHA-256 and open it (updates; first install: [docs/install/windows-atlas.md](docs/install/windows-atlas.md)) |
 | `enable-devmode` / `disable-devmode` | Toggle Windows Developer Mode (required for chezmoi symlinks) |
 | `startup-entries` | List all startup.json entries and their current enabled/disabled state |
 | `disable-startup [name]` / `enable-startup [name]` | Disable or enable a startup entry (fzf picker if no name given) |

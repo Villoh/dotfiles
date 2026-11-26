@@ -113,6 +113,9 @@ winget install -e --id twpayne.chezmoi
 Import the private GPG key before applying the repository. See the [common
 bootstrap guide](docs/install/bootstrap.md).
 
+On a new PC, apply [AtlasOS](docs/install/windows-atlas.md) first: it needs a fresh
+Windows and is not part of `chezmoi apply`.
+
 ### Linux
 
 The Linux system must be configured with **NixOS + Hyprland + Dank Material

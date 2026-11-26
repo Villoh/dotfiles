@@ -59,5 +59,6 @@ Load these only when the task is relevant to them:
 | `docs/linux/linux.md` | Any Linux/Hyprland config, dot_config, dot_local/bin |
 | `docs/repo/commits.md` | Writing or reviewing commit messages |
 | `docs/install/bootstrap.md` | Common GPG/SSH/Git/chezmoi handoff after installing an operating system |
+| `docs/install/windows-atlas.md` | Windows 11 + AtlasOS installation (Atlas Manager, pinned download, choices) before the common bootstrap |
 | `docs/install/omarchy.md` | Omarchy installation, Secure Boot, dual-boot, and post-install integration |
 | `docs/install/nixos-dms.md` | NixOS + Dank Material Shell installation, Hyprland vs Niri, and dual-boot |
