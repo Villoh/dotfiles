@@ -42,7 +42,7 @@ function Invoke-AllRestore {
     [CmdletBinding()]
     param(
         [ValidateNotNullOrEmpty()]
-        [ValidateSet('winget', 'winget-elevated', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'bin', 'cargo', 'herdr')]
+        [ValidateSet('winget', 'winget-elevated', 'scoop', 'mise', 'herdr')]
         [string[]]$Manager,
         [string[]]$Plugin,
         [switch]$All,
@@ -61,12 +61,7 @@ function Invoke-AllRestore {
         }
         if (Test-Path "$pkgDir\winget\elevated.json") { $candidates.Add("winget-elevated") }
         if (Test-Path "$pkgDir\scoop\packages.json") { $candidates.Add("scoop") }
-        if (Test-Path "$pkgDir\node\npm-packages.json") { $candidates.Add("npm") }
-        if (Test-Path "$pkgDir\node\bun-packages.txt") { $candidates.Add("bun") }
-        if (Test-Path "$pkgDir\node\pnpm-packages.txt") { $candidates.Add("pnpm") }
-        if (Test-Path "$pkgDir\uv-tools.txt") { $candidates.Add("uv") }
-        if (Test-Path "$pkgDir\bin-packages.txt") { $candidates.Add("bin") }
-        if ((Test-Path "$pkgDir\cargo\cargo.txt") -or (Test-Path "$pkgDir\cargo\cargo-minimal.txt")) { $candidates.Add("cargo") }
+        if (Get-Command mise -ErrorAction SilentlyContinue) { $candidates.Add("mise") }
         if ((Test-Path $HerdrPluginsFile) -and (Get-Command herdr -ErrorAction SilentlyContinue)) { $candidates.Add("herdr") }
 
         $selectedManagers = Select-WithFzf $candidates.ToArray() "Package managers>" `
@@ -81,12 +76,7 @@ function Invoke-AllRestore {
     if ($selectedManagers -contains "winget") { Invoke-WingetRestore }
     if ($selectedManagers -contains "winget-elevated") { Invoke-WingetElevatedRestore }
     if ($selectedManagers -contains "scoop") { Invoke-ScoopRestore }
-    if ($selectedManagers -contains "npm") { Invoke-NodeRestore }
-    if ($selectedManagers -contains "bun") { Invoke-BunRestore }
-    if ($selectedManagers -contains "pnpm") { Invoke-PnpmRestore }
-    if ($selectedManagers -contains "uv") { Invoke-UvRestore }
-    if ($selectedManagers -contains "bin") { Invoke-BinRestore }
-    if ($selectedManagers -contains "cargo") { Invoke-CargoRestore }
+    if ($selectedManagers -contains "mise") { Invoke-MiseRestore }
     if ($selectedManagers -contains "herdr") { Invoke-HerdrRestore -Plugin $Plugin -All:$All -Yes:$Yes }
 
     Write-Host "Restore completado" -ForegroundColor Green
@@ -213,218 +203,15 @@ function Invoke-ScoopRestore {
 }
 Set-Alias -Name restore-scoop -Value Invoke-ScoopRestore
 
-# -- npm -----------------------------------------------------------------------
-function Invoke-NodeRestore {
-    $file = "$PackagesDir\node\npm-packages.json"
-    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
-
-    $data = Get-Content $file | ConvertFrom-Json
-    if (-not $data.dependencies) { Write-Host "npm: no hay paquetes" -ForegroundColor Yellow; return }
-
-    $allPkgs = @($data.dependencies.PSObject.Properties.Name | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "npm>"
-    $installed = npm list -g --depth=0 2>$null
-
-    foreach ($pkg in $selectedPkgs) {
-        if ($installed -match $pkg) {
-            Write-Host "  [SKIP] $pkg already installed" -ForegroundColor DarkGray
-        }
-        else {
-            Write-Host "  [....] $pkg" -ForegroundColor Cyan
-            npm install -g $pkg
-        }
-    }
-    Write-Host "npm restore OK" -ForegroundColor Green
+# -- mise ----------------------------------------------------------------------
+function Invoke-MiseRestore {
+    if (-not (Get-Command mise -ErrorAction SilentlyContinue)) { Write-Warning "mise not found."; return }
+    mise trust --all
+    mise install
+    if ($LASTEXITCODE -ne 0) { Write-Warning "mise install failed (exit code $LASTEXITCODE)." ; return }
+    Write-Host "mise restore OK" -ForegroundColor Green
 }
-Set-Alias -Name restore-node -Value Invoke-NodeRestore
-
-# -- bun -----------------------------------------------------------------------
-function Invoke-BunRestore {
-    $file = "$PackagesDir\node\bun-packages.txt"
-    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
-
-    $allPkgs = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "bun>"
-    $installed = bun pm ls -g 2>$null
-
-    foreach ($pkg in $selectedPkgs) {
-        $pkgName = ($pkg -split '@')[0]
-        if ($installed -match $pkgName) {
-            Write-Host "  [SKIP] $pkg already installed" -ForegroundColor DarkGray
-        }
-        else {
-            Write-Host "  [....] $pkg" -ForegroundColor Cyan
-            bun add -g $pkg
-        }
-    }
-    Write-Host "bun restore OK" -ForegroundColor Green
-}
-Set-Alias -Name restore-bun -Value Invoke-BunRestore
-
-# -- pnpm ----------------------------------------------------------------------
-function Invoke-PnpmRestore {
-    $file = "$PackagesDir\node\pnpm-packages.txt"
-    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
-
-    $allPkgs = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "pnpm>"
-
-    $installedNames = @()
-    try {
-        $installedJson = pnpm list -g --json 2>$null | ConvertFrom-Json
-        if ($installedJson -and $installedJson[0].dependencies) {
-            $installedNames = $installedJson[0].dependencies.PSObject.Properties.Name
-        }
-    }
-    catch {}
-
-    foreach ($pkg in $selectedPkgs) {
-        if ($installedNames -contains $pkg) {
-            Write-Host "  [SKIP] $pkg already installed" -ForegroundColor DarkGray
-        }
-        else {
-            Write-Host "  [....] $pkg" -ForegroundColor Cyan
-            pnpm add -g $pkg
-        }
-    }
-    Write-Host "pnpm restore OK" -ForegroundColor Green
-}
-Set-Alias -Name restore-pnpm -Value Invoke-PnpmRestore
-
-# -- uv ------------------------------------------------------------------------
-function Invoke-UvRestore {
-    function ConvertTo-UvToolArguments {
-        param([string]$Spec)
-
-        $name = '[A-Za-z0-9][A-Za-z0-9._-]*'
-        $package = "$name(?:\[$name(?:,$name)*\])?"
-        # Accept canonical registry versions; unsupported forms fail before any install.
-        $release = '(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*'
-        $suffix = '(?:a[0-9]+|b[0-9]+|rc[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?'
-        $publicVersion = "$release$suffix"
-        $localVersion = '(?:\+[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)?'
-        $compatible = "~=(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)+$suffix"
-        $version = "(?:===[A-Za-z0-9][A-Za-z0-9._+!-]*|(?:==|!=)(?:$publicVersion$localVersion|$release\.\*)|(?:<=|>=|<|>)$publicVersion|$compatible)"
-        $requirement = "$package(?:$version(?:,$version)*)?"
-        $python = '(?:(?:cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+'
-        $pattern = "\A(?<package>$requirement)(?: --python (?<python>$python))?(?: --with (?<with>$requirement))*\z"
-        $match = [regex]::Match($Spec, $pattern)
-        if (-not $match.Success) { throw 'Invalid uv inventory entry; expected registry requirements and optional --python/--with.' }
-
-        $toolArgs = @('tool', 'install')
-        if ($match.Groups['python'].Success) {
-            $toolArgs += @('--python', $match.Groups['python'].Value)
-        }
-        foreach ($dependency in $match.Groups['with'].Captures) {
-            $toolArgs += @('--with', $dependency.Value)
-        }
-        $toolArgs + @('--', $match.Groups['package'].Value)
-    }
-
-    $file = Join-Path $PackagesDir 'uv-tools.txt'
-    if (-not (Test-Path $file)) { throw "Not found: $file" }
-    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) { throw 'uv not found; install it before restoring tools.' }
-
-    $allTools = @(Get-Content $file -ErrorAction Stop | Where-Object { $_ } | Sort-Object)
-    # Validate every entry before installing anything; never eval saved arguments.
-    foreach ($tool in $allTools) { ConvertTo-UvToolArguments $tool | Out-Null }
-    $selectedTools = Select-WithFzf $allTools 'uv>'
-    if (-not $selectedTools) { return }
-
-    foreach ($tool in $selectedTools) {
-        $toolArgs = @(ConvertTo-UvToolArguments $tool)
-        # Native uv checks requirements and interpreter even for existing tools.
-        & uv @toolArgs
-        if ($LASTEXITCODE -ne 0) { throw "uv tool install failed (exit $LASTEXITCODE)" }
-    }
-    Write-Host 'uv restore OK' -ForegroundColor Green
-}
-Set-Alias -Name restore-uv -Value Invoke-UvRestore
-
-# -- cargo (crates.io + git) ---------------------------------------------------
-function Invoke-CargoRestore {
-    $pkgDir = $PackagesDir
-
-    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-        Write-Host "  [WARN] cargo not found - install rustup first" -ForegroundColor Yellow; return
-    }
-
-    $profiles = @()
-    if (Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $profiles += "minimal  |  curated subset" }
-    if (Test-Path "$pkgDir\cargo\cargo.txt") { $profiles += "full     |  all packages" }
-
-    if ($profiles.Count -eq 0) { Write-Warning "No cargo package files found"; return }
-
-    $profileChoice = Select-OneFzf $profiles "cargo profile>"
-    $profileKey = if ($profileChoice) { ($profileChoice -split '\s*\|')[0].Trim() } else { "minimal" }
-    $file = if ($profileKey -eq "minimal") {
-        "$pkgDir\cargo\cargo-minimal.txt"
-    }
-    else {
-        "$pkgDir\cargo\cargo.txt"
-    }
-
-    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
-    Write-Host "  Profile: $(Split-Path $file -Leaf)" -ForegroundColor Cyan
-
-    $allEntries = @(Get-Content $file | Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') } | Sort-Object)
-    $selectedEntries = Select-WithFzf $allEntries "cargo>"
-    $installed = cargo install --list 2>$null
-
-    foreach ($entry in $selectedEntries) {
-        if ($entry -match '^https://') {
-            $baseUrl = ($entry -split '\s+')[0] -replace '\.git$', ''
-            if ($installed -match [regex]::Escape($baseUrl)) {
-                Write-Host "  [SKIP] $baseUrl already installed" -ForegroundColor DarkGray
-            }
-            else {
-                Write-Host "  [....] $entry" -ForegroundColor Cyan
-                try {
-                    Invoke-Expression "cargo install --git $entry"
-                    if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
-                    Write-Host "  [OK]   $baseUrl" -ForegroundColor Green
-                }
-                catch {
-                    Write-Host "  [FAIL] $entry - $($_.Exception.Message)" -ForegroundColor Red
-                }
-            }
-        }
-        else {
-            if ($installed -match "^$([regex]::Escape($entry))\s") {
-                Write-Host "  [SKIP] $entry already installed" -ForegroundColor DarkGray
-            }
-            else {
-                Write-Host "  [....] $entry" -ForegroundColor Cyan
-                cargo install $entry
-            }
-        }
-    }
-    Write-Host "cargo restore OK" -ForegroundColor Green
-}
-Set-Alias -Name restore-cargo     -Value Invoke-CargoRestore
-
-# -- bin -----------------------------------------------------------------------
-function Invoke-BinRestore {
-    $file = "$PackagesDir\bin-packages.txt"
-    if (-not (Test-Path $file)) { Write-Warning "No encontrado: $file"; return }
-
-    $allPkgs = @(Get-Content $file | Where-Object { $_ } | Sort-Object)
-    $selectedPkgs = Select-WithFzf $allPkgs "bin>"
-    $installed = bin list 2>$null
-
-    foreach ($pkg in $selectedPkgs) {
-        $baseUrl = $pkg -replace '/releases/.*', ''
-        if ($installed -match [regex]::Escape($baseUrl)) {
-            Write-Host "  [SKIP] $pkg already installed" -ForegroundColor DarkGray
-        }
-        else {
-            Write-Host "  [....] $pkg" -ForegroundColor Cyan
-            bin install $pkg
-        }
-    }
-    Write-Host "bin restore OK" -ForegroundColor Green
-}
-Set-Alias -Name restore-bin -Value Invoke-BinRestore
+Set-Alias -Name restore-mise -Value Invoke-MiseRestore
 
 # -- herdr ---------------------------------------------------------------------
 function Invoke-HerdrRestore {

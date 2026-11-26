@@ -55,79 +55,6 @@ backup_flatpak() {
     fi
 }
 
-backup_uv() {
-    local file="$BACKUP_DIR/uv-tools.txt" installed line pkg extras python tools=""
-    local pattern='^([A-Za-z0-9][A-Za-z0-9._-]*) v[^[:space:]]+( \[extras: ([A-Za-z0-9][A-Za-z0-9._-]*(, ?[A-Za-z0-9][A-Za-z0-9._-]*)*)\])? \[(CPython|PyPy|GraalPy) ([0-9]+\.[0-9]+)\.[^]]+\]$'
-    if ! command -v uv >/dev/null 2>&1; then
-        echo -e "${YELLOW}⚠️  uv not installed, skipping${NC}\n"
-        return 0
-    fi
-
-    installed=$(uv tool list --show-extras --show-python --color never) || return 1
-    while IFS= read -r line; do
-        [[ -z "$line" || "$line" == '- '* ]] && continue
-        if [[ ! "$line" =~ $pattern ]]; then
-            echo "❌ Invalid uv tool metadata; keeping previous inventory: $line" >&2
-            return 1
-        fi
-        pkg="${BASH_REMATCH[1]}"
-        extras="${BASH_REMATCH[3]// /}"
-        # ponytail: keep Python major/minor; pin patches if exact runtime builds matter.
-        python="${BASH_REMATCH[6]}"
-        [[ "${BASH_REMATCH[5]}" == CPython ]] || python="${BASH_REMATCH[5],,}@$python"
-        [[ -z "$extras" ]] || pkg+="[$extras]"
-        tools+="$pkg --python $python"$'\n'
-    done <<< "$installed"
-
-    save_existing_backup "$file"
-    printf '%s' "$tools" > "$file"
-    echo -e "${GREEN}🐍 uv tools, extras and Python versions saved to uv-tools.txt${NC}"
-}
-
-backup_bun() {
-    if command -v bun >/dev/null 2>&1; then
-        echo -e "${GREEN}🍞 Bun global packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/node/bun-packages.txt"
-        bun pm ls -g 2>/dev/null | tail -n +2 | awk '{print $2}' | sed 's/@[^@]*$//' > "${BACKUP_DIR}/node/bun-packages.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/node/bun-packages.txt") packages saved to node/bun-packages.txt${NC}\n"
-    else
-        echo -e "${YELLOW}⚠️  Bun not installed, skipping${NC}\n"
-    fi
-}
-
-backup_npm() {
-    if command -v npm >/dev/null 2>&1; then
-        echo -e "${GREEN}📦 npm global packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/node/npm-packages.txt"
-        npm ls -g --depth=0 --json 2>/dev/null | jq -r '.dependencies | keys[]' > "${BACKUP_DIR}/node/npm-packages.txt" || echo "" > "${BACKUP_DIR}/node/npm-packages.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/node/npm-packages.txt") packages saved to node/npm-packages.txt${NC}\n"
-    else
-        echo -e "${YELLOW}⚠️  npm not installed, skipping${NC}\n"
-    fi
-}
-
-backup_pnpm() {
-    if command -v pnpm >/dev/null 2>&1; then
-        echo -e "${GREEN}📦 pnpm global packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/node/pnpm-packages.txt"
-        pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' > "${BACKUP_DIR}/node/pnpm-packages.txt" || echo "" > "${BACKUP_DIR}/node/pnpm-packages.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/node/pnpm-packages.txt") packages saved to node/pnpm-packages.txt${NC}\n"
-    else
-        echo -e "${YELLOW}⚠️  pnpm not installed, skipping${NC}\n"
-    fi
-}
-
-backup_bin() {
-    if command -v bin >/dev/null 2>&1; then
-        echo -e "${GREEN}🗃️  bin packages:${NC}"
-        save_existing_backup "${BACKUP_DIR}/bin-packages.txt"
-        bin list 2>/dev/null | grep -E 'https?://' | awk -F'  +' '{print $3}' > "${BACKUP_DIR}/bin-packages.txt" || echo "" > "${BACKUP_DIR}/bin-packages.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/bin-packages.txt") packages saved to bin-packages.txt${NC}\n"
-    else
-        echo -e "${YELLOW}⚠️  bin not installed, skipping${NC}\n"
-    fi
-}
-
 backup_brew() {
     if command -v brew >/dev/null 2>&1; then
         echo -e "${GREEN}🍺 Brew packages:${NC}"
@@ -136,27 +63,6 @@ backup_brew() {
         echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/brew.txt") packages saved to brew.txt${NC}\n"
     else
         echo -e "${YELLOW}⚠️  Brew not installed, skipping${NC}\n"
-    fi
-}
-
-backup_cargo() {
-    if command -v cargo >/dev/null 2>&1; then
-        echo -e "${GREEN}📦 Cargo packages (crates.io + git):${NC}"
-        save_existing_backup "${BACKUP_DIR}/cargo/cargo.txt"
-        {
-            cargo install --list 2>/dev/null \
-                | grep -E '^[a-z0-9_-]+\s+v' \
-                | grep -v 'https://' \
-                | awk '{print $1}'
-            cargo install --list 2>/dev/null \
-                | grep -E '^[a-z0-9_-]+.*https://' \
-                | grep -oE 'https://[^#)]+' \
-                | sed 's/\.git$//'
-        } | sort > "${BACKUP_DIR}/cargo/cargo.txt" || echo "" > "${BACKUP_DIR}/cargo/cargo.txt"
-        echo -e "  ${YELLOW}→ $(wc -l < "${BACKUP_DIR}/cargo/cargo.txt") packages saved to cargo/cargo.txt${NC}\n"
-        echo -e "  ${YELLOW}ℹ  cargo-minimal.txt is manually maintained — not overwritten${NC}\n"
-    else
-        echo -e "${YELLOW}⚠️  cargo not installed, skipping${NC}\n"
     fi
 }
 
@@ -227,13 +133,7 @@ run_all() {
     backup_pacman
     backup_aur
     backup_flatpak
-    backup_uv
-    backup_bun
-    backup_npm
-    backup_pnpm
-    backup_bin
     backup_brew
-    backup_cargo
     backup_omarchy
     backup_herdr
 }
@@ -248,20 +148,14 @@ if [[ $# -eq 0 ]]; then
     exit 0
 fi
 
-# Individual flags — can be combined: backup-packages --pacman --aur --bun
+# Individual flags — can be combined: backup-packages --pacman --aur --flatpak
 HANDLED=false
 for arg in "$@"; do
     case "$arg" in
         --pacman)  backup_pacman;  HANDLED=true ;;
         --aur)     backup_aur;     HANDLED=true ;;
         --flatpak) backup_flatpak; HANDLED=true ;;
-        --uv)      backup_uv;      HANDLED=true ;;
-        --bun)     backup_bun;     HANDLED=true ;;
-        --npm)     backup_npm;     HANDLED=true ;;
-        --bin)     backup_bin;     HANDLED=true ;;
         --brew)       backup_brew;       HANDLED=true ;;
-        --cargo)      backup_cargo;      HANDLED=true ;;
-        --pnpm)       backup_pnpm;       HANDLED=true ;;
         --omarchy)    backup_omarchy;    HANDLED=true ;;
         --herdr)      backup_herdr;      HANDLED=true ;;
         --interactive|-i) : ;;  # handled below
@@ -298,13 +192,7 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
         "📦 pacman" \
         "🔧 aur" \
         "📱 flatpak" \
-        "🐍 uv" \
-        "🍞 bun" \
-        "📦 npm" \
-        "📦 pnpm" \
-        "🗃️  bin" \
         "🍺 brew" \
-        "📦 cargo" \
         "🧩 omarchy" \
         "🧩 herdr")
 
@@ -319,13 +207,7 @@ if [[ "${1:-}" == "--interactive" || "${1:-}" == "-i" ]]; then
             *pacman*)  backup_pacman  ;;
             *aur*)     backup_aur     ;;
             *flatpak*) backup_flatpak ;;
-            *uv*)      backup_uv      ;;
-            *bun*)     backup_bun     ;;
-            *pnpm*)    backup_pnpm    ;;
-            *npm*)     backup_npm     ;;
-            *bin*)        backup_bin        ;;
             *brew*)       backup_brew       ;;
-            *cargo*)  backup_cargo ;;
             *omarchy*) backup_omarchy ;;
             *herdr*)   backup_herdr ;;
         esac

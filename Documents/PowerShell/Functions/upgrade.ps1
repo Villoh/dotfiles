@@ -4,15 +4,11 @@ function Invoke-PackageUpdate {
     [CmdletBinding()]
     param(
         [ValidateNotNullOrEmpty()]
-        [ValidateSet('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'mise')]
-        [string[]]$Manager = @('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'mise')
+        [ValidateSet('winget', 'scoop', 'mise')]
+        [string[]]$Manager = @('winget', 'scoop', 'mise')
     )
     if ($Manager -contains 'winget') { Invoke-WingetUpgrade }
     if ($Manager -contains 'scoop') { Invoke-ScoopUpgrade }
-    if ($Manager -contains 'npm') { Invoke-NpmUpgrade }
-    if ($Manager -contains 'bun') { Invoke-BunUpgrade }
-    if ($Manager -contains 'pnpm') { Invoke-PnpmUpgrade }
-    if ($Manager -contains 'uv') { Invoke-UvUpgrade }
     if ($Manager -contains 'mise') { Invoke-MiseUpgrade }
 }
 Set-Alias -Name update -Value Invoke-PackageUpdate
@@ -39,74 +35,6 @@ function Invoke-ScoopUpgrade {
 }
 Set-Alias -Name update-scoop   -Value Invoke-ScoopUpgrade
 Set-Alias -Name upgrade-scoop  -Value Invoke-ScoopUpgrade
-
-function Invoke-NpmUpgrade {
-    if (Get-Command npm -ErrorAction SilentlyContinue) { npm update -g }
-    else { Write-Warning "npm not found." }
-}
-Set-Alias -Name update-npm     -Value Invoke-NpmUpgrade
-Set-Alias -Name upgrade-npm    -Value Invoke-NpmUpgrade
-
-function Invoke-BunUpgrade {
-    if (-not (Get-Command bun -ErrorAction SilentlyContinue)) { Write-Warning "bun not found."; return }
-
-    $outdated = @(bun outdated -g 2>$null | ForEach-Object {
-            $line = ($_ -replace '\x1b\[[0-9;]*m', '').Trim()
-            if (-not $line -or $line -match '^bun outdated ' -or $line -match '^\|[- ]+\|$' -or $line -match '^\|\s*Package\s*\|') {
-                return
-            }
-
-            $columns = @($line -split '\|' | ForEach-Object { $_.Trim() } | Where-Object { $_ })
-            if ($columns.Count -ge 4 -and -not (($columns | Where-Object { $_ -notmatch '^-+$' }).Count -eq 0)) {
-                $pkgName = $columns[0]
-                $current = $columns[1]
-                $update = $columns[2]
-
-                if ($current -ne $update) {
-                    [PSCustomObject]@{
-                        Name    = $pkgName
-                        Version = $update
-                    }
-                }
-            }
-        })
-
-    if ($outdated.Count -eq 0) {
-        Write-Host "bun: all global packages are up to date." -ForegroundColor Green
-    }
-    else {
-        foreach ($pkg in $outdated) {
-            bun add -g "$($pkg.Name)@$($pkg.Version)"
-        }
-    }
-}
-Set-Alias -Name update-bun     -Value Invoke-BunUpgrade
-Set-Alias -Name upgrade-bun    -Value Invoke-BunUpgrade
-
-function Invoke-PnpmUpgrade {
-    if (-not (Get-Command pnpm -ErrorAction SilentlyContinue)) { Write-Warning "pnpm not found."; return }
-
-    pnpm update -g --latest
-    if ($LASTEXITCODE -ne 0) { Write-Warning "pnpm global update failed (exit code $LASTEXITCODE)." }
-}
-Set-Alias -Name update-pnpm    -Value Invoke-PnpmUpgrade
-Set-Alias -Name upgrade-pnpm   -Value Invoke-PnpmUpgrade
-
-function Invoke-NodeUpgrade {
-    Invoke-NpmUpgrade
-    Invoke-BunUpgrade
-    Invoke-PnpmUpgrade
-}
-Set-Alias -Name update-node    -Value Invoke-NodeUpgrade
-Set-Alias -Name upgrade-node   -Value Invoke-NodeUpgrade
-
-function Invoke-UvUpgrade {
-    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) { Write-Warning 'uv not found.'; return }
-    & uv tool upgrade --all
-    if ($LASTEXITCODE -ne 0) { throw "uv tool upgrade failed (exit $LASTEXITCODE)" }
-}
-Set-Alias -Name update-uv      -Value Invoke-UvUpgrade
-Set-Alias -Name upgrade-uv     -Value Invoke-UvUpgrade
 
 function Invoke-MiseUpgrade {
     if (-not (Get-Command mise -ErrorAction SilentlyContinue)) { Write-Warning "mise not found; skipping upgrade."; return }

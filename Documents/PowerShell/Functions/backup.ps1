@@ -15,19 +15,13 @@ function Invoke-AllBackup {
     [CmdletBinding()]
     param(
         [ValidateNotNullOrEmpty()]
-        [ValidateSet('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'bin', 'cargo', 'herdr')]
-        [string[]]$Manager = @('winget', 'scoop', 'npm', 'bun', 'pnpm', 'uv', 'bin', 'cargo', 'herdr')
+        [ValidateSet('winget', 'scoop', 'herdr')]
+        [string[]]$Manager = @('winget', 'scoop', 'herdr')
     )
     New-Item -ItemType Directory -Force -Path $PackagesDir | Out-Null
     $results = @(
         if ($Manager -contains 'winget') { Invoke-WingetBackup }
         if ($Manager -contains 'scoop') { Invoke-ScoopBackup }
-        if ($Manager -contains 'npm') { Invoke-NodeBackup }
-        if ($Manager -contains 'bun') { Invoke-BunBackup }
-        if ($Manager -contains 'pnpm') { Invoke-PnpmBackup }
-        if ($Manager -contains 'uv') { Invoke-UvBackup }
-        if ($Manager -contains 'bin') { Invoke-BinBackup }
-        if ($Manager -contains 'cargo') { Invoke-CargoBackup }
         if ($Manager -contains 'herdr') { Invoke-HerdrBackup }
     )
     if ($results -contains $false) {
@@ -85,173 +79,6 @@ function Invoke-ScoopBackup {
     return $true
 }
 Set-Alias -Name backup-scoop   -Value Invoke-ScoopBackup
-
-function Invoke-NodeBackup {
-    $file = "$PackagesDir\node\npm-packages.json"
-    Save-ExistingBackup $file
-    npm list -g --depth=0 --json > $file
-    if ($LASTEXITCODE -ne 0) { Write-Warning "npm backup failed"; return $false }
-    Write-Host "npm backup OK" -ForegroundColor Green
-    return $true
-}
-Set-Alias -Name backup-node    -Value Invoke-NodeBackup
-
-function Invoke-BunBackup {
-    $file = "$PackagesDir\node\bun-packages.txt"
-    Save-ExistingBackup $file
-    $raw = & bun pm ls -g 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        $errorText = ($raw | Out-String).Trim()
-        if ($errorText -match 'Lockfile not found|missing lockfile') {
-            @() | Out-File $file -Encoding UTF8
-            Write-Host "bun backup OK (0 packages)" -ForegroundColor Green
-            return $true
-        }
-        Write-Warning "bun backup failed: $errorText"
-        return $false
-    }
-
-    $raw | Select-Object -Skip 1 | ForEach-Object {
-        $_ -replace '\x1b\[[0-9;]*m', '' -replace '^[^\w@]+', ''
-    } | Where-Object { $_ } | Out-File $file -Encoding UTF8
-    Write-Host "bun backup OK" -ForegroundColor Green
-    return $true
-}
-Set-Alias -Name backup-bun     -Value Invoke-BunBackup
-
-function Invoke-PnpmBackup {
-    $file = "$PackagesDir\node\pnpm-packages.txt"
-    Save-ExistingBackup $file
-    try {
-        $raw = pnpm list -g --json 2>$null
-        if ($LASTEXITCODE -ne 0) { throw "pnpm list -g failed" }
-        $json = $raw | ConvertFrom-Json
-        $deps = $json[0].dependencies
-        if ($deps) {
-            $deps.PSObject.Properties.Name | Sort-Object | Out-File $file -Encoding UTF8
-        } else {
-            @() | Out-File $file -Encoding UTF8
-        }
-        Write-Host "pnpm backup OK" -ForegroundColor Green
-        return $true
-    } catch {
-        Write-Warning "pnpm backup failed: $_"
-        return $false
-    }
-}
-Set-Alias -Name backup-pnpm    -Value Invoke-PnpmBackup
-
-function Invoke-UvBackup {
-    function ConvertTo-UvToolArguments {
-        param([string]$Spec)
-
-        $name = '[A-Za-z0-9][A-Za-z0-9._-]*'
-        $package = "$name(?:\[$name(?:,$name)*\])?"
-        # Accept canonical registry versions; unsupported forms fail before any install.
-        $release = '(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*'
-        $suffix = '(?:a[0-9]+|b[0-9]+|rc[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?'
-        $publicVersion = "$release$suffix"
-        $localVersion = '(?:\+[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)?'
-        $compatible = "~=(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)+$suffix"
-        $version = "(?:===[A-Za-z0-9][A-Za-z0-9._+!-]*|(?:==|!=)(?:$publicVersion$localVersion|$release\.\*)|(?:<=|>=|<|>)$publicVersion|$compatible)"
-        $requirement = "$package(?:$version(?:,$version)*)?"
-        $python = '(?:(?:cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+'
-        $pattern = "\A(?<package>$requirement)(?: --python (?<python>$python))?(?: --with (?<with>$requirement))*\z"
-        $match = [regex]::Match($Spec, $pattern)
-        if (-not $match.Success) { throw 'Invalid uv inventory entry; expected registry requirements and optional --python/--with.' }
-
-        $toolArgs = @('tool', 'install')
-        if ($match.Groups['python'].Success) {
-            $toolArgs += @('--python', $match.Groups['python'].Value)
-        }
-        foreach ($dependency in $match.Groups['with'].Captures) {
-            $toolArgs += @('--with', $dependency.Value)
-        }
-        $toolArgs + @('--', $match.Groups['package'].Value)
-    }
-
-    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
-        Write-Warning 'uv not found; skipping backup.'
-        return $true
-    }
-
-    $file = Join-Path $PackagesDir 'uv-tools.txt'
-    $ErrorActionPreference = 'Stop'
-    $diagnosticsFile = $null
-    try {
-        $diagnosticsFile = [System.IO.Path]::GetTempFileName()
-        $raw = @(& uv tool list --show-version-specifiers --show-extras --show-python --show-with --color never 2>$diagnosticsFile)
-        if ($LASTEXITCODE -ne 0) { throw "uv tool list failed (exit $LASTEXITCODE)" }
-        $diagnostics = Get-Content $diagnosticsFile -Raw
-        # uv can skip broken tools with warnings while returning exit 0.
-        if ($diagnostics -and -not ($raw.Count -eq 0 -and $diagnostics.Trim() -eq 'No tools installed')) {
-            throw 'uv tool list reported warnings; keeping previous inventory.'
-        }
-        $pattern = '\A(?<name>[A-Za-z0-9][A-Za-z0-9._-]*) v\S+(?: \[required: (?<required>[^\]]+)\])?(?: \[extras: (?<extras>[A-Za-z0-9._, -]+)\])?(?: \[with: (?<with>.+)\])? \[(?<impl>CPython|PyPy|GraalPy) (?<python>[0-9]+\.[0-9]+)\.[^\]]+\]\z'
-        $tools = @(foreach ($line in $raw) {
-            if (-not $line -or $line -match '^\s*- ') { continue }
-            $match = [regex]::Match($line, $pattern)
-            if (-not $match.Success) { throw 'Invalid uv tool metadata; keeping previous inventory.' }
-            $spec = $match.Groups['name'].Value
-            if ($match.Groups['extras'].Success) { $spec += '[' + $match.Groups['extras'].Value.Replace(' ', '') + ']' }
-            if ($match.Groups['required'].Success) { $spec += $match.Groups['required'].Value.Replace(' ', '') }
-            # ponytail: keep Python major/minor; pin patches if exact runtime builds matter.
-            $python = $match.Groups['python'].Value
-            if ($match.Groups['impl'].Value -ne 'CPython') { $python = $match.Groups['impl'].Value.ToLowerInvariant() + '@' + $python }
-            $spec += " --python $python"
-            if ($match.Groups['with'].Success) {
-                foreach ($dependency in ($match.Groups['with'].Value -split ', ')) { $spec += " --with $dependency" }
-            }
-            ConvertTo-UvToolArguments $spec | Out-Null
-            $spec
-        })
-        New-Item -ItemType Directory -Force -Path $PackagesDir | Out-Null
-        Save-ExistingBackup $file
-        $tools | Out-File $file -Encoding UTF8
-        Write-Host "uv backup OK ($($tools.Count) tools; extras, Python and additional requirements)" -ForegroundColor Green
-        return $true
-    }
-    catch {
-        Write-Warning "uv backup failed: $_"
-        return $false
-    }
-    finally {
-        if ($diagnosticsFile) { Remove-Item $diagnosticsFile -ErrorAction SilentlyContinue }
-    }
-}
-Set-Alias -Name backup-uv      -Value Invoke-UvBackup
-
-function Invoke-BinBackup {
-    $file = "$PackagesDir\bin-packages.txt"
-    Save-ExistingBackup $file
-    bin list | Where-Object { $_ -match 'https?://' } | ForEach-Object {
-        $parts = $_ -split '\s{2,}'
-        if ($parts.Count -ge 3) { $parts[2].Trim() }
-    } | Where-Object { $_ } | Out-File $file -Encoding UTF8
-    if ($LASTEXITCODE -ne 0) { Write-Warning "bin backup failed"; return $false }
-    Write-Host "bin backup OK" -ForegroundColor Green
-    return $true
-}
-Set-Alias -Name backup-bin     -Value Invoke-BinBackup
-
-function Invoke-CargoBackup {
-    $file = "$PackagesDir\cargo\cargo.txt"
-    New-Item -ItemType Directory -Force -Path (Split-Path $file) | Out-Null
-    Save-ExistingBackup $file
-
-    $list = cargo install --list 2>$null
-    if ($LASTEXITCODE -ne 0) { Write-Warning "cargo backup failed"; return $false }
-    $crates = $list | Where-Object { $_ -match '^[a-z0-9_-]+\s+v' -and $_ -notmatch 'https://' } |
-        ForEach-Object { ($_ -split '\s+')[0] }
-    $git = $list | Where-Object { $_ -match 'https://' } |
-        ForEach-Object { [regex]::Match($_, 'https://[^#)]+').Value -replace '\.git$', '' }
-
-    (@($crates) + @($git)) | Where-Object { $_ } | Sort-Object | Set-Content $file -Encoding UTF8
-    Write-Host "cargo backup OK ($(($crates).Count) crates + $(($git).Count) git)" -ForegroundColor Green
-    Write-Host "  (cargo-minimal.txt is manually maintained — not overwritten)" -ForegroundColor DarkGray
-    return $true
-}
-Set-Alias -Name backup-cargo -Value Invoke-CargoBackup
 
 function Invoke-WindhawkBackup {
     $sourceDir   = chezmoi source-path

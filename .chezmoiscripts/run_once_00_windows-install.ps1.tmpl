@@ -101,6 +101,14 @@ if (-not (Get-Command fzf -ErrorAction SilentlyContinue)) {
     $summary.skip++
 }
 
+# -- mise (installs every other CLI tool: npm, pypi, cargo, github backends) ---
+if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+    TryInstall "mise" { scoop install mise }
+} else {
+    LogSkip "mise already installed"
+    $summary.skip++
+}
+
 # -- Developer Mode (required for chezmoi symlinks on Windows) -----------------
 $devModeKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock"
 $devModeVal = (Get-ItemProperty -Path $devModeKey -ErrorAction SilentlyContinue).AllowDevelopmentWithoutDevLicense
@@ -131,11 +139,7 @@ $candidates = [System.Collections.Generic.List[string]]::new()
 if (Test-Path "$pkgDir\winget\packages.json")       { $candidates.Add("winget             | required  |  base app installs") }
 if ($elevatedPkgs.Count -gt 0)                      { $candidates.Add("winget-elevated    | required  |  apps needing admin") }
 if (Test-Path "$pkgDir\scoop\packages.json")        { $candidates.Add("scoop              | required  |  CLI tools and extras") }
-if (Test-Path "$pkgDir\node\npm-packages.json")     { $candidates.Add("npm                | personal  |  Node.js global tools") }
-if (Test-Path "$pkgDir\node\bun-packages.txt")      { $candidates.Add("bun                | personal  |  Bun global tools") }
-if (Test-Path "$pkgDir\uv-tools.txt")               { $candidates.Add("uv                 | personal  |  Python tools") }
-if (Test-Path "$pkgDir\bin-packages.txt")           { $candidates.Add("bin                | personal  |  GitHub release binaries") }
-if (Test-Path "$pkgDir\cargo\cargo.txt" -or Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $candidates.Add("cargo              | personal  |  Rust crates (crates.io + git)") }
+$candidates.Add(                                       "mise               | required  |  global CLI tools from mise config")
 $candidates.Add(                                       "powershell-modules | required  |  Terminal-Icons and other PS modules")
 
 # Required managers are auto-selected; personal ones go through fzf
@@ -209,111 +213,11 @@ if ($selectedManagers -contains "scoop") {
     $selectedScoopNames = Select-WithFzf $allScoopNames "scoop>"
 }
 
-# -- npm -----------------------------------------------------------------------
-$selectedNpmPkgs = @()
-if ($selectedManagers -contains "npm") {
-    $npm = Get-Content "$pkgDir\node\npm-packages.json" | ConvertFrom-Json
-    if ($npm.dependencies) {
-        $allNpmPkgs      = @($npm.dependencies.PSObject.Properties |
-            ForEach-Object { "$($_.Name)@$($_.Value)" } | Sort-Object)
-        $selectedNpmPkgs = Select-WithFzf $allNpmPkgs "npm>"
-    }
-}
-
-# -- bun -----------------------------------------------------------------------
-$selectedBunPkgs = @()
-if ($selectedManagers -contains "bun") {
-    $bunPkgs = @(Get-Content "$pkgDir\node\bun-packages.txt" | Where-Object { $_.Trim() -ne "" } | Sort-Object)
-    if ($bunPkgs) { $selectedBunPkgs = Select-WithFzf $bunPkgs "bun>" }
-}
-
-# -- uv tools ------------------------------------------------------------------
-$selectedUvTools = @()
-if ($selectedManagers -contains "uv") {
-    function ConvertTo-UvToolArguments {
-        param([string]$Spec)
-
-        $name = '[A-Za-z0-9][A-Za-z0-9._-]*'
-        $package = "$name(?:\[$name(?:,$name)*\])?"
-        # Accept canonical registry versions; unsupported forms fail before any install.
-        $release = '(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)*'
-        $suffix = '(?:a[0-9]+|b[0-9]+|rc[0-9]+)?(?:\.post[0-9]+)?(?:\.dev[0-9]+)?'
-        $publicVersion = "$release$suffix"
-        $localVersion = '(?:\+[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*)?'
-        $compatible = "~=(?:[0-9]+!)?[0-9]+(?:\.[0-9]+)+$suffix"
-        $version = "(?:===[A-Za-z0-9][A-Za-z0-9._+!-]*|(?:==|!=)(?:$publicVersion$localVersion|$release\.\*)|(?:<=|>=|<|>)$publicVersion|$compatible)"
-        $requirement = "$package(?:$version(?:,$version)*)?"
-        $python = '(?:(?:cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+'
-        $pattern = "\A(?<package>$requirement)(?: --python (?<python>$python))?(?: --with (?<with>$requirement))*\z"
-        $match = [regex]::Match($Spec, $pattern)
-        if (-not $match.Success) { throw 'Invalid uv inventory entry; expected registry requirements and optional --python/--with.' }
-
-        $toolArgs = @('tool', 'install')
-        if ($match.Groups['python'].Success) {
-            $toolArgs += @('--python', $match.Groups['python'].Value)
-        }
-        foreach ($dependency in $match.Groups['with'].Captures) {
-            $toolArgs += @('--with', $dependency.Value)
-        }
-        $toolArgs + @('--', $match.Groups['package'].Value)
-    }
-    $uvTools = @(Get-Content "$pkgDir\uv-tools.txt" -ErrorAction Stop | Where-Object { $_.Trim() -ne "" } | Sort-Object)
-    foreach ($tool in $uvTools) { ConvertTo-UvToolArguments $tool | Out-Null }
-    if ($uvTools) { $selectedUvTools = Select-WithFzf $uvTools "uv>" }
-}
-
 # -- PowerShell modules --------------------------------------------------------
 $selectedPsModules = @()
 if ($selectedManagers -contains "powershell-modules") {
     $allPsModules      = @("Terminal-Icons")
     $selectedPsModules = Select-WithFzf $allPsModules "powershell-modules>"
-}
-
-# -- bin (GitHub release binaries) ---------------------------------------------
-$selectedBinUrls = @()
-if ($selectedManagers -contains "bin") {
-    $binPkgs = @(Get-Content "$pkgDir\bin-packages.txt" | Where-Object { $_.Trim() -ne "" })
-    if ($binPkgs) {
-        $binItems = $binPkgs | ForEach-Object {
-            [PSCustomObject]@{
-                Label = ($_ -replace 'https://github.com/', '' -replace '/releases/.*', '')
-                Url   = $_
-            }
-        }
-        $selectedBinLabels = Select-WithFzf ($binItems.Label | Sort-Object) "bin>"
-        $selectedBinUrls   = $binItems |
-            Where-Object { $selectedBinLabels -contains $_.Label } |
-            Select-Object -ExpandProperty Url
-    }
-}
-
-# -- cargo (crates.io + git) ---------------------------------------------------
-$cargoFile         = $null
-$selectedCargoEntries = @()
-if ($selectedManagers -contains "cargo") {
-    $cargoProfiles = @()
-    if (Test-Path "$pkgDir\cargo\cargo-minimal.txt") { $cargoProfiles += "minimal  |  curated subset" }
-    if (Test-Path "$pkgDir\cargo\cargo.txt")         { $cargoProfiles += "full     |  all packages" }
-
-    $cargoProfileChoice = Select-OneFzf $cargoProfiles "cargo profile>"
-    $cargoProfileKey    = if ($cargoProfileChoice) { ($cargoProfileChoice -split '\s*\|')[0].Trim() } else { "minimal" }
-    $cargoFile          = if ($cargoProfileKey -eq "minimal") {
-        "$pkgDir\cargo\cargo-minimal.txt"
-    } else {
-        "$pkgDir\cargo\cargo.txt"
-    }
-    Log "  cargo profile: $(Split-Path $cargoFile -Leaf)" "Cyan"
-
-    $cargoEntries = @(Get-Content $cargoFile |
-        Where-Object { $_.Trim() -ne "" -and -not $_.TrimStart().StartsWith('#') })
-    if ($cargoEntries) { $selectedCargoEntries = Select-WithFzf ($cargoEntries | Sort-Object) "cargo>" }
-}
-
-if ($selectedCargoEntries | Where-Object { $_ -match '^https://' }) {
-    if ($selectedScoopNames -notcontains "git") {
-        $selectedScoopNames += "git"
-        Log "  Scoop git required by selected cargo git package" "Cyan"
-    }
 }
 
 # == PACKAGE INSTALLS ==========================================================
@@ -398,68 +302,6 @@ if ($selectedManagers -contains "scoop") {
                 [System.Environment]::GetEnvironmentVariable('PATH', 'User')
 }
 
-# -- npm -----------------------------------------------------------------------
-if ($selectedManagers -contains "npm") {
-    LogSection "npm"
-    if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
-        TryInstall "Node.js" {
-            scoop install nodejs-lts
-        }
-        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
-                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-    } else {
-        LogSkip "Node.js already installed"
-        $summary.skip++
-    }
-    foreach ($pkg in $selectedNpmPkgs) {
-        TryInstall "npm: $pkg" { npm install -g $pkg }
-    }
-}
-
-# -- bun -----------------------------------------------------------------------
-if ($selectedManagers -contains "bun") {
-    LogSection "bun"
-    if (-not (Get-Command bun -ErrorAction SilentlyContinue)) {
-        TryInstall "Bun" {
-            scoop install bun
-        }
-        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
-                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-    } else {
-        LogSkip "Bun already installed"
-        $summary.skip++
-    }
-    $bunInstalled = bun pm ls -g 2>$null
-    foreach ($pkg in $selectedBunPkgs) {
-        $pkgName = ($pkg -split '@')[0]
-        if ($bunInstalled -match [regex]::Escape($pkgName)) {
-            LogSkip "bun: $pkg already installed"
-            $summary.skip++
-        } else {
-            TryInstall "bun: $pkg" { bun add -g $pkg }
-        }
-    }
-}
-
-# -- uv tools ------------------------------------------------------------------
-if ($selectedManagers -contains "uv") {
-    LogSection "uv"
-    if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
-        TryInstall "uv" {
-            scoop install uv
-        }
-        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
-                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-    } else {
-        LogSkip "uv already installed"
-        $summary.skip++
-    }
-    foreach ($tool in $selectedUvTools) {
-        $toolArgs = @(ConvertTo-UvToolArguments $tool)
-        TryInstall "uv: $tool" { & uv @toolArgs }
-    }
-}
-
 # -- PowerShell modules --------------------------------------------------------
 if ($selectedManagers -contains "powershell-modules") {
     LogSection "PowerShell modules"
@@ -473,62 +315,6 @@ if ($selectedManagers -contains "powershell-modules") {
                 pwsh -NoProfile -Command "Install-Module '$mod' -Scope CurrentUser -Force -SkipPublisherCheck"
             }
         }
-    }
-}
-
-# -- bin (GitHub release binaries) ---------------------------------------------
-if ($selectedManagers -contains "bin") {
-    LogSection "bin"
-
-    # Ensure scoop extras bucket is available (bin is in extras)
-    if (-not (scoop bucket list | Select-Object -ExpandProperty Name | Where-Object { $_ -eq 'extras' })) {
-        TryInstall "scoop bucket extras" { scoop bucket add extras }
-    } else {
-        LogSkip "scoop bucket extras already added"
-        $summary.skip++
-    }
-    if (-not (Get-Command bin -ErrorAction SilentlyContinue)) {
-        TryInstall "bin" { scoop install extras/bin }
-        $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
-                    [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-    } else {
-        LogSkip "bin already installed"
-        $summary.skip++
-    }
-
-    if ($selectedBinUrls) {
-        # Setup ~/.bin dir and PATH
-        $binDir = "$env:USERPROFILE\.bin"
-        New-Item -ItemType Directory -Force -Path $binDir | Out-Null
-        $userPath = [System.Environment]::GetEnvironmentVariable('PATH', 'User')
-        if ($userPath -notmatch [regex]::Escape($binDir)) {
-            [System.Environment]::SetEnvironmentVariable('PATH', "$userPath;$binDir", 'User')
-        }
-
-        # Ensure bin config has correct default_path
-        $binConfigDir  = "$env:USERPROFILE\.config\bin"
-        $binConfigFile = "$binConfigDir\config.json"
-        New-Item -ItemType Directory -Force -Path $binConfigDir | Out-Null
-        if (Test-Path $binConfigFile) {
-            $binCfg = Get-Content $binConfigFile -Raw | ConvertFrom-Json
-            $binCfg | Add-Member -MemberType NoteProperty -Name default_path -Value "$binDir/" -Force
-            $binCfg | ConvertTo-Json -Depth 5 | Set-Content $binConfigFile
-        } else {
-            [pscustomobject]@{ default_path = "$binDir/" } | ConvertTo-Json | Set-Content $binConfigFile
-        }
-
-        $binInstalled = (bin list 2>$null) -join "`n"
-        Push-Location $binDir
-        foreach ($url in $selectedBinUrls) {
-            $baseUrl = ($url -split '/releases/')[0]
-            if ($binInstalled -match [regex]::Escape($baseUrl)) {
-                LogSkip "bin: $url already installed"
-                $summary.skip++
-            } else {
-                TryInstall "bin: $url" { bin install $url }
-            }
-        }
-        Pop-Location
     }
 }
 
@@ -554,41 +340,12 @@ if (Get-Command rustup -ErrorAction SilentlyContinue) {
     Log "  [INFO] rustup not found - skipping Rust toolchain setup (install rustup first)" "Yellow"
 }
 
-# -- cargo (crates.io + git) --------------------------------------------------
-if ($selectedManagers -contains "cargo") {
-    LogSection "cargo"
-    if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-        Log "  [WARN] cargo not found - skipping (install rustup first)" "Yellow"
-    } else {
-        $cargoInstalled = cargo install --list 2>$null
-        foreach ($entry in $selectedCargoEntries) {
-            if ($entry -match '^https://') {
-                $baseUrl = ($entry -split '\s+')[0] -replace '\.git$', ''
-                if ($cargoInstalled -match [regex]::Escape($baseUrl)) {
-                    LogSkip "cargo: $baseUrl already installed"
-                    $summary.skip++
-                } else {
-                    Log "  [....] cargo: $entry" "Cyan"
-                    try {
-                        Invoke-Expression "cargo install --git $entry"
-                        if ($LASTEXITCODE -ne 0) { throw "exit code $LASTEXITCODE" }
-                        LogOk "cargo: $baseUrl"
-                        $summary.ok++
-                    } catch {
-                        LogFail "cargo: $entry - $($_.Exception.Message)"
-                        $summary.fail++
-                    }
-                }
-            } else {
-                if ($cargoInstalled -match "^$([regex]::Escape($entry))\s") {
-                    LogSkip "cargo: $entry already installed"
-                    $summary.skip++
-                } else {
-                    TryInstall "cargo: $entry" { Invoke-Expression "cargo install $entry" }
-                }
-            }
-        }
-    }
+# -- mise ----------------------------------------------------------------------
+if ($selectedManagers -contains "mise") {
+    LogSection "mise"
+    # mise reads ~/.config/mise/config.toml and conf.d/windows.toml (symlinked by chezmoi)
+    TryInstall "mise trust" { mise trust --all }
+    TryInstall "mise install" { mise install }
 }
 
 # -- Summary -------------------------------------------------------------------

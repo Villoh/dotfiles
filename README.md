@@ -126,7 +126,7 @@ Custom functions loaded from [`Documents/PowerShell/Functions/`](Documents/Power
 
 ### Packages
 
-Managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`, `mise`, `herdr`. `-Manager` limits the run to some of them.
+Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for global CLI tools (npm, PyPI, cargo, GitHub binaries). `-Manager` limits the run to some of them.
 
 | Command | Description |
 | --------- | ------------- |
@@ -135,11 +135,10 @@ Managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`, `mise`,
 | `restore` / `restore-pkgs` | Reinstall from the saved lists (fzf picker, or `-Manager`) |
 | `restore-<manager>` | Restore a single manager; also `restore-winget-elevated` and `restore-windhawk` |
 | `update` / `update-all` / `upgrade-all` | Upgrade every manager (`-Manager` to pick some) |
-| `update-<manager>` / `upgrade-<manager>` | Upgrade one manager (`winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `mise`, `node`) |
+| `update-<manager>` / `upgrade-<manager>` | Upgrade one manager (`winget`, `scoop`, `mise`) |
 | `winget-reinstall <id>` | Uninstall and reinstall a winget package in an elevated window |
-| `migrate [-Source] [-Target]` | Move packages between managers: `winget` <-> `scoop`, or any direction between `npm`, `bun` and `pnpm` |
-| `pnpm-add-fresh <pkg>` | `pnpm add -g` ignoring the minimum release age |
-| `prune [target]` | Clean package manager caches (scoop, npm, pnpm, bun, uv, ...) |
+| `migrate [-Source] [-Target]` | Move packages between managers: `winget` <-> `scoop` |
+| `prune [target]` | Clean package manager caches (scoop, mise, go, nuget, docker) |
 | `clear-pip` | Clear the pip environment (asks for confirmation) |
 | `restore-windhawk` | Import Windhawk settings from the registry file; close Windhawk first |
 

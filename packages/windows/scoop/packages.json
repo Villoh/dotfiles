@@ -48,13 +48,6 @@
             "Source": "main"
         },
         {
-            "Name": "bun",
-            "Updated": "2026-09-06T17:34:11.653187+02:00",
-            "Info": "",
-            "Version": "1.4.2",
-            "Source": "main"
-        },
-        {
             "Name": "buttery-taskbar",
             "Updated": "2026-04-25T16:48:52.0047484+02:00",
             "Info": "",
@@ -468,13 +461,6 @@
             "Source": "main"
         },
         {
-            "Name": "nodejs-lts",
-            "Updated": "2026-08-30T12:27:32.4699103+02:00",
-            "Info": "",
-            "Version": "24.20.0",
-            "Source": "main"
-        },
-        {
             "Name": "oh-my-pi",
             "Updated": "2026-09-08T08:27:19.4130539+02:00",
             "Info": "",
@@ -512,13 +498,6 @@
             "Updated": "2026-04-29T18:18:58.1857741+02:00",
             "Info": "",
             "Version": "2.18.0",
-            "Source": "main"
-        },
-        {
-            "Name": "pnpm",
-            "Updated": "2026-09-06T17:35:12.8303555+02:00",
-            "Info": "",
-            "Version": "12.3.4",
             "Source": "main"
         },
         {
@@ -646,13 +625,6 @@
             "Info": "",
             "Version": "1.1.6",
             "Source": "villoh"
-        },
-        {
-            "Name": "uv",
-            "Updated": "2026-09-06T17:35:27.0605792+02:00",
-            "Info": "",
-            "Version": "0.12.10",
-            "Source": "main"
         },
         {
             "Name": "vencord-installer-cli",

@@ -1,5 +1,0 @@
-https://github.com/cakama3a/Polling
-https://github.com/vertopolkaLF/silence/releases/tag/v2.3.2
-https://github.com/xdagiz/xytz/releases/tag/v0.9.1
-https://github.com/nexu-io/open-design/releases/tag/open-design-v0.15.1
-https://github.com/stablyai/orca/releases/tag/v1.4.145

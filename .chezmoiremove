@@ -8,4 +8,6 @@
 .local/bin/ikev2-status
 .local/bin/openvpn-vpn
 .local/bin/ikev2-vpn
+# Retired npm/bun/pnpm migration helper; mise is the only global tool manager.
+.local/bin/migrate-node
 {{ end }}

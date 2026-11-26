@@ -6,10 +6,7 @@ function Invoke-DevCleanup {
 
     $steps = @(
         @{ Name = "scoop";  Check = "scoop";  Cmd = { scoop cleanup * | Out-Null; scoop cache rm * | Out-Null } }
-        @{ Name = "npm";    Check = "npm";    Cmd = { npm cache clean --force | Out-Null } }
-        @{ Name = "pnpm";   Check = "pnpm";   Cmd = { pnpm store prune | Out-Null } }
-        @{ Name = "bun";    Check = "bun";    Cmd = { Remove-Item "$env:BUN_INSTALL\install\cache\*" -Recurse -Force -ErrorAction SilentlyContinue } }
-        @{ Name = "uv";     Check = "uv";     Cmd = { uv cache clean | Out-Null } }
+        @{ Name = "mise";   Check = "mise";   Cmd = { mise cache clear | Out-Null } }
         @{ Name = "go";     Check = "go";     Cmd = { go clean -cache | Out-Null } }
         @{ Name = "nuget";  Check = "dotnet"; Cmd = { dotnet nuget locals all --clear | Out-Null } }
         @{ Name = "docker"; Check = "docker"; Ready = { docker info *> $null; $? }; Cmd = { docker system prune -a --volumes --force | Out-Null } }

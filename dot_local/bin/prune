@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # prune - limpia cachés de gestores de paquetes/dev tools que nunca se
-# autolimpian solos (npm, pnpm, bun, uv, go, dotnet/nuget, docker).
+# autolimpian solos (mise, go, dotnet/nuget, docker).
 #
 # No toca pacman/yay/AUR - para eso ya existe el script `cleanup`.
 #
@@ -14,7 +14,7 @@ YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
-MANAGERS=(npm pnpm bun uv go dotnet docker)
+MANAGERS=(mise go dotnet docker)
 
 command_exists() { command -v "$1" >/dev/null 2>&1; }
 
@@ -24,7 +24,7 @@ ${CYAN}Uso:${NC} prune [GESTOR...|--all] [-h|--help]
 
 ${YELLOW}Descripción:${NC}
   Limpia cachés de gestores de paquetes/dev tools que nunca se autolimpian
-  (npm, pnpm, bun, uv, go, dotnet/nuget, docker). No toca pacman/yay/AUR,
+  (mise, go, dotnet/nuget, docker). No toca pacman/yay/AUR,
   para eso está el script 'cleanup'.
 
 ${YELLOW}Opciones:${NC}
@@ -33,7 +33,7 @@ ${YELLOW}Opciones:${NC}
 
 ${YELLOW}Ejemplos:${NC}
   prune              # elige qué limpiar con gum
-  prune npm pnpm
+  prune mise go
   prune --all
 EOF
     exit 0
@@ -50,13 +50,7 @@ check_ready() {
 
 run_prune() {
     case "$1" in
-        npm)  npm cache clean --force ;;
-        pnpm) pnpm store prune ;;
-        bun)
-            local cache="${BUN_INSTALL:-$HOME/.bun}/install/cache"
-            [ -d "$cache" ] && rm -rf "${cache:?}"/*
-            ;;
-        uv)     uv cache clean ;;
+        mise)   mise cache clear ;;
         go)     go clean -cache ;;
         dotnet) dotnet nuget locals all --clear ;;
         docker) docker system prune -a --volumes --force ;;

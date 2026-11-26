@@ -10,13 +10,6 @@ DEFAULT_PACMAN="$DEFAULT_DIR/pacman/pacman.txt"
 DEFAULT_AUR="$DEFAULT_DIR/aur.txt"
 DEFAULT_FLATPAK="$DEFAULT_DIR/flatpak.txt"
 DEFAULT_BREW="$DEFAULT_DIR/brew.txt"
-DEFAULT_UV="$DEFAULT_DIR/uv-tools.txt"
-DEFAULT_BUN="$DEFAULT_DIR/node/bun-packages.txt"
-DEFAULT_NPM="$DEFAULT_DIR/node/npm-packages.txt"
-DEFAULT_PNPM="$DEFAULT_DIR/node/pnpm-packages.txt"
-DEFAULT_BIN="$DEFAULT_DIR/bin-packages.txt"
-DEFAULT_CARGO="$DEFAULT_DIR/cargo/cargo.txt"
-DEFAULT_CARGO_MINIMAL="$DEFAULT_DIR/cargo/cargo-minimal.txt"
 DEFAULT_OMARCHY="$DEFAULT_DIR/omarchy-plugins.txt"
 DEFAULT_HERDR="$DEFAULT_DIR/herdr-plugins.json"
 
@@ -24,8 +17,7 @@ command_exists() { command -v "$1" >/dev/null 2>&1; }
 
 usage() {
     cat <<'EOF'
-Usage: restore-packages [--pacman] [--aur] [--flatpak] [--brew] [--uv]
-                       [--bun] [--npm] [--pnpm] [--bin] [--cargo]
+Usage: restore-packages [--pacman] [--aur] [--flatpak] [--brew] [--mise]
                        [--omarchy] [--herdr]
        restore-packages --help
 
@@ -73,12 +65,7 @@ if (($#)); then
             --aur) manager="🔧 aur" ;;
             --flatpak) manager="📱 flatpak" ;;
             --brew) manager="🍺 brew" ;;
-            --uv) manager="🐍 uv" ;;
-            --bun) manager="🍞 bun" ;;
-            --npm) manager="📦 npm" ;;
-            --pnpm) manager="📦 pnpm" ;;
-            --bin) manager="🗃️  bin" ;;
-            --cargo) manager="📦 cargo" ;;
+            --mise) manager="🧰 mise" ;;
             --omarchy) manager="🧩 omarchy" ;;
             --herdr) manager="🧩 herdr" ;;
             *) echo "❌ Opción desconocida: $arg" >&2; usage >&2; exit 2 ;;
@@ -101,12 +88,7 @@ else
         "🔧 aur" \
         "📱 flatpak" \
         "🍺 brew" \
-        "🐍 uv" \
-        "🍞 bun" \
-        "📦 npm" \
-        "📦 pnpm" \
-        "🗃️  bin" \
-        "📦 cargo" \
+        "🧰 mise" \
         "🧩 omarchy" \
         "🧩 herdr")
 fi
@@ -262,183 +244,13 @@ install_brew_packages() {
     done <<< "$selected"
 }
 
-install_uv_tools() {
-    local file="$1" line selected pkg flag python
-    local pattern='^[A-Za-z0-9][A-Za-z0-9._-]*(\[[A-Za-z0-9][A-Za-z0-9._-]*(,[A-Za-z0-9][A-Za-z0-9._-]*)*\])?( --python ((cpython|pypy|graalpy)@)?[0-9]+\.[0-9]+)?$'
-    [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    if ! command_exists uv; then
-        gum style --foreground 196 "❌ uv no está instalado"
+install_mise_tools() {
+    if ! command_exists mise; then
+        gum style --foreground 196 "❌ mise no está instalado"
         return 1
     fi
-
-    # Validate the whole inventory before installing; never eval saved arguments.
-    while IFS= read -r line || [[ -n "$line" ]]; do
-        [[ -z "$line" ]] && continue
-        if [[ ! "$line" =~ $pattern ]]; then
-            gum style --foreground 196 "❌ Entrada uv no válida: $line"
-            return 1
-        fi
-    done < "$file"
-
-    selected=$(_select_packages "$file" "🐍 Selecciona uv tools") || return 1
-    local -a tools=() python_args=()
-    mapfile -t tools <<< "$selected"
-    for line in "${tools[@]}"; do
-        [[ -z "$line" ]] && continue
-        read -r pkg flag python <<< "$line"
-        python_args=()
-        [[ -z "$python" ]] || python_args=(--python "$python")
-        # Native install checks extras and interpreter even for existing tools.
-        uv tool install "${python_args[@]}" -- "$pkg" || return 1
-    done
-}
-
-install_bun_packages() {
-    local file="$1"
-    [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    echo ""
-    gum style --foreground 75 --bold --border rounded --padding "1 2" "🍞 bun — $(basename "$file")"
-
-    local selected
-    selected=$(_select_packages "$file" "🍞 Selecciona paquetes bun") || return 1
-
-    local installed
-    installed=$(bun pm ls -g 2>/dev/null || true)
-
-    while IFS= read -r pkg; do
-        [ -z "$pkg" ] && continue
-        local pkgname="${pkg%@*}"
-        if echo "$installed" | grep -q "$pkgname"; then
-            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-        else
-            gum style --foreground 75 "  [....] $pkg"
-            bun add -g "$pkg"
-        fi
-    done <<< "$selected"
-}
-
-install_npm_packages() {
-    local file="$1"
-    [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    echo ""
-    gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 npm — $(basename "$file")"
-
-    local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes npm") || return 1
-
-    local installed
-    installed=$(npm ls -g --depth=0 2>/dev/null || true)
-
-    while IFS= read -r pkg; do
-        [ -z "$pkg" ] && continue
-        if echo "$installed" | grep -q "$pkg"; then
-            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-        else
-            gum style --foreground 75 "  [....] $pkg"
-            npm install -g "$pkg"
-        fi
-    done <<< "$selected"
-}
-
-install_pnpm_packages() {
-    local file="$1"
-    [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    echo ""
-    gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 pnpm — $(basename "$file")"
-
-    local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes pnpm") || return 1
-
-    local installed
-    installed=$(pnpm list -g --json 2>/dev/null | jq -r '.[0].dependencies // {} | keys[]' || true)
-
-    while IFS= read -r pkg; do
-        [ -z "$pkg" ] && continue
-        if echo "$installed" | grep -qxF "$pkg"; then
-            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-        else
-            gum style --foreground 75 "  [....] $pkg"
-            pnpm add -g "$pkg"
-        fi
-    done <<< "$selected"
-}
-
-install_cargo_packages() {
-    if ! command_exists cargo; then
-        gum style --foreground 214 --border rounded --padding "1 2" "⚠️  cargo no instalado — instala rustup primero"
-        return 1
-    fi
-
-    local profiles=()
-    [ -f "$DEFAULT_CARGO_MINIMAL" ] && profiles+=("minimal  |  subset curado")
-    [ -f "$DEFAULT_CARGO" ]         && profiles+=("full     |  todos los paquetes")
-
-    local profile_choice
-    profile_choice=$(printf '%s\n' "${profiles[@]}" | gum choose \
-        --cursor.foreground="75" \
-        --selected.foreground="75" \
-        --header="Selecciona perfil cargo" \
-        --header.foreground="245") || return 1
-
-    local file
-    if [[ "$profile_choice" == minimal* ]]; then
-        file=$(get_file_location "cargo/cargo-minimal.txt" "📦" "$DEFAULT_CARGO_MINIMAL")
-    else
-        file=$(get_file_location "cargo/cargo.txt" "📦" "$DEFAULT_CARGO")
-    fi
-
-    [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    echo ""
-    gum style --foreground 75 --bold --border rounded --padding "1 2" "📦 cargo — $(basename "$file")"
-
-    local selected
-    selected=$(_select_packages "$file" "📦 Selecciona paquetes cargo") || return 1
-
-    local installed
-    installed=$(cargo install --list 2>/dev/null || true)
-
-    while IFS= read -r pkg; do
-        [ -z "$pkg" ] && continue
-        if [[ "$pkg" == https://* ]]; then
-            if echo "$installed" | grep -qF "$pkg"; then
-                gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-            else
-                gum style --foreground 75 "  [....] $pkg"
-                cargo install --git "$pkg" || gum style --foreground 196 "  [FAIL] $pkg"
-            fi
-        else
-            if echo "$installed" | grep -qE "^$pkg "; then
-                gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-            else
-                gum style --foreground 75 "  [....] $pkg"
-                cargo install "$pkg"
-            fi
-        fi
-    done <<< "$selected"
-}
-
-install_bin_packages() {
-    local file="$1"
-    [ ! -f "$file" ] && _warn_missing "$file" && return 1
-    echo ""
-    gum style --foreground 75 --bold --border rounded --padding "1 2" "🗃️  bin — $(basename "$file")"
-
-    local selected
-    selected=$(_select_packages "$file" "🗃️  Selecciona paquetes bin") || return 1
-
-    local installed
-    installed=$(bin list 2>/dev/null || true)
-
-    while IFS= read -r pkg; do
-        [ -z "$pkg" ] && continue
-        local baseurl="${pkg%%/releases/*}"
-        if echo "$installed" | grep -qF "$baseurl"; then
-            gum style --foreground 245 "  [SKIP] $pkg ya instalado"
-        else
-            gum style --foreground 75 "  [....] $pkg"
-            bin install "$pkg"
-        fi
-    done <<< "$selected"
+    gum style --foreground 75 --bold --border rounded --padding "1 2" "🧰 mise — config.toml"
+    mise trust --all && mise install
 }
 
 install_omarchy_plugins() {
@@ -575,23 +387,8 @@ while IFS= read -r manager <&3; do
         *brew*)
             file=$(get_file_location "brew.txt"       "🍺" "$DEFAULT_BREW")
             install_brew_packages "$file" ;;
-        *uv*)
-            file=$(get_file_location "uv-tools.txt"   "🐍" "$DEFAULT_UV")
-            install_uv_tools "$file" ;;
-        *bun*)
-            file=$(get_file_location "node/bun-packages.txt" "🍞" "$DEFAULT_BUN")
-            install_bun_packages "$file" ;;
-        *pnpm*)
-            file=$(get_file_location "node/pnpm-packages.txt" "📦" "$DEFAULT_PNPM")
-            install_pnpm_packages "$file" ;;
-        *npm*)
-            file=$(get_file_location "node/npm-packages.txt" "📦" "$DEFAULT_NPM")
-            install_npm_packages "$file" ;;
-        *bin*)
-            file=$(get_file_location "bin-packages.txt" "🗃️ " "$DEFAULT_BIN")
-            install_bin_packages "$file" ;;
-        *cargo*)
-            install_cargo_packages ;;
+        *mise*)
+            install_mise_tools ;;
         *omarchy*)
             file=$(get_file_location "omarchy-plugins.txt" "🧩" "$DEFAULT_OMARCHY")
             install_omarchy_plugins "$file" ;;

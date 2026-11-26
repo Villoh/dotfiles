@@ -1,0 +1,15 @@
+# Windows-only tools, merged with config.toml by mise (conf.d). Ignored on Linux.
+# After editing, run `mise lock` so the locked setting accepts the new tools.
+[tools]
+# Package manager for the npm: backend (settings.npm.package_manager).
+# Linux gets it from NixOS.
+aube = "latest"
+# Former `bin` inventory (GitHub release binaries).
+"github:cakama3a/Polling" = "latest"
+"github:vertopolkaLF/silence" = "latest"
+"github:xdagiz/xytz" = "latest"
+"github:nexu-io/open-design" = "latest"
+"github:stablyai/orca" = "latest"
+# Former `cargo` inventory.
+"cargo:https://github.com/Dutch-Raptor/GAT-GWM" = "branch:master"
+"cargo:pexels" = "latest"

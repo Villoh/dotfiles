@@ -53,7 +53,7 @@ All scripts use `$(chezmoi source-path)` instead of hardcoded paths.
 | `docker-service` | Start, stop, or inspect Docker systemd service |
 | `extract-claude-config` | Export Claude config docs to `other_config/claude/` |
 | `cleanup` | System cleanup (cache, logs, orphan packages) |
-| `prune` | Gum-interactive cache cleanup for npm/pnpm/bun/uv/go/dotnet/docker |
+| `prune` | Gum-interactive cache cleanup for mise/go/dotnet/docker |
 | `update-packages` | Interactive updater for user-level tools; do not use it to replace NixOS updates |
 | `plymouth-themes` | Install/switch Plymouth boot themes from `other_config/plymouth/themes/` |
 | `sddm-themes` | Install/switch SDDM login themes from `other_config/sddm/themes/` |
@@ -144,26 +144,6 @@ standalone clients, not NetworkManager/DMS profile managers or kill switches.
 Do not run them alongside DMS-managed VPNs; verify DNS and IPv6 when connecting.
 They have no automated tests; check them against a real connection.
 
-## uv tools
-
-`backup-packages --uv` saves package names, extras, and Python major/minor
-versions to `packages/linux/uv-tools.txt`, using native `uv tool list
---show-extras --show-python` metadata. For example:
-
-```text
-harlequin[mysql] --python 3.13
-```
-
-`restore-packages --uv` validates the inventory and passes the package and
-Python request as separate arguments to `uv tool install`, without `eval`.
-Native uv installation handles already-installed tools, including changes to
-extras and Python. Old name-only lists still work. Nonzero query exits or
-invalid output keep the previous backup. Warnings alone do not: uv can skip
-broken tools with exit 0, producing an incomplete or empty inventory. Check
-warnings before accepting a backup. This is not a lockfile: package versions, dependency
-versions, additional `--with` requirements, custom sources/indexes, and Python
-patch versions are not preserved. Only restore trusted packages.
-
 ## mise tools
 
 mise is restored from global/project configuration, not a generated package
@@ -175,7 +155,10 @@ After restoring trusted configuration and installing mise/required plugins:
 mise install
 ```
 
-`backup-packages` and `restore-packages` no longer handle mise. Historical
+mise is the only manager for global CLI tools (npm, PyPI, cargo, GitHub
+binaries). `backup-packages`, `restore-packages`, `update-packages` and `prune`
+no longer handle npm/bun/pnpm/uv/bin/cargo; `restore-packages --mise` just runs
+`mise install`, and `migrate-node` was removed. Historical
 `mise-tools.txt` inventories and their `.bak` files are left untouched and are
 not used for restoration. NixOS/Home Manager still owns system packages.
 
@@ -184,8 +167,9 @@ for tools in the current configuration, respecting version ranges without
 `--bump`. mise appears in the interactive menu and `--all` when installed.
 The mise executable itself must be updated through NixOS or its package manager.
 
-Linux user CLI configuration lives in `dot_config/mise/config.toml` and is
-excluded on Windows. `npm:` tools use the Nix-provided standalone aube CLI
+Linux user CLI configuration lives in `dot_config/mise/config.toml`, shared
+with Windows (`os = [...]` gates platform-specific tools); Windows-only tools
+live in `conf.d/windows.toml`, which is ignored on Linux. `npm:` tools use the Nix-provided standalone aube CLI
 (`npm.package_manager = "aube_cli"`); Python tools use uv through `pypi:`.
 Nix still provides Node, uv, and pnpm. Bun is declared in mise for tools such
 as ocx. Zsh activates mise, and the login profile exposes shims to desktop apps;
@@ -274,10 +258,9 @@ absolute paths. Herdr's generated `plugins.json`, checkouts,
 binaries, credentials, and plugin-specific settings are not copied.
 
 Run `restore-packages --herdr` to skip manager/location menus, then choose
-plugins. Manager flags can be combined, e.g. `restore-packages --herdr --npm`;
+plugins. Manager flags can be combined, e.g. `restore-packages --herdr --mise`;
 without flags, the interactive manager menu remains. Supported flags: `--pacman`,
-`--aur`, `--flatpak`, `--brew`, `--uv`, `--bun`, `--npm`, `--pnpm`, `--bin`,
-`--cargo`, `--omarchy`, and `--herdr`. Existing IDs are left untouched
+`--aur`, `--flatpak`, `--brew`, `--mise`, `--omarchy`, and `--herdr`. Existing IDs are left untouched
 (including version and enabled state); registry warnings stop restoration for
 that plugin. Missing GitHub plugins use `herdr plugin install`
 without a ref and retain native trust/build confirmation. Herdr installs GitHub

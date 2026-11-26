@@ -26,8 +26,8 @@ scoop/
 {{ end }}
 
 # ── Linux-only modules (ignored on Windows, or if disabled) ───────────────────
-{{ if eq .chezmoi.os "windows" }}.config/pnpm/**
-.config/mise/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/pnpm/**{{ end }}
+{{ if ne .chezmoi.os "windows" }}.config/mise/conf.d/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/matugen/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/dms/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/zapfast/**{{ end }}

@@ -72,10 +72,9 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 ## Package commands
 
 ```powershell
-backup -Manager uv
-restore -Manager uv
-update -Manager mise
-update -Manager mise,uv,npm
+backup -Manager winget,scoop
+restore -Manager mise
+update -Manager mise,scoop
 ```
 
 `-Manager` accepts one or more names and skips the restore manager menu, not
@@ -84,70 +83,39 @@ supported managers; `restore` opens its existing menu. Duplicate names run once.
 `update-all` / `upgrade-all` always update all managers and reject `-Manager`.
 Supported per-manager aliases remain available.
 
-Backup managers: `winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `bin`, `cargo`,
-`herdr`. Restore also supports `winget-elevated`. Update supports
-`winget`, `scoop`, `npm`, `bun`, `pnpm`, `uv`, `mise`.
+Backup managers: `winget`, `scoop`, `herdr`. Restore also supports
+`winget-elevated` and `mise`. Update supports `winget`, `scoop`, `mise`.
 Herdr's `-Plugin`, `-All`, and `-Yes` require `-Manager herdr` alone.
-
-The tracked npm/bun/pnpm and uv inventories have been retired on Windows too.
-The Linux mise configuration does not replace them. Until fresh inventories
-are generated on Windows, these tools cannot be restored from this repository;
-restore/bootstrap menus omit missing inventories. Run `backup -Manager npm,bun,pnpm,uv`
-after installing the desired tools on Windows to generate new local inventories.
-Backup commands create missing inventory directories, including `node/`.
-
-## uv tools
-
-```powershell
-backup -Manager uv
-restore -Manager uv
-update -Manager uv
-```
-
-`backup-uv` saves `packages/windows/uv-tools.txt` using native uv metadata:
-package extras, original registry version constraints, Python major/minor, and
-additional `--with` registry requirements (including version exclusions).
-For example:
-
-```text
-harlequin[mysql] --python 3.13
-headroom-ai[all] --python 3.12 --with ast-grep-cli>=0.30.0,!=0.44.0,!=0.44.1
-```
-
-Query errors, warnings about skipped/broken tools, or invalid metadata leave
-the inventory and its `.bak` untouched. Unsupported sources/specifications fail
-rather than exporting a lossy entry.
-Old name-only lists still work. Backup, restore, and the Windows install template
-keep their uv validation/parsing inside each script, without an external helper.
-Restore and bootstrap pass each argument separately, without `Invoke-Expression`.
-Native uv installation checks existing tools instead of
-skipping them by name. Failed restores/updates terminate before success messages;
-bootstrap installations record failures in their existing summary.
-
-This is not a lockfile: Python patches, resolved dependency versions, custom
-indexes/options, and extras/markers on additional requirements are not preserved
-by this native-list-based inventory. Preserve those separately; only restore
-trusted packages. Regenerate the Windows inventory on Windows, not from Linux.
 
 ## mise tools
 
-Keep Windows-compatible global/project mise configuration versioned, including
-tool versions/options, custom plugin sources, environment variables, and tasks.
-After restoring trusted configuration and installing mise/required plugins:
+mise is the only manager for global CLI tools (npm, PyPI, cargo and GitHub
+release binaries); npm/bun/pnpm/uv/bin/cargo are no longer installed, backed up,
+restored or updated by these scripts. Their old Windows inventories
+(`bin-packages.txt`, `cargo/`) were moved into mise configuration.
+
+Windows reads two chezmoi-managed files:
+
+- `dot_config/mise/config.toml` — shared with Linux (`os = [...]` gates
+  platform-specific tools).
+- `dot_config/mise/conf.d/windows.toml` — Windows-only tools (aube, GitHub
+  release apps, cargo tools). Ignored on Linux so its tools never show up as
+  missing from the Linux lockfile.
+
+Settings in `config.toml` use `locked = true`: after adding a tool run
+`mise lock` on Windows to record it. Restore with:
 
 ```powershell
+mise trust --all
 mise install
 ```
 
-`backup` and `restore` no longer include mise; historical `mise-tools.txt`
-inventories and `.bak` files remain untouched but are not used for restoration.
-The Linux `dot_config/mise/config.toml` remains excluded on Windows: preserve
-Windows-compatible configuration separately rather than copying Linux-only tools.
-
-`update -Manager mise` (also `update-mise` / `upgrade-mise`) still runs
-`mise upgrade` for the current configuration, preserving version ranges without
-`--bump`. `update-all` / `upgrade-all` includes it. The mise executable remains
-managed by Scoop or its original package manager.
+`restore -Manager mise` (or the bootstrap script) does exactly that.
+`update -Manager mise` (also `update-mise` / `upgrade-mise`) runs
+`mise upgrade`, preserving version ranges without `--bump`. `update-all` /
+`upgrade-all` includes it. The mise executable itself is managed by Scoop.
+The pnpm/uv/npm configuration files stay: they only harden project-level
+installs and the `uv` calls mise makes for `pypi:` tools.
 
 ## Scripts
 

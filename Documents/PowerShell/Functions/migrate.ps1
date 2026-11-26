@@ -5,9 +5,7 @@
 # Usage:
 #   migrate                        # defaults: winget -> scoop
 #   migrate -Source winget -Target scoop
-#   migrate -Source npm    -Target bun
-#   migrate -Source bun    -Target pnpm
-#   (etc.)
+#   migrate -Source scoop  -Target winget
 
 $script:PkgDir = "$(chezmoi source-path)/packages/windows".Replace('/', '\')
 
@@ -18,7 +16,7 @@ function Invoke-Migration {
     )
 
     if (-not $Source) {
-        $sourceChoices = @("winget", "scoop", "npm", "bun", "pnpm")
+        $sourceChoices = @("winget", "scoop")
         $Source = Invoke-ManagerPicker -Items $sourceChoices -Prompt "  select source> " -Header "ENTER=confirm  ESC=cancel"
         if (-not $Source) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
     }
@@ -32,17 +30,10 @@ function Invoke-Migration {
     switch ("$Source->$Target") {
         "winget->scoop" { Invoke-WingetToScoopMigration }
         "scoop->winget" { Invoke-ScoopToWingetMigration }
-        "npm->bun"      { Invoke-NodeMigration -Source npm  -Target bun  }
-        "npm->pnpm"     { Invoke-NodeMigration -Source npm  -Target pnpm }
-        "bun->npm"      { Invoke-NodeMigration -Source bun  -Target npm  }
-        "bun->pnpm"     { Invoke-NodeMigration -Source bun  -Target pnpm }
-        "pnpm->npm"     { Invoke-NodeMigration -Source pnpm -Target npm  }
-        "pnpm->bun"     { Invoke-NodeMigration -Source pnpm -Target bun  }
         default {
             Write-Warning "Migration '$Source -> $Target' is not supported."
             Write-Host "  Supported pairs:" -ForegroundColor Yellow
             Write-Host "    winget <-> scoop" -ForegroundColor Yellow
-            Write-Host "    npm / bun / pnpm (any direction)" -ForegroundColor Yellow
         }
     }
 }
@@ -87,9 +78,6 @@ function Get-MigrationTargets {
     switch ($Source) {
         "winget" { return @("scoop") }
         "scoop"  { return @("winget") }
-        "npm"    { return @("bun", "pnpm") }
-        "bun"    { return @("npm", "pnpm") }
-        "pnpm"   { return @("npm", "bun") }
         default   { return @() }
     }
 }
@@ -117,65 +105,6 @@ function Get-ScoopPackages {
 
     $data = Get-Content $file | ConvertFrom-Json
     return @($data.apps | Select-Object -ExpandProperty Name)
-}
-
-function Get-NpmGlobalPackages {
-    $fallback = "$script:PkgDir\node\npm-packages.json"
-    try {
-        $json = npm list -g --depth=0 --json 2>$null | ConvertFrom-Json
-        if (-not $json -or -not $json.dependencies) { return @() }
-        return @($json.dependencies.PSObject.Properties.Name)
-    } catch {
-        Write-Warning "  [warn] npm runtime query failed, using backup JSON"
-        if (-not (Test-Path $fallback)) {
-            Write-Warning "  [warn] fallback $fallback not found — no packages loaded"
-            return @()
-        }
-        $json = Get-Content $fallback | ConvertFrom-Json
-        return @($json.dependencies.PSObject.Properties.Name)
-    }
-}
-
-function Get-BunGlobalPackages {
-    $fallback = "$script:PkgDir\node\bun-packages.txt"
-    $extractor = {
-        $line = $_ -replace '\x1b\[[0-9;]*m', ''
-        if ($line -match '(@[^@\s]+/[^@\s]+|[A-Za-z0-9._-]+)@[0-9][^@]*$') { $matches[1] }
-    }
-    try {
-        $raw = bun pm ls -g 2>$null
-        if ($LASTEXITCODE -ne 0) { throw "bun pm ls -g failed" }
-        $lines = $raw | Select-Object -Skip 1
-        return @($lines |
-            ForEach-Object $extractor |
-            Where-Object { $_ })
-    } catch {
-        Write-Warning "  [warn] bun runtime query failed, using backup txt"
-        if (-not (Test-Path $fallback)) {
-            Write-Warning "  [warn] fallback $fallback not found — no packages loaded"
-            return @()
-        }
-        return @(Get-Content $fallback |
-            ForEach-Object $extractor |
-            Where-Object { $_ })
-    }
-}
-
-function Get-PnpmGlobalPackages {
-    $fallback = "$script:PkgDir\node\pnpm-packages.txt"
-    try {
-        $json = pnpm list -g --json 2>$null | ConvertFrom-Json
-        $deps = $json[0].dependencies
-        if (-not $deps) { return @() }
-        return @($deps.PSObject.Properties.Name)
-    } catch {
-        Write-Warning "  [warn] pnpm runtime query failed, using backup txt"
-        if (-not (Test-Path $fallback)) {
-            Write-Warning "  [warn] fallback $fallback not found — no packages loaded"
-            return @()
-        }
-        return @(Get-Content $fallback | Where-Object { $_ })
-    }
 }
 
 # -- Install / Uninstall -------------------------------------------------------
@@ -208,150 +137,10 @@ function Uninstall-ScoopPackage([string]$Name) {
     Write-Host "    [OK]  scoop uninstall $Name" -ForegroundColor Green; return $true
 }
 
-function Install-NpmPackage([string]$Name) {
-    Write-Host "    [....] npm install -g $Name" -ForegroundColor Gray
-    npm install -g $Name
-    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] npm install -g $Name" -ForegroundColor Red; return $false }
-    Write-Host "    [OK]  npm install -g $Name" -ForegroundColor Green; return $true
-}
-
-function Uninstall-NpmPackage([string]$Name) {
-    Write-Host "    [....] npm uninstall -g $Name" -ForegroundColor Gray
-    npm uninstall -g $Name
-    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] npm uninstall -g $Name" -ForegroundColor Red; return $false }
-    Write-Host "    [OK]  npm uninstall -g $Name" -ForegroundColor Green; return $true
-}
-
-function Install-BunPackage([string]$Name) {
-    Write-Host "    [....] bun add -g $Name" -ForegroundColor Gray
-    bun add -g $Name
-    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] bun add -g $Name" -ForegroundColor Red; return $false }
-    Write-Host "    [OK]  bun add -g $Name" -ForegroundColor Green; return $true
-}
-
-function Uninstall-BunPackage([string]$Name) {
-    Write-Host "    [....] bun remove -g $Name" -ForegroundColor Gray
-    bun remove -g $Name
-    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] bun remove -g $Name" -ForegroundColor Red; return $false }
-    Write-Host "    [OK]  bun remove -g $Name" -ForegroundColor Green; return $true
-}
-
-function Install-PnpmPackage([string]$Name) {
-    Write-Host "    [....] pnpm add -g $Name" -ForegroundColor Gray
-    pnpm add -g $Name
-    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] pnpm add -g $Name" -ForegroundColor Red; return $false }
-    Write-Host "    [OK]  pnpm add -g $Name" -ForegroundColor Green; return $true
-}
-
-function Uninstall-PnpmPackage([string]$Name) {
-    Write-Host "    [....] pnpm remove -g $Name" -ForegroundColor Gray
-    pnpm remove -g $Name
-    if ($LASTEXITCODE -ne 0) { Write-Host "    [FAIL] pnpm remove -g $Name" -ForegroundColor Red; return $false }
-    Write-Host "    [OK]  pnpm remove -g $Name" -ForegroundColor Green; return $true
-}
-
 # -- Backup updaters -----------------------------------------------------------
 
 function Update-WingetBackup  { Invoke-WingetBackup }
 function Update-ScoopBackup   { Invoke-ScoopBackup }
-function Update-NpmBackup     { Invoke-NodeBackup }
-function Update-BunBackup     { Invoke-BunBackup }
-function Update-PnpmBackup    { Invoke-PnpmBackup }
-
-function Normalize-PackageName {
-    param([string]$Name)
-
-    if ($null -eq $Name) { return $null }
-
-    return ($Name -replace '^[\uFEFF\u200B\u200C\u200D\u2060]+', '').Trim()
-}
-
-function Get-ProtectedSourcePackages {
-    param([string]$Source)
-
-    switch ($Source) {
-        'pnpm' { return @('@pnpm/exe') }
-        default { return @() }
-    }
-}
-
-# -- Node migrations (npm / bun / pnpm, any direction) ------------------------
-
-function Invoke-NodeMigration {
-    param([string]$Source, [string]$Target)
-
-    $getterMap = @{
-        npm  = { Get-NpmGlobalPackages }
-        bun  = { Get-BunGlobalPackages }
-        pnpm = { Get-PnpmGlobalPackages }
-    }
-    $installMap = @{
-        npm  = { param($n) Install-NpmPackage  $n }
-        bun  = { param($n) Install-BunPackage  $n }
-        pnpm = { param($n) Install-PnpmPackage $n }
-    }
-    $uninstallMap = @{
-        npm  = { param($n) Uninstall-NpmPackage  $n }
-        bun  = { param($n) Uninstall-BunPackage  $n }
-        pnpm = { param($n) Uninstall-PnpmPackage $n }
-    }
-    $updateMap = @{
-        npm  = { Update-NpmBackup }
-        bun  = { Update-BunBackup }
-        pnpm = { Update-PnpmBackup }
-    }
-
-    Write-Host "[migrate] Reading $Source global packages..." -ForegroundColor Cyan
-    $packages = & $getterMap[$Source]
-
-    if (-not $packages) {
-        Write-Host "No packages found in $Source." -ForegroundColor Yellow
-        return
-    }
-
-    $selected = Invoke-FzfPicker -Items $packages `
-        -Prompt "  migrate $Source -> $Target> " `
-        -Header "TAB=toggle  CTRL-A=all  ENTER=confirm  ESC=cancel"
-
-    if (-not $selected) { Write-Host "Cancelled." -ForegroundColor Yellow; return }
-
-    $ok = 0; $fail = 0
-    $protected = Get-ProtectedSourcePackages $Source
-
-    foreach ($name in $selected) {
-        $name = Normalize-PackageName $name
-        if (-not $name) { continue }
-
-        Write-Host ""
-        Write-Host "  [$name]" -ForegroundColor Cyan
-
-        if ($protected -contains $name) {
-            Write-Host "    [SKIP] protected package for $Source" -ForegroundColor DarkGray
-            continue
-        }
-
-        $installed = & $installMap[$Target] $name
-        if (-not $installed) { $fail++; continue }
-
-        $uninstalled = & $uninstallMap[$Source] $name
-        if (-not $uninstalled) { $fail++; continue }
-        $ok++
-    }
-
-    if ($ok -gt 0) {
-        $sourceBackupOk = & $updateMap[$Source]
-        $targetBackupOk = & $updateMap[$Target]
-        Write-Host ""
-        if ($sourceBackupOk -and $targetBackupOk) {
-            Write-Host "  Backup files updated." -ForegroundColor Green
-        } else {
-            Write-Warning "Backup refresh failed for one or more package managers."
-        }
-    }
-
-    Write-Host ""
-    Write-Host "  Done — $ok migrated  $fail failed" -ForegroundColor Cyan
-}
 
 # -- winget -> scoop -----------------------------------------------------------
 
