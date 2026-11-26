@@ -78,13 +78,7 @@ implementation progress.
 
 - [x] **Vesktop** — Windows: System24 + Kanagawa Dragon QuickCSS (`AppData/Roaming/vesktop/settings/`). Linux: DMS matugen `dank-discord.css` (`dot_config/vesktop/settings/`).
 - [x] **Warp** — Kanagawa Dragon theme added; select it from Warp theme settings.
-- [x] **GlazeWM** — Catppuccin anchors removed; focused and unfocused borders use Dragon colors.
-- [x] **YASB** — CSS variables and direct Catppuccin colors migrated to Kanagawa Dragon.
-- [x] **Rainmeter** — sideCat palette migrated; Trashy Kanagawa Dragon variant added.
-- [x] **Windows setup** — SecureUxTheme switched to Kanagawa Wave Night SQR; registry accents use Dragon violet palette.
-- [x] **Windows cursors** — Kanagawa cursor pack registered as `Kanagawa-Cursors` and selected by chezmoi.
-- [x] **Flow Launcher** — Kanagawa Dragon XAML theme created and selected.
-- [x] **Ditto** — Kanagawa Dragon XML theme created for Win+V clipboard.
+- [x] **Aether** — the Windows desktop shell colours itself (dynamic scheme from the wallpaper), so GlazeWM, YASB, Rainmeter, Flow Launcher, Ditto, SecureUxTheme, the accent palette and the Kanagawa cursors were removed; see `docs/windows/windows.md`.
 - [x] **Nilesoft Shell** — context-menu theme migrated to Kanagawa Dragon.
 - [x] **Stylus** — 134 browser userstyles migrated to a shared Kanagawa Dragon LESS/CSS palette.
 - [ ] Confirm whether legacy Hyprlock theme tree is still deployed.
@@ -138,13 +132,6 @@ configuration. Do not create replacements for them.
 | --- | --- | --- | --- |
 | Windows Terminal | `AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json` | Default, admin profile, scheme, and UI theme migrated to Kanagawa Dragon | Validate visually; remove stale external references if found |
 | Warp | `AppData/Roaming/warp/Warp/data/themes/kanagawa_dragon.yml` | Kanagawa Dragon theme added; legacy Catppuccin themes retained temporarily | Select and validate visually in Warp; remove unused flavors later |
-| GlazeWM | `dot_glzr/glazewm/config.yaml` | Inline Catppuccin anchors removed; focused border `#8992a7`, other border `#393836` | Validate visually in GlazeWM |
-| YASB | `dot_config/yasb/styles.css`; `dot_config/yasb/config.yaml` | CSS variables and direct palette colors use Kanagawa Dragon; system-specific app colors retained | Validate widget states visually |
-| Rainmeter | `AppData/Roaming/Rainmeter/Layouts/sideCat/Rainmeter.ini`; `Documents/Rainmeter/Skins/sideCat/@Resources/styles.inc`; `Documents/Rainmeter/Skins/Trashy/Kanagawa Dragon.ini` | sideCat uses Dragon palette; Kanagawa Dragon Trashy variant added; legacy Trashy variants untouched | Select Kanagawa Dragon variant and validate visually; remove unused variants later |
-| Windows setup | `.chezmoiscripts/run_once_after_07_windows-setup.ps1.tmpl`; `program_files/windows/resources/themes/Kanagawa*` | Starts Kanagawa Wave Night SQR through SecureUxTheme; writes Dragon violet accent palette | Apply and validate after elevated chezmoi run; Wave is used because no Dragon `.msstyles` exists |
-| Windows cursors | `.chezmoi.toml.tmpl`; `.chezmoiscripts/run_onchange_05_windows-cursors.ps1.tmpl`; `program_files/windows/cursors/Kanagawa-Cursors/` | Installs and selects `Kanagawa-Cursors` from the Kanagawa Wave cursor assets | Apply elevated cursor script and validate pointer states visually |
-| Flow Launcher | `AppData/Roaming/FlowLauncher/Settings/Settings.json`; `Themes/Kanagawa Dragon.xaml` | Active `Kanagawa Dragon` XAML theme; legacy Catppuccin theme retained | Validate visually in Flow Launcher |
-| Ditto | `program_files/ditto/Themes/kanagawa-dragon.xml` | Kanagawa Dragon XML theme available; deployed by Windows program-files script | Select theme in Ditto and validate Win+V visually |
 | Nilesoft Shell | `program_files/nilesoft/imports/theme.nss` | Active `modern` context-menu theme uses Kanagawa Dragon colors | Reload Nilesoft Shell and validate context menus visually |
 | Alacritty | `dot_config/alacritty/alacritty.toml` | Imports local Kanagawa Dragon palette through the Windows deployment path | Validate deployed path and retire old Catppuccin file later |
 | PowerShell module | `Documents/PowerShell/Modules/Catppuccin/` | Palette helper module present; no tracked callers found | Verify installed usage; likely cleanup candidate |
@@ -158,11 +145,7 @@ excluded from deployment. Migrate only after active consumers are stable.
 - `dot_config/micro/colorschemes/catppuccin-*.micro`
 - `dot_config/yazi/flavors/catppuccin-*.yazi/`
 - `AppData/Roaming/warp/Warp/data/themes/catppuccin_*.yml`
-- `program_files/windows/resources/themes/Catppuccin *.theme`
-- `program_files/windows/cursors/Catppuccin-*`
-- `program_files/ditto/Themes/catppuccin-mocha-mauve.xml`
 - `Documents/PowerShell/Modules/Catppuccin/`
-- `Documents/Rainmeter/Skins/Trashy/{Latte,Frappe,Macchiato,Mocha}.ini`
 - `dot_config/hypr.old/hyprlock/catppuccin/`
 
 `program_files/**` and `other_config/**` are reference-only according to
