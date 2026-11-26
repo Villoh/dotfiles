@@ -28,7 +28,7 @@ This repo uses [Conventional Commits](https://www.conventionalcommits.org/) for 
 
 Use the app or area being changed:
 
-- `glazewm`, `vesktop`, `nvim`, `wezterm`, `zsh`, `powershell`, `hyprland`, `starship`, etc.
+- `aether`, `vesktop`, `nvim`, `wezterm`, `zsh`, `powershell`, `hyprland`, `starship`, etc.
 - `chezmoi` for chezmoi scripts or ignore rules
 - `scoop`, `winget`, `pacman` for package list changes
 - `scripts` for files in `.chezmoiscripts/` or `dot_local/bin/`
@@ -36,7 +36,7 @@ Use the app or area being changed:
 ## Examples
 
 ```
-feat(glazewm): add keybind to cycle through workspaces
+feat(aether): add keybind to cycle through workspaces
 fix(chezmoi): guard AppData symlinks behind Windows platform check
 chore(scoop): add ripgrep and fd to packages list
 refactor(wezterm): split config into separate lua modules

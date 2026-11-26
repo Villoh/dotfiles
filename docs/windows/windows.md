@@ -27,8 +27,6 @@ curl -L "https://example.com/file.zip" -o "$APPDATA/MyApp/file.zip"
 
 | Path in repo | Deployed to | Notes |
 |-------------|-------------|-------|
-| `AppData/Roaming/FlowLauncher/Settings/Settings.json` | `~/AppData/Roaming/FlowLauncher/Settings/` | History, cache, plugins gitignored |
-| `AppData/Roaming/FlowLauncher/Themes/Catppuccin Mocha.xaml` | same | |
 | `AppData/Roaming/AltSnap/AltSnap.ini` | `~/AppData/Roaming/AltSnap/` | Window management |
 | `AppData/Roaming/alacritty/` | `~/AppData/Roaming/alacritty/` | Terminal config |
 | `AppData/Roaming/gnupg/` | `~/AppData/Roaming/gnupg/` | GPG config |
@@ -39,7 +37,7 @@ curl -L "https://example.com/file.zip" -o "$APPDATA/MyApp/file.zip"
 
 ## Windows junctions
 
-Apps that don't respect `$HOME` or need a folder-level link are handled via junctions in `.chezmoiscripts/run_once_setup-windows-symlinks.ps1.tmpl`.
+Apps that don't respect `$HOME` or need a folder-level link are handled via junctions in `.chezmoiscripts/run_onchange_02_windows-junctions.ps1.tmpl` (list in `packages/windows/system/junctions.json`).
 
 | Junction target (live) | Source in chezmoi | App |
 |-----------------------|-------------------|-----|
@@ -67,7 +65,6 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 | `Documents/PowerShell/Functions/backup.ps1` | `backup-herdr` saves Windows inventory to `packages/windows/herdr-plugins.json` without commit refs; `backup` includes it |
 | `Documents/PowerShell/Functions/restore.ps1` | Reads Windows inventory from `packages/windows/herdr-plugins.json`; `restore -Manager herdr -All -Yes` restores all; use `-Plugin id1,id2` to select. `-Yes` accepts plugin trust prompts |
 | `Documents/AutoHotkey/` | AutoHotkey automation scripts |
-| `Documents/Rainmeter/Skins/` | Rainmeter desktop widgets (sideCat, Trashy) |
 
 ## Package commands
 
@@ -122,18 +119,24 @@ installs and the `uv` calls mise makes for `pypi:` tools.
 
 | Script | Description |
 |--------|-------------|
-| `.chezmoiscripts/run_once_install-packages.ps1` | Installs Scoop packages and Windows tools |
-| `.chezmoiscripts/run_once_restore-windhawk.ps1` | Restores Windhawk mods |
-| `.chezmoiscripts/run_once_setup-windows-symlinks.ps1.tmpl` | Creates all junctions |
-| `.chezmoiscripts/run_onchange_install-ditto-themes.ps1.tmpl` | Ditto clipboard themes |
-| `.chezmoiscripts/run_onchange_install-nilesoft-imports.ps1.tmpl` | Nilesoft Shell context menu imports |
+| `.chezmoiscripts/run_once_00_windows-install.ps1.tmpl` | Bootstrap, interactive winget/scoop/mise install, and the Aether setup (pinned in `packages/windows/system/aether.json`) |
+| `.chezmoiscripts/run_onchange_01_windows-secrets.ps1.tmpl` | Writes API keys from Bitwarden (needs `enable_secrets`) |
+| `.chezmoiscripts/run_onchange_02_windows-junctions.ps1.tmpl` | Creates the junctions in `junctions.json` |
+| `.chezmoiscripts/run_onchange_03_windows-startup.ps1.tmpl` | Registers the entries in `startup.json` |
+| `.chezmoiscripts/run_onchange_04_windows-nilesoft.ps1.tmpl` | Nilesoft Shell context menu imports |
+| `.chezmoiscripts/run_once_after_07_windows-setup.ps1.tmpl` | Starts the `startup.json` apps once |
+
+## Desktop shell
+
+Aether (Caelestia on Quickshell) is the Windows desktop: bar, launcher, dashboard, notifications,
+lock screen, wallpaper and colours. AetherWM, its Hyprland-compatible window manager, reads
+`~/.config/hypr/hyprland.conf` (`dot_config/hypr/`, Windows only; on Linux NixOS owns Hyprland).
+Aether's own settings live in `~/.config/caelestia` and are not tracked yet.
 
 ## Other Windows configs
 
 - `dot_config/ohmyposh/` — Oh My Posh prompt theme
-- `dot_config/yasb/` — YASB status bar
 - `dot_config/wezterm/wezterm.lua` — WezTerm terminal
 - `dot_tmux.conf.tmpl` — psmux native tmux-compatible config (`~/.tmux.conf`)
-- `program_files/ditto/` — Ditto clipboard manager (portable)
 - `program_files/nilesoft/` — Nilesoft Shell (portable)
-- `packages/windows/` — Package lists and Windhawk settings
+- `packages/windows/` — Package lists, startup/junction lists and the pinned Aether release

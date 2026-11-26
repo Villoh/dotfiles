@@ -32,7 +32,7 @@
 
 ## Overview
 
-- **Theme:** Kanagawa Dragon across active Windows and Linux surfaces; Kanagawa Wave is used where Windows requires a native theme fallback
+- **Theme:** Kanagawa Dragon on the Linux surfaces; on Windows Aether colours the shell itself
 - **Manager:** chezmoi with `mode = "symlink"` — every managed file is a symlink to the chezmoi source, so edits take effect immediately without re-adding
 - **Secrets scanning:** gitleaks via pre-commit hook
 - **Submodules:** sddm and plymouth themes (run `git submodule update --init --recursive` after cloning)
@@ -41,19 +41,15 @@
 
 | Category | Tool | Config |
 | ---------- | ------ | -------- |
-| Window Manager | [GlazeWM](https://github.com/glzr-io/glazewm) | [⚙️](dot_glzr/) |
-| Status Bar | [YASB](https://github.com/amnweb/yasb) | [⚙️](dot_config/yasb/) |
+| Desktop Shell | [Aether](https://github.com/crszy/aether) (Caelestia on Quickshell) | [⚙️](packages/windows/system/aether.json) |
+| Window Manager | AetherWM (Hyprland-compatible) | [⚙️](dot_config/hypr/) |
 | Shell | PowerShell 7 | [⚙️](Documents/PowerShell/) |
 | Prompt | [Starship](https://starship.rs/) · [Oh My Posh](https://ohmyposh.dev/) | [⚙️](dot_config/starship.toml) · [⚙️](dot_config/ohmyposh/) |
 | Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) | [⚙️](dot_config/wezterm/) · [⚙️](AppData/Roaming/alacritty/) · [⚙️](AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/) |
 | Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
 | File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
-| App Launcher | [Flow Launcher](https://www.flowlauncher.com/) | [⚙️](AppData/Roaming/FlowLauncher/) |
-| Clipboard | [Ditto](https://ditto-cp.sourceforge.io/) | [⚙️](program_files/ditto/) |
 | Context Menu | [Nilesoft Shell](https://nilesoft.org/) | [⚙️](program_files/nilesoft/) |
 | Hotkeys | [AutoHotkey](https://www.autohotkey.com/) | [⚙️](Documents/AutoHotkey/) |
-| Desktop Widgets | [Rainmeter](https://www.rainmeter.net/) | [⚙️](Documents/Rainmeter/) |
-| Customization | [Windhawk](https://windhawk.net/) | [⚙️](packages/windows/) |
 | Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
 
 ### Linux
@@ -131,16 +127,15 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | Command | Description |
 | --------- | ------------- |
 | `backup` / `backup-pkgs` | Export package lists to `packages/windows/` |
-| `backup-<manager>` | Back up a single manager; also `backup-windhawk` |
+| `backup-<manager>` | Back up a single manager |
 | `restore` / `restore-pkgs` | Reinstall from the saved lists (fzf picker, or `-Manager`) |
-| `restore-<manager>` | Restore a single manager; also `restore-winget-elevated` and `restore-windhawk` |
+| `restore-<manager>` | Restore a single manager; also `restore-winget-elevated` |
 | `update` / `update-all` / `upgrade-all` | Upgrade every manager (`-Manager` to pick some) |
 | `update-<manager>` / `upgrade-<manager>` | Upgrade one manager (`winget`, `scoop`, `mise`) |
 | `winget-reinstall <id>` | Uninstall and reinstall a winget package in an elevated window |
 | `migrate [-Source] [-Target]` | Move packages between managers: `winget` <-> `scoop` |
 | `prune [target]` | Clean package manager caches (scoop, mise, go, nuget, docker) |
 | `clear-pip` | Clear the pip environment (asks for confirmation) |
-| `restore-windhawk` | Import Windhawk settings from the registry file; close Windhawk first |
 
 ### AI agents
 
@@ -185,8 +180,8 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | `y` | Launch yazi and `cd` to the last directory on exit (`q`; `Q` quits without changing it) |
 | `zj [query]` | Attach to or create a zellij session named after the directory (resolved with zoxide if `query` is given) |
 | `zwork [query]` | Attach to or create the persistent `villoh` zellij session |
-| `keybinds` | Show Alacritty, Zellij and GlazeWM keybindings in `less` |
-| `keybinds-al` / `keybinds-zj` / `keybinds-gwm` | Show only the Alacritty, Zellij or GlazeWM ones |
+| `keybinds` | Show Alacritty, Zellij and AetherWM keybindings in `less` |
+| `keybinds-al` / `keybinds-zj` / `keybinds-aw` | Show only the Alacritty, Zellij or AetherWM ones |
 | `npm` | Wrapper: runs `socket npm` |
 
 ### Windows setup
@@ -196,8 +191,6 @@ Managers: `winget`, `scoop`, `mise`, `herdr`. mise is the only manager for globa
 | `setup-wsl` | Install a WSL distro (fzf picker), configure locale and packages (Arch-specific) |
 | `setup-gpg-ssh` | Configure GPG as SSH agent (startup shortcut + start agent) |
 | `enable-devmode` / `disable-devmode` | Toggle Windows Developer Mode (required for chezmoi symlinks) |
-| `disable-win-keys` / `enable-win-keys` | Disable or restore Windows key shortcuts so GlazeWM can use `Win` (`-Scope User\|System`) |
-| `win-keys-status` | Show whether the Windows key shortcuts are disabled (user, system and effective) |
 | `startup-entries` | List all startup.json entries and their current enabled/disabled state |
 | `disable-startup [name]` / `enable-startup [name]` | Disable or enable a startup entry (fzf picker if no name given) |
 
