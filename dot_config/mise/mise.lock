@@ -49,122 +49,122 @@ checksum = "sha256:3c081c73865e7a3453a9d514cc2ba3d699880621bcf67bb17241ff5194cb1
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.5/bun-windows-x64-baseline.zip"
 
 [[tools.claude]]
-version = "2.1.329"
+version = "2.1.331"
 backend = "aqua:anthropics/claude-code"
 
 [tools.claude."platforms.linux-arm64"]
-checksum = "sha256:411de30d67dc3f4fbb37cd93f17370352dd1fd42a7d08afa41b94e0569c6198a"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-linux-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851030"
+checksum = "sha256:5b0eda499ef17ad35cf43061dfcbf5067cd6f210aa76c48d61fecae2b70d41f8"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-linux-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084271"
 
 [tools.claude."platforms.linux-arm64-musl"]
-checksum = "sha256:d28bae68843bbb578946ee3ef8a818ba8deddd6e49484a04e89d581d46f2d23b"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-linux-arm64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851034"
+checksum = "sha256:a29f1cf13b4c5162573d404789e3845c4136a2b6adcc6c37292d8ef9ecff710f"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-linux-arm64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084260"
 
 [tools.claude."platforms.linux-x64"]
-checksum = "sha256:248f23231556ba4d13cc6dde6a9ed7625f36cf94aeb4c5652d05f72d093c1b46"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851253"
+checksum = "sha256:9f5a726b25eb1d3b7d04082eb12f308c834edbfad66ad6292fffb88856b53f1f"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084543"
 
 [tools.claude."platforms.linux-x64-baseline"]
-checksum = "sha256:248f23231556ba4d13cc6dde6a9ed7625f36cf94aeb4c5652d05f72d093c1b46"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-linux-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851253"
+checksum = "sha256:9f5a726b25eb1d3b7d04082eb12f308c834edbfad66ad6292fffb88856b53f1f"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-linux-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084543"
 
 [tools.claude."platforms.linux-x64-musl"]
-checksum = "sha256:a19c1d86a27bf32cbb02eb6ce1c56a7a3a7c6e134354eeb00561466a6d18a206"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851036"
+checksum = "sha256:f84502ff6c987489e78dc9307c059807c056e77d128d3f6470d1dd95517413c3"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084264"
 
 [tools.claude."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:a19c1d86a27bf32cbb02eb6ce1c56a7a3a7c6e134354eeb00561466a6d18a206"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-linux-x64-musl.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851036"
+checksum = "sha256:f84502ff6c987489e78dc9307c059807c056e77d128d3f6470d1dd95517413c3"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-linux-x64-musl.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084264"
 
 [tools.claude."platforms.macos-arm64"]
-checksum = "sha256:581c88b6c7363d85b56e179e9cd6831b2b9dcffebffdbdb0751ee228a296e38b"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-darwin-arm64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851032"
+checksum = "sha256:bed0f99361aaa41932d6d893eef35b02133b7a652e4c1dd845907bdb67908f82"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-darwin-arm64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084261"
 
 [tools.claude."platforms.macos-x64"]
-checksum = "sha256:6fdedf68664c8c24d6dec65441f554b3c400fba97e41af70b92e3d99a23144b2"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-darwin-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851035"
+checksum = "sha256:64efccebe2161c489b5b970902ffe7d6952aac810a9d65dc89f78c29906e88c0"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084268"
 
 [tools.claude."platforms.macos-x64-baseline"]
-checksum = "sha256:6fdedf68664c8c24d6dec65441f554b3c400fba97e41af70b92e3d99a23144b2"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-darwin-x64.tar.gz"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851035"
+checksum = "sha256:64efccebe2161c489b5b970902ffe7d6952aac810a9d65dc89f78c29906e88c0"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-darwin-x64.tar.gz"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084268"
 
 [tools.claude."platforms.windows-x64"]
-checksum = "sha256:b5708b5e5743dbf4c3bcfc46ee85e011381282eced593462f0a4d2342083fc81"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-win32-x64.zip"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851297"
+checksum = "sha256:1de4e9dc9fea507cce988d27b1efae3baf9ef51120bc33fe8106e43109a2b8d9"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-win32-x64.zip"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084591"
 
 [tools.claude."platforms.windows-x64-baseline"]
-checksum = "sha256:b5708b5e5743dbf4c3bcfc46ee85e011381282eced593462f0a4d2342083fc81"
-url = "https://github.com/anthropics/claude-code/releases/download/v2.1.329/claude-win32-x64.zip"
-url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/768851297"
+checksum = "sha256:1de4e9dc9fea507cce988d27b1efae3baf9ef51120bc33fe8106e43109a2b8d9"
+url = "https://github.com/anthropics/claude-code/releases/download/v2.1.331/claude-win32-x64.zip"
+url_api = "https://api.github.com/repos/anthropics/claude-code/releases/assets/784084591"
 
 [[tools.codex]]
-version = "0.170.0"
+version = "0.172.0"
 backend = "aqua:openai/codex"
 
 [tools.codex."platforms.linux-arm64"]
-checksum = "sha256:3f7e1ae38c4fe27322e082b855e8eec936d08fa538d62b71c07e2a53f34e8847"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-aarch64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761751065"
+checksum = "sha256:faf17b8071927f33346a805dc8cb45de4e08c0d75cf0e5e68cecddca28b8861e"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785025241"
 
 [tools.codex."platforms.linux-arm64-musl"]
-checksum = "sha256:3f7e1ae38c4fe27322e082b855e8eec936d08fa538d62b71c07e2a53f34e8847"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-aarch64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761751065"
+checksum = "sha256:faf17b8071927f33346a805dc8cb45de4e08c0d75cf0e5e68cecddca28b8861e"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785025241"
 
 [tools.codex."platforms.linux-x64"]
-checksum = "sha256:a77ff87be7ba809d715728270a78f5ce3527dc07529416d1ef8929b90b8475eb"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761754998"
+checksum = "sha256:63e3b00065ed7f62166d0522e17f663cb866a31d80d03e63365482ed34a1d991"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785031494"
 
 [tools.codex."platforms.linux-x64-baseline"]
-checksum = "sha256:a77ff87be7ba809d715728270a78f5ce3527dc07529416d1ef8929b90b8475eb"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761754998"
+checksum = "sha256:63e3b00065ed7f62166d0522e17f663cb866a31d80d03e63365482ed34a1d991"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785031494"
 
 [tools.codex."platforms.linux-x64-musl"]
-checksum = "sha256:a77ff87be7ba809d715728270a78f5ce3527dc07529416d1ef8929b90b8475eb"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761754998"
+checksum = "sha256:63e3b00065ed7f62166d0522e17f663cb866a31d80d03e63365482ed34a1d991"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785031494"
 
 [tools.codex."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:a77ff87be7ba809d715728270a78f5ce3527dc07529416d1ef8929b90b8475eb"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761754998"
+checksum = "sha256:63e3b00065ed7f62166d0522e17f663cb866a31d80d03e63365482ed34a1d991"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785031494"
 
 [tools.codex."platforms.macos-arm64"]
-checksum = "sha256:975524bf13aedd1b122d8d0e00c09ee67091b8f688c0b374943dbb3cf22c7893"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761748574"
+checksum = "sha256:0970016d48209a09c4039139629ed79b4a31c5e3d864e792c043419d98fa6466"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785021808"
 
 [tools.codex."platforms.macos-x64"]
-checksum = "sha256:2e971524460a570b913dbdc9b49e5e9c14556e44e7f62f00b95b4a8f1e2cdf25"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761752584"
+checksum = "sha256:b5e94828f45171f13d81de2b96cae05c0b7e6a7f2f7d3c9d4e748be3d3906c02"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785027569"
 
 [tools.codex."platforms.macos-x64-baseline"]
-checksum = "sha256:2e971524460a570b913dbdc9b49e5e9c14556e44e7f62f00b95b4a8f1e2cdf25"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761752584"
+checksum = "sha256:b5e94828f45171f13d81de2b96cae05c0b7e6a7f2f7d3c9d4e748be3d3906c02"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785027569"
 
 [tools.codex."platforms.windows-x64"]
-checksum = "sha256:6ff4b22c63645ffd83aed9b722cbb0b9e5b79dc6e8916f50e362b3015fb327a9"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-pc-windows-msvc.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761754018"
+checksum = "sha256:b723674d7caf26a3f55121a02d6cad8f3ac8ddf5860747a6edde1c904cf593af"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-pc-windows-msvc.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785029625"
 
 [tools.codex."platforms.windows-x64-baseline"]
-checksum = "sha256:6ff4b22c63645ffd83aed9b722cbb0b9e5b79dc6e8916f50e362b3015fb327a9"
-url = "https://github.com/openai/codex/releases/download/rust-v0.170.0/codex-package-x86_64-pc-windows-msvc.tar.gz"
-url_api = "https://api.github.com/repos/openai/codex/releases/assets/761754018"
+checksum = "sha256:b723674d7caf26a3f55121a02d6cad8f3ac8ddf5860747a6edde1c904cf593af"
+url = "https://github.com/openai/codex/releases/download/rust-v0.172.0/codex-package-x86_64-pc-windows-msvc.tar.gz"
+url_api = "https://api.github.com/repos/openai/codex/releases/assets/785029625"
 
 [[tools.git-filter-repo]]
 version = "2.47.0"
@@ -244,63 +244,63 @@ url_api = "https://api.github.com/repos/PrimeIntellect-ai/prime-agent/releases/a
 provenance = "github-attestations"
 
 [[tools."github:router-for-me/CLIProxyAPI"]]
-version = "8.0.79"
+version = "8.1.2"
 backend = "github:router-for-me/CLIProxyAPI"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-arm64"]
-checksum = "sha256:9cfd3f300662fbf5a0bb15239e5c4d22a478535a68b39e7f236d46c03fba42c5"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_linux_aarch64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767754356"
+checksum = "sha256:41245fa2af02d68c69376afc6360af49b58c3b2368d8cec1d61f0e43de14d580"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_linux_aarch64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783338238"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-arm64-musl"]
-checksum = "sha256:9cfd3f300662fbf5a0bb15239e5c4d22a478535a68b39e7f236d46c03fba42c5"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_linux_aarch64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767754356"
+checksum = "sha256:41245fa2af02d68c69376afc6360af49b58c3b2368d8cec1d61f0e43de14d580"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_linux_aarch64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783338238"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64"]
-checksum = "sha256:7cbb9709ed939ff3684e10592a45cc538ee82d5da759daa7e18c7e1dc3b32acd"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767755190"
+checksum = "sha256:851e41c9a087b60e6586fec0c6be821b61921e8da0e84b9490ef542042db0756"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783339856"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64-baseline"]
-checksum = "sha256:7cbb9709ed939ff3684e10592a45cc538ee82d5da759daa7e18c7e1dc3b32acd"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767755190"
+checksum = "sha256:851e41c9a087b60e6586fec0c6be821b61921e8da0e84b9490ef542042db0756"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783339856"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64-musl"]
-checksum = "sha256:7cbb9709ed939ff3684e10592a45cc538ee82d5da759daa7e18c7e1dc3b32acd"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767755190"
+checksum = "sha256:851e41c9a087b60e6586fec0c6be821b61921e8da0e84b9490ef542042db0756"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783339856"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:7cbb9709ed939ff3684e10592a45cc538ee82d5da759daa7e18c7e1dc3b32acd"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_linux_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767755190"
+checksum = "sha256:851e41c9a087b60e6586fec0c6be821b61921e8da0e84b9490ef542042db0756"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_linux_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783339856"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.macos-arm64"]
-checksum = "sha256:3f807ccc49ea0c3fce7240fb5890904e6953fbe42d20cb16d0e326b1387085c8"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_darwin_aarch64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767753652"
+checksum = "sha256:95d746c8d6cb418a88cb79937ca90194388faa707c30e3ec53e7d41f469cd6ec"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_darwin_aarch64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783339772"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.macos-x64"]
-checksum = "sha256:cc7fb3568ccb899afe09e7e32b2ab49c62b1fb21ef6c16f6aa2041db80b3dbcf"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767758573"
+checksum = "sha256:3e4ae8dc26676ada1db8b5f8e95bf097670e7aefb0bf6c3f5a3340c00cb42f0e"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783343020"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.macos-x64-baseline"]
-checksum = "sha256:cc7fb3568ccb899afe09e7e32b2ab49c62b1fb21ef6c16f6aa2041db80b3dbcf"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_darwin_amd64.tar.gz"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767758573"
+checksum = "sha256:3e4ae8dc26676ada1db8b5f8e95bf097670e7aefb0bf6c3f5a3340c00cb42f0e"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_darwin_amd64.tar.gz"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783343020"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.windows-x64"]
-checksum = "sha256:a0d39a942c295ae907ca0aee4f3274260ea4a1b986c10d9e4c649320eceddff7"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_windows_amd64.zip"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767755209"
+checksum = "sha256:f7032bfa516350698d5dadcaa305991d0a85d000b9dc7c8c6742071ec7f2f8fc"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_windows_amd64.zip"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783341133"
 
 [tools."github:router-for-me/CLIProxyAPI"."platforms.windows-x64-baseline"]
-checksum = "sha256:a0d39a942c295ae907ca0aee4f3274260ea4a1b986c10d9e4c649320eceddff7"
-url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.0.79/CLIProxyAPI_8.0.79_windows_amd64.zip"
-url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/767755209"
+checksum = "sha256:f7032bfa516350698d5dadcaa305991d0a85d000b9dc7c8c6742071ec7f2f8fc"
+url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.2/CLIProxyAPI_8.1.2_windows_amd64.zip"
+url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/783341133"
 
 [[tools."npm:@earendil-works/pi-server"]]
 version = "1.1.0"
@@ -318,7 +318,7 @@ version = "8.11.1"
 backend = "npm:@kaitranntt/ccs"
 
 [[tools."npm:@opencode/cli"]]
-version = "2.3.2"
+version = "2.4.1"
 backend = "npm:@opencode/cli"
 
 [tools."npm:@opencode/cli".options]
@@ -383,67 +383,67 @@ version = "1.16.0"
 backend = "npm:socket"
 
 [[tools."npm:tokscale"]]
-version = "4.23.0"
+version = "4.23.1"
 backend = "npm:tokscale"
 
 [[tools.oh-my-pi]]
-version = "19.0.0"
+version = "19.1.1"
 backend = "github:can1357/oh-my-pi"
 
 [tools.oh-my-pi."platforms.linux-arm64"]
-checksum = "sha256:6301041309d9bb26c19576ab116d828dba9c74654507cfa3594d62d310864626"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-linux-arm64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506080"
+checksum = "sha256:f022f720c4899eb24c6e5e34dcbbae98ae05f5532bb03e97dffc02cfc8dd9a6f"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-linux-arm64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684328"
 
 [tools.oh-my-pi."platforms.linux-arm64-musl"]
-checksum = "sha256:7280ec92ccccca71733ed9736c98dab463bb49159df0677e2b4115ee8f414dd3"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-linux-musl-arm64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506078"
+checksum = "sha256:3564506cf101b2113e078f584bd0b51bde98fe282baf6c4419121eaa8cd3d71a"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-linux-musl-arm64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684335"
 
 [tools.oh-my-pi."platforms.linux-x64"]
-checksum = "sha256:c7cc5c8d505053c8ffaf180417e5d5c781235b9d936f286810560151120109bf"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-linux-x64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506084"
+checksum = "sha256:04e9490f9394da6d6804474cc2e41eb3d18f8e26215df4b34bdd4ad4c0d8a401"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-linux-x64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684329"
 
 [tools.oh-my-pi."platforms.linux-x64-baseline"]
-checksum = "sha256:c7cc5c8d505053c8ffaf180417e5d5c781235b9d936f286810560151120109bf"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-linux-x64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506084"
+checksum = "sha256:04e9490f9394da6d6804474cc2e41eb3d18f8e26215df4b34bdd4ad4c0d8a401"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-linux-x64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684329"
 
 [tools.oh-my-pi."platforms.linux-x64-musl"]
-checksum = "sha256:eef7f44072aeede18ea562f34405754363f0ea4772c6ccf9b94c9878561d28a0"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-linux-musl-x64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506082"
+checksum = "sha256:3b4f4a360e9c4c274d50b84fcbc7e77d8ab482d1661d5998a49eaaf5f0183c02"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-linux-musl-x64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684332"
 
 [tools.oh-my-pi."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:eef7f44072aeede18ea562f34405754363f0ea4772c6ccf9b94c9878561d28a0"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-linux-musl-x64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506082"
+checksum = "sha256:3b4f4a360e9c4c274d50b84fcbc7e77d8ab482d1661d5998a49eaaf5f0183c02"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-linux-musl-x64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684332"
 
 [tools.oh-my-pi."platforms.macos-arm64"]
-checksum = "sha256:a5ee90b2ffcc0c1f031dbd4bedd4ff8e0c884ec8e69b700f4c5d76a1eae89daf"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-darwin-arm64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506086"
+checksum = "sha256:d5a3324acd98375a01698a1b0c018be48caed2956c8aa9044ad137fe43bc0400"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-darwin-arm64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684337"
 
 [tools.oh-my-pi."platforms.macos-x64"]
-checksum = "sha256:bbb3e9333c31fa5b892ce353dc678e7a67c25667307f5400ea07bd928163fb29"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-darwin-x64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506091"
+checksum = "sha256:6ffecb22a9fe01a98f90f91a2ef04a697850a23bf4dde83adad2fe80e51a8353"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-darwin-x64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684340"
 
 [tools.oh-my-pi."platforms.macos-x64-baseline"]
-checksum = "sha256:bbb3e9333c31fa5b892ce353dc678e7a67c25667307f5400ea07bd928163fb29"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-darwin-x64"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506091"
+checksum = "sha256:6ffecb22a9fe01a98f90f91a2ef04a697850a23bf4dde83adad2fe80e51a8353"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-darwin-x64"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684340"
 
 [tools.oh-my-pi."platforms.windows-x64"]
-checksum = "sha256:36ac685c7b932f4bb81ccc5a7116abee90575d32110e74dd2a066e082690d941"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-windows-x64.exe"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506089"
+checksum = "sha256:4e18f472975bb87f9b1992f1d5981b9a1403fd559cdb3eb96f1f1a7d709096ef"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-windows-x64.exe"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684339"
 
 [tools.oh-my-pi."platforms.windows-x64-baseline"]
-checksum = "sha256:36ac685c7b932f4bb81ccc5a7116abee90575d32110e74dd2a066e082690d941"
-url = "https://github.com/can1357/oh-my-pi/releases/download/v19.0.0/omp-windows-x64.exe"
-url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/765506089"
+checksum = "sha256:4e18f472975bb87f9b1992f1d5981b9a1403fd559cdb3eb96f1f1a7d709096ef"
+url = "https://github.com/can1357/oh-my-pi/releases/download/v19.1.1/omp-windows-x64.exe"
+url_api = "https://api.github.com/repos/can1357/oh-my-pi/releases/assets/781684339"
 
 [[tools.pi]]
 version = "1.5.2"
@@ -513,7 +513,7 @@ extras = "mysql"
 uvx_args = "--python 3.13"
 
 [[tools."pypi:headroom-ai"]]
-version = "0.44.0"
+version = "0.45.0"
 backend = "pypi:headroom-ai"
 
 [tools."pypi:headroom-ai".options]
@@ -527,7 +527,7 @@ backend = "pypi:serena-agent"
 uvx_args = "--python 3.14"
 
 [[tools."pypi:trafilatura"]]
-version = "2.3.1"
+version = "2.4.0"
 backend = "pypi:trafilatura"
 
 [tools."pypi:trafilatura".options]
@@ -611,77 +611,77 @@ url_api = "https://api.github.com/repos/astral-sh/ruff/releases/assets/768307328
 provenance = "github-attestations"
 
 [[tools.ty]]
-version = "0.0.107"
+version = "0.0.109"
 backend = "aqua:astral-sh/ty"
 
 [tools.ty."platforms.linux-arm64"]
-checksum = "sha256:952097983ff6b6b3235b4b5ec8077c1b8bf5c485679fd794ee70ca2007a3cf7f"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014515"
+checksum = "sha256:81c89882e9aad4e57760dfb829bcdbef45144a82ffa5eeaa226889b7dfea223d"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695367"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-arm64-musl"]
-checksum = "sha256:e121ea63adbbfb3a2e130bff7a1f5143bfbc90dbb36297044da4d5f91102f3ec"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-aarch64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014541"
+checksum = "sha256:6f23820fef99672f5a58a62aa1b26f110d39f6b1a23fc3bf897d77f3fc41caae"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695372"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64"]
-checksum = "sha256:f93e1f3e45ec81b3ce21473d541eb94470546928499415fc263f2858d65f28af"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014836"
+checksum = "sha256:38bdf01712a99617af843c0d963ee10fa74d7b2ff91e545c1360909c79bad17b"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695641"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64-baseline"]
-checksum = "sha256:f93e1f3e45ec81b3ce21473d541eb94470546928499415fc263f2858d65f28af"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014836"
+checksum = "sha256:38bdf01712a99617af843c0d963ee10fa74d7b2ff91e545c1360909c79bad17b"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695641"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64-musl"]
-checksum = "sha256:c98b2c3767d44161b7634ff8aa7f0dfc3db840fc5585ccab20cc90a49ad54d93"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014853"
+checksum = "sha256:f13c865b0a47d0c35c864db62cf4e7ce4a29ae2a70c90930fe4286f95018fffd"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695660"
 provenance = "github-attestations"
 
 [tools.ty."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:c98b2c3767d44161b7634ff8aa7f0dfc3db840fc5585ccab20cc90a49ad54d93"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014853"
+checksum = "sha256:f13c865b0a47d0c35c864db62cf4e7ce4a29ae2a70c90930fe4286f95018fffd"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695660"
 provenance = "github-attestations"
 
 [tools.ty."platforms.macos-arm64"]
-checksum = "sha256:5b514ec3271383263250481b139c2eb59021ca674866b267f37bb988dbea52c9"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014453"
+checksum = "sha256:c369560235777dadd7b6328248c5742a2ed9aa8cd693a6d61c86cec71f054195"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695308"
 provenance = "github-attestations"
 
 [tools.ty."platforms.macos-x64"]
-checksum = "sha256:5bff07e2e802815a303cdb7864b7034347bebb63ad159e22a514b5555d87aae5"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014786"
+checksum = "sha256:99da4317b268388899598260b234b01110f54bf227f421b134e1259f090e8816"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695589"
 provenance = "github-attestations"
 
 [tools.ty."platforms.macos-x64-baseline"]
-checksum = "sha256:5bff07e2e802815a303cdb7864b7034347bebb63ad159e22a514b5555d87aae5"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014786"
+checksum = "sha256:99da4317b268388899598260b234b01110f54bf227f421b134e1259f090e8816"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695589"
 provenance = "github-attestations"
 
 [tools.ty."platforms.windows-x64"]
-checksum = "sha256:3ba361f2edda769040daffb52580d4a9a5f54f7c6040d222fd634aa70d2b9145"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014811"
+checksum = "sha256:5a4feb9bcc0edea1aeabfa8e58775de9247d0d4fc9304fd4458ff3f3006fb18f"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695599"
 provenance = "github-attestations"
 
 [tools.ty."platforms.windows-x64-baseline"]
-checksum = "sha256:3ba361f2edda769040daffb52580d4a9a5f54f7c6040d222fd634aa70d2b9145"
-url = "https://github.com/astral-sh/ty/releases/download/0.0.107/ty-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/765014811"
+checksum = "sha256:5a4feb9bcc0edea1aeabfa8e58775de9247d0d4fc9304fd4458ff3f3006fb18f"
+url = "https://github.com/astral-sh/ty/releases/download/0.0.109/ty-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/astral-sh/ty/releases/assets/784695599"
 provenance = "github-attestations"
 
 [[tools.vercel]]
-version = "65.14.0"
+version = "66.6.0"
 backend = "npm:vercel"
 
 [tools.vercel.options]
