@@ -1,6 +1,6 @@
 {
-  "currentThemeName": "custom",
-  "currentThemeCategory": "registry",
+  "currentThemeName": "dynamic",
+  "currentThemeCategory": "dynamic",
   "customThemeFile": "/home/mikel/.config/dms/themes/omarchy-bellerophon/theme.json",
   "registryThemeVariants": {
     "catppuccin": {
@@ -526,7 +526,7 @@
         }
       ],
       "spacing": 4,
-      "innerPadding": 4,
+      "innerPadding": 2,
       "barInsetPadding": -1,
       "barLengthPadding": 0,
       "bottomGap": 0,
@@ -678,11 +678,11 @@
   "matugenSourceMode": "dominant",
   "matugenContrast": 0,
   "terminalsAlwaysDark": false,
-  "popupTransparency": 1,
+  "popupTransparency": 0.65,
   "floatingWindowSyncGlobal": true,
-  "floatingWindowTransparency": 1,
+  "floatingWindowTransparency": 0.75,
   "floatingWindowForegroundLayers": true,
-  "floatingWindowForegroundTransparency": 1,
+  "floatingWindowForegroundTransparency": 0.55,
   "widgetBackgroundColor": "sch",
   "widgetBackgroundCustomColor": "#6750A4",
   "widgetBackgroundCustomStrength": 0.5,
@@ -706,9 +706,9 @@
   "modalElevationEnabled": true,
   "popoutElevationEnabled": true,
   "barElevationEnabled": true,
-  "blurEnabled": false,
+  "blurEnabled": true,
   "blurForegroundLayers": true,
-  "foregroundLayerTransparency": 1,
+  "foregroundLayerTransparency": 0.55,
   "blurLayerOutlineOpacity": 0.12,
   "blurBorderEnabled": true,
   "blurBorderColor": "outline",
@@ -754,7 +754,7 @@
   "radiusMode": "scale",
   "fixedRadius": 16,
   "notificationAnimationDuration": 200,
-  "blurStrength": 0,
+  "blurStrength": 120,
   "containerSaturation": 100,
   "displayFontFamily": "DM Serif Display",
   "hostSurfaceColor": "default",
@@ -766,7 +766,7 @@
   "chipSurfaceNestedColor": "default",
   "chipSurfaceNestedCustomColor": "#6750A4",
   "matugenSeedColor": "",
-  "matugenSpec": "2021",
+  "matugenSpec": "dms",
   "terminalOpacity": 100,
   "terminalPalette": "default",
   "lockBeforeSuspend": true,
@@ -785,6 +785,5 @@
   "batteryNotifyChargeLimit": true,
   "batteryChargeLimitNotificationType": 1,
   "batteryNotifyLow": true,
-  "batteryLowNotificationType": 1,
-  "cornerRadius": 9
+  "batteryLowNotificationType": 1
 }
