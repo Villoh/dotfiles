@@ -1,7 +1,7 @@
 arrow_navigation_scoped = false
 browser_density = "compact"
 browser_density_custom_px = 5
-browser_mode = "list"
+browser_mode = "icons"
 check_for_updates = true
 columns_mirror_selection = true
 cross_volume_drop_strategy = "always-ask"
@@ -79,6 +79,8 @@ type = 120
 
 [custom_icons]
 "/home/mikel/Development" = "strata-file-code"
+"/home/mikel/Keys" = "strata-key"
 
 [folder_colors]
 "/home/mikel/Development" = "yellow"
+"/home/mikel/Keys" = "green"
