@@ -1,7 +1,8 @@
 <div align="center">
-  <a href="https://github.com/Gurjaka/Kanagawa-Wallpapers/blob/main/kanagawa.svg"><img src=".github/assets/kanagawa.svg" width="100" alt="Kanagawa logo"/></a>
-  <h1>dotfiles — Kanagawa Dragon</a> edition</h1>
-  <p>Personal Kanagawa Dragon dotfiles for <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a>) and <strong>Linux</strong> (<a href="https://nixos.org/">NixOS</a> + <a href="https://danklinux.com/">Dank Material Shell</a> + <a href="https://hypr.land/">Hyprland</a>), managed with <a href="https://www.chezmoi.io/">chezmoi</a>.</p>
+  <a href="https://duxlabs.dev/"><img src=".github/assets/dux-shell.svg" height="100" alt="Dux Shell logo"/></a>&ensp;&ensp;
+  <a href="https://github.com/crszy/aether"><img src=".github/assets/aether.png" height="100" alt="Aether logo"/></a>
+  <h1>dotfiles — NixOS + Aether</h1>
+  <p>Personal dotfiles for <strong>Linux</strong> (<a href="https://nixos.org/">NixOS</a> + <a href="https://duxlabs.dev/">Dux Shell</a> (<a href="https://danklinux.com/">Dank Material Shell</a>) + <a href="https://hypr.land/">Hyprland</a>) and <strong>Windows</strong> (<a href="https://atlasos.net/">AtlasOS</a> + <a href="https://github.com/crszy/aether">Aether</a>, the Caelestia shell for Windows), managed with <a href="https://www.chezmoi.io/">chezmoi</a>. Linux uses the Kanagawa Dragon theme.</p>
   <p>
     <a href="https://github.com/Villoh/dotfiles/commits/main"><img alt="Last Commit" src="https://img.shields.io/github/last-commit/Villoh/dotfiles?style=for-the-badge&logo=github&logoColor=C5C9C5&label=Last%20Commit&labelColor=1D1C19&color=8992A7"/></a>&nbsp;&nbsp;
     <a href="https://github.com/Villoh/dotfiles"><img src="https://img.shields.io/github/repo-size/Villoh/dotfiles?style=for-the-badge&logo=files&logoColor=C5C9C5&label=Size&labelColor=1D1C19&color=C4B28A" alt="Repo Size"/></a>&nbsp;&nbsp;
@@ -10,7 +11,6 @@
   </p>
   <a href="#preview"><kbd>&nbsp;<br>&nbsp;Preview&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="INSTALL.md"><kbd>&nbsp;<br>&nbsp;Install&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
-  <a href="#extra-optional-setup-windows"><kbd>&nbsp;<br>&nbsp;Extras&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="#overview"><kbd>&nbsp;<br>&nbsp;Features&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
   <a href="#credits"><kbd>&nbsp;<br>&nbsp;Credits&nbsp;<br>&nbsp;</kbd></a>&ensp;&ensp;
 </div>
@@ -94,6 +94,8 @@ common GPG/SSH/Git/chezmoi bootstrap.
 - [Gurjaka/Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers)
 
 ## Credits
+
+The Windows desktop is [Aether](https://github.com/crszy/aether) (Caelestia on Quickshell, with AetherWM), a port of [Caelestia](https://github.com/caelestia-dots/shell). The header logos are Dux Shell's and Aether's own.
 
 Windows setup inspired by and borrowed from:
 
@@ -228,9 +230,9 @@ chezmoi status
 
 # Run a run_once script manually (renders the template and executes it)
 # Windows (PowerShell):
-Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_install-packages.ps1.tmpl" | chezmoi execute-template | powershell -NoProfile -Command -
+Get-Content "$(chezmoi source-path)\.chezmoiscripts\run_once_00_windows-install.ps1.tmpl" | chezmoi execute-template | powershell -NoProfile -Command -
 # Linux (bash):
-chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_install-packages.sh.tmpl" | bash
+chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_onchange_01_linux-secrets.sh.tmpl" | bash
 
 # chezmoi script state buckets:
 #   scriptState → run_once_     (keyed by content hash, cannot target individually)
@@ -240,7 +242,7 @@ chezmoi execute-template "$(chezmoi source-path)/.chezmoiscripts/run_once_instal
 reset-run-once-scripts && chezmoi apply
 
 # Re-run a specific run_onchange_ script on next apply
-reset-run-onchange-script windows-setup && chezmoi apply
+reset-run-onchange-script windows-junctions && chezmoi apply
 
 # Re-run all run_onchange_ scripts on next apply
 reset-run-onchange-script && chezmoi apply
