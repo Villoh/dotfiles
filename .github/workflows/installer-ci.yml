@@ -16,6 +16,7 @@ on:
       - flake.lock
       - .chezmoi.toml.tmpl
       - packages/windows/**
+      - dot_config/mise/config.toml
       - .chezmoiscripts/run_once_00_windows-install.ps1.tmpl
       - .github/workflows/installer-*.yml
   pull_request:

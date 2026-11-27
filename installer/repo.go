@@ -162,6 +162,9 @@ var (
 // if entries ever span lines.
 func miseTools(path string) ([]string, error) {
 	b, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil // as readJSON: no file, no tools
+	}
 	if err != nil {
 		return nil, err
 	}
