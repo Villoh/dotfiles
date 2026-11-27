@@ -50,7 +50,6 @@
 | File Manager | [RustyFiles](https://github.com/gelenmedya/rustyfiles) (GUI) · [yazi](https://yazi-rs.github.io/) (TUI) | [⚙️](dot_config/yazi/) |
 | Archive Manager | [Arca](https://github.com/beyondhumane/arca) | [Site](https://arca.beyondhumane.com) |
 | Context Menu | [Nilesoft Shell](https://nilesoft.org/) | [⚙️](program_files/nilesoft/) |
-| Hotkeys | [AutoHotkey](https://www.autohotkey.com/) | [⚙️](Documents/AutoHotkey/) |
 | Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
 
 ### Linux

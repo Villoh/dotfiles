@@ -7,10 +7,10 @@
 {{- /* mail = the mail clients' configs (himalaya, meli) and the sieve filters */ -}}
 {{- $linuxOnly := list "zsh" "mail" "nchat" "freetube" "concord" "dms" -}}
 {{- /* aether = the desktop shell (Aether: Caelestia on Quickshell + AetherWM) and its ~/.config/{caelestia,hypr} */ -}}
-{{- $windowsOnly := list "aether" "nilesoft" "autohotkey" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
+{{- $windowsOnly := list "aether" "nilesoft" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
 {{- /* Off in minimal: personal apps and extras. Aether stays on: new users get the desktop. */ -}}
-{{- $minimalOff := list "mail" "nchat" "freetube" "concord" "nilesoft" "autohotkey" "altsnap" "warp" "startup" -}}
+{{- $minimalOff := list "mail" "nchat" "freetube" "concord" "nilesoft" "altsnap" "warp" "startup" -}}
 {{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
 {{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"
