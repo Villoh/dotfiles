@@ -72,14 +72,26 @@ func TestLoadRepoLinux(t *testing.T) {
 // Linux has no Packages page, and Setup cannot install tools: it says how.
 func TestLinuxSetup(t *testing.T) {
 	a := newAppFor("linux")
+	a.linuxOS = osInfo{id: "nixos", nixos: true} // whatever this machine runs
 	for _, p := range a.pages() {
 		if p.id == "packages" {
 			t.Errorf("Linux pages %v", a.pages())
 		}
 	}
+	// NixOS installs nothing: Setup shows the Home Manager lines instead.
+	tt := ui.NewTester(a.view, 1000, 760)
+	if !tt.HasText("Install by hand") || !tt.HasText("Clone the repository") {
+		t.Errorf("NixOS Setup page: %q", tt.Texts())
+	}
 	err := a.prepare() // no tool resolved yet
-	if err == nil || !strings.Contains(err.Error(), "NixOS") {
+	if err == nil || !strings.Contains(err.Error(), "home.packages") {
 		t.Errorf("prepare with Git missing: %v", err)
+	}
+	// Elsewhere it offers to install them (prepare found this machine's tools).
+	a.linuxOS, a.deps = osInfo{id: "fedora"}, defaultDeps("linux")
+	tt.Frame()
+	if !tt.HasText("Install missing tools and clone") || tt.HasText("Install by hand") {
+		t.Errorf("Fedora Setup page: %q", tt.Texts())
 	}
 }
 

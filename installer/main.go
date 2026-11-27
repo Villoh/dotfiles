@@ -33,8 +33,10 @@ type pkgList struct {
 }
 
 type app struct {
-	win  *mygo.Window // nil in tests
-	goos string       // runtime.GOOS; tests set it to check either platform
+	win     *mygo.Window // nil in tests
+	goos    string       // runtime.GOOS; tests set it to check either platform
+	linuxOS osInfo       // how Linux installs the prerequisites (prereqs.go)
+	hasBrew bool         // Homebrew, for atomic distributions
 
 	tab       int
 	busy      string // title of the running step, "" when idle
@@ -82,6 +84,9 @@ func newAppFor(goos string) *app {
 			{key: "winget-elevated>", title: "winget (elevated)", off: map[string]bool{}},
 			{key: "scoop>", title: "scoop", off: map[string]bool{}},
 		},
+	}
+	if goos == "linux" && runtime.GOOS == "linux" {
+		a.linuxOS = readOS()
 	}
 	a.logState.FollowEnd = true
 	return a
@@ -199,7 +204,7 @@ type page struct{ id, icon, label, title, blurb string }
 func (a *app) pages() []page {
 	if a.goos != "windows" {
 		return []page{
-			{"setup", "build", "Setup", "Prerequisites", "Checks Git, GnuPG and chezmoi, which NixOS/Home Manager installs, and clones the repository."},
+			{"setup", "build", "Setup", "Prerequisites", "Installs the missing Git, GnuPG and chezmoi (on NixOS, says what to add), and clones the repository."},
 			{"key", "key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
 			{"profile", "tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
 			{"install", "rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
@@ -318,14 +323,31 @@ func (a *app) needRepo(c *ui.Context) bool {
 	return a.repoOK
 }
 
+// missingHow says how Setup gets a missing tool on Linux.
+func (a *app) missingHow(d dep, p prereqPlan) string {
+	switch {
+	case d.WingetID != "":
+		return "Missing. winget: " + d.WingetID
+	case d.Exe == "chezmoi" && p.chezmoi:
+		return "Missing. Downloads chezmoi's static build into ~/.local/bin, no root needed."
+	case d.Exe != "chezmoi" && p.cmd != nil:
+		return "Missing. Installs with " + p.cmd[0] + " " + p.cmd[1] + "; the system asks for your password."
+	case a.linuxOS.nixos:
+		return "Missing. Add it to your NixOS/Home Manager configuration (below)."
+	}
+	return "Missing. See below."
+}
+
 func (a *app) prereqView(c *ui.Context) {
+	p := a.prereqPlan()
+	if a.goos == "windows" {
+		p = prereqPlan{}
+	}
 	a.card(c, func() {
 		for _, d := range a.deps {
 			body := d.Path
-			if d.Path == "" && d.WingetID != "" {
-				body = "Missing. winget: " + d.WingetID
-			} else if d.Path == "" {
-				body = "Missing. Install it with NixOS/Home Manager (or your package manager)."
+			if d.Path == "" {
+				body = a.missingHow(d, p)
 			}
 			a.listItem(c, d.Path != "", d.Name, body)
 		}
@@ -335,9 +357,22 @@ func (a *app) prereqView(c *ui.Context) {
 		}
 		a.listItem(c, a.repoOK, "Repository", repo)
 	})
+	if p.manual != "" {
+		a.card(c, func() {
+			a.sectionTitle(c, "Install by hand")
+			ui.Text(c, p.manual).FontSize(14).Selectable().TextColor(a.scheme.OnSurfaceVariant)
+			if a.win != nil {
+				ui.Row(c).Children(func() {
+					if a.button(c, tonal, "Copy", false) {
+						mygo.Clipboard.WriteText(p.manual)
+					}
+				})
+			}
+		})
+	}
 	ui.Row(c).Gap(8).Children(func() {
 		label := "Install missing tools and clone"
-		if a.goos != "windows" {
+		if a.goos != "windows" && p.cmd == nil && !p.chezmoi {
 			label = "Clone the repository"
 		}
 		if a.button(c, filled, label, a.busy != "") {
