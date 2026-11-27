@@ -88,6 +88,27 @@ func TestLineWriter(t *testing.T) {
 	}
 }
 
+// Full and minimal show their modules; changing one switches to custom and
+// keeps what the profile enabled, its package lists too.
+func TestModulesFollowProfile(t *testing.T) {
+	a := newApp()
+	a.setRepo(repoInfo{Modules: []string{"zed", "git", "aether"}, MinimalOff: []string{"aether"}})
+	a.tab, a.profile = 2, "minimal"
+	tt := ui.NewTester(a.view, 1000, 760)
+	if !tt.HasText("Modules  2/3") {
+		t.Fatalf("minimal shows no module count: %q", tt.Texts())
+	}
+	if err := tt.Click("zed"); err != nil {
+		t.Fatal(err)
+	}
+	if a.profile != "custom" || a.pkgVariant != "minimal" {
+		t.Errorf("profile %s, package lists %s", a.profile, a.pkgVariant)
+	}
+	if a.modules["zed"] || !a.modules["git"] || a.modules["aether"] {
+		t.Errorf("modules %v", a.modules)
+	}
+}
+
 func TestApplyArgs(t *testing.T) {
 	if got := strings.Join(applyArgs(false), " "); got != "apply --no-tty --exclude=encrypted" {
 		t.Errorf("secondary: %s", got)
