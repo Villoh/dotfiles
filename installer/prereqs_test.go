@@ -51,6 +51,19 @@ func TestPlanPrereqs(t *testing.T) {
 	}
 }
 
+// install.sh pins the same chezmoi build: bump both together.
+func TestPinsMatch(t *testing.T) {
+	b, err := os.ReadFile("../install.sh")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, want := range []string{"chezmoi_url=" + chezmoiURL + "\n", "chezmoi_sha256=" + chezmoiSHA256 + "\n"} {
+		if !strings.Contains(string(b), want) {
+			t.Errorf("install.sh lacks %q", want)
+		}
+	}
+}
+
 func TestReadOSRelease(t *testing.T) {
 	if got := (osInfo{id: "pop", like: []string{"ubuntu", "debian"}}).family(); got != "debian" {
 		t.Errorf("pop family %q", got)

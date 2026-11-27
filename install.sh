@@ -5,12 +5,18 @@
 #
 # Follows docs/install/bootstrap.md: chezmoi init (its own prompts), the GPG
 # key for the personal flow, the GPG/SSH agent files, a decryption check with
-# chezmoi diff, and chezmoi apply. It installs no packages: on NixOS, Git,
-# GnuPG, OpenSSH and chezmoi come from NixOS/Home Manager (see AGENTS.md).
-# Answers are read from /dev/tty, so it works piped from curl.
+# chezmoi diff, and chezmoi apply. Missing prerequisites, as the GUI does
+# (installer/prereqs.go): chezmoi's static build into ~/.local/bin without
+# root; git and gnupg with sudo and the package manager (apt, dnf, pacman),
+# or brew on atomic images. NixOS installs nothing: it prints the Home Manager
+# lines to add (see AGENTS.md). Answers are read from /dev/tty, so it works
+# piped from curl.
 set -euo pipefail
 
 repo=Villoh/dotfiles
+# Pinned with installer/prereqs.go (TestPinsMatch checks they agree).
+chezmoi_url=https://github.com/twpayne/chezmoi/releases/download/v2.74.2/chezmoi-linux-amd64-musl
+chezmoi_sha256=cebbe027a4c9b420a9aa3e55356c4d084f6d4a2c5562d18922494316f5656e0e
 
 step() { printf '\n\033[36m== %s\033[0m\n' "$1"; }
 ok() { printf '  \033[32m[OK]\033[0m   %s\n' "$1"; }
@@ -23,11 +29,59 @@ ask() { local answer; read -r -p "  $1" answer </dev/tty; printf '%s' "$answer";
 
 # -- 1. Bootstrap tools ------------------------------------------------------
 step "Bootstrap tools"
-missing=""
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$HOME/.local/bin:$PATH" ;; esac
+missing=()
 for exe in git gpg chezmoi; do
-  if command -v "$exe" >/dev/null 2>&1; then ok "$exe: $(command -v "$exe")"; else missing="$missing $exe"; fi
+  if command -v "$exe" >/dev/null 2>&1; then ok "$exe: $(command -v "$exe")"; else missing+=("$exe"); fi
 done
-[ -z "$missing" ] || fail "missing:$missing. Install them with NixOS/Home Manager (or your package manager) and run this again."
+has() { [[ " ${missing[*]} " == *" $1 "* ]]; }
+
+if [ ${#missing[@]} -gt 0 ]; then
+  pkgs=()
+  for m in "${missing[@]}"; do pkgs+=("${m/#gpg/gnupg}"); done
+  # NixOS is declarative: say what to add instead of installing.
+  [ ! -e /etc/NIXOS ] || fail "missing: ${missing[*]}. Add them to your NixOS/Home Manager configuration and rebuild:
+    home.packages = with pkgs; [ ${pkgs[*]} ];"
+
+  if has chezmoi; then
+    [ "$(uname -m)" = x86_64 ] || fail "chezmoi has no static build for $(uname -m): install it from https://www.chezmoi.io/install/"
+    mkdir -p "$HOME/.local/bin"
+    tmp=$(mktemp "$HOME/.local/bin/.chezmoi-XXXXXX")
+    curl -fsSL -o "$tmp" "$chezmoi_url"
+    echo "$chezmoi_sha256  $tmp" | sha256sum -c --quiet - || { rm -f "$tmp"; fail "chezmoi SHA-256 mismatch"; }
+    chmod 755 "$tmp" && mv "$tmp" "$HOME/.local/bin/chezmoi"
+    ok "chezmoi installed into ~/.local/bin (checked SHA-256)"
+  fi
+
+  sys=()
+  for m in git gpg; do has "$m" && sys+=("$m"); done
+  if [ ${#sys[@]} -gt 0 ]; then
+    # shellcheck source=/dev/null # the system's, read for ID and ID_LIKE
+    family=$(. /etc/os-release 2>/dev/null; echo " ${ID:-} ${ID_LIKE:-} ")
+    names() { local out=() t; for t in "${sys[@]}"; do
+      if [ "$t" = gpg ]; then out+=("$1"); else out+=("$t"); fi; done; echo "${out[@]}"; }
+    if [ -e /run/ostree-booted ]; then
+      command -v brew >/dev/null 2>&1 ||
+        fail "this system's image is read-only: install Homebrew and run brew install $(names gnupg), or layer them with rpm-ostree install and reboot"
+      # shellcheck disable=SC2046 # one word per package
+      brew install $(names gnupg)
+    else
+      echo "  Installing $(names gnupg) with your package manager (sudo asks for your password)"
+      # shellcheck disable=SC2046 # one word per package
+      case "$family" in
+        *" debian "* | *" ubuntu "*) sudo sh -c "apt-get update -q && apt-get install -y $(names gnupg)" ;;
+        *" fedora "* | *" rhel "* | *" centos "*) sudo dnf install -y $(names gnupg2) ;;
+        *" arch "*) sudo pacman -S --needed --noconfirm $(names gnupg) ;;
+        *) fail "install $(names gnupg) with your package manager and run this again" ;;
+      esac
+    fi
+  fi
+
+  for exe in "${missing[@]}"; do
+    command -v "$exe" >/dev/null 2>&1 || fail "$exe still not found after installing it"
+    ok "$exe: $(command -v "$exe")"
+  done
+fi
 
 # -- 2. Flow -----------------------------------------------------------------
 step "Flow"
