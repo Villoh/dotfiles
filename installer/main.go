@@ -6,6 +6,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
@@ -18,6 +19,13 @@ import (
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 )
+
+// windowIcon is the icon of the windows, in the title bar and the taskbar. The
+// .exe's own icon is rsrc_windows_amd64.syso; both come from packaging/icon.svg
+// (packaging/make-icon.sh).
+//
+//go:embed icon.png
+var windowIcon []byte
 
 const (
 	modePersonal  = "personal"
@@ -389,7 +397,7 @@ func (a *app) saveLog() {
 		return
 	}
 	go func() {
-		to, err := mygo.Dialog.Save(mygo.SaveDialogOptions{Parent: a.win, Title: "Save the log", DefaultPath: "dotfiles-installer.log"})
+		to, err := mygo.Dialog.Save(mygo.SaveDialogOptions{Parent: a.win, Title: "Save the log", DefaultPath: "villoh-dotfiles.log"})
 		if err != nil || to == "" {
 			return
 		}
@@ -422,6 +430,7 @@ func (a *app) detachLog() {
 			Title: "Log - " + appTitle, Width: 900, Height: 600, MinWidth: 480, MinHeight: 240,
 			Content: ui.View(a.logWindowView),
 		})
+		w.SetIcon(windowIcon)
 		w.OnClosed(func() { a.post(func() { a.logWin, a.logOpening = nil, false }) })
 		a.post(func() { a.logWin = w })
 	}()
@@ -807,9 +816,15 @@ func (a *app) logPath() string {
 	return a.logFile.Name()
 }
 
+// logFileName is the name of the log file of a run started at t, in the
+// temporary folder, as INSTALL.md says.
+func logFileName(t time.Time) string {
+	return "villoh-dotfiles-" + t.Format("20060102-150405") + ".log"
+}
+
 func main() {
 	a := newApp()
-	logName := filepath.Join(os.TempDir(), "dotfiles-installer-"+time.Now().Format("20060102-150405")+".log")
+	logName := filepath.Join(os.TempDir(), logFileName(time.Now()))
 	if f, err := os.Create(logName); err == nil {
 		a.logFile = f
 		defer f.Close()
@@ -822,6 +837,7 @@ func main() {
 			TitleBarStyle: mygo.TitleBarHidden, TitleBarHeight: titleBarHeight, // the view draws an M3 title bar
 			Content: ui.View(a.view),
 		})
+		a.win.SetIcon(windowIcon)
 		a.win.OnClosed(func() {
 			if a.logWin != nil {
 				a.logWin.Close() // the app ends with the main window

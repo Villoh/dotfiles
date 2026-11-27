@@ -15,7 +15,7 @@ base=https://github.com/$repo/releases/latest/download
 
 fail() { printf '\033[31m%s\033[0m\n' "$1" >&2; exit 1; }
 start() { # detach from this terminal, keeping a log of what it prints
-  setsid "$@" >"${TMPDIR:-/tmp}/dotfiles-installer-launch.log" 2>&1 </dev/null &
+  setsid "$@" >"${TMPDIR:-/tmp}/villoh-dotfiles-launch.log" 2>&1 </dev/null &
   printf '\033[32mThe installer runs in its own window; this terminal is free.\033[0m\n'
 }
 

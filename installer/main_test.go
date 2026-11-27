@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"image/png"
@@ -554,5 +555,29 @@ func TestInfoPage(t *testing.T) {
 	w, l := newAppFor("windows"), newAppFor("linux")
 	if strings.Contains(w.infoText(), "static build") || strings.Contains(l.infoText(), "Atlas Manager") {
 		t.Errorf("pins of the other OS:\n%s\n%s", w.infoText(), l.infoText())
+	}
+}
+
+// The log is villoh-dotfiles-<date>.log, not a name any other tool might use.
+func TestLogFileName(t *testing.T) {
+	got := logFileName(time.Date(2026, 11, 28, 0, 7, 17, 0, time.UTC))
+	if got != "villoh-dotfiles-20261128-000717.log" {
+		t.Errorf("log file name %q", got)
+	}
+}
+
+// The embedded window icon is a real 256 px PNG: a bad packaging/make-icon.sh
+// run would otherwise show as a blank taskbar button.
+func TestWindowIcon(t *testing.T) {
+	img, err := png.Decode(bytes.NewReader(windowIcon))
+	if err != nil {
+		t.Fatalf("icon.png: %v", err)
+	}
+	if b := img.Bounds(); b.Dx() != 256 || b.Dy() != 256 {
+		t.Errorf("icon.png is %dx%d, want 256x256", b.Dx(), b.Dy())
+	}
+	_, _, _, a := img.At(0, 0).RGBA() // the corner of a rounded square is transparent
+	if a != 0 {
+		t.Errorf("corner alpha %d: the rounded corners are not transparent", a)
 	}
 }
