@@ -62,7 +62,6 @@ $source = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 | `Documents/PowerShell/Functions/secrets.ps1` | Manual secret refresh with `fzf`, backed by `packages/windows/system/secrets.json` |
 | `Documents/PowerShell/Functions/backup.ps1` | `backup-herdr` saves Windows inventory to `packages/windows/herdr-plugins.json` without commit refs; `backup` includes it |
 | `Documents/PowerShell/Functions/restore.ps1` | Reads Windows inventory from `packages/windows/herdr-plugins.json`; `restore -Manager herdr -All -Yes` restores all; use `-Plugin id1,id2` to select. `-Yes` accepts plugin trust prompts |
-| `Documents/AutoHotkey/` | AutoHotkey automation scripts |
 
 ## Package commands
 

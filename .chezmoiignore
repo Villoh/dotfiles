@@ -8,7 +8,6 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
-{{ if or (ne .chezmoi.os "windows") (not .enable_autohotkey) }}Documents/AutoHotkey/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_aether) }}.config/caelestia/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_aether) }}.config/hypr/**{{ end }}
 {{ if not .enable_herdr }}.config/herdr/**{{ end }}
