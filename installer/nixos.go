@@ -114,7 +114,9 @@ func (a *app) systemView(c *ui.Context) {
 }
 
 func (a *app) textRow(c *ui.Context, label string, v *string, placeholder string) {
-	ui.Row(c.Key(label)).Gap(8).Children(func() {
-		ui.TextInput(c, v).Placeholder(placeholder).Label(label).Grow(1).Height(40).Radius(8)
+	// The field's own Label is not drawn, and a placeholder is gone once it is filled.
+	ui.Column(c.Key(label)).Gap(4).Children(func() {
+		ui.Text(c, label).FontSize(12).TextColor(a.scheme.OnSurfaceVariant)
+		ui.TextInput(c, v).Placeholder(placeholder).Label(label).FillWidth().Height(40).Radius(8)
 	})
 }
