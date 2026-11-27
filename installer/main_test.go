@@ -29,7 +29,7 @@ func TestLoadRepo(t *testing.T) {
 	if !strings.Contains(r.SecretsPrompt, "secrets") {
 		t.Errorf("secrets prompt %q", r.SecretsPrompt)
 	}
-	for _, m := range []string{"zed", "aether", "startup"} {
+	for _, m := range []string{"zed", "aether", "startup", "btop", "starship", "package_managers"} {
 		if !slices.Contains(r.Modules, m) {
 			t.Errorf("module %s missing from %v", m, r.Modules)
 		}
@@ -78,9 +78,16 @@ func TestLoadRepoLinux(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, m := range []string{"zed", "zsh", "dms", "ai_agents", "mail"} {
+	for _, m := range []string{"zed", "zsh", "dms", "ai_agents", "mail", "package_managers"} {
 		if !slices.Contains(r.Modules, m) {
 			t.Errorf("module %s missing from %v", m, r.Modules)
+		}
+	}
+	// NixOS owns these configs on Linux; opencode is part of ai_agents and bun,
+	// uv and pnpm of package_managers.
+	for _, m := range []string{"btop", "fastfetch", "starship", "alacritty", "opencode", "bun", "uv", "pnpm"} {
+		if slices.Contains(r.Modules, m) {
+			t.Errorf("module %s listed on Linux: %v", m, r.Modules)
 		}
 	}
 	if slices.Contains(r.Modules, "aether") || slices.Contains(r.Modules, "altsnap") {
