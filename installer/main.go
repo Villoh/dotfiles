@@ -163,6 +163,9 @@ var steps = []struct{ icon, label, title, blurb string }{
 	{"rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
 }
 
+// appTitle names the window (taskbar, Alt+Tab) and its title bar.
+const appTitle = "Villoh/dotfiles installer"
+
 const titleBarHeight = 40 // the window buttons MyGo draws fill it
 
 // titleBar replaces the native one (TitleBarHidden): the app's surface up to
@@ -174,7 +177,7 @@ func (a *app) titleBar(c *ui.Context) {
 		ui.Row(c).Width(96).Justify(ui.Center).Children(func() { // centered over the rail
 			ui.Icon(c, icons["terminal"]).FontSize(20).TextColor(s.Primary)
 		})
-		ui.Text(c, "Dotfiles installer").MarginStart(8).FontSize(13).FontWeight(500).TextColor(s.OnSurfaceVariant).SingleLine()
+		ui.Text(c, appTitle).MarginStart(8).FontSize(13).FontWeight(500).TextColor(s.OnSurfaceVariant).SingleLine()
 	})
 }
 
@@ -496,7 +499,7 @@ func main() {
 	a := newApp()
 	mygo.App.WhenReady(func() {
 		a.win = mygo.NewWindow(mygo.WindowOptions{
-			Title: "Dotfiles installer", Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
+			Title: appTitle, Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
 			TitleBarStyle: mygo.TitleBarHidden, TitleBarHeight: titleBarHeight, // the view draws an M3 title bar
 			Content: ui.View(a.view),
 		})
