@@ -27,13 +27,6 @@
             "Source": "main"
         },
         {
-            "Name": "bin",
-            "Updated": "2026-08-03T08:39:39.6358854+02:00",
-            "Info": "",
-            "Version": "0.29.1",
-            "Source": "extras"
-        },
-        {
             "Name": "bitwarden-cli",
             "Updated": "2026-05-21T12:55:24.7560606+02:00",
             "Info": "",

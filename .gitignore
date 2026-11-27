@@ -17,9 +17,6 @@
 # Nested git repos (stored as dot_git by chezmoi)
 **/dot_git/
 
-# bin tool — runtime state, managed by install script
-other_config/bin/config.json
-
 # Micro editor state
 dot_config/micro/backups/
 dot_config/micro/buffers/
