@@ -247,7 +247,7 @@ During initialization, chezmoi will:
 Each answer lives in `[data]` as `enable_<module>`; edit `~/.config/chezmoi/chezmoi.toml`
 before `chezmoi apply` to change one without re-running init. The Windows desktop is one toggle,
 `enable_aether`: it installs Aether and deploys `~/.config/hypr/hyprland.conf` for AetherWM.
-`enable_ai_agents` covers the coding agents' configs (`.claude`, `.codex`, `.factory`, `.grok`,
+`enable_ai_agents` covers the coding agents' configs (`.claude`, `.codex`, `.grok`,
 `.omp`, `.pi`, `.pi-lens`, `.agents`, `.config/caveman`). On Linux, `enable_mail` covers the mail
 clients (himalaya, meli) and the sieve filters; minimal turns it off.
 Re-running `chezmoi init` keeps the stored profile; to pick another, edit `install_profile`.

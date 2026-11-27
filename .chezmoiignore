@@ -74,7 +74,6 @@ AppData/Local/pnpm/**{{ end }}
 {{ if $aiAgentsOff }}.agents/**
 .claude/**
 .codex/**
-.factory/**
 .grok/**
 .omp/**
 .pi/**
