@@ -32,7 +32,7 @@ Dual-platform dotfiles managed with [chezmoi](https://chezmoi.io):
 - Windows apps that can't use chezmoi symlinks directly get a **junction** via `.chezmoiscripts/run_onchange_02_windows-junctions.ps1.tmpl` — junctions always point to the chezmoi source dir, never to `~/.config/` as intermediary
 - When purging large files from git history, use `git filter-repo` (installed via scoop). Python at `~/AppData/Local/Programs/Python/Python314/python.exe` — the `python` command redirects to the Microsoft Store on Windows
 - After `filter-repo`, the `origin` remote is removed and must be re-added manually
-- For global CLI tools (Python, npm, cargo, GitHub binaries), add them to the mise config (`dot_config/mise/config.toml`, or `conf.d/windows.toml` for Windows-only) instead of using uv/npm/bun/pnpm/cargo/bin directly (not pip, not scoop)
+- For global CLI tools (Python, npm, cargo, GitHub binaries), add them to the mise config (`dot_config/mise/config.toml`, with `os = ["windows"]` or `os = ["linux"]` for one platform) instead of using uv/npm/bun/pnpm/cargo/bin directly (not pip, not scoop)
 - `.tmp` files in AppData dirs are created by apps when they can't write to a broken symlink — fix by removing the broken symlink and renaming the `.tmp`
 
 ## Reference docs
