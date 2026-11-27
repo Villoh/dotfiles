@@ -249,7 +249,7 @@ func (a *app) prepare() error {
 	if err != nil {
 		return err
 	}
-	a.post(func() { a.setRepo(info); a.tab = 1 })
+	a.post(func() { a.setRepo(info); a.goTo("key") })
 	a.checkKey()
 	return nil
 }

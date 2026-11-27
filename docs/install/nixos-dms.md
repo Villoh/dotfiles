@@ -231,6 +231,24 @@ Sources: [NixOS Secure Boot](https://wiki.nixos.org/wiki/Secure_Boot),
 [NixOS Limine](https://wiki.nixos.org/wiki/Limine), and
 [sbctl signing workflow](https://github.com/Foxboron/sbctl/blob/master/docs/sbctl.8.txt).
 
+## Applying your configuration from the installer
+
+On NixOS the installer's **System** page is the first step. It asks for the
+repository URL of your NixOS flake, the directory to keep it in (default
+`~/nixos-config`) and the host name (default: this machine's hostname), then:
+
+1. **Clone and test** clones the repository if the directory has no `flake.nix`
+   (borrowing Git from nixpkgs when it is missing) and runs
+   `nixos-rebuild test --flake <dir>#<host>` through `pkexec`. `test` activates
+   the configuration without touching the bootloader.
+2. **Switch** unlocks after a passing test and runs `nixos-rebuild switch`,
+   which also makes it the boot default. With dual boot, read the bootloader
+   notes above first.
+
+The host must already exist in the flake, with its `hardware-configuration.nix`:
+the installer does not run `nixos-generate-config`. The configuration should
+install Git, GnuPG and chezmoi (Home Manager); Setup then finds them.
+
 ## Installing DMS
 
 - Needs **NixOS 26.05 stable or newer** (DMS landed in nixpkgs stable at

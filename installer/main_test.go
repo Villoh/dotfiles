@@ -78,6 +78,10 @@ func TestLinuxSetup(t *testing.T) {
 			t.Errorf("Linux pages %v", a.pages())
 		}
 	}
+	if a.pages()[0].id != "system" {
+		t.Errorf("NixOS starts at %q, want the System page", a.pages()[0].id)
+	}
+	a.goTo("setup")
 	// NixOS installs nothing: Setup shows the Home Manager lines instead.
 	tt := ui.NewTester(a.view, 1000, 760)
 	if !tt.HasText("Install by hand") || !tt.HasText("Clone the repository") {
@@ -89,9 +93,52 @@ func TestLinuxSetup(t *testing.T) {
 	}
 	// Elsewhere it offers to install them (prepare found this machine's tools).
 	a.linuxOS, a.deps = osInfo{id: "fedora"}, defaultDeps("linux")
+	a.goTo("setup")
 	tt.Frame()
 	if !tt.HasText("Install missing tools and clone") || tt.HasText("Install by hand") {
 		t.Errorf("Fedora Setup page: %q", tt.Texts())
+	}
+}
+
+// The System page exists on NixOS only, and Switch waits for a passing test.
+func TestNixosSystemPage(t *testing.T) {
+	a := newAppFor("linux")
+	a.linuxOS = osInfo{id: "fedora"}
+	if a.pages()[0].id == "system" {
+		t.Errorf("System page on Fedora: %v", a.pages())
+	}
+	a.linuxOS = osInfo{id: "nixos", nixos: true}
+	a.nixos = nixosCfg{url: "u", dir: "/d", host: "h"}
+	tt := ui.NewTester(a.view, 1000, 760)
+	if !tt.HasText("Clone and test") || !tt.HasText("Switch") {
+		t.Fatalf("System page: %q", tt.Texts())
+	}
+	if err := a.nixosRebuild("test", nixosCfg{}); err == nil {
+		t.Error("empty configuration accepted")
+	}
+	dir := t.TempDir()
+	if err := os.WriteFile(filepath.Join(dir, "x"), nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := a.nixosRebuild("test", nixosCfg{url: "u", dir: dir, host: "h"}); err == nil || !strings.Contains(err.Error(), "no flake.nix") {
+		t.Errorf("directory in use: %v", err)
+	}
+}
+
+func TestNixosCommands(t *testing.T) {
+	c := nixosCfg{url: "https://x/y", dir: "/d", host: "box"}
+	if got := strings.Join(cloneCmd(true, c), " "); got != "git clone --recurse-submodules https://x/y /d" {
+		t.Errorf("clone with git: %s", got)
+	}
+	if got := strings.Join(cloneCmd(false, c), " "); !strings.Contains(got, "nix --extra-experimental-features nix-command flakes shell nixpkgs#git -c git clone") {
+		t.Errorf("clone without git: %s", got)
+	}
+	if got := strings.Join(rebuildCmd("test", c), " "); got != "pkexec /run/current-system/sw/bin/nixos-rebuild test --flake /d#box --option experimental-features nix-command flakes" {
+		t.Errorf("rebuild: %s", got)
+	}
+	home, _ := os.UserHomeDir()
+	if got, err := (nixosCfg{url: " u ", dir: "~/cfg", host: "h"}).clean(); err != nil || got.dir != filepath.Join(home, "cfg") || got.url != "u" {
+		t.Errorf("clean: %+v %v", got, err)
 	}
 }
 

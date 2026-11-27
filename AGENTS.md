@@ -20,7 +20,9 @@ imperative package-bootstrap logic here. The one exception is the installer's
 own prerequisites (Git, GnuPG, chezmoi) on non-NixOS systems, in
 `install.sh` and `installer/prereqs.go`: chezmoi's pinned static build into
 `~/.local/bin`, git and gnupg with the distribution's package manager (brew on
-atomic images). On NixOS they install nothing and point to Home Manager.
+atomic images). On NixOS they install nothing and point to Home Manager. The GUI's System page
+(`installer/nixos.go`) only clones the user's own NixOS configuration and runs
+`nixos-rebuild test`/`switch` on it; it never edits that configuration.
 
 ## chezmoi essentials
 
