@@ -10,6 +10,7 @@ import (
 	"slices"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/egoist/mygo/ui"
 )
@@ -162,6 +163,85 @@ func TestNixosCommands(t *testing.T) {
 	}
 }
 
+// The rail ends with the Log page on every OS. Expand, in the panel under any
+// other page, opens it, and the rail goes back.
+func TestLogPage(t *testing.T) {
+	for _, goos := range []string{"windows", "linux"} {
+		p := newAppFor(goos).pages()
+		if p[len(p)-1].id != "log" {
+			t.Errorf("%s: the rail ends with %q, want log", goos, p[len(p)-1].id)
+		}
+	}
+	a := newAppFor("linux")
+	a.linuxOS = osInfo{id: "fedora"}
+	a.logLine("hello")
+	tt := ui.NewTester(a.view, 1000, 760)
+	if !tt.HasText("Prerequisites") {
+		t.Fatalf("before: %q", tt.Texts())
+	}
+	if err := tt.Click("Expand"); err != nil {
+		t.Fatal(err)
+	}
+	if a.pages()[a.tab].id != "log" || tt.HasText("Prerequisites") || !tt.HasText("hello") {
+		t.Errorf("Log page: tab %d, %q", a.tab, tt.Texts())
+	}
+	if _, ok := tt.Find("Expand"); ok {
+		t.Error("Expand on the Log page itself")
+	}
+	if err := tt.Click("Setup"); err != nil || a.pages()[a.tab].id != "setup" {
+		t.Errorf("rail back to Setup: %v, tab %d", err, a.tab)
+	}
+	if got := a.logText(); got != "hello" {
+		t.Errorf("logText %q", got)
+	}
+	// Copy says it copied, and goes back to Copy after a while.
+	if err := tt.Click("Copy"); err != nil {
+		t.Fatal(err)
+	}
+	if !a.justCopied("log") {
+		t.Error("no copied sign after Copy")
+	}
+	if err := tt.Click("Copied"); err != nil { // the icon is now a check, named Copied
+		t.Errorf("Copied button: %v", err)
+	}
+	a.copiedAt = time.Now().Add(-3 * time.Second)
+	tt.Frame()
+	if a.justCopied("log") {
+		t.Error("still Copied after 3s")
+	}
+	if err := tt.Click("Copy"); err != nil {
+		t.Errorf("Copy button did not come back: %v", err)
+	}
+}
+
+// The log's own window shows the log, copy and save, and none of the main
+// window's page or its expand and open-in-a-window buttons.
+func TestLogWindowView(t *testing.T) {
+	a := newAppFor("linux")
+	a.linuxOS = osInfo{id: "fedora"}
+	a.logLine("hello")
+	main := ui.NewTester(a.view, 1000, 760)
+	for _, name := range []string{"Copy", "Save the log", "Expand", "Open the log in its own window"} {
+		if _, ok := main.Find(name); !ok {
+			t.Errorf("main window has no %q button", name)
+		}
+	}
+	own := ui.NewTester(a.logWindowView, 800, 500)
+	if !own.HasText("hello") {
+		t.Errorf("log window: %q", own.Texts())
+	}
+	for _, name := range []string{"Copy", "Save the log"} {
+		if _, ok := own.Find(name); !ok {
+			t.Errorf("log window has no %q button", name)
+		}
+	}
+	for _, name := range []string{"Expand", "Open the log in its own window", "Check again"} {
+		if _, ok := own.Find(name); ok {
+			t.Errorf("log window has %q", name)
+		}
+	}
+}
+
 func TestInitArgs(t *testing.T) {
 	r := repoInfo{ProfilePrompt: "Install profile", SecretsPrompt: "Enable secrets", ModuleFormat: "Enable %s", Modules: []string{"zed", "warp"}}
 	got := strings.Join(initArgs(r, "custom", false, map[string]bool{"zed": true}), "|")
@@ -304,4 +384,43 @@ func TestSnapshot(t *testing.T) {
 			f.Close()
 		}
 	}
+}
+
+// Hovering and pressing a button must be easy to see: the pointer turns into a
+// hand and the fill moves well away from the idle one (M3's 8% was too faint on
+// the dark theme). The headless frame has no text, so the fill is all there is.
+func TestButtonFeedback(t *testing.T) {
+	a := newAppFor("windows") // its Setup button is filled; the Linux one may not be
+	tt := ui.NewTester(a.view, 1000, 760)
+	r, ok := tt.Find("Install missing tools and clone")
+	if !ok {
+		t.Fatal("no Install button")
+	}
+	x, y := r.X+12, r.Y+r.H/2 // inside the pill, left of its text
+	fill := func() [3]int {
+		c := tt.Image().RGBAAt(int(x), int(y))
+		return [3]int{int(c.R), int(c.G), int(c.B)}
+	}
+	far := func(a, b [3]int) int { return max(abs(a[0]-b[0]), abs(a[1]-b[1]), abs(a[2]-b[2])) }
+	idle := fill()
+	tt.Move(x, y)
+	tt.Frame()
+	hover := fill()
+	if tt.Cursor() != ui.CursorPointer {
+		t.Errorf("cursor over a button: %v, want the pointer", tt.Cursor())
+	}
+	tt.Press(x, y)
+	tt.Frame()
+	press := fill()
+	tt.Release(x, y)
+	if far(idle, hover) < 20 || far(hover, press) < 8 {
+		t.Errorf("faint feedback: idle %v hover %v press %v", idle, hover, press)
+	}
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
 }

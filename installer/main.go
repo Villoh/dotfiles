@@ -48,6 +48,10 @@ type app struct {
 	schemeDark bool
 	lines      []string
 	logState   ui.ListState
+	logWin     *mygo.Window // the log in a window of its own, nil while it is in the main one
+	logOpening bool         // logWin is being created
+	copied     string       // key of the copyButton that copied last
+	copiedAt   time.Time
 	logFile    *os.File // every log line, also what chezmoi apply prints; nil in tests
 	deps       []dep
 	sourceDir  string
@@ -102,7 +106,12 @@ func (a *app) post(fn func()) {
 		fn()
 		return
 	}
-	a.win.Update(fn)
+	a.win.Update(func() {
+		fn()
+		if a.logWin != nil {
+			a.logWin.Invalidate() // it shows the same log
+		}
+	})
 }
 
 // sync reads or changes the state on the main thread and waits.
@@ -203,9 +212,15 @@ func (a *app) selection() map[string]any {
 // page is a destination of the navigation rail.
 type page struct{ id, icon, label, title, blurb string }
 
-// pages are the rail's destinations on this OS. Linux has no Packages page:
+// logPage is the last destination of the rail on every OS: the whole log.
+var logPage = page{"log", "terminal", "Log", "Log", "Everything the installer runs. Copy it, save it, or open it in a window of its own."}
+
+// pages are the rail's destinations on this OS.
+func (a *app) pages() []page { return append(a.stepPages(), logPage) }
+
+// stepPages are the installation steps. Linux has no Packages page:
 // NixOS/Home Manager installs its packages.
-func (a *app) pages() []page {
+func (a *app) stepPages() []page {
 	if a.goos != "windows" {
 		var system []page // on NixOS the rebuild is what provides Git, GnuPG and chezmoi, so it goes first
 		if a.linuxOS.nixos {
@@ -277,27 +292,39 @@ func (a *app) body(c *ui.Context) {
 			if a.busy != "" {
 				ui.Progress(c, -1).Label(a.busy)
 			}
-			ui.Scroll(c.Key(a.tab)).Grow(1).Gap(16).Children(func() {
-				switch st.id {
-				case "system":
-					a.systemView(c)
-				case "setup":
-					a.prereqView(c)
-				case "key":
-					a.keyView(c)
-				case "profile":
-					a.profileView(c)
-				case "packages":
-					a.packagesView(c)
-				case "install":
-					a.installView(c)
-				}
-			})
+			onLog := st.id == logPage.id
+			switch {
+			case !onLog:
+				a.pageView(c, st)
+			case a.logWin != nil:
+				a.muted(c, "The log is in its own window. Close that window to bring it back here.")
+			}
 			if a.status != "" {
 				a.banner(c, map[bool]bannerKind{true: failure, false: success}[a.statusErr], a.status)
 			}
-			a.logView(c)
+			if a.logWin == nil { // else the log is in its own window
+				a.logView(c, false) // on the Log page it fills the rest of the window
+			}
 		})
+	})
+}
+
+func (a *app) pageView(c *ui.Context, st page) {
+	ui.Scroll(c.Key(a.tab)).Grow(1).Gap(16).Children(func() {
+		switch st.id {
+		case "system":
+			a.systemView(c)
+		case "setup":
+			a.prereqView(c)
+		case "key":
+			a.keyView(c)
+		case "profile":
+			a.profileView(c)
+		case "packages":
+			a.packagesView(c)
+		case "install":
+			a.installView(c)
+		}
 	})
 }
 
@@ -310,16 +337,127 @@ func (a *app) goTo(id string) {
 	}
 }
 
-func (a *app) logView(c *ui.Context) {
+const copiedFor = 2 * time.Second
+
+// justCopied says whether the copy button called key copied a moment ago. The
+// clipboard gives no sign of a copy, so the buttons show it themselves.
+func (a *app) justCopied(key string) bool {
+	return a.copied == key && time.Since(a.copiedAt) < copiedFor
+}
+
+// copyText puts text on the clipboard and starts the "copied" sign of key.
+func (a *app) copyText(key, text string) {
+	if a.win != nil {
+		mygo.Clipboard.WriteText(text)
+	}
+	a.copied, a.copiedAt = key, time.Now()
+	time.AfterFunc(copiedFor+50*time.Millisecond, func() { a.post(func() {}) }) // redraw: the sign goes
+}
+
+// copyButton is a text button that says "Copied" for two seconds.
+func (a *app) copyButton(c *ui.Context, kind buttonKind, key, text string, disabled bool) {
+	label := "Copy"
+	if a.justCopied(key) {
+		label = "Copied"
+	}
+	if a.button(c, kind, label, disabled) {
+		a.copyText(key, text)
+	}
+}
+
+// logText is the whole log on screen, for Copy.
+func (a *app) logText() string { return strings.Join(a.lines, "\n") }
+
+// saveLog copies the log file, which has every line with its time and not
+// just the last maxLogLines, to a place the user chooses.
+func (a *app) saveLog() {
+	if a.win == nil {
+		return
+	}
+	go func() {
+		to, err := mygo.Dialog.Save(mygo.SaveDialogOptions{Parent: a.win, Title: "Save the log", DefaultPath: "dotfiles-installer.log"})
+		if err != nil || to == "" {
+			return
+		}
+		var data []byte
+		if a.logFile != nil {
+			data, err = os.ReadFile(a.logFile.Name())
+		} else {
+			a.sync(func() { data = []byte(a.logText() + "\n") })
+		}
+		if err == nil {
+			err = os.WriteFile(to, data, 0o644)
+		}
+		if err != nil {
+			a.logf("ERROR: saving the log: %v", err)
+			return
+		}
+		a.logf("Log saved to %s", to)
+	}()
+}
+
+// detachLog opens the log in a window of its own, which stays in view while
+// the main window goes from page to page. Closing it puts the log back.
+func (a *app) detachLog() {
+	if a.win == nil || a.logWin != nil || a.logOpening {
+		return
+	}
+	a.logOpening = true
+	go func() {
+		w := mygo.NewWindow(mygo.WindowOptions{
+			Title: "Log - " + appTitle, Width: 900, Height: 600, MinWidth: 480, MinHeight: 240,
+			Content: ui.View(a.logWindowView),
+		})
+		w.OnClosed(func() { a.post(func() { a.logWin, a.logOpening = nil, false }) })
+		a.post(func() { a.logWin = w })
+	}()
+}
+
+// logWindowView is the content of the log's own window.
+func (a *app) logWindowView(c *ui.Context) {
+	a.themed(c)
+	ui.Column(c).Fill().Padding(16).Background(a.scheme.Surface).Children(func() {
+		a.logView(c, true)
+	})
+}
+
+// logView is the log panel. In the log's own window (own) it fills it and has
+// copy and save; in the main window it also expands and opens that window.
+func (a *app) logView(c *ui.Context, own bool) {
 	s := a.scheme
-	ui.Column(c).Height(160).Background(s.SurfaceContainer).Radius(16).Padding(12, 16).Gap(8).Children(func() {
-		ui.Row(c).Gap(8).Children(func() {
+	box := ui.Column(c).Background(s.SurfaceContainer).Radius(16).Padding(12, 16).Gap(8)
+	onLog := a.pages()[a.tab].id == logPage.id
+	if onLog || own {
+		box = box.Grow(1) // on the Log page, and in its own window, it takes the rest
+	} else {
+		box = box.Height(220)
+	}
+	box.Children(func() {
+		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 			ui.Icon(c, icons["terminal"]).FontSize(18).TextColor(s.OnSurfaceVariant)
-			ui.Text(c, "Log").FontSize(14).FontWeight(500).TextColor(s.OnSurfaceVariant)
+			ui.Text(c, "Log").FontSize(14).FontWeight(500).TextColor(s.OnSurfaceVariant).Grow(1)
+			empty := len(a.lines) == 0
+			if a.justCopied("log") {
+				a.iconButton(c, "check", "Copied", false)
+			} else if a.iconButton(c, "content_copy", "Copy", empty) {
+				a.copyText("log", a.logText())
+			}
+			if a.iconButton(c, "save", "Save the log", empty) {
+				a.saveLog()
+			}
+			if own {
+				return
+			}
+			if !onLog && a.iconButton(c, "open_in_full", "Expand", false) {
+				a.goTo(logPage.id)
+			}
+			if a.iconButton(c, "open_in_new", "Open the log in its own window", false) {
+				a.detachLog()
+			}
 		})
 		ui.List(c, &a.logState, len(a.lines), func(i int) {
 			ui.Text(c, a.lines[i]).FontSize(12).TextColor(s.OnSurfaceVariant)
-		}).Grow(1).Children(func() {
+		}).Grow(1).Selectable().Children(func() {
 			if len(a.lines) == 0 {
 				ui.Text(c, "Nothing yet.").FontSize(12).TextColor(s.OnSurfaceVariant.Alpha(0.7))
 			}
@@ -382,9 +520,7 @@ func (a *app) prereqView(c *ui.Context) {
 			ui.Text(c, p.manual).FontSize(14).Selectable().TextColor(a.scheme.OnSurfaceVariant)
 			if a.win != nil {
 				ui.Row(c).Children(func() {
-					if a.button(c, tonal, "Copy", false) {
-						mygo.Clipboard.WriteText(p.manual)
-					}
+					a.copyButton(c, tonal, "manual", p.manual, false)
 				})
 			}
 		})
@@ -549,6 +685,7 @@ func (a *app) packagesView(c *ui.Context) {
 				bg, fg = s.SecondaryContainer, s.OnSecondaryContainer
 			}
 			b := ui.ButtonBase(c.Key(p.key)).Label(p.title).AccessSelected(on).Role(ui.RoleTab).Height(32).PaddingX(16).Radius(full)
+			b.Cursor(ui.CursorPointer)
 			if !on {
 				b.Border(1, s.OutlineVariant)
 			}
@@ -670,6 +807,11 @@ func main() {
 			Title: appTitle, Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
 			TitleBarStyle: mygo.TitleBarHidden, TitleBarHeight: titleBarHeight, // the view draws an M3 title bar
 			Content: ui.View(a.view),
+		})
+		a.win.OnClosed(func() {
+			if a.logWin != nil {
+				a.logWin.Close() // the app ends with the main window
+			}
 		})
 		a.logf("Log file: %s", a.logPath())
 		go a.checkDeps()

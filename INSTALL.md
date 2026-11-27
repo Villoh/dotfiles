@@ -112,6 +112,12 @@ page comes first: it clones your NixOS configuration where you choose and runs
    on, it runs in a console window instead, where the secrets script asks for
    the Bitwarden login.
 
+The log is under every page and also the last page of the rail (**Log**, or the
+expand icon): its text is selectable, the icons copy it (the icon turns into a
+check for two seconds) or save the log file, with every line and its time, and
+open it in a window of its own, which stays in view while the main window goes
+from page to page. Closing that window puts the log back.
+
 ### Building and releasing the GUI
 
 - **CI**: `.github/workflows/installer-ci.yml` runs on every push to `main` and
