@@ -1,4 +1,10 @@
+{{- /* Modules added after a machine's last chezmoi init stay on until init asks */ -}}
+{{- $aiAgentsOff := and (hasKey . "enable_ai_agents") (not .enable_ai_agents) -}}
+{{- $altsnapOff := and (hasKey . "enable_altsnap") (not .enable_altsnap) -}}
+{{- $pnpmOff := and (hasKey . "enable_pnpm") (not .enable_pnpm) -}}
 # ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
+{{ if or (ne .chezmoi.os "windows") $altsnapOff }}AppData/Roaming/AltSnap/**{{ end }}
+{{ if or (ne .chezmoi.os "windows") (not .enable_vesktop) }}AppData/Roaming/vesktop/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Roaming/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_warp) }}AppData/Local/warp/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_windows_terminal) }}AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/**{{ end }}
@@ -15,10 +21,10 @@
 {{ if or (ne .chezmoi.os "windows") (not .enable_fastfetch) }}.config/fastfetch/**{{ end }}
 {{ if ne .chezmoi.os "windows" }}.config/opencode/themes/**{{ end }}
 .agents/skills/**
-!.agents/skills/
+{{ if not $aiAgentsOff }}!.agents/skills/
 !.agents/skills/pi-dms-matugen/
 !.agents/skills/pi-dms-matugen/**
-.agents/skills.disabled/**
+{{ end }}.agents/skills.disabled/**
 {{ if ne .chezmoi.os "windows" }}AppData/
 Documents/
 scoop/
@@ -46,6 +52,7 @@ scoop/
 {{ if ne .chezmoi.os "linux" }}.config/strata/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/himalaya/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/meli/**{{ end }}
+{{ if eq .chezmoi.os "windows" }}.config/sieve/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
@@ -68,10 +75,22 @@ scoop/
 {{ if eq .chezmoi.os "windows" }}.config/workmux/**
 .pi/agent/extensions/workmux-status.ts{{ end }}
 {{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
+{{ if $pnpmOff }}.config/pnpm/**
+AppData/Local/pnpm/**{{ end }}
+{{ if $aiAgentsOff }}.agents/**
+.claude/**
+.codex/**
+.factory/**
+.grok/**
+.omp/**
+.pi/**
+.pi-lens/**
+.config/caveman/**{{ end }}
 
 # ── Claude Code — local session state, never deployed ─────────────────────────
+# The re-includes would override the ai_agents module when it is off.
 .claude/*
-!.claude/settings.json
+{{ if not $aiAgentsOff }}!.claude/settings.json
 !.claude/RTK.md
 !.claude/CLAUDE.md
 !.claude/rules/
@@ -80,7 +99,7 @@ scoop/
 !.claude/skills/**
 !.claude/themes/
 !.claude/themes/**
-.pi/agent/auth.json
+{{ end }}.pi/agent/auth.json
 .pi/agent/EXTENSIONS.md
 .pi/workflows/runs/**
 .omp/agent/agent.db
