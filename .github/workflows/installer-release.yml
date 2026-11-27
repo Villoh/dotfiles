@@ -1,0 +1,36 @@
+# Publishes the installer GUI as a GitHub release that install-gui.ps1
+# downloads: builds it with installer-ci.yml, then attaches
+# dotfiles-installer.exe and SHA256SUMS to a release of the tag.
+# Release: git tag installer-v0.1.0 && git push origin installer-v0.1.0
+name: installer-release
+
+on:
+  push:
+    tags: ["installer-v*"]
+
+jobs:
+  build:
+    uses: ./.github/workflows/installer-ci.yml
+    permissions:
+      contents: read
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dotfiles-installer
+          path: dist
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RAW: https://raw.githubusercontent.com/${{ github.repository }}/main
+        run: >-
+          gh release create "$GITHUB_REF_NAME" dist/*
+          --repo "$REPO"
+          --title "Installer ${GITHUB_REF_NAME#installer-}"
+          --notes "irm $RAW/install-gui.ps1 | iex"
