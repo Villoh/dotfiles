@@ -79,7 +79,7 @@ above.
    ```powershell
    winget install -e --id Git.Git
    winget install -e --id GnuPG.Gpg4win
-   winget install -e --id twpayne.chezmoi
+   winget install -e --id twpayne.chezmoi --scope machine
    ```
 
 2. Continue with the [common bootstrap](bootstrap.md) and [`INSTALL.md`](../../INSTALL.md): import the GPG key,

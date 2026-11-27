@@ -49,13 +49,16 @@
     foreach ($t in @(
             @{ Exe = 'git';     Id = 'Git.Git' },
             @{ Exe = 'gpg';     Id = 'GnuPG.Gpg4win' },
-            @{ Exe = 'chezmoi'; Id = 'twpayne.chezmoi' })) {
+            @{ Exe = 'chezmoi'; Id = 'twpayne.chezmoi'; Scope = 'machine' })) {
         if (Get-Command $t.Exe -ErrorAction SilentlyContinue) {
             Write-Host "  [SKIP] $($t.Id) already installed" -ForegroundColor Yellow
             continue
         }
+        # chezmoi is a portable package (user scope by default): winget refuses those from this
+        # elevated session (0x8a15007d), so it asks for the machine scope.
+        $scope = if ($t.Scope) { @('--scope', $t.Scope) } else { @() }
         Invoke-Checked "winget install $($t.Id)" {
-            winget install -e --id $t.Id --accept-package-agreements --accept-source-agreements
+            winget install -e --id $t.Id @scope --accept-package-agreements --accept-source-agreements
         }
         Refresh-Path
     }

@@ -173,8 +173,12 @@ Install **Git**, **GnuPG/Gpg4win**, and **chezmoi** via winget:
 ```powershell
 winget install -e --id Git.Git
 winget install -e --id GnuPG.Gpg4win
-winget install -e --id twpayne.chezmoi
+winget install -e --id twpayne.chezmoi --scope machine
 ```
+
+`--scope machine` is needed for chezmoi: it is a portable package (user scope by
+default), and recent winget refuses those from an Administrator terminal
+(`0x8a15007d`).
 
 Import the private GPG key before applying the repository. See the [common
 bootstrap guide](docs/install/bootstrap.md).

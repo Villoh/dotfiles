@@ -493,3 +493,19 @@ func abs(n int) int {
 	}
 	return n
 }
+
+// chezmoi is a portable winget package, which winget refuses to install in the
+// user scope from the administrator session the installer runs in: it asks for
+// the machine scope. The installers that already work are left alone.
+func TestWingetInstallArgs(t *testing.T) {
+	want := map[string]string{
+		"Git.Git":         "install -e --id Git.Git --accept-package-agreements --accept-source-agreements --silent",
+		"GnuPG.Gpg4win":   "install -e --id GnuPG.Gpg4win --accept-package-agreements --accept-source-agreements --silent",
+		"twpayne.chezmoi": "install -e --id twpayne.chezmoi --scope machine --accept-package-agreements --accept-source-agreements --silent",
+	}
+	for _, d := range defaultDeps("windows") {
+		if got := strings.Join(wingetInstallArgs(d), " "); got != want[d.WingetID] {
+			t.Errorf("%s: %s\nwant %s", d.WingetID, got, want[d.WingetID])
+		}
+	}
+}

@@ -23,6 +23,19 @@ const selectionEnv = "DOTFILES_PACKAGE_SELECTION"
 type dep struct {
 	Name, Exe, WingetID string // WingetID is "" on Linux: NixOS provides the tools
 	Path                string // resolved executable, "" while missing
+	Scope               string // winget --scope, "" for the package's own default
+}
+
+// wingetInstallArgs is the winget command line that installs d. chezmoi is a
+// portable package, which defaults to the user scope, and winget refuses those
+// from an administrator context (0x8a15007d), which is how the installer runs:
+// so it asks for the machine scope.
+func wingetInstallArgs(d dep) []string {
+	args := []string{"install", "-e", "--id", d.WingetID}
+	if d.Scope != "" {
+		args = append(args, "--scope", d.Scope)
+	}
+	return append(args, "--accept-package-agreements", "--accept-source-agreements", "--silent")
 }
 
 func defaultDeps(goos string) []dep {
@@ -32,7 +45,7 @@ func defaultDeps(goos string) []dep {
 	return []dep{
 		{Name: "Git", Exe: "git", WingetID: "Git.Git"},
 		{Name: "GnuPG (Gpg4win)", Exe: "gpg", WingetID: "GnuPG.Gpg4win"},
-		{Name: "chezmoi", Exe: "chezmoi", WingetID: "twpayne.chezmoi"},
+		{Name: "chezmoi", Exe: "chezmoi", WingetID: "twpayne.chezmoi", Scope: "machine"},
 	}
 }
 
@@ -221,8 +234,7 @@ func (a *app) prepare() error {
 		if d.Path != "" || d.WingetID == "" {
 			continue
 		}
-		if err := a.run(false, "winget", "install", "-e", "--id", d.WingetID,
-			"--accept-package-agreements", "--accept-source-agreements", "--silent"); err != nil {
+		if err := a.run(false, "winget", wingetInstallArgs(d)...); err != nil {
 			return err
 		}
 	}
