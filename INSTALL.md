@@ -126,6 +126,11 @@ check for two seconds) or save the log file, with every line and its time, and
 open it in a window of its own, which stays in view while the main window goes
 from page to page. Closing that window puts the log back.
 
+The last page of the rail, **Info**, shows the installer's version (the release
+it was built from, or `dev-<commit>`), what it pins (Atlas Manager on Windows,
+chezmoi on Linux), the OS, the repository folder and the log file, with links
+and licenses. Its copy icon puts the page on the clipboard for a bug report.
+
 ### Building and releasing the GUI
 
 - **CI**: `.github/workflows/installer-ci.yml` runs on every push to `main` and
