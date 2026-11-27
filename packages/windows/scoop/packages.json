@@ -606,13 +606,6 @@
             "Source": "villoh"
         },
         {
-            "Name": "vencord-installer-cli",
-            "Updated": "2026-07-09T10:08:57.1377458+02:00",
-            "Info": "",
-            "Version": "1.4.0",
-            "Source": "main"
-        },
-        {
             "Name": "warp-terminal",
             "Updated": "2026-09-06T17:35:38.378551+02:00",
             "Info": "",

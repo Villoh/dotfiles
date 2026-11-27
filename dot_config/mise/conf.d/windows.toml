@@ -14,5 +14,7 @@ aube = "latest"
 # Tags are desktop-vX.Y.Z (full) and desktop-minimal-vX.Y.Z; take only the full build.
 "github:elianiva/meiro" = { version = "latest", version_prefix = "desktop-v" }
 "github:yapfast/yapfast" = "latest"
+# Native Discord client. Only nightlies so far, published as prereleases.
+"github:ViceVerse-cz/Serein" = { version = "latest", prerelease = true, asset_pattern = "serein-*-Windows-X64.zip" }
 # Former `cargo` inventory.
 "cargo:pexels" = "latest"
