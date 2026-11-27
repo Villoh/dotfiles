@@ -47,7 +47,8 @@
 | Prompt | [Starship](https://starship.rs/) · [Oh My Posh](https://ohmyposh.dev/) | [⚙️](dot_config/starship.toml) · [⚙️](dot_config/ohmyposh/) |
 | Terminal | [WezTerm](https://wezfurlong.org/wezterm/) · [Alacritty](https://alacritty.org/) · [Windows Terminal](https://aka.ms/terminal) | [⚙️](dot_config/wezterm/) · [⚙️](AppData/Roaming/alacritty/) · [⚙️](AppData/Local/Packages/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/) |
 | Editor | [Zed](https://zed.dev/) | [⚙️](dot_config/zed/) |
-| File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
+| File Manager | [RustyFiles](https://github.com/gelenmedya/rustyfiles) (GUI) · [yazi](https://yazi-rs.github.io/) (TUI) | [⚙️](dot_config/yazi/) |
+| Archive Manager | [Arca](https://github.com/beyondhumane/arca) | [Site](https://arca.beyondhumane.com) |
 | Context Menu | [Nilesoft Shell](https://nilesoft.org/) | [⚙️](program_files/nilesoft/) |
 | Hotkeys | [AutoHotkey](https://www.autohotkey.com/) | [⚙️](Documents/AutoHotkey/) |
 | Resource Monitor | [btop](https://github.com/aristocratos/btop) | [⚙️](dot_config/btop/) |
@@ -71,10 +72,11 @@
 | Terminal | [Ghostty](https://ghostty.org/) · [Kitty](https://sw.kovidgoyal.net/kitty/) | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/terminals/ghostty.nix) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/terminals/kitty.nix) |
 | Multiplexer | Herdr | [⚙️](dot_config/herdr/) |
 | Editor | [Zed](https://zed.dev/) · [Neovim](https://neovim.io/) | [⚙️](dot_config/zed/) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/development/neovim.nix) |
-| File Manager | [yazi](https://yazi-rs.github.io/) | [⚙️](dot_config/yazi/) |
-| Discord | [Vesktop](https://github.com/Vencord/Vesktop) · Concord | [⚙️](dot_config/vesktop/) · [⚙️](dot_config/private_concord/) |
+| File Manager | [Strata](https://github.com/lgse/strata) (GUI) · [yazi](https://yazi-rs.github.io/) (TUI) | [⚙️](dot_config/strata/) · [⚙️](dot_config/yazi/) |
+| Archive Manager | [Arca](https://github.com/beyondhumane/arca) | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/desktop/packages.nix) |
+| Discord | [Serein](https://github.com/ViceVerse-cz/Serein) · [Yapfast](https://github.com/yapfast/yapfast) · Concord · [Vesktop](https://github.com/Vencord/Vesktop) · [Equibop](https://github.com/Equicord/Equibop) | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/communication/packages.nix) · [⚙️](dot_config/private_concord/) · [⚙️](dot_config/vesktop/) · [⚙️](dot_config/private_equibop/) |
 | Chat | [nchat](https://github.com/d99kris/nchat) | [⚙️](dot_config/nchat/) |
-| Music | [ytm-player](https://github.com/peternaame-boop/ytm-player) · [cava](https://github.com/karlstav/cava) | [⚙️](dot_config/ytm-player/) · [⚙️](dot_config/cava/) |
+| Music | [ytm-player](https://github.com/peternaame-boop/ytm-player) · [Sonora](https://github.com/sonorahq/sonora) · [Kopuz](https://github.com/Kopuz-org/kopuz) · [Meiro](https://github.com/elianiva/meiro) · [cava](https://github.com/karlstav/cava) | [⚙️](dot_config/private_ytm-player/) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/media/packages.nix) · [⚙️](dot_config/cava/) |
 | AI Agents | [Claude Code](https://claude.com/claude-code) · [Codex](https://github.com/openai/codex) · Pi · omp · Devin · [opencode](https://opencode.ai/) | [⚙️](dot_claude/) · [⚙️](dot_codex/) · [⚙️](dot_pi/) · [⚙️](dot_omp/) · [⚙️](dot_config/devin/) · [⚙️](dot_config/opencode/) |
 
 ## NixOS and chezmoi

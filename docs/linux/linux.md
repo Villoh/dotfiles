@@ -33,7 +33,8 @@ See also: [NixOS](nixos/README.md) (current target) and [Omarchy](omarchy/README
 | `FreeTube/` | FreeTube YouTube frontend (settings are `.db`, gitignored) |
 | `cava/` | Audio visualizer |
 | `btop/` | Resource monitor |
-| `yazi/` | File manager. `plugins/` and `flavors/` are gitignored — install with `ya pack` |
+| `strata/` | Strata GUI file manager (Linux only; `private_settings.toml`) |
+| `yazi/` | TUI file manager. `plugins/` and `flavors/` are gitignored — install with `ya pack` |
 
 ## dot_local/bin — scripts
 
