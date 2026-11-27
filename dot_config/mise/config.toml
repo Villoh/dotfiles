@@ -17,11 +17,13 @@ credential_command = "gh auth token"
 [settings.upgrade]
 
 [tools]
-claude = "latest"
-codex = "latest"
-oh-my-pi = { version = "latest", rename_exe = "omp" }
+# os = ["linux"]: Windows installs the same tool with scoop (packages/windows/scoop),
+# so the two never put the same command on PATH.
+claude = { version = "latest", os = ["linux"] }
+codex = { version = "latest", os = ["linux"] }
+oh-my-pi = { version = "latest", rename_exe = "omp", os = ["linux"] }
 "npm:happy" = { version = "latest", allow_builds = ["happy"] }
-"npm:@opencode/cli" = { version = "latest", allow_builds = ["@opencode/cli"] }
+"npm:@opencode/cli" = { version = "latest", allow_builds = ["@opencode/cli"], os = ["linux"] }
 "npm:@earendil-works/pi-server" = "latest"
 "npm:@gsd-build/sdk" = { version = "latest", aube_args = "--allow-low-downloads" }
 "npm:@kaitranntt/ccs" = "latest"
@@ -41,11 +43,11 @@ vercel = { version = "latest", allow_builds = ["esbuild"], trust_policy_excludes
 "pypi:trafilatura" = { version = "latest", uvx_args = "--python 3.14" }
 "pypi:wallapop-mcp" = { version = "latest", uvx_args = "--python 3.14" }
 bun = "latest"
-ruff = "latest"
-ty = "latest"
-git-filter-repo = "latest"
+ruff = { version = "latest", os = ["linux"] }
+ty = { version = "latest", os = ["linux"] }
+git-filter-repo = { version = "latest", os = ["linux"] }
 "npm:socket" = "latest"
-"github:router-for-me/CLIProxyAPI" = "latest"
+"github:router-for-me/CLIProxyAPI" = { version = "latest", os = ["linux"] }
 
 # -- Windows only ---------------------------------------------------------------
 # os = ["windows"] keeps them off Linux, while `mise lock` on Linux still locks them
