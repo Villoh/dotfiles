@@ -35,12 +35,17 @@ type app struct {
 	tab       int
 	busy      string // title of the running step, "" when idle
 	status    string
-	lines     []string
-	logState  ui.ListState
-	deps      []dep
-	sourceDir string
-	repo      repoInfo
-	repoOK    bool
+	statusErr bool
+
+	scheme     *scheme // M3 colors of the frame (m3.go)
+	schemeSeed ui.Color
+	schemeDark bool
+	lines      []string
+	logState   ui.ListState
+	deps       []dep
+	sourceDir  string
+	repo       repoInfo
+	repoOK     bool
 
 	mode               string
 	keyFile, trustFile string
@@ -149,127 +154,165 @@ func (a *app) selection() map[string]any {
 	return sel
 }
 
+// steps are the destinations of the navigation rail.
+var steps = []struct{ icon, label, title, blurb string }{
+	{"build", "Setup", "Prerequisites", "Installs Git, Gpg4win and chezmoi with winget, and clones the repository."},
+	{"key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
+	{"tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
+	{"inventory_2", "Packages", "Packages", "What run_once_00_windows-install installs, instead of asking with fzf."},
+	{"rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
+}
+
 func (a *app) view(c *ui.Context) {
-	t := c.Theme()
-	ui.Column(c).Fill().Padding(16).Gap(12).Children(func() {
-		ui.Row(c).Gap(8).Children(func() {
-			ui.Text(c, "Villoh/dotfiles installer").FontSize(20).Bold()
-			ui.Spacer(c)
+	s := a.themed(c)
+	ui.Row(c).Fill().Children(func() {
+		// Navigation rail.
+		ui.Column(c).Width(96).FillHeight().PaddingY(16).Gap(12).AlignItems(ui.Center).Children(func() {
+			ui.Icon(c, icons["terminal"]).FontSize(28).TextColor(s.Primary).Margin(4, 0, 20, 0)
+			for i, st := range steps {
+				a.railItem(c, i, st.icon, st.label)
+			}
+		})
+		// Content.
+		ui.Column(c).Grow(1).Shrink(1).FillHeight().Padding(16, 24, 16, 8).Gap(16).Children(func() {
+			st := steps[a.tab]
+			ui.Row(c).Gap(12).Children(func() {
+				ui.Column(c).Gap(4).Grow(1).Shrink(1).Children(func() {
+					ui.Text(c, st.title).FontSize(28).TextColor(s.OnSurface)
+					ui.Text(c, st.blurb).FontSize(14).TextColor(s.OnSurfaceVariant)
+				})
+				if a.busy != "" {
+					ui.Text(c, a.busy+"...").FontSize(14).TextColor(s.OnSurfaceVariant)
+				}
+			})
 			if a.busy != "" {
-				ui.Spinner(c)
-				ui.Text(c, a.busy+"...").TextColor(t.TextMuted)
+				ui.Progress(c, -1).Label(a.busy)
 			}
-		})
-		ui.Tabs(c, &a.tab, "1. Prerequisites", "2. GPG key", "3. Profile", "4. Packages", "5. Install")
-		ui.Scroll(c.Key(a.tab)).Grow(1).Gap(12).Children(func() {
-			switch a.tab {
-			case 0:
-				a.prereqView(c)
-			case 1:
-				a.keyView(c)
-			case 2:
-				a.profileView(c)
-			case 3:
-				a.packagesView(c)
-			case 4:
-				a.installView(c)
+			ui.Scroll(c.Key(a.tab)).Grow(1).Gap(16).Children(func() {
+				switch a.tab {
+				case 0:
+					a.prereqView(c)
+				case 1:
+					a.keyView(c)
+				case 2:
+					a.profileView(c)
+				case 3:
+					a.packagesView(c)
+				case 4:
+					a.installView(c)
+				}
+			})
+			if a.status != "" {
+				a.banner(c, a.statusErr, a.status)
 			}
+			a.logView(c)
 		})
-		if a.status != "" {
-			ui.Text(c, a.status).TextColor(t.Warning)
-		}
+	})
+}
+
+func (a *app) logView(c *ui.Context) {
+	s := a.scheme
+	ui.Column(c).Height(160).Background(s.SurfaceContainer).Radius(16).Padding(12, 16).Gap(8).Children(func() {
+		ui.Row(c).Gap(8).Children(func() {
+			ui.Icon(c, icons["terminal"]).FontSize(18).TextColor(s.OnSurfaceVariant)
+			ui.Text(c, "Log").FontSize(14).FontWeight(500).TextColor(s.OnSurfaceVariant)
+		})
 		ui.List(c, &a.logState, len(a.lines), func(i int) {
-			ui.Text(c, a.lines[i]).FontSize(12).TextColor(t.TextMuted)
-		}).Height(150).Padding(8).Background(t.Surface).Radius(6).Children(func() {
+			ui.Text(c, a.lines[i]).FontSize(12).TextColor(s.OnSurfaceVariant)
+		}).Grow(1).Children(func() {
 			if len(a.lines) == 0 {
-				ui.Text(c, "Log").FontSize(12).TextColor(t.TextMuted)
+				ui.Text(c, "Nothing yet.").FontSize(12).TextColor(s.OnSurfaceVariant.Alpha(0.7))
 			}
 		})
 	})
 }
 
-func (a *app) muted(c *ui.Context, s string) {
-	ui.Text(c, s).TextColor(c.Theme().TextMuted)
+func (a *app) muted(c *ui.Context, text string) {
+	ui.Text(c, text).FontSize(14).TextColor(a.scheme.OnSurfaceVariant)
+}
+
+func (a *app) sectionTitle(c *ui.Context, text string) {
+	ui.Text(c, text).FontSize(16).FontWeight(500).TextColor(a.scheme.OnSurface)
 }
 
 func (a *app) needRepo(c *ui.Context) bool {
 	if !a.repoOK {
-		a.muted(c, "Run step 1 first: the choices here come from the cloned repository.")
+		a.banner(c, true, "Run Setup first: the choices here come from the cloned repository.")
 	}
 	return a.repoOK
 }
 
 func (a *app) prereqView(c *ui.Context) {
-	t := c.Theme()
-	a.muted(c, "Installs the bootstrap tools with winget and clones the repository with Git.")
-	for _, d := range a.deps {
-		ui.Row(c).Gap(12).Children(func() {
-			ui.Text(c, d.Name).Width(140)
-			if d.Path != "" {
-				ui.Text(c, "✓ installed").TextColor(t.Success).Width(110)
-				a.muted(c, d.Path)
-			} else {
-				ui.Text(c, "✗ missing").TextColor(t.Danger).Width(110)
-				a.muted(c, "winget: "+d.WingetID)
+	a.card(c, func() {
+		for _, d := range a.deps {
+			body := d.Path
+			if d.Path == "" {
+				body = "Missing. winget: " + d.WingetID
 			}
-		})
-	}
-	ui.Row(c).Gap(12).Children(func() {
-		ui.Text(c, "Repository").Width(140)
-		if a.repoOK {
-			ui.Text(c, "✓ cloned").TextColor(t.Success).Width(110)
-		} else {
-			ui.Text(c, "✗ not cloned").TextColor(t.Danger).Width(110)
+			a.listItem(c, d.Path != "", d.Name, body)
 		}
-		a.muted(c, a.sourceDir)
+		repo := a.sourceDir
+		if !a.repoOK {
+			repo = "Not cloned yet: " + a.sourceDir
+		}
+		a.listItem(c, a.repoOK, "Repository", repo)
 	})
 	ui.Row(c).Gap(8).Children(func() {
-		if ui.PrimaryButton(c, "Install missing tools and clone").Disabled(a.busy != "").Clicked() {
+		if a.button(c, filled, "Install missing tools and clone", a.busy != "") {
 			a.step("Preparing", a.prepare)
 		}
-		if ui.Button(c, "Check again").Disabled(a.busy != "").Clicked() {
+		if a.button(c, outlined, "Check again", a.busy != "") {
 			a.step("Checking", func() error { a.checkDeps(); return nil })
 		}
 	})
 }
 
 func (a *app) keyView(c *ui.Context) {
-	t := c.Theme()
-	ui.RadioGroup(c, func() {
-		ui.Radio(c, &a.mode, modePersonal, "Personal: decrypt the encrypted files with my GPG key")
-		ui.Radio(c, &a.mode, modeSecondary, "Secondary: skip encrypted files (identities, work config, secrets)")
-	}).Gap(8).Label("Flow")
+	ui.Row(c).Gap(12).AlignItems(ui.Stretch).Children(func() {
+		if a.choiceCard(c, a.mode == modePersonal, "person", "Personal",
+			"Decrypt the encrypted files with my GPG key.") {
+			a.mode = modePersonal
+		}
+		if a.choiceCard(c, a.mode == modeSecondary, "devices", "Secondary",
+			"Skip encrypted files: identities, work config and secrets.") {
+			a.mode = modeSecondary
+		}
+	})
 	if a.mode == modeSecondary {
-		a.muted(c, "chezmoi apply will run with --exclude=encrypted. Configure Git and SSH for this machine yourself.")
+		a.muted(c, "chezmoi apply runs with --exclude=encrypted. Configure Git and SSH for this machine yourself.")
 		return
 	}
 	if !a.needRepo(c) {
 		return
 	}
-	a.muted(c, "Import the private key and ownertrust from your secure backup. Never put them in the repository.")
-	a.fileRow(c, "Secret key", &a.keyFile, "gpg-secret-<KEYID>.asc", []string{"asc", "gpg", "key"})
-	a.fileRow(c, "Ownertrust", &a.trustFile, "gpg-ownertrust.txt (optional)", []string{"txt"})
-	ui.Row(c).Gap(12).Children(func() {
-		if ui.PrimaryButton(c, "Import").Disabled(a.busy != "" || a.keyFile == "").Clicked() {
-			key, trust := a.keyFile, a.trustFile
-			a.step("Importing key", func() error { return a.importKey(key, trust) })
-		}
-		if ui.Button(c, "Check again").Disabled(a.busy != "").Clicked() {
-			a.step("Checking key", func() error { a.checkKey(); return nil })
-		}
+	a.card(c, func() {
+		a.sectionTitle(c, "Import from your secure backup")
+		a.muted(c, "Never put the key files in the repository.")
+		a.fileRow(c, "Secret key", &a.keyFile, "gpg-secret-<KEYID>.asc", []string{"asc", "gpg", "key"})
+		a.fileRow(c, "Ownertrust", &a.trustFile, "gpg-ownertrust.txt (optional)", []string{"txt"})
+		ui.Row(c).Gap(8).Children(func() {
+			if a.button(c, filled, "Import", a.busy != "" || a.keyFile == "") {
+				key, trust := a.keyFile, a.trustFile
+				a.step("Importing key", func() error { return a.importKey(key, trust) })
+			}
+			if a.button(c, outlined, "Check again", a.busy != "") {
+				a.step("Checking key", func() error { a.checkKey(); return nil })
+			}
+		})
+	})
+	a.card(c, func() {
 		if a.keyOK {
-			ui.Text(c, "✓ key "+a.repo.Recipient+" available").TextColor(t.Success)
+			a.listItem(c, true, "Key "+a.repo.Recipient, "Available to GnuPG")
 		} else {
-			ui.Text(c, "✗ key "+a.repo.Recipient+" not found").TextColor(t.Danger)
+			a.listItem(c, false, "Key "+a.repo.Recipient, "Not found. Import it above.")
 		}
 	})
 }
 
 func (a *app) fileRow(c *ui.Context, label string, path *string, placeholder string, exts []string) {
 	ui.Row(c.Key(label)).Gap(8).Children(func() {
-		ui.Text(c, label).Width(100)
-		ui.TextInput(c, path).Placeholder(placeholder).Grow(1)
-		if ui.Button(c, "Browse...").Clicked() && a.win != nil {
+		ui.TextInput(c, path).Placeholder(placeholder).Label(label).Grow(1).Height(40).Radius(8)
+		if a.button(c, tonal, "Browse...", false) && a.win != nil {
 			go func() {
 				paths, err := mygo.Dialog.Open(mygo.OpenDialogOptions{
 					Parent: a.win, Title: label,
@@ -287,23 +330,38 @@ func (a *app) profileView(c *ui.Context) {
 	if !a.needRepo(c) {
 		return
 	}
-	ui.RadioGroup(c, func() {
-		ui.Radio(c, &a.profile, "full", "full: every module for Windows, full package lists")
-		ui.Radio(c, &a.profile, "minimal", "minimal: CLI and shell configs only ("+strings.Join(a.repo.MinimalOff, ", ")+" off)")
-		ui.Radio(c, &a.profile, "custom", "custom: choose modules one by one")
-	}).Gap(8).Label("Install profile")
-	ui.Checkbox(c, &a.secrets, "Personal secrets (owner only: fetches API keys from Bitwarden)")
+	ui.Row(c).Gap(12).AlignItems(ui.Stretch).Children(func() {
+		for _, p := range []struct{ id, body string }{
+			{"full", "Every module for Windows and the full package lists."},
+			{"minimal", "CLI and shell configs only. Turns off " + strings.Join(a.repo.MinimalOff, ", ") + "."},
+			{"custom", "Choose the modules one by one."},
+		} {
+			if a.choiceCard(c, a.profile == p.id, "", p.id, p.body) {
+				a.profile = p.id
+			}
+		}
+	})
+	a.card(c, func() {
+		ui.Row(c).Gap(16).Children(func() {
+			ui.Column(c).Gap(2).Grow(1).Shrink(1).Children(func() {
+				ui.Text(c, "Personal secrets").FontSize(16).TextColor(a.scheme.OnSurface)
+				a.muted(c, "Owner only: fetches API keys from Bitwarden.")
+			})
+			ui.Switch(c, &a.secrets).Label("Personal secrets")
+		})
+	})
 	if a.profile != "custom" {
 		return
 	}
-	ui.Text(c, "Modules").Bold()
-	ui.Row(c).Wrap().Gap(8).Children(func() {
-		for _, m := range a.repo.Modules {
-			on := a.modules[m]
-			if ui.Checkbox(c.Key(m), &on, m).Width(170).Changed() {
+	a.card(c, func() {
+		a.sectionTitle(c, "Modules")
+		ui.Row(c).Wrap().Gap(8).Children(func() {
+			for _, m := range a.repo.Modules {
+				on := a.modules[m]
+				a.filterChip(c, &on, m)
 				a.modules[m] = on
 			}
-		}
+		})
 	})
 }
 
@@ -311,22 +369,38 @@ func (a *app) packagesView(c *ui.Context) {
 	if !a.needRepo(c) {
 		return
 	}
+	s := a.scheme
 	if a.profile == "custom" {
 		ui.Row(c).Gap(12).Children(func() {
-			ui.Text(c, "Package lists")
+			a.sectionTitle(c, "Package lists")
 			i := map[string]int{"minimal": 0, "full": 1}[a.pkgVariant]
 			if ui.Segmented(c, &i, "minimal", "full").Changed() {
 				a.pkgVariant = []string{"minimal", "full"}[i]
 			}
 		})
 	} else {
-		a.muted(c, "Package lists: "+a.variant()+" (from the install profile). mise and PowerShell modules are always installed.")
+		a.muted(c, "Package lists: "+a.variant()+", from the install profile. mise and the PowerShell modules are always installed.")
 	}
-	labels := make([]string, len(a.pkgs))
-	for i, p := range a.pkgs {
-		labels[i] = fmt.Sprintf("%s (%d/%d)", p.title, len(a.chosen(i)), len(a.items(i)))
-	}
-	ui.Tabs(c, &a.pkgTab, labels...)
+	ui.Row(c).Gap(8).Children(func() {
+		for i, p := range a.pkgs {
+			on := a.pkgTab == i
+			label := fmt.Sprintf("%s  %d/%d", p.title, len(a.chosen(i)), len(a.items(i)))
+			bg, fg := s.Surface.Alpha(0), s.OnSurfaceVariant
+			if on {
+				bg, fg = s.SecondaryContainer, s.OnSecondaryContainer
+			}
+			b := ui.ButtonBase(c.Key(p.key)).Label(p.title).AccessSelected(on).Role(ui.RoleTab).Height(32).PaddingX(16).Radius(full)
+			if !on {
+				b.Border(1, s.OutlineVariant)
+			}
+			b.Background(stateFill(b, bg, fg)).Children(func() {
+				ui.Text(c, label).FontSize(14).FontWeight(500).TextColor(fg).SingleLine()
+			})
+			if b.Clicked() {
+				a.pkgTab = i
+			}
+		}
+	})
 	p := a.pkgs[a.pkgTab]
 	var shown []string
 	for _, id := range a.items(a.pkgTab) {
@@ -334,26 +408,32 @@ func (a *app) packagesView(c *ui.Context) {
 			shown = append(shown, id)
 		}
 	}
-	ui.Row(c.Key(p.key)).Gap(8).Children(func() {
-		ui.SearchField(c, &p.query).Placeholder("Filter " + p.title).Grow(1)
-		if ui.Button(c, "All").Clicked() {
+	ui.Row(c.Key(p.key + "/search")).Gap(8).Children(func() {
+		ui.SearchField(c, &p.query).Placeholder("Filter "+p.title).Grow(1).Height(48).Radius(full).
+			Background(s.SurfaceContainerHigh).Border(0, s.Surface)
+		if a.button(c, outlined, "All", false) {
 			for _, id := range shown {
 				delete(p.off, id)
 			}
 		}
-		if ui.Button(c, "None").Clicked() {
+		if a.button(c, outlined, "None", false) {
 			for _, id := range shown {
 				p.off[id] = true
 			}
 		}
 	})
-	ui.Column(c.Key(p.key + "/list")).Gap(2).Children(func() {
-		for _, id := range shown {
-			on := !p.off[id]
-			if ui.Checkbox(c.Key(id), &on, id).Changed() {
-				p.off[id] = !on
+	a.card(c.Key(p.key+"/list"), func() {
+		ui.Column(c).Gap(4).Children(func() {
+			for _, id := range shown {
+				on := !p.off[id]
+				if ui.Checkbox(c.Key(id), &on, id).Changed() {
+					p.off[id] = !on
+				}
 			}
-		}
+			if len(shown) == 0 {
+				a.muted(c, "No packages match.")
+			}
+		})
 	})
 }
 
@@ -361,35 +441,40 @@ func (a *app) installView(c *ui.Context) {
 	if !a.needRepo(c) {
 		return
 	}
-	row := func(k, v string) {
-		ui.Row(c.Key(k)).Gap(12).Children(func() {
-			ui.Text(c, k).Width(140)
-			ui.Text(c, v)
-		})
-	}
-	row("Flow", a.mode)
-	row("Profile", a.profile)
-	row("Secrets", fmt.Sprint(a.secrets))
-	for i, p := range a.pkgs {
-		row(p.title, fmt.Sprintf("%d of %d packages", len(a.chosen(i)), len(a.items(i))))
-	}
-	row("Source", a.sourceDir)
+	s := a.scheme
+	a.card(c, func() {
+		row := func(k, v string) {
+			ui.Row(c.Key(k)).Gap(12).PaddingY(4).Children(func() {
+				ui.Text(c, k).FontSize(14).TextColor(s.OnSurfaceVariant).Width(160)
+				ui.Text(c, v).FontSize(14).TextColor(s.OnSurface).Grow(1).Shrink(1)
+			})
+		}
+		row("Flow", a.mode)
+		row("Profile", a.profile)
+		row("Secrets", map[bool]string{true: "on", false: "off"}[a.secrets])
+		for i, p := range a.pkgs {
+			row(p.title, fmt.Sprintf("%d of %d packages", len(a.chosen(i)), len(a.items(i))))
+		}
+		row("Source", a.sourceDir)
+	})
 	ready := a.mode == modeSecondary || a.keyOK
 	if !ready {
-		ui.Text(c, "Import the GPG key first (step 2), or switch to the secondary flow.").TextColor(c.Theme().Warning)
+		a.banner(c, true, "Import the GPG key first, or switch to the secondary flow.")
 	}
-	a.muted(c, "chezmoi init runs here; chezmoi apply opens in a console window, where its scripts may ask questions and UAC may prompt.")
-	if ui.PrimaryButton(c, "Install").Disabled(a.busy != "" || !ready).Clicked() {
-		p := a.makePlan()
-		a.step("Installing", func() error { return a.install(p) })
-	}
+	a.muted(c, "chezmoi init runs here. chezmoi apply opens in a console window, where its scripts may ask questions and UAC may prompt.")
+	ui.Row(c).Children(func() { // a column would stretch the button
+		if a.button(c, filled, "Install", a.busy != "" || !ready) {
+			p := a.makePlan()
+			a.step("Installing", func() error { return a.install(p) })
+		}
+	})
 }
 
 func main() {
 	a := newApp()
 	mygo.App.WhenReady(func() {
 		a.win = mygo.NewWindow(mygo.WindowOptions{
-			Title: "Dotfiles installer", Width: 920, Height: 720, MinWidth: 720, MinHeight: 540,
+			Title: "Dotfiles installer", Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
 			Content: ui.View(a.view),
 		})
 		go a.checkDeps()

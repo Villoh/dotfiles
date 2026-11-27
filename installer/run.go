@@ -111,7 +111,7 @@ func (a *app) step(title string, fn func() error) {
 			a.busy = ""
 			if err != nil {
 				a.logf("ERROR: %v", err)
-				a.status = title + " failed: " + err.Error()
+				a.status, a.statusErr = title+" failed: "+err.Error(), true
 			}
 		})
 	}()
@@ -325,7 +325,9 @@ func (a *app) install(p plan) error {
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("chezmoi apply: %w", err)
 	}
-	a.post(func() { a.status = "Done. Open a new terminal; on Windows run setup-gpg-ssh once for SSH through GPG." })
+	a.post(func() {
+		a.status, a.statusErr = "Done. Open a new terminal; run setup-gpg-ssh once for SSH through GPG.", false
+	})
 	a.logf("Install finished.")
 	return nil
 }

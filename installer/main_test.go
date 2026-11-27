@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"image/png"
 	"os"
 	"slices"
@@ -86,12 +87,39 @@ func TestPackagesView(t *testing.T) {
 	if got := a.selection()["winget>"].([]string); !slices.Equal(got, []string{"Git.Git"}) {
 		t.Errorf("minimal winget> %q", got)
 	}
-	// INSTALLER_SNAPSHOT=/tmp/x.png saves the frame to look at.
-	if path := os.Getenv("INSTALLER_SNAPSHOT"); path != "" {
-		a.profile = "full"
-		tt.Advance(0)
-		f, _ := os.Create(path)
-		png.Encode(f, tt.Image())
-		f.Close()
+}
+
+// Saves every page as PNGs to look at, with the real repository:
+// INSTALLER_SNAPSHOT=/tmp/shot go test -run Snapshot
+// Text needs Pango (on NixOS: pango, glib, cairo, fontconfig, harfbuzz in LD_LIBRARY_PATH).
+func TestSnapshot(t *testing.T) {
+	prefix := os.Getenv("INSTALLER_SNAPSHOT")
+	if prefix == "" {
+		t.Skip("INSTALLER_SNAPSHOT not set")
+	}
+	r, err := loadRepo("..")
+	if err != nil {
+		t.Fatal(err)
+	}
+	a := newApp()
+	a.setRepo(r)
+	a.keyOK = true
+	a.deps[0].Path = `C:\Program Files\Git\cmd\git.exe`
+	a.lines = []string{"> winget install -e --id GnuPG.Gpg4win", "Successfully installed"}
+	for _, dark := range []bool{true, false} {
+		tt := ui.NewTesterWith(a.view, 1000, 760, ui.TesterOptions{Dark: dark})
+		for i := range steps {
+			a.tab = i
+			if i == 2 {
+				a.profile = "custom"
+			}
+			tt.Frame()
+			f, err := os.Create(fmt.Sprintf("%s-%d-%v.png", prefix, i, map[bool]string{true: "dark", false: "light"}[dark]))
+			if err != nil {
+				t.Fatal(err)
+			}
+			png.Encode(f, tt.Image())
+			f.Close()
+		}
 	}
 }
