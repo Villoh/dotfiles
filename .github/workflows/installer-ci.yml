@@ -59,6 +59,15 @@ jobs:
         run: >-
           shellcheck install.sh install-gui.sh
           installer/packaging/appimage.sh
+      # The release tag (installer-v0.1.10) gives the version the Info page
+      # shows; any other run shows dev-<commit>.
+      - name: Version
+        run: |
+          case "$GITHUB_REF" in
+            refs/tags/installer-v*) v="${GITHUB_REF_NAME#installer-v}" ;;
+            *) v="dev-${GITHUB_SHA::7}" ;;
+          esac
+          echo "VERSION_FLAG=-X main.version=$v" >> "$GITHUB_ENV"
       - name: Build
         working-directory: installer
         env:
@@ -66,7 +75,7 @@ jobs:
           GOARCH: amd64
           CGO_ENABLED: "0"
         run: >-
-          go build -trimpath -ldflags "-s -w -H=windowsgui"
+          go build -trimpath -ldflags "-s -w -H=windowsgui $VERSION_FLAG"
           -tags mygo_nodownload,mygo_noinspector
           -o ../dist/dotfiles-installer.exe .
       # -I: the standard interpreter path, whichever Go builds it (nixpkgs'
@@ -79,7 +88,8 @@ jobs:
           CGO_ENABLED: "0"
         run: |
           bin="$RUNNER_TEMP/dotfiles-installer"
-          go build -trimpath -ldflags "-s -w -I /lib64/ld-linux-x86-64.so.2" \
+          go build -trimpath \
+            -ldflags "-s -w -I /lib64/ld-linux-x86-64.so.2 $VERSION_FLAG" \
             -tags mygo_nodownload,mygo_noinspector -o "$bin" .
           out=../dist/dotfiles-installer-x86_64.AppImage
           packaging/appimage.sh "$bin" "$out"

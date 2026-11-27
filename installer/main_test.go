@@ -198,13 +198,13 @@ func TestNixosCommands(t *testing.T) {
 	}
 }
 
-// The rail ends with the Log page on every OS. Expand, in the panel under any
+// The rail ends with the Log and Info pages on every OS. Expand, in the panel under any
 // other page, opens it, and the rail goes back.
 func TestLogPage(t *testing.T) {
 	for _, goos := range []string{"windows", "linux"} {
 		p := newAppFor(goos).pages()
-		if p[len(p)-1].id != "log" {
-			t.Errorf("%s: the rail ends with %q, want log", goos, p[len(p)-1].id)
+		if p[len(p)-2].id != "log" || p[len(p)-1].id != "info" {
+			t.Errorf("%s: the rail ends with %q, %q, want log, info", goos, p[len(p)-2].id, p[len(p)-1].id)
 		}
 	}
 	a := newAppFor("linux")
@@ -507,5 +507,52 @@ func TestWingetInstallArgs(t *testing.T) {
 		if got := strings.Join(wingetInstallArgs(d), " "); got != want[d.WingetID] {
 			t.Errorf("%s: %s\nwant %s", d.WingetID, got, want[d.WingetID])
 		}
+	}
+}
+
+// The version comes from the build, else from the commit, else it is "dev".
+func TestInstallerVersion(t *testing.T) {
+	old := version
+	defer func() { version = old }()
+	version = "1.2.3"
+	if v, _ := installerVersion(); v != "1.2.3" {
+		t.Errorf("injected version: %q", v)
+	}
+	version = ""
+	if v, _ := installerVersion(); v != "dev" && !strings.HasPrefix(v, "dev-") {
+		t.Errorf("no version: %q, want dev or dev-<commit>", v)
+	}
+}
+
+// The Info page shows the sections on both OSes, what is pinned there, and
+// copies the same text.
+func TestInfoPage(t *testing.T) {
+	old := version
+	defer func() { version = old }()
+	version = "9.9.9"
+	for goos, pinned := range map[string]string{"windows": "Atlas Manager", "linux": "chezmoi (static build)"} {
+		a := newAppFor(goos)
+		a.linuxOS = osInfo{id: "fedora"}
+		a.goTo("info")
+		tt := ui.NewTester(a.view, 1000, 1000)
+		for _, want := range []string{"9.9.9", pinned, "Repository", "Log file", "Releases"} {
+			if !tt.HasText(want) {
+				t.Errorf("%s: no %q on the Info page: %q", goos, want, tt.Texts())
+			}
+		}
+		text := a.infoText()
+		for _, want := range []string{"Version: 9.9.9", pinned, "Repository: " + a.sourceDir} {
+			if !strings.Contains(text, want) {
+				t.Errorf("%s: infoText lacks %q:\n%s", goos, want, text)
+			}
+		}
+		if err := tt.Click("Copy this page"); err != nil || !a.justCopied("info") {
+			t.Errorf("%s: copying the page: %v", goos, err)
+		}
+	}
+	// Windows shows the pinned Atlas Manager, Linux the pinned chezmoi, not each other's.
+	w, l := newAppFor("windows"), newAppFor("linux")
+	if strings.Contains(w.infoText(), "static build") || strings.Contains(l.infoText(), "Atlas Manager") {
+		t.Errorf("pins of the other OS:\n%s\n%s", w.infoText(), l.infoText())
 	}
 }

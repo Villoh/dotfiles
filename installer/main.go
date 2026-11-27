@@ -218,11 +218,14 @@ func (a *app) selection() map[string]any {
 // page is a destination of the navigation rail.
 type page struct{ id, icon, label, title, blurb string }
 
-// logPage is the last destination of the rail on every OS: the whole log.
+// logPage is the destination after the steps on every OS: the whole log.
 var logPage = page{"log", "terminal", "Log", "Log", "Everything the installer runs. Copy it, save it, or open it in a window of its own."}
 
+// infoPage comes after it: the installer's version, what it pins, where it keeps things.
+var infoPage = page{"info", "info", "Info", "Info", "This installer: its version, what it pins, where it keeps things and where it comes from."}
+
 // pages are the rail's destinations on this OS.
-func (a *app) pages() []page { return append(a.stepPages(), logPage) }
+func (a *app) pages() []page { return append(a.stepPages(), logPage, infoPage) }
 
 // stepPages are the installation steps. Linux has no Packages page:
 // NixOS/Home Manager installs its packages.
@@ -333,6 +336,8 @@ func (a *app) pageView(c *ui.Context, st page) {
 			a.packagesView(c)
 		case "install":
 			a.installView(c)
+		case "info":
+			a.infoView(c)
 		}
 	})
 }
