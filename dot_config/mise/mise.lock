@@ -620,6 +620,90 @@ checksum = "sha256:764a79b0734338be5c191ff72b72a1441f38cdfcbc40b5d40e4de13d648ca
 url = "https://github.com/router-for-me/CLIProxyAPI/releases/download/v8.1.3/CLIProxyAPI_8.1.3_windows_amd64.zip"
 url_api = "https://api.github.com/repos/router-for-me/CLIProxyAPI/releases/assets/790045574"
 
+[[tools."github:storytold/deckcraft"]]
+version = "0.19.1"
+backend = "github:storytold/deckcraft"
+
+[tools."github:storytold/deckcraft".options]
+asset_pattern = "deckcraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/deckcraft"."platforms.windows-x64"]
+checksum = "sha256:f2b46bf227b389c3e5443080b5c5380d70351706cc5137c1be7014e71152d52d"
+url = "https://github.com/storytold/deckcraft/releases/download/v0.19.1/deckcraft-0.19.1-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/deckcraft/releases/assets/792810064"
+
+[[tools."github:storytold/filmcraft"]]
+version = "0.20.1"
+backend = "github:storytold/filmcraft"
+
+[tools."github:storytold/filmcraft".options]
+asset_pattern = "filmcraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/filmcraft"."platforms.windows-x64"]
+checksum = "sha256:bfb00e2089df5f13e6f76aab117a4572a8d005d009c5818989688b140a502710"
+url = "https://github.com/storytold/filmcraft/releases/download/v0.20.1/filmcraft-0.20.1-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/filmcraft/releases/assets/737426146"
+
+[[tools."github:storytold/gridcraft"]]
+version = "0.19.1"
+backend = "github:storytold/gridcraft"
+
+[tools."github:storytold/gridcraft".options]
+asset_pattern = "gridcraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/gridcraft"."platforms.windows-x64"]
+checksum = "sha256:0b4bf8535f4904fac654326a360ff6d74ea6f4d184a8257c106388fafe74c9ac"
+url = "https://github.com/storytold/gridcraft/releases/download/v0.19.1/gridcraft-0.19.1-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/gridcraft/releases/assets/737373470"
+
+[[tools."github:storytold/pdfcraft"]]
+version = "0.22.0"
+backend = "github:storytold/pdfcraft"
+
+[tools."github:storytold/pdfcraft".options]
+asset_pattern = "pdfcraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/pdfcraft"."platforms.windows-x64"]
+checksum = "sha256:193394d15b923510e917912c0142b38119a8d4369b30693d97ef086444e9e314"
+url = "https://github.com/storytold/pdfcraft/releases/download/v0.22.0/pdfcraft-0.22.0-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/pdfcraft/releases/assets/781277224"
+
+[[tools."github:storytold/photocraft"]]
+version = "0.23.1"
+backend = "github:storytold/photocraft"
+
+[tools."github:storytold/photocraft".options]
+asset_pattern = "photocraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/photocraft"."platforms.windows-x64"]
+checksum = "sha256:6317e764ecfa804227c38079311bea489283ab383ef040c81ef2fd6d86bd60b1"
+url = "https://github.com/storytold/photocraft/releases/download/v0.23.1/photocraft-0.23.1-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/photocraft/releases/assets/737933580"
+
+[[tools."github:storytold/soundcraft"]]
+version = "0.20.1"
+backend = "github:storytold/soundcraft"
+
+[tools."github:storytold/soundcraft".options]
+asset_pattern = "soundcraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/soundcraft"."platforms.windows-x64"]
+checksum = "sha256:9769223e26f727866b249fc5176caa8b3791a98c7d89e901b78f5f48aff03b82"
+url = "https://github.com/storytold/soundcraft/releases/download/v0.20.1/soundcraft-0.20.1-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/soundcraft/releases/assets/737505202"
+
+[[tools."github:storytold/wordcraft"]]
+version = "0.19.1"
+backend = "github:storytold/wordcraft"
+
+[tools."github:storytold/wordcraft".options]
+asset_pattern = "wordcraft-*-windows-x64-portable.zip"
+
+[tools."github:storytold/wordcraft"."platforms.windows-x64"]
+checksum = "sha256:15156fb90ad8d1fee5ba154ff87a76e9c85ebe0d013ffadb6e5ff776ec1ae8f2"
+url = "https://github.com/storytold/wordcraft/releases/download/v0.19.1/wordcraft-0.19.1-windows-x64-portable.zip"
+url_api = "https://api.github.com/repos/storytold/wordcraft/releases/assets/792788696"
+
 [[tools."github:vertopolkaLF/silence"]]
 version = "2.5.0"
 backend = "github:vertopolkaLF/silence"

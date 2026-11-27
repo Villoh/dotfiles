@@ -67,6 +67,15 @@ aube = { version = "latest", os = ["windows"] }
 "github:yapfast/yapfast" = { version = "latest", os = ["windows"] }
 # Native Discord client. Only nightlies so far, published as prereleases.
 "github:ViceVerse-cz/Serein" = { version = "latest", prerelease = true, asset_pattern = "serein-*-Windows-X64.zip", os = ["windows"] }
+# ArtCraft "Crafting Apps" (early alpha, native Rust). Releases also ship .msi and symbols
+# zips, so pin the x64 portable zip (app exe + <app>-cli.exe); Start Menu shortcuts in shortcuts.json.
+"github:storytold/photocraft" = { version = "latest", asset_pattern = "photocraft-*-windows-x64-portable.zip", os = ["windows"] }
+"github:storytold/pdfcraft" = { version = "latest", asset_pattern = "pdfcraft-*-windows-x64-portable.zip", os = ["windows"] }
+"github:storytold/gridcraft" = { version = "latest", asset_pattern = "gridcraft-*-windows-x64-portable.zip", os = ["windows"] }
+"github:storytold/deckcraft" = { version = "latest", asset_pattern = "deckcraft-*-windows-x64-portable.zip", os = ["windows"] }
+"github:storytold/wordcraft" = { version = "latest", asset_pattern = "wordcraft-*-windows-x64-portable.zip", os = ["windows"] }
+"github:storytold/filmcraft" = { version = "latest", asset_pattern = "filmcraft-*-windows-x64-portable.zip", os = ["windows"] }
+"github:storytold/soundcraft" = { version = "latest", asset_pattern = "soundcraft-*-windows-x64-portable.zip", os = ["windows"] }
 # Former `cargo` inventory: my fork of agynio/pexels-cli (crate and binary `pexels`),
 # built from git with cargo from rustup (scoop).
 "cargo:https://github.com/Villoh/pexels-cli" = { version = "branch:main", os = ["windows"] }

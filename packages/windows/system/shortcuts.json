@@ -5,6 +5,13 @@
     { "name": "Serein", "tool": "github:ViceVerse-cz/Serein", "exe": "serein.exe" },
     { "name": "Hex", "tool": "github:anomalyco/hex", "exe": "hex.exe" },
     { "name": "Meiro", "tool": "github:elianiva/meiro", "exe": "meiro.exe" },
-    { "name": "Silence", "tool": "github:vertopolkaLF/silence", "exe": "silence.exe" }
+    { "name": "Silence", "tool": "github:vertopolkaLF/silence", "exe": "silence.exe" },
+    { "name": "PhotoCraft", "tool": "github:storytold/photocraft", "exe": "photocraft.exe" },
+    { "name": "PdfCraft", "tool": "github:storytold/pdfcraft", "exe": "pdfcraft.exe" },
+    { "name": "GridCraft", "tool": "github:storytold/gridcraft", "exe": "gridcraft.exe" },
+    { "name": "DeckCraft", "tool": "github:storytold/deckcraft", "exe": "deckcraft.exe" },
+    { "name": "WordCraft", "tool": "github:storytold/wordcraft", "exe": "wordcraft.exe" },
+    { "name": "FilmCraft", "tool": "github:storytold/filmcraft", "exe": "filmcraft.exe" },
+    { "name": "SoundCraft", "tool": "github:storytold/soundcraft", "exe": "soundcraft.exe" }
   ]
 }
