@@ -22,6 +22,7 @@ type repoInfo struct {
 
 	Winget   map[string][]string // "minimal"/"full" -> winget package IDs
 	Scoop    map[string][]string // "minimal"/"full" -> scoop app names
+	Mise     map[string][]string // "minimal"/"full" -> mise tools that run on Windows
 	Elevated []string            // winget IDs installed elevated
 }
 
@@ -91,11 +92,17 @@ func loadRepo(src, goos string) (repoInfo, error) {
 	if err != nil {
 		return r, err
 	}
-	r.Winget, r.Scoop = map[string][]string{}, map[string][]string{}
+	r.Winget, r.Scoop, r.Mise = map[string][]string{}, map[string][]string{}, map[string][]string{}
 	if goos != "windows" {
 		return r, nil
 	}
 	pkg := filepath.Join(src, "packages", "windows")
+	if r.Mise["full"], err = miseTools(filepath.Join(src, "dot_config", "mise", "config.toml")); err != nil {
+		return r, err
+	}
+	if r.Mise["minimal"], err = desktopTools(filepath.Join(pkg, "system", "shortcuts.json"), r.Mise["full"]); err != nil {
+		return r, err
+	}
 	for _, v := range []string{"minimal", "full"} {
 		file := map[string]string{"minimal": "minimal.json", "full": "packages.json"}[v]
 		if r.Winget[v], err = wingetIDs(filepath.Join(pkg, "winget", file)); err != nil {
@@ -141,6 +148,62 @@ func scoopApps(path string) ([]string, error) {
 	}
 	slices.Sort(names)
 	return names, nil
+}
+
+var (
+	miseToolRe = regexp.MustCompile(`^(?:"([^"]+)"|([^\s=#]+))\s*=\s*(.*)$`)
+	miseOSRe   = regexp.MustCompile(`\bos\s*=\s*\[([^\]]*)\]`)
+)
+
+// miseTools lists the [tools] of the mise config that run on Windows: those
+// without an os option or whose os includes windows. Same rule as
+// run_once_00_windows-install's Get-MiseTools.
+// shortcut: reads one line per tool, enough for this config; use a TOML parser
+// if entries ever span lines.
+func miseTools(path string) ([]string, error) {
+	b, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, nil // as readJSON: no file, no tools
+	}
+	if err != nil {
+		return nil, err
+	}
+	var tools []string
+	inTools := false
+	for _, line := range strings.Split(string(b), "\n") {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(line, "[") {
+			inTools = line == "[tools]"
+			continue
+		}
+		m := miseToolRe.FindStringSubmatch(line)
+		if !inTools || m == nil {
+			continue
+		}
+		if o := miseOSRe.FindStringSubmatch(m[3]); o != nil && !strings.Contains(o[1], "windows") {
+			continue
+		}
+		tools = append(tools, m[1]+m[2])
+	}
+	slices.Sort(tools)
+	return tools, nil
+}
+
+// desktopTools are the mise tools with a Start Menu shortcut: the apps the
+// minimal profile offers, since minimal is the dotfiles plus the desktop.
+func desktopTools(shortcuts string, tools []string) ([]string, error) {
+	var f struct{ Shortcuts []struct{ Tool string } }
+	if err := readJSON(shortcuts, &f); err != nil {
+		return nil, err
+	}
+	var out []string
+	for _, s := range f.Shortcuts {
+		if slices.Contains(tools, s.Tool) {
+			out = append(out, s.Tool)
+		}
+	}
+	slices.Sort(out)
+	return out, nil
 }
 
 func readJSON(path string, v any) error {
