@@ -120,6 +120,30 @@ func (a *app) setRepo(r repoInfo) {
 	}
 }
 
+// moduleOn is what the profile enables, as .chezmoi.toml.tmpl computes it:
+// full turns every module on, minimal all but MinimalOff, custom asks.
+func (a *app) moduleOn(m string) bool {
+	switch a.profile {
+	case "full":
+		return true
+	case "minimal":
+		return !slices.Contains(a.repo.MinimalOff, m)
+	}
+	return a.modules[m]
+}
+
+// toCustom switches to the custom profile starting from what the current
+// profile enables, so changing one module keeps the others.
+func (a *app) toCustom() {
+	if a.profile == "custom" {
+		return
+	}
+	for _, m := range a.repo.Modules {
+		a.modules[m] = a.moduleOn(m)
+	}
+	a.pkgVariant, a.profile = a.profile, "custom"
+}
+
 // variant is the package list (minimal or full) the profile installs.
 func (a *app) variant() string {
 	if a.profile == "custom" {
@@ -380,16 +404,26 @@ func (a *app) profileView(c *ui.Context) {
 			ui.Switch(c, &a.secrets).Label("Personal secrets")
 		})
 	})
-	if a.profile != "custom" {
-		return
-	}
 	a.card(c, func() {
-		a.sectionTitle(c, "Modules")
+		n := 0
+		for _, m := range a.repo.Modules {
+			if a.moduleOn(m) {
+				n++
+			}
+		}
+		a.sectionTitle(c, fmt.Sprintf("Modules  %d/%d", n, len(a.repo.Modules)))
+		if a.profile != "custom" {
+			a.muted(c, "What "+a.profile+" enables. Changing one switches to custom and keeps the rest.")
+		}
 		ui.Row(c).Wrap().Gap(8).Children(func() {
 			for _, m := range a.repo.Modules {
-				on := a.modules[m]
+				was := a.moduleOn(m)
+				on := was
 				a.filterChip(c, &on, m)
-				a.modules[m] = on
+				if on != was {
+					a.toCustom()
+					a.modules[m] = on
+				}
 			}
 		})
 	})
@@ -482,6 +516,17 @@ func (a *app) installView(c *ui.Context) {
 		row("Flow", a.mode)
 		row("Profile", a.profile)
 		row("Secrets", map[bool]string{true: "on", false: "off"}[a.secrets])
+		var off []string
+		for _, m := range a.repo.Modules {
+			if !a.moduleOn(m) {
+				off = append(off, m)
+			}
+		}
+		mods := fmt.Sprintf("%d of %d", len(a.repo.Modules)-len(off), len(a.repo.Modules))
+		if len(off) > 0 {
+			mods += ", off: " + strings.Join(off, ", ")
+		}
+		row("Modules", mods)
 		for i, p := range a.pkgs {
 			row(p.title, fmt.Sprintf("%d of %d packages", len(a.chosen(i)), len(a.items(i))))
 		}
