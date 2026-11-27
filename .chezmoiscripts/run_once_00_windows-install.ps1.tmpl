@@ -256,6 +256,19 @@ if ($selectedManagers -contains "powershell-modules") {
 # == PACKAGE INSTALLS ==========================================================
 
 # -- winget --------------------------------------------------------------------
+# --disable-interactivity: a package that would ask a question fails instead of
+# waiting (the elevated installs below run in a hidden window). Packages whose
+# manifest requires an install location get it here.
+$wingetLocations = @{
+    'Blizzard.BattleNet' = "${env:ProgramFiles(x86)}\Battle.net"
+}
+function WingetArgs {
+    param([string]$id)
+    $a = @('install', '--id', $id, '-e', '--accept-package-agreements', '--accept-source-agreements', '--disable-interactivity')
+    if ($wingetLocations.ContainsKey($id)) { $a += @('--location', $wingetLocations[$id]) }
+    return $a
+}
+
 if ($selectedManagers -contains "winget") {
     LogSection "winget"
     foreach ($id in $selectedWingetIds) {
@@ -265,7 +278,8 @@ if ($selectedManagers -contains "winget") {
             $summary.skip++
         } else {
             TryInstall "winget: $id" {
-                winget install --id $id --accept-package-agreements --accept-source-agreements -e
+                $wingetArgs = WingetArgs $id
+                winget @wingetArgs
             }
         }
     }
@@ -281,8 +295,10 @@ if ($selectedManagers -contains "winget-elevated") {
             $summary.skip++
         } else {
             $tmpScript = "$env:TEMP\winget-elevated-$pkg.ps1"
+            # Each argument single-quoted for the elevated script.
+            $quoted = (WingetArgs $pkg | ForEach-Object { "'" + ($_ -replace "'", "''") + "'" }) -join ' '
 @"
-winget install --id $pkg --accept-package-agreements --accept-source-agreements -e
+winget $quoted
 "@ | Set-Content $tmpScript
             Start-Process powershell.exe -Verb RunAs -WindowStyle Hidden -ArgumentList "-NoProfile", "-File", $tmpScript -Wait
             Remove-Item $tmpScript -ErrorAction SilentlyContinue
