@@ -39,15 +39,22 @@ runs `chezmoi apply`, where packages are chosen with fzf.
 
 ## One-shot install (Linux, CLI)
 
-On a working NixOS (or any Linux with Git, GnuPG and chezmoi installed):
+On a working NixOS, or any other Linux desktop:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/Villoh/dotfiles/main/install.sh | bash
 ```
 
-[`install.sh`](install.sh) does the same as `install.ps1` minus the packages:
-NixOS/Home Manager installs Git, GnuPG, OpenSSH and chezmoi, so it only checks
-them. It asks for the personal or secondary flow, runs `chezmoi init`, imports
+[`install.sh`](install.sh) does the same as `install.ps1` minus the package
+lists (NixOS/Home Manager installs Linux's packages). First it gets the missing
+prerequisites:
+
+| Missing | NixOS | Fedora, Ubuntu/Debian, Arch | Atomic (Bazzite, Silverblue) |
+| --- | --- | --- | --- |
+| chezmoi | prints the Home Manager line | chezmoi's static build into `~/.local/bin`, pinned and SHA-256 checked, no root | same |
+| git, gnupg | prints the Home Manager line | `sudo` with dnf, apt or pacman | `brew install`, or how to layer them |
+
+Then it asks for the personal or secondary flow, runs `chezmoi init`, imports
 the GPG key, seeds `~/.gnupg` and `~/.ssh`, checks decryption with `chezmoi diff`
 and runs `chezmoi apply`. It reads answers from `/dev/tty`, so it works piped.
 
@@ -83,8 +90,9 @@ SHA-256 against the release's `SHA256SUMS` and starts it, leaving the terminal
 free. The installer GUI
 ([`installer/`](installer)) is a native Material 3 app written in Go with
 [MyGo](https://github.com/egoist/mygo); its colors follow the Windows accent
-color and light/dark mode. It covers the same flow (on Linux, Prerequisites only
-checks the tools and clones, and there is no Packages page):
+color and light/dark mode. It covers the same flow (on Linux, Prerequisites gets
+the tools as `install.sh` does, with `pkexec` instead of `sudo` and a copy button
+for NixOS's Home Manager line, and there is no Packages page):
 
 1. **Prerequisites**: installs the missing Git, Gpg4win and chezmoi with winget
    and clones the repository to `chezmoi source-path`.
