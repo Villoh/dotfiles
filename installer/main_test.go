@@ -65,6 +65,10 @@ func TestLoadRepoLinux(t *testing.T) {
 	if slices.Contains(r.Modules, "aerc") {
 		t.Errorf("retired module aerc listed: %v", r.Modules)
 	}
+	// Minimal keeps the desktop on Linux too.
+	if slices.Contains(r.MinimalOff, "dms") {
+		t.Errorf("minimal turns off dms: %v", r.MinimalOff)
+	}
 	if len(r.Winget["full"])+len(r.Scoop["full"])+len(r.Elevated) != 0 {
 		t.Errorf("package lists on Linux: %v %v %v", r.Winget, r.Scoop, r.Elevated)
 	}
