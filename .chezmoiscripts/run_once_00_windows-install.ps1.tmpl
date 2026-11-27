@@ -390,12 +390,8 @@ if (Get-Command rustup -ErrorAction SilentlyContinue) {
 }
 
 # -- mise ----------------------------------------------------------------------
-if ($selectedManagers -contains "mise") {
-    LogSection "mise"
-    # mise reads ~/.config/mise/config.toml and conf.d/windows.toml (symlinked by chezmoi)
-    TryInstall "mise trust" { mise trust --all }
-    TryInstall "mise install" { mise install }
-}
+# Its tools are installed by run_onchange_after_08_windows-mise-integration: this
+# script runs before chezmoi writes ~/.config/mise, so mise would see no tools here.
 
 # -- Summary -------------------------------------------------------------------
 Write-Host ""; Add-Content -Path $logFile -Value ""
