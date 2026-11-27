@@ -248,7 +248,7 @@ Each answer lives in `[data]` as `enable_<module>`; edit `~/.config/chezmoi/chez
 before `chezmoi apply` to change one without re-running init. The Windows desktop is one toggle,
 `enable_aether`: it installs Aether and deploys `~/.config/hypr/hyprland.conf` for AetherWM.
 `enable_ai_agents` covers the coding agents' configs (`.claude`, `.codex`, `.grok`,
-`.omp`, `.pi`, `.pi-lens`, `.agents`, `.config/caveman`, `.config/opencode`, `.config/devin`).
+`.omp`, `.pi`, `.pi-lens`, `.agents`, `.config/caveman`, `.config/opencode`).
 `enable_package_managers` covers the bun, uv and pnpm configs, and `enable_tmux` includes workmux.
 btop, fastfetch, starship and alacritty are Windows modules: NixOS/Home Manager owns their Linux
 configs. On Linux, `enable_mail` covers the mail clients (himalaya, meli) and the sieve filters;
