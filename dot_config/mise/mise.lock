@@ -97,6 +97,10 @@ url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.5/bun-windows-x
 checksum = "sha256:3c081c73865e7a3453a9d514cc2ba3d699880621bcf67bb17241ff5194cb1d4b"
 url = "https://github.com/oven-sh/bun/releases/download/bun-v1.4.5/bun-windows-x64-baseline.zip"
 
+[[tools."cargo:pexels-cli"]]
+version = "0.1.0"
+backend = "cargo:pexels-cli"
+
 [[tools.claude]]
 version = "2.1.332"
 backend = "aqua:anthropics/claude-code"
