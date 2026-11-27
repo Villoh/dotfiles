@@ -76,7 +76,6 @@ implementation progress.
 
 ### Desktop integration
 
-- [x] **Vesktop** — Windows: System24 + Kanagawa Dragon QuickCSS (`AppData/Roaming/vesktop/settings/`). Linux: DMS matugen `dank-discord.css` (`dot_config/vesktop/settings/`).
 - [x] **Warp** — Kanagawa Dragon theme added; select it from Warp theme settings.
 - [x] **Aether** — the Windows desktop shell colours itself (dynamic scheme from the wallpaper), so GlazeWM, YASB, Rainmeter, Flow Launcher, Ditto, SecureUxTheme, the accent palette and the Kanagawa cursors were removed; see `docs/windows/windows.md`.
 - [x] **Nilesoft Shell** — context-menu theme migrated to Kanagawa Dragon.
@@ -114,7 +113,6 @@ implementation progress.
 | Herdr | `dot_config/herdr/config.toml.tmpl` | Built-in Kanagawa base with Dragon overrides; fixed dark mode | Validate after deployment; no light Dragon variant |
 | aerc | — | Descartado; configuración retirada del repositorio | No action |
 | gitui | `dot_config/gitui/theme.ron` | Active inline Kanagawa Dragon palette; current patch fields only | Validate visually; legacy Catppuccin references are gone |
-| Vesktop | Windows: `AppData/Roaming/vesktop/settings/`; Linux: `dot_config/vesktop/settings/settings.json` | Windows: System24 + Kanagawa Dragon; Linux: DMS-generated `dank-discord.css` (matugen) | Validate visually in Vesktop |
 | Hyprlock legacy | `dot_config/hypr.old/hyprlock/catppuccin/`; `.gitmodules` | Legacy/old Hyprlock tree and Catppuccin submodule | Confirm whether tree is still deployed before touching |
 
 No current `waybar`, `kitty`, or `ghostty` theme surface was found in tracked

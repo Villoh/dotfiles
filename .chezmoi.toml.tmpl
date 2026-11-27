@@ -3,14 +3,14 @@
 {{- $profile := promptChoiceOnce . "install_profile" "Install profile" (list "full" "minimal" "custom") "full" -}}
 
 {{- /* ai_agents = the coding agents' configs: .claude, .codex, .factory, .grok, .omp, .pi, .pi-lens, .agents, .config/caveman */ -}}
-{{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" "ai_agents" "pnpm" "vesktop" -}}
+{{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" "ai_agents" "pnpm" -}}
 {{- /* mail = the mail clients' configs (himalaya, meli) and the sieve filters */ -}}
 {{- $linuxOnly := list "zsh" "mail" "nchat" "freetube" "concord" "dms" -}}
 {{- /* aether = the desktop shell (Aether: Caelestia on Quickshell + AetherWM) and its ~/.config/{caelestia,hypr} */ -}}
 {{- $windowsOnly := list "aether" "nilesoft" "autohotkey" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
 {{- /* Off in minimal: personal apps and extras. Aether stays on: new users get the desktop. */ -}}
-{{- $minimalOff := list "mail" "nchat" "freetube" "vesktop" "concord" "dms" "nilesoft" "autohotkey" "altsnap" "warp" "startup" -}}
+{{- $minimalOff := list "mail" "nchat" "freetube" "concord" "dms" "nilesoft" "autohotkey" "altsnap" "warp" "startup" -}}
 {{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
 {{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"

@@ -32,7 +32,6 @@ curl -L "https://example.com/file.zip" -o "$APPDATA/MyApp/file.zip"
 | `AppData/Roaming/gnupg/` | `~/AppData/Roaming/gnupg/` | GPG config |
 | `AppData/Roaming/warp/` | `~/AppData/Roaming/warp/` | Only catppuccin_*.yml and purpulish.yaml themes tracked |
 | `AppData/Roaming/ytm-player/` | `~/AppData/Roaming/ytm-player/` | auth.json, history.db, session.json gitignored |
-| `AppData/Roaming/vesktop/settings/` | `~/AppData/Roaming/vesktop/settings/` | Windows-only (System24 + Kanagawa QuickCSS); Linux uses `dot_config/vesktop/`. Vencord junction points here |
 | `AppData/Local/.../WindowsTerminal/settings.json` | `~/AppData/Local/...` | |
 
 ## Windows junctions
@@ -44,7 +43,6 @@ Apps that don't respect `$HOME` or need a folder-level link are handled via junc
 | `~/scoop/persist/btop/btop.conf` | `dot_config/btop/btop.conf` | btop (file symlink) |
 | `~/AppData/Roaming/Zed` | `dot_config/zed` | Zed editor |
 | `~/AppData/Roaming/yazi/config` | `dot_config/yazi` | Yazi file manager |
-| `~/AppData/Roaming/Vencord/settings` | `AppData/Roaming/vesktop/settings` | Vencord/Vesktop (shared settings) |
 | `~/AppData/Roaming/Zellij/config`    | `dot_config/zellij`           | Zellij terminal multiplexer      |
 | `~/AppData/Roaming/gitui`            | `dot_config/gitui`            | Gitui TUI git client             |
 

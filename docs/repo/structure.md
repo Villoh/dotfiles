@@ -35,7 +35,7 @@ chezmoi/
 ├── .github/assets/             # README screenshots and logos
 ├── .github/workflows/          # installer-ci.yml (test + build), installer-release.yml (tag → release)
 ├── .gitmodules                 # Submodule definitions
-├── .gitleaks.toml              # Gitleaks config (allowlists Vencord/Vesktop)
+├── .gitleaks.toml              # Gitleaks config (allowlists Windows Terminal and Stylus)
 ├── .pre-commit-config.yaml     # Pre-commit: gitleaks on every commit
 ├── README.md
 └── LICENSE
