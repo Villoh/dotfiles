@@ -2,12 +2,13 @@
 {{- /* Profile: full = everything, minimal = CLI + shell only, custom = ask per module */ -}}
 {{- $profile := promptChoiceOnce . "install_profile" "Install profile" (list "full" "minimal" "custom") "full" -}}
 
-{{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" -}}
-{{- $linuxOnly := list "zsh" "aerc" "nchat" "freetube" "vesktop" "concord" "dms" -}}
+{{- /* ai_agents = the coding agents' configs: .claude, .codex, .factory, .grok, .omp, .pi, .pi-lens, .agents, .config/caveman */ -}}
+{{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" "ai_agents" "pnpm" "vesktop" -}}
+{{- $linuxOnly := list "zsh" "aerc" "nchat" "freetube" "concord" "dms" -}}
 {{- /* aether = the desktop shell (Aether: Caelestia on Quickshell + AetherWM) and its ~/.config/{caelestia,hypr} */ -}}
-{{- $windowsOnly := list "aether" "nilesoft" "autohotkey" "warp" "windows_terminal" "junctions" "startup" -}}
+{{- $windowsOnly := list "aether" "nilesoft" "autohotkey" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
-{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "aether" "nilesoft" "autohotkey" "warp" "startup" -}}
+{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "aether" "nilesoft" "autohotkey" "altsnap" "warp" "startup" -}}
 {{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
 {{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"

@@ -178,13 +178,19 @@ During initialization, chezmoi will:
 | Profile | Result |
 |---------|--------|
 | `full` | Every module for the current OS. Windows package profile = `full`. |
-| `minimal` | CLI + shell configs only. Windows: no Aether, Nilesoft, AutoHotkey, Warp or startup entries. Windows package profile = `minimal`. |
+| `minimal` | CLI + shell configs only. Windows: no Aether, Nilesoft, AutoHotkey, AltSnap, Warp, Vesktop or startup entries. Windows package profile = `minimal`. |
 | `custom` | Asks `Enable <module>` for each module (Enter keeps the previous answer, default `true`). Windows package profile is chosen in fzf. |
 
 Each answer lives in `[data]` as `enable_<module>`; edit `~/.config/chezmoi/chezmoi.toml`
 before `chezmoi apply` to change one without re-running init. The Windows desktop is one toggle,
 `enable_aether`: it installs Aether and deploys `~/.config/hypr/hyprland.conf` for AetherWM.
+`enable_ai_agents` covers the coding agents' configs (`.claude`, `.codex`, `.factory`, `.grok`,
+`.omp`, `.pi`, `.pi-lens`, `.agents`, `.config/caveman`).
 Re-running `chezmoi init` keeps the stored profile; to pick another, edit `install_profile`.
+
+The shell, PowerShell profile and functions, mise, GnuPG and SSH have no toggle: the rest of
+the setup needs them. A module added to the repository stays on for an existing machine until
+`chezmoi init` asks about it; run `chezmoi init` after updating to answer.
 
 chezmoi runs scripts automatically in this order:
 
