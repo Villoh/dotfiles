@@ -112,10 +112,11 @@ func (s *scheme) uiTheme(base *ui.Theme) *ui.Theme {
 	return &u
 }
 
-// M3 state layer opacities.
+// State layer opacities. M3 asks 0.08 and 0.10, which on this dark theme is
+// about 13 of 255 levels: too faint to see, so hover and press are stronger.
 const (
-	stateHover = 0.08
-	statePress = 0.10
+	stateHover = 0.16
+	statePress = 0.24
 )
 
 func layer(bg, fg ui.Color, opacity float32) ui.Color { return bg.Mix(fg, opacity) }
@@ -168,6 +169,9 @@ func (a *app) button(c *ui.Context, kind buttonKind, label string, disabled bool
 	}
 	b := ui.ButtonBase(c).Label(label).Disabled(disabled).DimDisabled(false).
 		Height(40).PaddingX(24).Radius(full).Justify(ui.Center)
+	if !disabled {
+		b.Cursor(ui.CursorPointer)
+	}
 	if kind == outlined {
 		b.Border(1, s.OutlineVariant)
 	}
@@ -188,12 +192,34 @@ func (a *app) button(c *ui.Context, kind buttonKind, label string, disabled bool
 	return b.Clicked()
 }
 
+// iconButton is an M3 standard icon button: a 40 DIP round target. The label
+// is its tooltip and its name for assistive technology.
+func (a *app) iconButton(c *ui.Context, icon, label string, disabled bool) bool {
+	s := a.scheme
+	fg := s.OnSurfaceVariant
+	if disabled {
+		fg = s.OnSurface.Alpha(0.38)
+	}
+	b := ui.ButtonBase(c.Key(label)).Label(label).Disabled(disabled).DimDisabled(false).
+		Width(40).Height(40).Radius(full).Justify(ui.Center).AlignItems(ui.Center)
+	if !disabled {
+		b.Cursor(ui.CursorPointer)
+	}
+	b.Background(stateFill(b, s.OnSurfaceVariant.Alpha(0), s.OnSurface))
+	b.Tooltip(label)
+	b.Children(func() {
+		ui.Icon(c, icons[icon]).FontSize(24).TextColor(fg)
+	})
+	return b.Clicked()
+}
+
 // railItem is a destination of the navigation rail: an icon in a pill that
 // fills when chosen, over its label.
 func (a *app) railItem(c *ui.Context, i int, icon, label string) {
 	s := a.scheme
 	on := a.tab == i
 	b := ui.ButtonBase(c.Key(label)).Label(label).AccessSelected(on).Role(ui.RoleTab).Width(80).Justify(ui.Center)
+	b.Cursor(ui.CursorPointer)
 	b.Children(func() {
 		ui.Column(c).Gap(4).PaddingY(4).AlignItems(ui.Center).Children(func() {
 			bg, fg := s.SecondaryContainer.Alpha(0), s.OnSurfaceVariant
@@ -230,6 +256,7 @@ func (a *app) choiceCard(c *ui.Context, on bool, icon, title, body string) bool 
 	}
 	b := ui.ButtonBase(c.Key(title)).Label(title).Checked(on).Role(ui.RoleRadio).
 		Radius(16).Padding(16).Gap(16).Border(1, border).AlignItems(ui.Start).Grow(1).Basis(0)
+	b.Cursor(ui.CursorPointer)
 	b.Background(stateFill(b, bg, fg)).Children(func() {
 		if icon != "" {
 			ui.Icon(c, icons[icon]).FontSize(24).TextColor(fg)
@@ -254,6 +281,7 @@ func (a *app) filterChip(c *ui.Context, on *bool, label string) {
 	}
 	b := ui.ButtonBase(c.Key(label)).Label(label).Checked(*on).Role(ui.RoleCheckBox).
 		Height(32).PaddingX(12).Gap(8).Radius(8)
+	b.Cursor(ui.CursorPointer)
 	if !*on {
 		b.Border(1, s.OutlineVariant)
 	}
