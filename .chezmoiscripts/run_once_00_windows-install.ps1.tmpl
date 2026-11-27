@@ -93,7 +93,15 @@ LogSection "Bootstrap"
 # -- scoop ---------------------------------------------------------------------
 if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     TryInstall "Scoop" {
-        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+        # The installers launch PowerShell with -ExecutionPolicy Bypass, a Process
+        # scope that overrides CurrentUser: Set-ExecutionPolicy then saves the
+        # setting but throws a security error saying so. Only a setting that did
+        # not stick is a failure.
+        try {
+            Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force -ErrorAction Stop
+        } catch {
+            if ((Get-ExecutionPolicy -Scope CurrentUser) -ne 'RemoteSigned') { throw }
+        }
         iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
     }
     $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
