@@ -240,6 +240,36 @@
         },
         {
           "PackageIdentifier": "ZedIndustries.Zed"
+        },
+        {
+          "PackageIdentifier": "Zen-Team.Zen-Browser"
+        },
+        {
+          "PackageIdentifier": "ImputNet.Helium"
+        },
+        {
+          "PackageIdentifier": "Telegram.TelegramDesktop"
+        },
+        {
+          "PackageIdentifier": "Bitwarden.Bitwarden"
+        },
+        {
+          "PackageIdentifier": "HeroicGamesLauncher.HeroicGamesLauncher"
+        },
+        {
+          "PackageIdentifier": "mtkennerly.ludusavi"
+        },
+        {
+          "PackageIdentifier": "DBeaver.DBeaver.Community"
+        },
+        {
+          "PackageIdentifier": "TheDocumentFoundation.LibreOffice"
+        },
+        {
+          "PackageIdentifier": "Qalculate.Qalculate"
+        },
+        {
+          "PackageIdentifier": "SonoraHQ.Sonora"
         }
       ],
       "SourceDetails": {
