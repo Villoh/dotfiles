@@ -112,7 +112,7 @@ func (a *app) step(title string, fn func() error) {
 	if a.busy != "" {
 		return
 	}
-	a.busy = title
+	a.busy, a.status = title, ""
 	go func() {
 		err := fn()
 		a.post(func() {

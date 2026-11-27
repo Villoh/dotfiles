@@ -79,10 +79,12 @@ func checkHost(hostsJSON, host string) error {
 }
 
 // rebuildCmd runs nixos-rebuild as root through pkexec, the same way Setup
-// elevates on other distributions. pkexec clears PATH, hence the full path.
-// action is "test" (activates without touching the bootloader) or "switch".
-func rebuildCmd(action string, c nixosCfg) []string {
-	return []string{"pkexec", "/run/current-system/sw/bin/nixos-rebuild", action,
+// elevates on other distributions. pkexec replaces PATH with a minimal one, so
+// the full path to nixos-rebuild and the caller's PATH through env: nix needs
+// git on it to fetch git inputs. action is "test" (activates without touching
+// the bootloader) or "switch".
+func rebuildCmd(action string, c nixosCfg, path string) []string {
+	return []string{"pkexec", "env", "PATH=" + path, "/run/current-system/sw/bin/nixos-rebuild", action,
 		"--flake", c.flake(), "--option", "experimental-features", nixFeatures}
 }
 
@@ -116,7 +118,7 @@ func (a *app) nixosRebuild(action string, c nixosCfg) error {
 		return err
 	}
 	a.logf("Rebuilding; the system asks for your password.")
-	cmd = rebuildCmd(action, c)
+	cmd = rebuildCmd(action, c, os.Getenv("PATH"))
 	if err := a.run(false, cmd[0], cmd[1:]...); err != nil {
 		return err
 	}

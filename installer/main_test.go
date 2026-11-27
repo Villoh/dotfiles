@@ -153,7 +153,7 @@ func TestNixosCommands(t *testing.T) {
 	if got := strings.Join(cloneCmd(false, c), " "); !strings.Contains(got, "nix --extra-experimental-features nix-command flakes shell nixpkgs#git -c git clone") {
 		t.Errorf("clone without git: %s", got)
 	}
-	if got := strings.Join(rebuildCmd("test", c), " "); got != "pkexec /run/current-system/sw/bin/nixos-rebuild test --flake /d#box --option experimental-features nix-command flakes" {
+	if got := strings.Join(rebuildCmd("test", c, "/p:/q"), " "); got != "pkexec env PATH=/p:/q /run/current-system/sw/bin/nixos-rebuild test --flake /d#box --option experimental-features nix-command flakes" {
 		t.Errorf("rebuild: %s", got)
 	}
 	home, _ := os.UserHomeDir()
