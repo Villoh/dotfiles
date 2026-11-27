@@ -38,7 +38,7 @@ func TestLoadRepo(t *testing.T) {
 		t.Errorf("Linux-only module dms listed: %v", r.Modules)
 	}
 	// Minimal keeps the desktop for new users and turns off the extras.
-	if slices.Contains(r.MinimalOff, "aether") || !slices.Contains(r.MinimalOff, "warp") {
+	if slices.Contains(r.MinimalOff, "aether") || !slices.Contains(r.MinimalOff, "warp") || !slices.Contains(r.MinimalOff, "ai_agents") {
 		t.Errorf("minimal turns off %v", r.MinimalOff)
 	}
 	if len(r.Winget["full"]) == 0 || len(r.Winget["minimal"]) == 0 || len(r.Scoop["full"]) == 0 || len(r.Elevated) == 0 {
