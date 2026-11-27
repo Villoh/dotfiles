@@ -8,7 +8,11 @@ aube = "latest"
 "github:cakama3a/Polling" = "latest"
 "github:vertopolkaLF/silence" = "latest"
 "github:xdagiz/xytz" = "latest"
-"github:nexu-io/open-design" = "latest"
-"github:stablyai/orca" = "latest"
+# Not in winget or scoop. Yapfast tracks stable releases (NixOS uses the nightly).
+"github:crmne/zapfast" = "latest"
+"github:anomalyco/hex" = "latest"
+# Tags are desktop-vX.Y.Z (full) and desktop-minimal-vX.Y.Z; take only the full build.
+"github:elianiva/meiro" = { version = "latest", version_prefix = "desktop-v" }
+"github:yapfast/yapfast" = "latest"
 # Former `cargo` inventory.
 "cargo:pexels" = "latest"

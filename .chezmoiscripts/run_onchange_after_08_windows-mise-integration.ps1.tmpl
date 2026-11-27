@@ -1,0 +1,88 @@
+{{ if eq .chezmoi.os "windows" -}}
+# run_onchange_ triggers when any of these change (mise.lock changes on every version bump,
+# which moves the install directory the Start Menu shortcuts point to):
+# shortcuts.json {{ include "packages/windows/system/shortcuts.json" | sha256sum }}
+# mise.lock      {{ include "dot_config/mise/mise.lock" | sha256sum }}
+$chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
+$pkgDir     = "$chezmoisrc\packages\windows"
+$ok = 0; $skip = 0; $fail = 0
+
+function LogOk  { param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [OK]   $msg" -ForegroundColor Green;  $script:ok++   }
+function LogSkip{ param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [SKIP] $msg" -ForegroundColor Yellow; $script:skip++ }
+function LogFail{ param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [FAIL] $msg" -ForegroundColor Red;    $script:fail++ }
+function LogSec { param([string]$msg) Write-Host "[$((Get-Date).ToString('HH:mm:ss'))] [--]   -- $msg --" -ForegroundColor Cyan }
+function TryRun {
+    param([string]$name, [scriptblock]$block)
+    try   { & $block; LogOk $name }
+    catch { LogFail "$name - $($_.Exception.Message)" }
+}
+
+if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
+    LogSkip "mise not installed"
+    Write-Host "[windows-mise-integration] $ok OK  $skip skipped  $fail failed" -ForegroundColor Cyan
+    return
+}
+
+# -- User PATH: mise shims -----------------------------------------------------
+# `mise activate pwsh` only covers PowerShell sessions. Shims on the user PATH make global
+# CLI tools visible to cmd, Explorer, Aether, Nilesoft and scheduled tasks.
+LogSec "mise shims on the user PATH"
+
+$dataDir = if ($env:MISE_DATA_DIR) { $env:MISE_DATA_DIR } else { "$env:LOCALAPPDATA\mise" }
+$shims   = "$dataDir\shims"
+
+TryRun "PATH: $shims" {
+    $key = [Microsoft.Win32.Registry]::CurrentUser.OpenSubKey("Environment", $true)
+    try {
+        # Read unexpanded so %VARS% already in the user PATH survive the rewrite.
+        $current = $key.GetValue("Path", "", [Microsoft.Win32.RegistryValueOptions]::DoNotExpandEnvironmentNames)
+        $entries = @($current -split ';' | Where-Object { $_ })
+        $present = $entries | Where-Object {
+            [System.Environment]::ExpandEnvironmentVariables($_).TrimEnd('\') -ieq $shims.TrimEnd('\')
+        }
+        if (-not $present) {
+            $key.SetValue("Path", (($entries + $shims) -join ';'), [Microsoft.Win32.RegistryValueKind]::ExpandString)
+            # Setting and clearing a user variable broadcasts WM_SETTINGCHANGE to running apps.
+            [Environment]::SetEnvironmentVariable("CHEZMOI_PATH_REFRESH", "1", "User")
+            [Environment]::SetEnvironmentVariable("CHEZMOI_PATH_REFRESH", $null, "User")
+        }
+    } finally { $key.Close() }
+}
+
+# -- Start Menu shortcuts for portable mise apps -------------------------------
+# mise only unpacks the release archive: no shortcut, so launchers and Windows search never
+# see the app. The shortcut targets the real .exe (not the shim) to keep the app's icon.
+LogSec "Start Menu shortcuts"
+
+$programs = Join-Path ([System.Environment]::GetFolderPath("Programs")) ""
+$file     = "$pkgDir\system\shortcuts.json"
+
+if (Test-Path $file) {
+    foreach ($entry in (Get-Content $file | ConvertFrom-Json).shortcuts) {
+        $dir = (& mise where $entry.tool 2>$null | Select-Object -First 1)
+        if ($LASTEXITCODE -ne 0 -or -not $dir -or -not (Test-Path $dir)) {
+            LogSkip "$($entry.name) ($($entry.tool) not installed)"
+            continue
+        }
+
+        $exe = Get-ChildItem $dir -Recurse -Filter $entry.exe -File -ErrorAction SilentlyContinue |
+            Select-Object -First 1 -ExpandProperty FullName
+        if (-not $exe) {
+            LogSkip "$($entry.name) ($($entry.exe) not found in $dir)"
+            continue
+        }
+
+        TryRun "shortcut: $($entry.name)" {
+            $shortcut = (New-Object -ComObject WScript.Shell).CreateShortcut("$programs$($entry.name).lnk")
+            $shortcut.TargetPath       = $exe
+            $shortcut.WorkingDirectory = Split-Path $exe
+            $shortcut.IconLocation     = "$exe,0"
+            $shortcut.Save()
+        }
+    }
+} else {
+    LogSkip "shortcuts.json not found"
+}
+
+Write-Host "[windows-mise-integration] $ok OK  $skip skipped  $fail failed" -ForegroundColor Cyan
+{{ end -}}
