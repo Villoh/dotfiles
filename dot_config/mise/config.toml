@@ -66,6 +66,8 @@ aube = { version = "latest", os = ["windows"] }
 "github:yapfast/yapfast" = { version = "latest", os = ["windows"] }
 # Native Discord client. Only nightlies so far, published as prereleases.
 "github:ViceVerse-cz/Serein" = { version = "latest", prerelease = true, asset_pattern = "serein-*-Windows-X64.zip", os = ["windows"] }
+# Former `cargo` inventory. Built with cargo from rustup (scoop).
+"cargo:pexels-cli" = { version = "latest", os = ["windows"] }
 
 # -- Linux only -----------------------------------------------------------------
 "github:PrimeIntellect-ai/prime-agent" = { version = "latest", asset_pattern = "prime-agent-*-linux-x64.tar.gz", filter_bins = "prime-agent", os = ["linux"] }
