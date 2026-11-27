@@ -1,6 +1,6 @@
-# Tests and builds the Windows installer GUI (installer/) on every change to
-# it, and uploads dotfiles-installer.exe with SHA256SUMS as an artifact.
-# installer-release.yml reuses it to build what it publishes.
+# Tests and builds the installer GUI (installer/) on every change to it: the
+# Windows exe and the Linux AppImage, uploaded with SHA256SUMS as an artifact,
+# and the flake. installer-release.yml reuses it to build what it publishes.
 name: installer-ci
 
 on:
@@ -10,6 +10,10 @@ on:
       - installer/**
       - install.ps1
       - install-gui.ps1
+      - install.sh
+      - install-gui.sh
+      - flake.nix
+      - flake.lock
       - .chezmoi.toml.tmpl
       - packages/windows/**
       - .chezmoiscripts/run_once_00_windows-install.ps1.tmpl
@@ -50,6 +54,10 @@ jobs:
             foreach ($e in $errors) { Write-Error "${f}: $e"; $failed = $true }
           }
           if ($failed) { exit 1 }
+      - name: Shellcheck
+        run: >-
+          shellcheck install.sh install-gui.sh
+          installer/packaging/appimage.sh
       - name: Build
         working-directory: installer
         env:
@@ -60,11 +68,35 @@ jobs:
           go build -trimpath -ldflags "-s -w -H=windowsgui"
           -tags mygo_nodownload,mygo_noinspector
           -o ../dist/dotfiles-installer.exe .
+      # -I: the standard interpreter path, whichever Go builds it (nixpkgs'
+      # Go would point it into /nix/store).
+      - name: Build Linux AppImage
+        working-directory: installer
+        env:
+          GOOS: linux
+          GOARCH: amd64
+          CGO_ENABLED: "0"
+        run: |
+          bin="$RUNNER_TEMP/dotfiles-installer"
+          go build -trimpath -ldflags "-s -w -I /lib64/ld-linux-x86-64.so.2" \
+            -tags mygo_nodownload,mygo_noinspector -o "$bin" .
+          out=../dist/dotfiles-installer-x86_64.AppImage
+          packaging/appimage.sh "$bin" "$out"
       - name: Checksums
         working-directory: dist
-        run: sha256sum dotfiles-installer.exe > SHA256SUMS
+        run: >-
+          sha256sum dotfiles-installer.exe dotfiles-installer-x86_64.AppImage
+          > SHA256SUMS
       - uses: actions/upload-artifact@v7
         with:
           name: dotfiles-installer
           path: dist/
           if-no-files-found: error
+
+  # Fails when go.sum changes without installer/package.nix's vendorHash.
+  nix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: cachix/install-nix-action@v32.1.0
+      - run: nix build .#installer -L
