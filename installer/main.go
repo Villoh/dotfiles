@@ -163,18 +163,43 @@ var steps = []struct{ icon, label, title, blurb string }{
 	{"rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
 }
 
+// appTitle names the window (taskbar, Alt+Tab) and its title bar.
+const appTitle = "Villoh/dotfiles installer"
+
+const titleBarHeight = 40 // the window buttons MyGo draws fill it
+
+// titleBar replaces the native one (TitleBarHidden): the app's surface up to
+// the top edge, a drag handle, and room for the window buttons MyGo draws.
+func (a *app) titleBar(c *ui.Context) {
+	s := a.scheme
+	bar := c.TitleBar()
+	ui.Row(c).Height(max(bar.Height, titleBarHeight)).Padding(0, bar.Right, 0, bar.Left).DragWindow().Children(func() {
+		ui.Row(c).Width(96).Justify(ui.Center).Children(func() { // centered over the rail
+			ui.Icon(c, icons["terminal"]).FontSize(20).TextColor(s.Primary)
+		})
+		ui.Text(c, appTitle).MarginStart(8).FontSize(13).FontWeight(500).TextColor(s.OnSurfaceVariant).SingleLine()
+	})
+}
+
 func (a *app) view(c *ui.Context) {
-	s := a.themed(c)
-	ui.Row(c).Fill().Children(func() {
+	a.themed(c)
+	ui.Column(c).Fill().Children(func() {
+		a.titleBar(c)
+		a.body(c)
+	})
+}
+
+func (a *app) body(c *ui.Context) {
+	s := a.scheme
+	ui.Row(c).Grow(1).FillWidth().Children(func() {
 		// Navigation rail.
-		ui.Column(c).Width(96).FillHeight().PaddingY(16).Gap(12).AlignItems(ui.Center).Children(func() {
-			ui.Icon(c, icons["terminal"]).FontSize(28).TextColor(s.Primary).Margin(4, 0, 20, 0)
+		ui.Column(c).Width(96).FillHeight().PaddingY(8).Gap(12).AlignItems(ui.Center).Children(func() {
 			for i, st := range steps {
 				a.railItem(c, i, st.icon, st.label)
 			}
 		})
 		// Content.
-		ui.Column(c).Grow(1).Shrink(1).FillHeight().Padding(16, 24, 16, 8).Gap(16).Children(func() {
+		ui.Column(c).Grow(1).Shrink(1).FillHeight().Padding(8, 24, 16, 8).Gap(16).Children(func() {
 			st := steps[a.tab]
 			ui.Row(c).Gap(12).Children(func() {
 				ui.Column(c).Gap(4).Grow(1).Shrink(1).Children(func() {
@@ -474,7 +499,8 @@ func main() {
 	a := newApp()
 	mygo.App.WhenReady(func() {
 		a.win = mygo.NewWindow(mygo.WindowOptions{
-			Title: "Dotfiles installer", Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
+			Title: appTitle, Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
+			TitleBarStyle: mygo.TitleBarHidden, TitleBarHeight: titleBarHeight, // the view draws an M3 title bar
 			Content: ui.View(a.view),
 		})
 		go a.checkDeps()
