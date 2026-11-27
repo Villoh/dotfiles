@@ -22,6 +22,7 @@
         { "Name": "fastfetch",            "Source": "main"        },
         { "Name": "rustup",               "Source": "main"        },
         { "Name": "mingw",                "Source": "main"        },
+        { "Name": "nircmd",               "Source": "main"        },
         { "Name": "alacritty",            "Source": "extras"      },
         { "Name": "wezterm",              "Source": "extras"      },
         { "Name": "CascadiaCode-NF",      "Source": "nerd-fonts"  },
