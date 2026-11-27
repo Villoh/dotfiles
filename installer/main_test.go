@@ -53,13 +53,16 @@ func TestLoadRepoLinux(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, m := range []string{"zed", "zsh", "dms", "ai_agents"} {
+	for _, m := range []string{"zed", "zsh", "dms", "ai_agents", "mail"} {
 		if !slices.Contains(r.Modules, m) {
 			t.Errorf("module %s missing from %v", m, r.Modules)
 		}
 	}
 	if slices.Contains(r.Modules, "aether") || slices.Contains(r.Modules, "altsnap") {
 		t.Errorf("Windows-only module listed: %v", r.Modules)
+	}
+	if slices.Contains(r.Modules, "aerc") {
+		t.Errorf("retired module aerc listed: %v", r.Modules)
 	}
 	if len(r.Winget["full"])+len(r.Scoop["full"])+len(r.Elevated) != 0 {
 		t.Errorf("package lists on Linux: %v %v %v", r.Winget, r.Scoop, r.Elevated)
