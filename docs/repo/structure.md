@@ -28,9 +28,10 @@ chezmoi/
 │   └── linux-cachyos-pollrate.toml
 │
 ├── docs/                       # Context docs for Claude
-├── installer/                  # Windows installer GUI (Go + MyGo, Material 3) — not deployed
-├── install.ps1                 # One-shot CLI `irm … | iex` bootstrap — not deployed
-├── install-gui.ps1             # Downloads and runs the installer GUI — not deployed
+├── installer/                  # Installer GUI for Windows and Linux (Go + MyGo, Material 3), its Nix package and AppImage packaging — not deployed
+├── install.ps1, install.sh     # One-shot CLI bootstraps (`irm … | iex`, `curl … | bash`) — not deployed
+├── install-gui.ps1, install-gui.sh # Download (or build, on NixOS) and start the installer GUI — not deployed
+├── flake.nix, flake.lock       # Builds the installer GUI for Linux (`nix run github:Villoh/dotfiles`) — not deployed
 ├── .github/assets/             # README screenshots and logos
 ├── .github/workflows/          # installer-ci.yml (test + build), installer-release.yml (tag → release)
 ├── .gitmodules                 # Submodule definitions

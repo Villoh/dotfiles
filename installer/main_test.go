@@ -17,7 +17,7 @@ import (
 // The GUI reads the real repository, so this fails when .chezmoi.toml.tmpl
 // or packages/windows change shape.
 func TestLoadRepo(t *testing.T) {
-	r, err := loadRepo("..")
+	r, err := loadRepo("..", "windows")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,8 +32,7 @@ func TestLoadRepo(t *testing.T) {
 			t.Errorf("module %s missing from %v", m, r.Modules)
 		}
 	}
-	// The installer runs on Windows: it lists $common and $windowsOnly, never a
-	// Linux-only module such as dms.
+	// On Windows it lists $common and $windowsOnly, never a Linux-only module.
 	if slices.Contains(r.Modules, "dms") {
 		t.Errorf("Linux-only module dms listed: %v", r.Modules)
 	}
@@ -44,6 +43,43 @@ func TestLoadRepo(t *testing.T) {
 	if len(r.Winget["full"]) == 0 || len(r.Winget["minimal"]) == 0 || len(r.Scoop["full"]) == 0 || len(r.Elevated) == 0 {
 		t.Errorf("package lists: winget %d/%d scoop %d elevated %d",
 			len(r.Winget["minimal"]), len(r.Winget["full"]), len(r.Scoop["full"]), len(r.Elevated))
+	}
+}
+
+// On Linux it lists $common and $linuxOnly, and no package lists: NixOS
+// installs Linux's packages.
+func TestLoadRepoLinux(t *testing.T) {
+	r, err := loadRepo("..", "linux")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, m := range []string{"zed", "zsh", "dms", "ai_agents", "mail"} {
+		if !slices.Contains(r.Modules, m) {
+			t.Errorf("module %s missing from %v", m, r.Modules)
+		}
+	}
+	if slices.Contains(r.Modules, "aether") || slices.Contains(r.Modules, "altsnap") {
+		t.Errorf("Windows-only module listed: %v", r.Modules)
+	}
+	if slices.Contains(r.Modules, "aerc") {
+		t.Errorf("retired module aerc listed: %v", r.Modules)
+	}
+	if len(r.Winget["full"])+len(r.Scoop["full"])+len(r.Elevated) != 0 {
+		t.Errorf("package lists on Linux: %v %v %v", r.Winget, r.Scoop, r.Elevated)
+	}
+}
+
+// Linux has no Packages page, and Setup cannot install tools: it says how.
+func TestLinuxSetup(t *testing.T) {
+	a := newAppFor("linux")
+	for _, p := range a.pages() {
+		if p.id == "packages" {
+			t.Errorf("Linux pages %v", a.pages())
+		}
+	}
+	err := a.prepare() // no tool resolved yet
+	if err == nil || !strings.Contains(err.Error(), "NixOS") {
+		t.Errorf("prepare with Git missing: %v", err)
 	}
 }
 
@@ -97,7 +133,7 @@ func TestLineWriter(t *testing.T) {
 // Full and minimal show their modules; changing one switches to custom and
 // keeps what the profile enabled, its package lists too.
 func TestModulesFollowProfile(t *testing.T) {
-	a := newApp()
+	a := newAppFor("windows")
 	a.setRepo(repoInfo{Modules: []string{"zed", "git", "aether"}, MinimalOff: []string{"aether"}})
 	a.tab, a.profile = 2, "minimal"
 	tt := ui.NewTester(a.view, 1000, 760)
@@ -125,7 +161,7 @@ func TestApplyArgs(t *testing.T) {
 }
 
 func TestPackagesView(t *testing.T) {
-	a := newApp()
+	a := newAppFor("windows")
 	a.setRepo(repoInfo{
 		Modules: []string{"zed"},
 		Winget:  map[string][]string{"full": {"Git.Git", "Spotify.Spotify"}, "minimal": {"Git.Git"}},
@@ -153,27 +189,31 @@ func TestPackagesView(t *testing.T) {
 }
 
 // Saves every page as PNGs to look at, with the real repository:
-// INSTALLER_SNAPSHOT=/tmp/shot go test -run Snapshot
+// INSTALLER_SNAPSHOT=/tmp/shot go test -run Snapshot (INSTALLER_GOOS=linux for Linux's pages)
 // Text needs Pango (on NixOS: pango, glib, cairo, fontconfig, harfbuzz in LD_LIBRARY_PATH).
 func TestSnapshot(t *testing.T) {
 	prefix := os.Getenv("INSTALLER_SNAPSHOT")
 	if prefix == "" {
 		t.Skip("INSTALLER_SNAPSHOT not set")
 	}
-	r, err := loadRepo("..")
+	goos := os.Getenv("INSTALLER_GOOS")
+	if goos == "" {
+		goos = "windows"
+	}
+	r, err := loadRepo("..", goos)
 	if err != nil {
 		t.Fatal(err)
 	}
-	a := newApp()
+	a := newAppFor(goos)
 	a.setRepo(r)
 	a.keyOK = true
 	a.deps[0].Path = `C:\Program Files\Git\cmd\git.exe`
 	a.lines = []string{"> winget install -e --id GnuPG.Gpg4win", "Successfully installed"}
 	for _, dark := range []bool{true, false} {
 		tt := ui.NewTesterWith(a.view, 1000, 760, ui.TesterOptions{Dark: dark})
-		for i := range steps {
+		for i, p := range a.pages() {
 			a.tab = i
-			if i == 2 {
+			if p.id == "profile" {
 				a.profile = "custom"
 			}
 			tt.Frame()

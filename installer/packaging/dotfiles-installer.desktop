@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Villoh/dotfiles installer
+Comment=Bootstrap Villoh/dotfiles with chezmoi
+Exec=dotfiles-installer
+Icon=dotfiles-installer
+Categories=Utility;System;
+Terminal=false

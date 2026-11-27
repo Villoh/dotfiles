@@ -20,11 +20,14 @@ const repoURL = "https://github.com/Villoh/dotfiles"
 const selectionEnv = "DOTFILES_PACKAGE_SELECTION"
 
 type dep struct {
-	Name, Exe, WingetID string
+	Name, Exe, WingetID string // WingetID is "" on Linux: NixOS provides the tools
 	Path                string // resolved executable, "" while missing
 }
 
-func defaultDeps() []dep {
+func defaultDeps(goos string) []dep {
+	if goos != "windows" {
+		return []dep{{Name: "Git", Exe: "git"}, {Name: "GnuPG", Exe: "gpg"}, {Name: "chezmoi", Exe: "chezmoi"}}
+	}
 	return []dep{
 		{Name: "Git", Exe: "git", WingetID: "Git.Git"},
 		{Name: "GnuPG (Gpg4win)", Exe: "gpg", WingetID: "GnuPG.Gpg4win"},
@@ -122,7 +125,7 @@ func (a *app) step(title string, fn func() error) {
 }
 
 func (a *app) checkDeps() {
-	deps := defaultDeps()
+	deps := defaultDeps(a.goos)
 	for i := range deps {
 		deps[i].Path = findExe(deps[i].Exe)
 	}
@@ -132,7 +135,7 @@ func (a *app) checkDeps() {
 			src = s
 		}
 	}
-	info, repoErr := loadRepo(src)
+	info, repoErr := loadRepo(src, a.goos)
 	a.post(func() {
 		a.deps, a.sourceDir = deps, src
 		if repoErr == nil {
@@ -159,12 +162,15 @@ func (a *app) snapshotDeps() []dep {
 	return deps
 }
 
-// prepare installs the missing tools with winget and clones the repository,
-// whose files the next steps read.
+// prepare installs the missing tools with winget (Windows) and clones the
+// repository, whose files the next steps read.
 func (a *app) prepare() error {
 	for _, d := range a.snapshotDeps() {
 		if d.Path != "" {
 			continue
+		}
+		if d.WingetID == "" {
+			return fmt.Errorf("%s is missing: install it with NixOS/Home Manager (or your package manager), then Check again", d.Name)
 		}
 		if err := a.run(false, "winget", "install", "-e", "--id", d.WingetID,
 			"--accept-package-agreements", "--accept-source-agreements", "--silent"); err != nil {
@@ -190,7 +196,7 @@ func (a *app) prepare() error {
 	} else {
 		a.logf("Repository already at %s", src)
 	}
-	info, err := loadRepo(src)
+	info, err := loadRepo(src, a.goos)
 	if err != nil {
 		return err
 	}
@@ -232,7 +238,12 @@ func (a *app) seedAgent(src string) error {
 	if err != nil {
 		return err
 	}
-	gnupg := filepath.Join(os.Getenv("APPDATA"), "gnupg")
+	gnupg := filepath.Join(home, ".gnupg")
+	if a.goos == "windows" {
+		gnupg = filepath.Join(os.Getenv("APPDATA"), "gnupg")
+	} else if g := os.Getenv("GNUPGHOME"); g != "" {
+		gnupg = g
+	}
 	ssh := filepath.Join(home, ".ssh")
 	copies := [][2]string{
 		{`private_dot_gnupg/gpg-agent.conf`, filepath.Join(gnupg, "gpg-agent.conf")},

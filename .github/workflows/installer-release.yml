@@ -29,8 +29,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RAW: https://raw.githubusercontent.com/${{ github.repository }}/main
-        run: >-
-          gh release create "$GITHUB_REF_NAME" dist/*
-          --repo "$REPO"
-          --title "Installer ${GITHUB_REF_NAME#installer-}"
-          --notes "irm $RAW/install-gui.ps1 | iex"
+        run: |
+          notes=$(printf '%s\n' \
+            'Windows (PowerShell):' '' \
+            "    irm $RAW/install-gui.ps1 | iex" '' \
+            'Linux (the AppImage; NixOS builds the flake):' '' \
+            "    curl -fsSL $RAW/install-gui.sh | bash")
+          gh release create "$GITHUB_REF_NAME" dist/* --repo "$REPO" \
+            --title "Installer ${GITHUB_REF_NAME#installer-}" --notes "$notes"
