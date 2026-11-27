@@ -550,6 +550,11 @@
             "Source": "main"
         },
         {
+            "Name": "rustyfiles",
+            "Version": "1.0.1",
+            "Source": "rustyfiles"
+        },
+        {
             "Name": "sqlite",
             "Updated": "2026-08-15T19:51:02.6441174+02:00",
             "Info": "",
@@ -710,6 +715,11 @@
             "Name": "villoh",
             "Source": "https://github.com/Villoh/scoop-bucket",
             "Updated": "2026-08-26T12:08:45+02:00",
+            "Manifests": 1
+        },
+        {
+            "Name": "rustyfiles",
+            "Source": "https://github.com/gelenmedya/scoop-rustyfiles",
             "Manifests": 1
         }
     ]
