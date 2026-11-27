@@ -284,11 +284,22 @@ func (a *app) listItem(c *ui.Context, ok bool, title, body string) {
 	})
 }
 
-// banner is a tonal message strip, an error or a success.
-func (a *app) banner(c *ui.Context, isErr bool, msg string) {
+type bannerKind int
+
+const (
+	info    bannerKind = iota // a note on a state or a consequence
+	success                   // a step finished
+	failure                   // a step failed
+)
+
+// banner is a tonal message strip. Notes are info; red is for failures only.
+func (a *app) banner(c *ui.Context, kind bannerKind, msg string) {
 	s := a.scheme
-	bg, fg, icon := s.TertiaryContainer, s.OnTertiaryContainer, "check_circle"
-	if isErr {
+	bg, fg, icon := s.SecondaryContainer, s.OnSecondaryContainer, "info"
+	switch kind {
+	case success:
+		bg, fg, icon = s.TertiaryContainer, s.OnTertiaryContainer, "check_circle"
+	case failure:
 		bg, fg, icon = s.ErrorContainer, s.OnErrorContainer, "error"
 	}
 	ui.Row(c).Background(bg).Radius(12).Padding(12, 16).Gap(12).Children(func() {

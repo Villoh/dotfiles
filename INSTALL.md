@@ -47,7 +47,8 @@ irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
 
 [`install-gui.ps1`](install-gui.ps1) relaunches itself as Administrator, downloads
 `dotfiles-installer.exe` from the latest `installer-v*` release, checks its
-SHA-256 against the release's `SHA256SUMS` and runs it. The installer GUI
+SHA-256 against the release's `SHA256SUMS` and starts it, leaving the terminal
+free. The installer GUI
 ([`installer/`](installer)) is a native Material 3 app written in Go with
 [MyGo](https://github.com/egoist/mygo); its colors follow the Windows accent
 color and light/dark mode. It covers the same flow:
@@ -62,8 +63,11 @@ color and light/dark mode. It covers the same flow:
    is written to a JSON file named by `DOTFILES_PACKAGE_SELECTION`, which
    `run_once_00_windows-install` reads instead of asking with fzf.
 5. **Install**: `chezmoi init`, then for the personal flow it seeds the GPG/SSH
-   agent files and checks decryption with `chezmoi diff`. Last, `chezmoi apply`
-   runs in its own console window, where the scripts can ask questions.
+   agent files and checks decryption with `chezmoi diff`. Last, `chezmoi apply
+   --no-tty` runs hidden: its output goes to the log box and, with every other
+   log line, to `%TEMP%\dotfiles-installer-<date>.log`. With personal secrets
+   on, it runs in a console window instead, where the secrets script asks for
+   the Bitwarden login.
 
 ### Building and releasing the GUI
 

@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -45,8 +46,11 @@ func findExe(name string) string {
 	return p
 }
 
-// lineWriter sends what a command prints to the log, line by line; winget
-// redraws its progress with \r, which also ends a line here.
+// ansiRe matches the color and cursor sequences tools print.
+var ansiRe = regexp.MustCompile(`\x1b\[[0-9;?]*[A-Za-z]`)
+
+// lineWriter sends what a command prints to the log, line by line, without
+// ANSI sequences; winget redraws its progress with \r, which also ends a line.
 type lineWriter struct {
 	log func(string)
 	buf []byte
@@ -59,7 +63,7 @@ func (w *lineWriter) Write(p []byte) (int, error) {
 		if i < 0 {
 			return len(p), nil
 		}
-		if line := strings.TrimSpace(string(w.buf[:i])); line != "" {
+		if line := strings.TrimSpace(ansiRe.ReplaceAllString(string(w.buf[:i]), "")); line != "" {
 			w.log(line)
 		}
 		w.buf = w.buf[i+1:]
@@ -67,7 +71,7 @@ func (w *lineWriter) Write(p []byte) (int, error) {
 }
 
 func (w *lineWriter) Flush() {
-	if line := strings.TrimSpace(string(w.buf)); line != "" {
+	if line := strings.TrimSpace(ansiRe.ReplaceAllString(string(w.buf), "")); line != "" {
 		w.log(line)
 	}
 	w.buf = nil
@@ -262,11 +266,12 @@ type plan struct {
 	src, chezmoi string
 	initArgs     []string
 	personal     bool
+	secrets      bool
 	selection    map[string]any
 }
 
 func (a *app) makePlan() plan {
-	p := plan{src: a.sourceDir, chezmoi: a.depPath("chezmoi"), personal: a.mode == modePersonal}
+	p := plan{src: a.sourceDir, chezmoi: a.depPath("chezmoi"), personal: a.mode == modePersonal, secrets: a.secrets}
 	p.initArgs = initArgs(a.repo, a.profile, a.secrets, a.modules)
 	p.selection = a.selection()
 	return p
@@ -287,10 +292,9 @@ func initArgs(r repoInfo, profile string, secrets bool, modules map[string]bool)
 	return args
 }
 
-// install initializes chezmoi, checks decryption for the personal flow, and
-// applies in a console of its own, where the chezmoi scripts can ask.
 // applyScript runs chezmoi apply in its own console and keeps the console open
-// afterwards, so its output, and any error, stays readable.
+// afterwards, so its output, and any error, stays readable. Only the secrets
+// script needs it: it asks for the Bitwarden login.
 func applyScript(chezmoi string, personal bool) string {
 	apply := "& '" + strings.ReplaceAll(chezmoi, "'", "''") + "' apply"
 	if !personal {
@@ -302,6 +306,19 @@ else { Write-Host "chezmoi apply failed (exit $code). The error is above." -Fore
 [void](Read-Host 'Press Enter to close'); exit $code`
 }
 
+// applyArgs runs chezmoi apply without a terminal: a question it would ask
+// fails with a message in the log instead of waiting for an answer.
+func applyArgs(personal bool) []string {
+	args := []string{"apply", "--no-tty"}
+	if !personal {
+		args = append(args, "--exclude=encrypted")
+	}
+	return args
+}
+
+// install initializes chezmoi, checks decryption for the personal flow, and
+// applies: hidden with its output in the log, or with secrets in a console of
+// its own, where Bitwarden can ask for the login.
 func (a *app) install(p plan) error {
 	if p.chezmoi == "" {
 		return errors.New("chezmoi not found; run step 1 first")
@@ -326,15 +343,25 @@ func (a *app) install(p plan) error {
 	if err := os.WriteFile(selFile, sel, 0o644); err != nil {
 		return err
 	}
-	a.logf("Running chezmoi apply in a new console window; answer its prompts there.")
-	code, err := runConsole(
-		[]string{"powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", applyScript(p.chezmoi, p.personal)},
-		append(os.Environ(), selectionEnv+"="+selFile))
-	if err != nil {
-		return fmt.Errorf("starting chezmoi apply: %w", err)
-	}
-	if code != 0 {
-		return fmt.Errorf("chezmoi apply exited with %d; its error is in the console window it opened", code)
+	if p.secrets {
+		a.logf("Running chezmoi apply in a console window: the secrets script asks for the Bitwarden login there.")
+		code, err := runConsole(
+			[]string{"powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", applyScript(p.chezmoi, p.personal)},
+			append(os.Environ(), selectionEnv+"="+selFile))
+		if err != nil {
+			return fmt.Errorf("starting chezmoi apply: %w", err)
+		}
+		if code != 0 {
+			return fmt.Errorf("chezmoi apply exited with %d; its error is in the console window it opened", code)
+		}
+	} else {
+		// The scripts chezmoi runs inherit it.
+		if err := os.Setenv(selectionEnv, selFile); err != nil {
+			return err
+		}
+		if err := a.run(false, p.chezmoi, applyArgs(p.personal)...); err != nil {
+			return err
+		}
 	}
 	a.post(func() {
 		a.status, a.statusErr = "Done. Open a new terminal; run setup-gpg-ssh once for SSH through GPG.", false

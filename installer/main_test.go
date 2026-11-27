@@ -81,9 +81,19 @@ func TestLineWriter(t *testing.T) {
 	w := &lineWriter{log: func(s string) { lines = append(lines, s) }}
 	w.Write([]byte("a\r\n  -  \rb"))
 	w.Write([]byte("c\nd"))
+	w.Write([]byte("\n\x1b[32m[OK]\x1b[0m Scoop\x1b[?25l\n"))
 	w.Flush()
-	if strings.Join(lines, ",") != "a,-,bc,d" {
+	if strings.Join(lines, ",") != "a,-,bc,d,[OK] Scoop" {
 		t.Errorf("lines %q", lines)
+	}
+}
+
+func TestApplyArgs(t *testing.T) {
+	if got := strings.Join(applyArgs(false), " "); got != "apply --no-tty --exclude=encrypted" {
+		t.Errorf("secondary: %s", got)
+	}
+	if got := strings.Join(applyArgs(true), " "); got != "apply --no-tty" {
+		t.Errorf("personal: %s", got)
 	}
 }
 
