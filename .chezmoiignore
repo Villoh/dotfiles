@@ -144,7 +144,6 @@ README.md
 AppData/Roaming/warp/**/previews/**
 .config/micro/backups/**
 .config/micro/buffers/**
-AppData/Roaming/spicetify/**
 dot_config/ytm-player/auth.json
 dot_config/ytm-player/history.db
 dot_config/ytm-player/history.db-shm
