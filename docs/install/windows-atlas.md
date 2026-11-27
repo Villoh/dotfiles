@@ -6,7 +6,10 @@ common [bootstrap guide](bootstrap.md), which restores everything else through c
 Atlas comes first and is not part of `chezmoi apply`: it needs a fresh Windows, updates Windows itself,
 restarts the PC several times, and asks you to turn off four Windows Security switches by hand.
 
-Everything here comes from Atlas's own documentation (0.6.1); it has not been run from this repository.
+Everything here comes from Atlas's own documentation (0.6.1); it has not been run from this repository. The
+installer's Atlas page reads `%windir%\AtlasOS\state.json` (`installedVersion`) and `Install\active.json` (an
+install in progress), as Atlas documents in `docs/install-state.md`; that reading has only been run against
+sample files, not on a Windows with Atlas.
 
 ## Requirements
 
@@ -20,6 +23,9 @@ Everything here comes from Atlas's own documentation (0.6.1); it has not been ru
 - Keep the network driver for the PC on separate storage, in case Windows cannot connect after the install.
 
 ## 1. Get Atlas Manager
+
+The [installer GUI](../../INSTALL.md)'s first page, **Atlas**, does this: it downloads the pinned Manager, checks
+its SHA-256 and opens it. By hand:
 
 Check the file before running it. The version and SHA-256 below are the ones pinned in
 `packages/windows/system/atlas.json`; change both together when you bump Atlas.

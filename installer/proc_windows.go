@@ -52,6 +52,18 @@ func runConsole(args, env []string) (int, error) {
 	return int(code), nil
 }
 
+// windowsEdition is the EditionID of this Windows (Pro, Education, Core...),
+// "" when it cannot be read.
+func windowsEdition() string {
+	key, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
+	if err != nil {
+		return ""
+	}
+	defer key.Close()
+	v, _, _ := key.GetStringValue("EditionID")
+	return v
+}
+
 // refreshPath reloads PATH from the registry, so tools winget just installed
 // are found without restarting the installer.
 func refreshPath() {

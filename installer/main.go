@@ -70,6 +70,9 @@ type app struct {
 
 	nixos       nixosCfg // the NixOS configuration to rebuild (nixos.go)
 	nixosTested string   // flake that passed nixos-rebuild test: unlocks Switch
+
+	atlas   atlasStatus // where the PC stands with Atlas, from its own records (atlas.go); Windows only
+	edition string      // the Windows EditionID (Pro, Education, Core...), "" when unread
 }
 
 func newApp() *app {
@@ -234,6 +237,7 @@ func (a *app) stepPages() []page {
 		}...)
 	}
 	return []page{
+		{"atlas", "desktop_windows", "Atlas", "Atlas", "Optional, and first: Atlas wants a fresh Windows 11. Downloads Atlas Manager and opens it."},
 		{"setup", "build", "Setup", "Prerequisites", "Installs Git, Gpg4win and chezmoi with winget, and clones the repository."},
 		{"key", "key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
 		{"profile", "tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
@@ -314,6 +318,8 @@ func (a *app) pageView(c *ui.Context, st page) {
 		switch st.id {
 		case "system":
 			a.systemView(c)
+		case "atlas":
+			a.atlasView(c)
 		case "setup":
 			a.prereqView(c)
 		case "key":
@@ -815,6 +821,7 @@ func main() {
 		})
 		a.logf("Log file: %s", a.logPath())
 		go a.checkDeps()
+		go a.checkAtlas(true)
 	})
 	if err := mygo.App.Run(); err != nil {
 		log.Fatal(err)

@@ -96,16 +96,24 @@ for NixOS's Home Manager line, and there is no Packages page; on NixOS a **Syste
 page comes first: it clones your NixOS configuration where you choose and runs
 `nixos-rebuild test`, then `switch` once the test passes, with `pkexec`):
 
-1. **Prerequisites**: installs the missing Git, Gpg4win and chezmoi with winget
+1. **Atlas** (Windows, optional, first): says where the PC stands (Windows
+   edition, and whether Atlas is installed, half installed or missing, read from
+   Atlas's own records), downloads the AtlasManager the dotfiles pin
+   (`installer/atlas.json`, kept equal to `packages/windows/system/atlas.json` by
+   a test), checks its SHA-256 and opens it. Atlas Manager does the rest, which
+   needs your hands (four Windows Security switches) and restarts the PC: open
+   the installer again afterwards and, seeing Atlas, it starts at Setup. Skip it
+   if you do not want Atlas. See [`windows-atlas.md`](docs/install/windows-atlas.md).
+2. **Prerequisites**: installs the missing Git, Gpg4win and chezmoi with winget
    and clones the repository to `chezmoi source-path`.
-2. **GPG key**: personal flow (imports the secret key and ownertrust) or
+3. **GPG key**: personal flow (imports the secret key and ownertrust) or
    secondary flow (`--exclude=encrypted`).
-3. **Profile**: `install_profile`, `enable_secrets` and, for `custom`, each
+4. **Profile**: `install_profile`, `enable_secrets` and, for `custom`, each
    module. They are passed to `chezmoi init` as `--promptChoice`/`--promptBool`.
-4. **Packages**: the winget, winget (elevated) and scoop checklists. The choice
+5. **Packages**: the winget, winget (elevated) and scoop checklists. The choice
    is written to a JSON file named by `DOTFILES_PACKAGE_SELECTION`, which
    `run_once_00_windows-install` reads instead of asking with fzf.
-5. **Install**: `chezmoi init`, then for the personal flow it seeds the GPG/SSH
+6. **Install**: `chezmoi init`, then for the personal flow it seeds the GPG/SSH
    agent files and checks decryption with `chezmoi diff`. Last, `chezmoi apply
    --no-tty` runs hidden: its output goes to the log box and, with every other
    log line, to `%TEMP%\dotfiles-installer-<date>.log`. With personal secrets
@@ -171,8 +179,8 @@ winget install -e --id twpayne.chezmoi
 Import the private GPG key before applying the repository. See the [common
 bootstrap guide](docs/install/bootstrap.md).
 
-On a new PC, apply [AtlasOS](docs/install/windows-atlas.md) first: it needs a fresh
-Windows and is not part of `chezmoi apply`.
+On a new PC, apply [AtlasOS](docs/install/windows-atlas.md) first (the GUI's first
+page does it): it needs a fresh Windows and is not part of `chezmoi apply`.
 
 ### Linux
 

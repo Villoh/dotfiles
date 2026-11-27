@@ -294,7 +294,8 @@ func TestLineWriter(t *testing.T) {
 func TestModulesFollowProfile(t *testing.T) {
 	a := newAppFor("windows")
 	a.setRepo(repoInfo{Modules: []string{"zed", "git", "aether"}, MinimalOff: []string{"aether"}})
-	a.tab, a.profile = 2, "minimal"
+	a.goTo("profile")
+	a.profile = "minimal"
 	tt := ui.NewTester(a.view, 1000, 760)
 	if !tt.HasText("Modules  2/3") {
 		t.Fatalf("minimal shows no module count: %q", tt.Texts())
@@ -326,7 +327,7 @@ func TestPackagesView(t *testing.T) {
 		Winget:  map[string][]string{"full": {"Git.Git", "Spotify.Spotify"}, "minimal": {"Git.Git"}},
 		Scoop:   map[string][]string{"full": {"fzf"}, "minimal": {"fzf"}},
 	})
-	a.tab = 3
+	a.goTo("packages")
 	tt := ui.NewTester(a.view, 920, 720)
 	if err := tt.Click("Spotify.Spotify"); err != nil {
 		t.Fatal(err)
@@ -391,6 +392,7 @@ func TestSnapshot(t *testing.T) {
 // the dark theme). The headless frame has no text, so the fill is all there is.
 func TestButtonFeedback(t *testing.T) {
 	a := newAppFor("windows") // its Setup button is filled; the Linux one may not be
+	a.goTo("setup")
 	tt := ui.NewTester(a.view, 1000, 760)
 	r, ok := tt.Find("Install missing tools and clone")
 	if !ok {
