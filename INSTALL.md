@@ -233,7 +233,7 @@ During initialization, chezmoi will:
 | Profile | Result |
 |---------|--------|
 | `full` | Every module for the current OS. Windows package profile = `full`. |
-| `minimal` | CLI and shell configs, and the Aether desktop on Windows, for a new user. Windows: no Nilesoft, AutoHotkey, AltSnap, Warp, Vesktop or startup entries. Windows package profile = `minimal`. |
+| `minimal` | CLI and shell configs, and the Aether desktop on Windows, for a new user. Windows: no Nilesoft, AutoHotkey, AltSnap, Warp or startup entries. Windows package profile = `minimal`. |
 | `custom` | Asks `Enable <module>` for each module (Enter keeps the previous answer, default `true`). Windows package profile is chosen in fzf. |
 
 Each answer lives in `[data]` as `enable_<module>`; edit `~/.config/chezmoi/chezmoi.toml`
