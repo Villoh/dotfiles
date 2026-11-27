@@ -63,6 +63,9 @@ type app struct {
 	pkgVariant         string // package lists for the custom profile
 	pkgTab             int
 	pkgs               []*pkgList
+
+	nixos       nixosCfg // the NixOS configuration to rebuild (nixos.go)
+	nixosTested string   // flake that passed nixos-rebuild test: unlocks Switch
 }
 
 func newApp() *app {
@@ -87,6 +90,7 @@ func newAppFor(goos string) *app {
 	}
 	if goos == "linux" && runtime.GOOS == "linux" {
 		a.linuxOS = readOS()
+		a.nixos.dir = filepath.Join(home, "nixos-config")
 	}
 	a.logState.FollowEnd = true
 	return a
@@ -203,12 +207,16 @@ type page struct{ id, icon, label, title, blurb string }
 // NixOS/Home Manager installs its packages.
 func (a *app) pages() []page {
 	if a.goos != "windows" {
-		return []page{
+		var system []page // on NixOS the rebuild is what provides Git, GnuPG and chezmoi, so it goes first
+		if a.linuxOS.nixos {
+			system = []page{{"system", "settings", "System", "NixOS configuration", "Clones your NixOS configuration, then nixos-rebuild test and switch."}}
+		}
+		return append(system, []page{
 			{"setup", "build", "Setup", "Prerequisites", "Installs the missing Git, GnuPG and chezmoi (on NixOS, says what to add), and clones the repository."},
 			{"key", "key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
 			{"profile", "tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
 			{"install", "rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
-		}
+		}...)
 	}
 	return []page{
 		{"setup", "build", "Setup", "Prerequisites", "Installs Git, Gpg4win and chezmoi with winget, and clones the repository."},
@@ -271,6 +279,8 @@ func (a *app) body(c *ui.Context) {
 			}
 			ui.Scroll(c.Key(a.tab)).Grow(1).Gap(16).Children(func() {
 				switch st.id {
+				case "system":
+					a.systemView(c)
 				case "setup":
 					a.prereqView(c)
 				case "key":
@@ -289,6 +299,15 @@ func (a *app) body(c *ui.Context) {
 			a.logView(c)
 		})
 	})
+}
+
+// goTo opens a page by id.
+func (a *app) goTo(id string) {
+	for i, p := range a.pages() {
+		if p.id == id {
+			a.tab = i
+		}
+	}
 }
 
 func (a *app) logView(c *ui.Context) {

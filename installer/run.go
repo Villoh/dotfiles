@@ -112,7 +112,7 @@ func (a *app) step(title string, fn func() error) {
 	if a.busy != "" {
 		return
 	}
-	a.busy = title
+	a.busy, a.status = title, ""
 	go func() {
 		err := fn()
 		a.post(func() {
@@ -249,7 +249,7 @@ func (a *app) prepare() error {
 	if err != nil {
 		return err
 	}
-	a.post(func() { a.setRepo(info); a.tab = 1 })
+	a.post(func() { a.setRepo(info); a.goTo("key") })
 	a.checkKey()
 	return nil
 }

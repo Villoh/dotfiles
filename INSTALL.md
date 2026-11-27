@@ -92,7 +92,9 @@ free. The installer GUI
 [MyGo](https://github.com/egoist/mygo); its colors follow the Windows accent
 color and light/dark mode. It covers the same flow (on Linux, Prerequisites gets
 the tools as `install.sh` does, with `pkexec` instead of `sudo` and a copy button
-for NixOS's Home Manager line, and there is no Packages page):
+for NixOS's Home Manager line, and there is no Packages page; on NixOS a **System**
+page comes first: it clones your NixOS configuration where you choose and runs
+`nixos-rebuild test`, then `switch` once the test passes, with `pkexec`):
 
 1. **Prerequisites**: installs the missing Git, Gpg4win and chezmoi with winget
    and clones the repository to `chezmoi source-path`.
