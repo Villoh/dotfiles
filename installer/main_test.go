@@ -1,9 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"image/png"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"slices"
 	"strings"
 	"testing"
@@ -47,6 +50,29 @@ func TestInitArgs(t *testing.T) {
 	}
 	if got := initArgs(r, "full", true, nil); len(got) != 6 {
 		t.Errorf("full profile asks no modules: %q", got)
+	}
+}
+
+// Runs the console script with a fake chezmoi: the exit code must come back
+// and the prompt must not print an error. Skipped without pwsh (CI has it).
+func TestApplyScript(t *testing.T) {
+	pwsh, err := exec.LookPath("pwsh")
+	if err != nil {
+		t.Skip("pwsh not installed")
+	}
+	fake := filepath.Join(t.TempDir(), "chezmoi's.ps1") // a quote, to test the escaping
+	if err := os.WriteFile(fake, []byte("if ($args -notcontains '--exclude=encrypted') { exit 9 }; exit 3"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command(pwsh, "-NoProfile", "-Command", applyScript(fake, false))
+	cmd.Stdin = strings.NewReader("\n")
+	out, err := cmd.CombinedOutput()
+	var exit *exec.ExitError
+	if !errors.As(err, &exit) || exit.ExitCode() != 3 {
+		t.Fatalf("want exit 3, got %v\n%s", err, out)
+	}
+	if !strings.Contains(string(out), "chezmoi apply failed (exit 3)") || strings.Contains(string(out), "Exception") {
+		t.Errorf("output:\n%s", out)
 	}
 }
 
