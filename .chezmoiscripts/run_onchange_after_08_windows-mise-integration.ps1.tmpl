@@ -4,7 +4,6 @@
 # shortcuts.json {{ include "packages/windows/system/shortcuts.json" | sha256sum }}
 # mise.lock      {{ include "dot_config/mise/mise.lock" | sha256sum }}
 # config.toml    {{ include "dot_config/mise/config.toml" | sha256sum }}
-# windows.toml   {{ include "dot_config/mise/conf.d/windows.toml" | sha256sum }}
 $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $pkgDir     = "$chezmoisrc\packages\windows"
 $ok = 0; $skip = 0; $fail = 0

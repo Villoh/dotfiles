@@ -91,12 +91,10 @@ restored or updated by these scripts. Their old Windows inventories
 
 Windows reads two chezmoi-managed files:
 
-- `dot_config/mise/config.toml` — shared with Linux (`os = [...]` gates
-  platform-specific tools).
-- `dot_config/mise/conf.d/windows.toml` — Windows-only tools (aube, GitHub
-  release apps, cargo tools). Ignored on Linux so its tools never show up as
-  missing from the Linux lockfile. The Linux counterpart is
-  `conf.d/linux.toml`, ignored here.
+- `dot_config/mise/config.toml` — every tool for both systems; `os = ["windows"]`
+  (aube, GitHub release apps, cargo tools) or `os = ["linux"]` gates the
+  platform-specific ones. `mise lock` on Linux also locks the Windows-only
+  tools for Windows, so the one `mise.lock` covers both (`locked = true`).
 
 Settings in `config.toml` use `locked = true`: after adding a tool run
 `mise lock` on Windows to record it. Restore with:

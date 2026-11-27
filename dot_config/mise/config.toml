@@ -46,3 +46,25 @@ ty = "latest"
 git-filter-repo = "latest"
 "npm:socket" = "latest"
 "github:router-for-me/CLIProxyAPI" = "latest"
+
+# -- Windows only ---------------------------------------------------------------
+# os = ["windows"] keeps them off Linux, while `mise lock` on Linux still locks them
+# for Windows: one mise.lock serves both systems.
+# Package manager for the npm: backend (settings.npm.package_manager).
+# Linux gets it from NixOS.
+aube = { version = "latest", os = ["windows"] }
+# Former `bin` inventory (GitHub release binaries).
+"github:cakama3a/Polling" = { version = "latest", os = ["windows"] }
+"github:vertopolkaLF/silence" = { version = "latest", os = ["windows"] }
+"github:xdagiz/xytz" = { version = "latest", os = ["windows"] }
+# Not in winget or scoop. Yapfast tracks stable releases (NixOS uses the nightly).
+"github:crmne/zapfast" = { version = "latest", os = ["windows"] }
+"github:anomalyco/hex" = { version = "latest", os = ["windows"] }
+# Tags are desktop-vX.Y.Z (full) and desktop-minimal-vX.Y.Z; take only the full build.
+"github:elianiva/meiro" = { version = "latest", version_prefix = "desktop-v", os = ["windows"] }
+"github:yapfast/yapfast" = { version = "latest", os = ["windows"] }
+# Native Discord client. Only nightlies so far, published as prereleases.
+"github:ViceVerse-cz/Serein" = { version = "latest", prerelease = true, asset_pattern = "serein-*-Windows-X64.zip", os = ["windows"] }
+
+# -- Linux only -----------------------------------------------------------------
+"github:PrimeIntellect-ai/prime-agent" = { version = "latest", asset_pattern = "prime-agent-*-linux-x64.tar.gz", filter_bins = "prime-agent", os = ["linux"] }
