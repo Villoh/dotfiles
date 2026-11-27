@@ -2,6 +2,7 @@
 {{- $aiAgentsOff := and (hasKey . "enable_ai_agents") (not .enable_ai_agents) -}}
 {{- $altsnapOff := and (hasKey . "enable_altsnap") (not .enable_altsnap) -}}
 {{- $pnpmOff := and (hasKey . "enable_pnpm") (not .enable_pnpm) -}}
+{{- $mailOff := and (hasKey . "enable_mail") (not .enable_mail) -}}
 # ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
 {{ if or (ne .chezmoi.os "windows") $altsnapOff }}AppData/Roaming/AltSnap/**{{ end }}
 {{ if or (ne .chezmoi.os "windows") (not .enable_vesktop) }}AppData/Roaming/vesktop/**{{ end }}
@@ -44,15 +45,14 @@ scoop/
 .zprofile
 .profile
 {{ end }}
-{{ if or (eq .chezmoi.os "windows") (not .enable_aerc) }}.config/aerc/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") $mailOff }}.config/himalaya/**
+.config/meli/**
+.config/sieve/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_nchat) }}.config/nchat/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_freetube) }}.config/FreeTube/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_vesktop) }}.config/vesktop/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_concord) }}.config/concord/**{{ end }}
 {{ if ne .chezmoi.os "linux" }}.config/strata/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/himalaya/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/meli/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/sieve/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.local/**{{ end }}
 
 # ── Cross-platform modules (ignored if disabled) ───────────────────────────────
