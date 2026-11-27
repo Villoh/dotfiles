@@ -10,7 +10,7 @@
 {{- $windowsOnly := list "aether" "nilesoft" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
 {{- /* Off in minimal: personal apps and extras. Aether stays on: new users get the desktop. */ -}}
-{{- $minimalOff := list "mail" "nchat" "freetube" "concord" "nilesoft" "altsnap" "warp" "startup" -}}
+{{- $minimalOff := list "ai_agents" "mail" "nchat" "freetube" "concord" "nilesoft" "altsnap" "warp" "startup" -}}
 {{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
 {{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"
