@@ -387,7 +387,7 @@ func (a *app) profileView(c *ui.Context) {
 	ui.Row(c).Gap(12).AlignItems(ui.Stretch).Children(func() {
 		for _, p := range []struct{ id, body string }{
 			{"full", "Every module for Windows and the full package lists."},
-			{"minimal", "CLI and shell configs only. Turns off " + strings.Join(a.repo.MinimalOff, ", ") + "."},
+			{"minimal", "CLI, shell and the Aether desktop. Turns off " + strings.Join(a.repo.MinimalOff, ", ") + "."},
 			{"custom", "Choose the modules one by one."},
 		} {
 			if a.choiceCard(c, a.profile == p.id, "", p.id, p.body) {
