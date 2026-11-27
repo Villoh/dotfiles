@@ -30,7 +30,7 @@ chmod +x "$work/appimagetool"
 app="$work/AppDir"
 install -Dm755 "$bin" "$app/usr/bin/dotfiles-installer"
 install -Dm644 "$here/dotfiles-installer.desktop" "$app/dotfiles-installer.desktop"
-install -Dm644 "$here/../icons/terminal.svg" "$app/dotfiles-installer.svg"
+install -Dm644 "$here/icon.svg" "$app/dotfiles-installer.svg"
 ln -s dotfiles-installer.svg "$app/.DirIcon"
 ln -s usr/bin/dotfiles-installer "$app/AppRun"
 

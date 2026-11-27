@@ -116,7 +116,7 @@ page comes first: it clones your NixOS configuration where you choose and runs
 6. **Install**: `chezmoi init`, then for the personal flow it seeds the GPG/SSH
    agent files and checks decryption with `chezmoi diff`. Last, `chezmoi apply
    --no-tty` runs hidden: its output goes to the log box and, with every other
-   log line, to `%TEMP%\dotfiles-installer-<date>.log`. With personal secrets
+   log line, to `%TEMP%\villoh-dotfiles-<date>.log`. With personal secrets
    on, it runs in a console window instead, where the secrets script asks for
    the Bitwarden login.
 
@@ -151,6 +151,10 @@ and licenses. Its copy icon puts the page on the clipboard for a bug report.
 
   `install-gui.ps1` and `install-gui.sh` download the latest release; the flake
   builds `main`.
+- **Icon**: `installer/packaging/icon.svg` is the source. After editing it, run
+  `installer/packaging/make-icon.sh` (ImageMagick and Go) to regenerate
+  `installer/icon.png` (the window icon) and `installer/rsrc_windows_amd64.syso`
+  (the icon of the `.exe` in Explorer, linked only into Windows builds); commit both.
 - **Local build**, from any OS (pure Go, no cgo):
 
   ```sh
