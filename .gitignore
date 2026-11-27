@@ -6,6 +6,7 @@
 
 # State / runtime — not config
 **/*.tmp
+/result
 **/*.log
 **/*.bak
 **/Cache/

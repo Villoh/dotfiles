@@ -115,6 +115,11 @@ program_files/**
 installer/**
 install.ps1
 install-gui.ps1
+install.sh
+install-gui.sh
+flake.nix
+flake.lock
+result
 other_config/**
 docs/**
 CLAUDE.md
