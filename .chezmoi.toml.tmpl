@@ -2,7 +2,7 @@
 {{- /* Profile: full = everything, minimal = CLI, shell and the desktop (Aether), custom = ask per module */ -}}
 {{- $profile := promptChoiceOnce . "install_profile" "Install profile" (list "full" "minimal" "custom") "full" -}}
 
-{{- /* ai_agents = the coding agents' configs: .claude, .codex, .grok, .omp, .pi, .pi-lens, .agents, .config/{caveman,opencode,devin} */ -}}
+{{- /* ai_agents = the coding agents' configs: .claude, .codex, .grok, .omp, .pi, .pi-lens, .agents, .config/{caveman,opencode} */ -}}
 {{- /* package_managers = the bun, uv and pnpm configs; tmux includes workmux */ -}}
 {{- $common := list "zed" "yazi" "cava" "gh_dash" "micro" "ohmyposh" "git" "gitui" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "ai_agents" "package_managers" -}}
 {{- /* mail = the mail clients' configs (himalaya, meli) and the sieve filters */ -}}

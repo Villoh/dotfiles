@@ -186,12 +186,8 @@ or `npm:@playwright/cli` with `playwright` (a different npm package).
 Claude, Codex, Pi, and OMP use native binaries from their mise registry entries
 (`claude`, `codex`, `pi`, `oh-my-pi`). Happy uses `npm:happy`, the upstream rename
 of `happy-coder`; only its reviewed binary-unpacking postinstall is allowed.
-Devin uses `http:devin` with the official Linux x86_64 archive and a pinned
-SHA256 from its versioned manifest. Version discovery uses the upstream current
-manifest, but a Devin bump also requires refreshing the checksum from
-`https://static.devin.ai/cli/<version>/manifest.json`; stale checksums fail closed.
-Nix CLI copies remain as fallback until explicitly retired. Herdr, Devin
-Desktop, and auxiliary tools remain in Nix. Project Java is not declared in the
+Nix CLI copies remain as fallback until explicitly retired. Herdr and auxiliary
+tools remain in Nix. Project Java is not declared in the
 global mise configuration; do not upgrade inactive tools or prune it as part
 of global maintenance. New shells select mise agents; existing Pi sessions
 keep running their original executable.

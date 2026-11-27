@@ -35,7 +35,6 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/dms/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/zapfast/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
-{{ if or (eq .chezmoi.os "windows") $aiAgentsOff }}.config/devin/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshrc
 .zprofile
 .profile

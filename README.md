@@ -76,7 +76,7 @@
 | Discord | [Serein](https://github.com/ViceVerse-cz/Serein) · [Yapfast](https://github.com/yapfast/yapfast) · Concord | [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/communication/packages.nix) · [⚙️](dot_config/private_concord/) |
 | Chat | [nchat](https://github.com/d99kris/nchat) | [⚙️](dot_config/nchat/) |
 | Music | [ytm-player](https://github.com/peternaame-boop/ytm-player) · [Sonora](https://github.com/sonorahq/sonora) · [Kopuz](https://github.com/Kopuz-org/kopuz) · [Meiro](https://github.com/elianiva/meiro) · [cava](https://github.com/karlstav/cava) | [⚙️](dot_config/private_ytm-player/) · [Home Manager](https://github.com/Villoh/nixos-config/blob/main/modules/home/media/packages.nix) · [⚙️](dot_config/cava/) |
-| AI Agents | [Claude Code](https://claude.com/claude-code) · [Codex](https://github.com/openai/codex) · Pi · omp · Devin · [opencode](https://opencode.ai/) | [⚙️](dot_claude/) · [⚙️](dot_codex/) · [⚙️](dot_pi/) · [⚙️](dot_omp/) · [⚙️](dot_config/devin/) · [⚙️](dot_config/opencode/) |
+| AI Agents | [Claude Code](https://claude.com/claude-code) · [Codex](https://github.com/openai/codex) · Pi · omp · [opencode](https://opencode.ai/) | [⚙️](dot_claude/) · [⚙️](dot_codex/) · [⚙️](dot_pi/) · [⚙️](dot_omp/) · [⚙️](dot_config/opencode/) |
 
 ## NixOS and chezmoi
 
