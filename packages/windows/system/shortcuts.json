@@ -2,6 +2,7 @@
   "shortcuts": [
     { "name": "ZapFast", "tool": "github:crmne/zapfast", "exe": "zapfast.exe" },
     { "name": "Yapfast", "tool": "github:yapfast/yapfast", "exe": "yapfast.exe" },
+    { "name": "Serein", "tool": "github:ViceVerse-cz/Serein", "exe": "serein.exe" },
     { "name": "Meiro", "tool": "github:elianiva/meiro", "exe": "meiro.exe" },
     { "name": "Silence", "tool": "github:vertopolkaLF/silence", "exe": "silence.exe" }
   ]
