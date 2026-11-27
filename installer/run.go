@@ -289,6 +289,19 @@ func initArgs(r repoInfo, profile string, secrets bool, modules map[string]bool)
 
 // install initializes chezmoi, checks decryption for the personal flow, and
 // applies in a console of its own, where the chezmoi scripts can ask.
+// applyScript runs chezmoi apply in its own console and keeps the console open
+// afterwards, so its output, and any error, stays readable.
+func applyScript(chezmoi string, personal bool) string {
+	apply := "& '" + strings.ReplaceAll(chezmoi, "'", "''") + "' apply"
+	if !personal {
+		apply += " --exclude=encrypted"
+	}
+	return apply + `; $code = $LASTEXITCODE; Write-Host
+if ($code -eq 0) { Write-Host 'chezmoi apply finished.' -ForegroundColor Green }
+else { Write-Host "chezmoi apply failed (exit $code). The error is above." -ForegroundColor Red }
+[void](Read-Host 'Press Enter to close'); exit $code`
+}
+
 func (a *app) install(p plan) error {
 	if p.chezmoi == "" {
 		return errors.New("chezmoi not found; run step 1 first")
@@ -313,17 +326,15 @@ func (a *app) install(p plan) error {
 	if err := os.WriteFile(selFile, sel, 0o644); err != nil {
 		return err
 	}
-	apply := "& '" + strings.ReplaceAll(p.chezmoi, "'", "''") + "' apply"
-	if !p.personal {
-		apply += " --exclude=encrypted"
-	}
-	script := apply + `; $code = $LASTEXITCODE; Write-Host; Read-Host 'chezmoi apply finished (exit ' + $code + '). Press Enter to close'; exit $code`
 	a.logf("Running chezmoi apply in a new console window; answer its prompts there.")
-	cmd := exec.Command("powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script)
-	cmd.Env = append(os.Environ(), selectionEnv+"="+selFile)
-	newConsole(cmd)
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("chezmoi apply: %w", err)
+	code, err := runConsole(
+		[]string{"powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", applyScript(p.chezmoi, p.personal)},
+		append(os.Environ(), selectionEnv+"="+selFile))
+	if err != nil {
+		return fmt.Errorf("starting chezmoi apply: %w", err)
+	}
+	if code != 0 {
+		return fmt.Errorf("chezmoi apply exited with %d; its error is in the console window it opened", code)
 	}
 	a.post(func() {
 		a.status, a.statusErr = "Done. Open a new terminal; run setup-gpg-ssh once for SSH through GPG.", false
