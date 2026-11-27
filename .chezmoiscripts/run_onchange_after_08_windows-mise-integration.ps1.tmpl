@@ -22,6 +22,8 @@ function TryRun {
 # started with the PATH from before that.
 $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
             [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+# The tools left out in run_once_00's package selection, which it also saved now.
+$env:MISE_DISABLE_TOOLS = [System.Environment]::GetEnvironmentVariable('MISE_DISABLE_TOOLS', 'User')
 
 if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
     LogSkip "mise not installed"

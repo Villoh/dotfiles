@@ -110,7 +110,7 @@ page comes first: it clones your NixOS configuration where you choose and runs
    secondary flow (`--exclude=encrypted`).
 4. **Profile**: `install_profile`, `enable_secrets` and, for `custom`, each
    module. They are passed to `chezmoi init` as `--promptChoice`/`--promptBool`.
-5. **Packages**: the winget, winget (elevated) and scoop checklists. The choice
+5. **Packages**: the winget, winget (elevated), scoop and mise checklists. The choice
    is written to a JSON file named by `DOTFILES_PACKAGE_SELECTION`, which
    `run_once_00_windows-install` reads instead of asking with fzf.
 6. **Install**: `chezmoi init`, then for the personal flow it seeds the GPG/SSH
@@ -264,7 +264,7 @@ chezmoi runs scripts automatically in this order:
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, mise, Dev Mode) + interactive package install (winget, scoop, PowerShell modules) + `mise install` for every global CLI tool |
+| `run_once_00_windows-install` | Bootstrap (Scoop, fzf, mise, Dev Mode) + interactive package install (winget, scoop, PowerShell modules) + the choice of mise tools: full offers every tool that runs on Windows, minimal only the desktop apps (those in `shortcuts.json`); the rest go to the user variable `MISE_DISABLE_TOOLS`, so mise ignores them from then on |
 | `run_onchange_01_windows-secrets` | (needs `enable_secrets`) Fetches API keys from Bitwarden (or prompts manually) and writes them to `~/Documents/PowerShell/Secrets/api-keys.ps1` |
 | `run_onchange_02_windows-junctions` | Junctions for apps that can't use chezmoi symlinks |
 | `run_onchange_03_windows-startup` | Startup registry entries |
@@ -287,7 +287,7 @@ updates the system and its packages declaratively.
 |--------|--------------|
 | `run_once_after_06_windows-aether` | Downloads `AetherSetup.exe` at the version and SHA-256 pinned in `packages/windows/system/aether.json` and runs its setup window (it has no silent mode). Runs after the files are applied so your `hyprland.conf` exists before AetherWM's build could write a starter one. Tick the AetherWM box in that window to get tiling: it is opt-in, built from source and personal-use only |
 | `run_once_after_07_windows-setup` | Starts the apps in `startup.json` once (`enable_startup`) |
-| `run_onchange_after_08_windows-mise-integration` | Adds the mise shims to the user `PATH` and creates Start Menu shortcuts for the portable mise apps in `packages/windows/system/shortcuts.json` (re-runs when `mise.lock` changes) |
+| `run_onchange_after_08_windows-mise-integration` | Runs `mise install` (minus `MISE_DISABLE_TOOLS`), adds the mise shims to the user `PATH` and creates Start Menu shortcuts for the portable mise apps in `packages/windows/system/shortcuts.json` (re-runs when `mise.lock` or `config.toml` changes) |
 
 ---
 

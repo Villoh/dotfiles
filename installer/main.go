@@ -93,6 +93,7 @@ func newAppFor(goos string) *app {
 			{key: "winget>", title: "winget", off: map[string]bool{}},
 			{key: "winget-elevated>", title: "winget (elevated)", off: map[string]bool{}},
 			{key: "scoop>", title: "scoop", off: map[string]bool{}},
+			{key: "mise>", title: "mise", off: map[string]bool{}},
 		},
 	}
 	if goos == "linux" && runtime.GOOS == "linux" {
@@ -187,8 +188,10 @@ func (a *app) items(i int) []string {
 		return a.repo.Winget[a.variant()]
 	case 1:
 		return a.repo.Elevated
-	default:
+	case 2:
 		return a.repo.Scoop[a.variant()]
+	default:
+		return a.repo.Mise[a.variant()]
 	}
 }
 

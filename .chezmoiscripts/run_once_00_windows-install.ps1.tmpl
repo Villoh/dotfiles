@@ -1,5 +1,6 @@
 {{ if eq .chezmoi.os "windows" -}}
 $pkgDir = "{{ .chezmoi.sourceDir }}\packages\windows"
+$miseConfig = "{{ .chezmoi.sourceDir }}\dot_config\mise\config.toml"
 $logFile = "$env:TEMP\chezmoi-install-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
 # full/minimal come from the chezmoi init prompt; custom (or unset) asks per manager below
 $installProfile = "{{ get . "install_profile" }}"
@@ -153,6 +154,22 @@ if ($devModeVal -eq 1) {
 $env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
             [System.Environment]::GetEnvironmentVariable('PATH', 'User')
 
+# The [tools] of the mise config that run on Windows: no os option, or an os
+# that includes windows. Same rule as the installer GUI (installer/repo.go).
+# shortcut: one line per tool, enough for this config; parse TOML if entries span lines.
+function Get-MiseTools {
+    param([string]$Path)
+    $inTools = $false
+    foreach ($raw in Get-Content $Path) {
+        $line = $raw.Trim()
+        if ($line.StartsWith('[')) { $inTools = $line -eq '[tools]'; continue }
+        if (-not $inTools -or $line -notmatch '^(?:"([^"]+)"|([^\s=#]+))\s*=\s*(.*)$') { continue }
+        $name = "$($Matches[1])$($Matches[2])"
+        if ($Matches[3] -match '\bos\s*=\s*\[([^\]]*)\]' -and $Matches[1] -notmatch 'windows') { continue }
+        $name
+    }
+}
+
 # == PACKAGE MANAGER SELECTION =================================================
 LogSection "Package selection"
 
@@ -245,6 +262,25 @@ if ($selectedManagers -contains "scoop") {
     $allScoopNames      = @($scoopData.apps | Select-Object -ExpandProperty Name | Sort-Object)
     $selectedScoopNames = Select-WithFzf $allScoopNames "scoop>"
 }
+
+# -- mise ----------------------------------------------------------------------
+# Full offers every mise tool that runs on Windows; minimal only the desktop
+# apps, those with a Start Menu shortcut. run_onchange_after_08 installs them:
+# the rest go to MISE_DISABLE_TOOLS, so mise ignores them there and in every later
+# install or upgrade, while tools added to the config later still install.
+$allMiseTools      = @(Get-MiseTools $miseConfig | Sort-Object)
+$selectedMiseTools = @()
+if ($selectedManagers -contains "mise") {
+    $miseOffer = $allMiseTools
+    if ($installProfile -eq "minimal") {
+        $desktopTools = @((Get-Content "$pkgDir\system\shortcuts.json" | ConvertFrom-Json).shortcuts.tool)
+        $miseOffer    = @($allMiseTools | Where-Object { $_ -in $desktopTools })
+    }
+    $selectedMiseTools = @(Select-WithFzf $miseOffer "mise>")
+}
+$miseDisabled = @($allMiseTools | Where-Object { $_ -notin $selectedMiseTools }) -join ','
+[Environment]::SetEnvironmentVariable("MISE_DISABLE_TOOLS", $(if ($miseDisabled) { $miseDisabled } else { $null }), "User")
+Log "  mise: $($selectedMiseTools.Count) of $($allMiseTools.Count) tools" "Cyan"
 
 # -- PowerShell modules --------------------------------------------------------
 $selectedPsModules = @()

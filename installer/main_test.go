@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
@@ -44,6 +45,29 @@ func TestLoadRepo(t *testing.T) {
 	if len(r.Winget["full"]) == 0 || len(r.Winget["minimal"]) == 0 || len(r.Scoop["full"]) == 0 || len(r.Elevated) == 0 {
 		t.Errorf("package lists: winget %d/%d scoop %d elevated %d",
 			len(r.Winget["minimal"]), len(r.Winget["full"]), len(r.Scoop["full"]), len(r.Elevated))
+	}
+}
+
+// mise: full is every tool for Windows (os-less or os = ["windows"]); minimal
+// only the desktop apps, those with a Start Menu shortcut.
+func TestMiseTools(t *testing.T) {
+	r, err := loadRepo("..", "windows")
+	if err != nil {
+		t.Fatal(err)
+	}
+	full, minimal := r.Mise["full"], r.Mise["minimal"]
+	for _, tool := range []string{"github:ViceVerse-cz/Serein", "aube", "bun", "npm:tokscale"} {
+		if !slices.Contains(full, tool) {
+			t.Errorf("mise full lacks %s: %v", tool, full)
+		}
+	}
+	for _, tool := range []string{"claude", "github:PrimeIntellect-ai/prime-agent"} {
+		if slices.Contains(full, tool) {
+			t.Errorf("mise full has the Linux-only %s", tool)
+		}
+	}
+	if !slices.Contains(minimal, "github:ViceVerse-cz/Serein") || slices.Contains(minimal, "aube") || len(minimal) >= len(full) {
+		t.Errorf("mise minimal %v", minimal)
 	}
 }
 
@@ -281,6 +305,34 @@ func TestApplyScript(t *testing.T) {
 	}
 }
 
+// run_once_00_windows-install's Get-MiseTools and miseTools read the mise config
+// with one rule: the script installs what the GUI offers.
+func TestMiseToolsMatchScript(t *testing.T) {
+	pwsh, err := exec.LookPath("pwsh")
+	if err != nil {
+		t.Skip("pwsh not installed")
+	}
+	b, err := os.ReadFile("../.chezmoiscripts/run_once_00_windows-install.ps1.tmpl")
+	if err != nil {
+		t.Fatal(err)
+	}
+	fn := regexp.MustCompile(`(?ms)^function Get-MiseTools \{.*?^\}`).Find(b)
+	if fn == nil {
+		t.Fatal("Get-MiseTools not found")
+	}
+	out, err := exec.Command(pwsh, "-NoProfile", "-Command",
+		string(fn)+"; Get-MiseTools ../dot_config/mise/config.toml | Sort-Object -CaseSensitive").Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := strings.Fields(string(out))
+	want, _ := miseTools("../dot_config/mise/config.toml")
+	slices.Sort(got)
+	if !slices.Equal(got, want) {
+		t.Errorf("Get-MiseTools %v\nmiseTools      %v", got, want)
+	}
+}
+
 func TestLineWriter(t *testing.T) {
 	var lines []string
 	w := &lineWriter{log: func(s string) { lines = append(lines, s) }}
@@ -330,6 +382,7 @@ func TestPackagesView(t *testing.T) {
 		Modules: []string{"zed"},
 		Winget:  map[string][]string{"full": {"Git.Git", "Spotify.Spotify"}, "minimal": {"Git.Git"}},
 		Scoop:   map[string][]string{"full": {"fzf"}, "minimal": {"fzf"}},
+		Mise:    map[string][]string{"full": {"bun", "github:yapfast/yapfast"}, "minimal": {"github:yapfast/yapfast"}},
 	})
 	a.goTo("packages")
 	tt := ui.NewTester(a.view, 920, 720)
@@ -345,6 +398,9 @@ func TestPackagesView(t *testing.T) {
 	}
 	if sel["scoop profile>"] != "full" {
 		t.Errorf("scoop profile> %v", sel["scoop profile>"])
+	}
+	if got := sel["mise>"].([]string); !slices.Equal(got, []string{"bun", "github:yapfast/yapfast"}) {
+		t.Errorf("mise> %q", got)
 	}
 	a.profile = "minimal"
 	if got := a.selection()["winget>"].([]string); !slices.Equal(got, []string{"Git.Git"}) {
