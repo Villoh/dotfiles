@@ -228,7 +228,7 @@ func (a *app) body(c *ui.Context) {
 				}
 			})
 			if a.status != "" {
-				a.banner(c, a.statusErr, a.status)
+				a.banner(c, map[bool]bannerKind{true: failure, false: success}[a.statusErr], a.status)
 			}
 			a.logView(c)
 		})
@@ -262,7 +262,7 @@ func (a *app) sectionTitle(c *ui.Context, text string) {
 
 func (a *app) needRepo(c *ui.Context) bool {
 	if !a.repoOK {
-		a.banner(c, true, "Run Setup first: the choices here come from the cloned repository.")
+		a.banner(c, info, "Run Setup first: the choices here come from the cloned repository.")
 	}
 	return a.repoOK
 }
@@ -304,7 +304,7 @@ func (a *app) keyView(c *ui.Context) {
 		}
 	})
 	if a.mode == modeSecondary {
-		a.muted(c, "chezmoi apply runs with --exclude=encrypted. Configure Git and SSH for this machine yourself.")
+		a.banner(c, info, "chezmoi apply runs with --exclude=encrypted. Configure Git and SSH for this machine yourself.")
 		return
 	}
 	if !a.needRepo(c) {
@@ -404,7 +404,7 @@ func (a *app) packagesView(c *ui.Context) {
 			}
 		})
 	} else {
-		a.muted(c, "Package lists: "+a.variant()+", from the install profile. mise and the PowerShell modules are always installed.")
+		a.banner(c, info, "Package lists: "+a.variant()+", from the install profile. mise and the PowerShell modules are always installed.")
 	}
 	ui.Row(c).Gap(8).Children(func() {
 		for i, p := range a.pkgs {
@@ -484,9 +484,9 @@ func (a *app) installView(c *ui.Context) {
 	})
 	ready := a.mode == modeSecondary || a.keyOK
 	if !ready {
-		a.banner(c, true, "Import the GPG key first, or switch to the secondary flow.")
+		a.banner(c, info, "Import the GPG key first, or switch to the secondary flow.")
 	}
-	a.muted(c, "chezmoi init runs here. chezmoi apply opens in a console window, where its scripts may ask questions and UAC may prompt.")
+	a.banner(c, info, "chezmoi init runs here. chezmoi apply opens in a console window, where its scripts may ask questions and UAC may prompt.")
 	ui.Row(c).Children(func() { // a column would stretch the button
 		if a.button(c, filled, "Install", a.busy != "" || !ready) {
 			p := a.makePlan()
