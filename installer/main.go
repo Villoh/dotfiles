@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
@@ -42,6 +43,7 @@ type app struct {
 	schemeDark bool
 	lines      []string
 	logState   ui.ListState
+	logFile    *os.File // every log line, also what chezmoi apply prints; nil in tests
 	deps       []dep
 	sourceDir  string
 	repo       repoInfo
@@ -97,6 +99,9 @@ func (a *app) sync(fn func()) {
 
 func (a *app) logLine(s string) {
 	a.post(func() {
+		if a.logFile != nil {
+			fmt.Fprintf(a.logFile, "[%s] %s\n", time.Now().Format("15:04:05"), s)
+		}
 		a.lines = append(a.lines, s)
 		if n := len(a.lines) - maxLogLines; n > 0 {
 			a.lines = slices.Delete(a.lines, 0, n)
@@ -486,7 +491,11 @@ func (a *app) installView(c *ui.Context) {
 	if !ready {
 		a.banner(c, info, "Import the GPG key first, or switch to the secondary flow.")
 	}
-	a.banner(c, info, "chezmoi init runs here. chezmoi apply opens in a console window, where its scripts may ask questions and UAC may prompt.")
+	if a.secrets {
+		a.banner(c, info, "chezmoi apply opens in a console window: the secrets script asks for your Bitwarden login there. UAC may prompt.")
+	} else {
+		a.banner(c, info, "chezmoi runs here: its output goes to the log below and to "+a.logPath()+". UAC may prompt for the elevated installs.")
+	}
 	ui.Row(c).Children(func() { // a column would stretch the button
 		if a.button(c, filled, "Install", a.busy != "" || !ready) {
 			p := a.makePlan()
@@ -495,14 +504,29 @@ func (a *app) installView(c *ui.Context) {
 	})
 }
 
+func (a *app) logPath() string {
+	if a.logFile == nil {
+		return "a .log file"
+	}
+	return a.logFile.Name()
+}
+
 func main() {
 	a := newApp()
+	logName := filepath.Join(os.TempDir(), "dotfiles-installer-"+time.Now().Format("20060102-150405")+".log")
+	if f, err := os.Create(logName); err == nil {
+		a.logFile = f
+		defer f.Close()
+	} else {
+		log.Printf("log file: %v", err) // the GUI log still works
+	}
 	mygo.App.WhenReady(func() {
 		a.win = mygo.NewWindow(mygo.WindowOptions{
 			Title: appTitle, Width: 1000, Height: 760, MinWidth: 760, MinHeight: 560,
 			TitleBarStyle: mygo.TitleBarHidden, TitleBarHeight: titleBarHeight, // the view draws an M3 title bar
 			Content: ui.View(a.view),
 		})
+		a.logf("Log file: %s", a.logPath())
 		go a.checkDeps()
 	})
 	if err := mygo.App.Run(); err != nil {

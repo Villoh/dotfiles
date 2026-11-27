@@ -5,7 +5,8 @@
 #
 # Relaunches itself as Administrator (winget and run_once_00_windows-install
 # expect it), downloads the installer GUI from the latest GitHub release,
-# checks its SHA-256 against the release's SHA256SUMS, and runs it.
+# checks its SHA-256 against the release's SHA256SUMS, and starts it without
+# waiting: the terminal is free once the installer window opens.
 # Runs in Windows PowerShell 5.1 and PowerShell 7. Never `exit`: under iex it
 # would close the user's terminal.
 
@@ -46,5 +47,6 @@
     if ($actual -ne $expected) { Remove-Item $exe; throw "SHA-256 mismatch for ${exeName}: expected $expected, got $actual" }
 
     Write-Host 'Checksum OK. Starting the installer...' -ForegroundColor Green
-    Start-Process $exe -Wait
+    Start-Process $exe
+    Write-Host 'The installer runs in its own window; this terminal is free.' -ForegroundColor Green
 }
