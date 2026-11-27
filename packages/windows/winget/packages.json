@@ -149,12 +149,6 @@
           "PackageIdentifier": "Anomaly.OpenCode.Desktop"
         },
         {
-          "PackageIdentifier": "Spicetify.Spicetify"
-        },
-        {
-          "PackageIdentifier": "Spotify.Spotify"
-        },
-        {
           "PackageIdentifier": "JetBrains.Toolbox"
         },
         {
