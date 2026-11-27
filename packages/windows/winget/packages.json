@@ -152,7 +152,7 @@
           "PackageIdentifier": "Powerformer.OpenDesign"
         },
         {
-          "PackageIdentifier": "SST.OpenCodeDesktop"
+          "PackageIdentifier": "Anomaly.OpenCode.Desktop"
         },
         {
           "PackageIdentifier": "Spicetify.Spicetify"
@@ -168,9 +168,6 @@
         },
         {
           "PackageIdentifier": "Obsidian.Obsidian"
-        },
-        {
-          "PackageIdentifier": "Perplexity.Perplexity"
         },
         {
           "PackageIdentifier": "beekeeper-studio.beekeeper-studio"
