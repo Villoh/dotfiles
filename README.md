@@ -89,8 +89,8 @@ See the full installation guide: **[INSTALL.md](INSTALL.md)**. OS-specific
 installation guides live in [`docs/install/`](docs/install/), followed by the
 common GPG/SSH/Git/chezmoi bootstrap.
 
-On Windows, after the OS is installed, one line does the bootstrap. Pick the
-terminal or the GUI flow:
+After the OS is installed, one line does the bootstrap. Pick the terminal or
+the GUI flow. Windows:
 
 ```powershell
 # Terminal only
@@ -98,6 +98,16 @@ irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install.ps1 | iex
 
 # Graphical installer (Material 3 app from the latest installer-v* release)
 irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
+```
+
+Linux (no packages: NixOS/Home Manager installs them):
+
+```sh
+# Terminal only
+curl -fsSL https://raw.githubusercontent.com/Villoh/dotfiles/main/install.sh | bash
+
+# Graphical installer (the flake on NixOS, the AppImage elsewhere)
+curl -fsSL https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.sh | bash
 ```
 
 ## Wallpapers

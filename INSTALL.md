@@ -37,9 +37,41 @@ For the personal flow it imports the GPG key from the paths you enter, seeds
 the GPG/SSH agent files and checks decryption with `chezmoi diff`. Last, it
 runs `chezmoi apply`, where packages are chosen with fzf.
 
-## GUI install (Windows)
+## One-shot install (Linux, CLI)
 
-A separate flow, for those who prefer a window:
+On a working NixOS (or any Linux with Git, GnuPG and chezmoi installed):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Villoh/dotfiles/main/install.sh | bash
+```
+
+[`install.sh`](install.sh) does the same as `install.ps1` minus the packages:
+NixOS/Home Manager installs Git, GnuPG, OpenSSH and chezmoi, so it only checks
+them. It asks for the personal or secondary flow, runs `chezmoi init`, imports
+the GPG key, seeds `~/.gnupg` and `~/.ssh`, checks decryption with `chezmoi diff`
+and runs `chezmoi apply`. It reads answers from `/dev/tty`, so it works piped.
+
+## GUI install (Windows and Linux)
+
+A separate flow, for those who prefer a window. Windows:
+
+```powershell
+irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
+```
+
+Linux:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.sh | bash
+# or, with Nix:
+nix run github:Villoh/dotfiles
+```
+
+[`install-gui.sh`](install-gui.sh) builds the installer from the
+[flake](flake.nix) on NixOS, which cannot run AppImages, and elsewhere downloads
+`dotfiles-installer-x86_64.AppImage` from the latest release and checks its
+SHA-256. The AppImage bundles no libraries: it needs the host's GTK 3. Both
+start the installer detached, leaving the terminal free.
 
 ```powershell
 irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
@@ -51,7 +83,8 @@ SHA-256 against the release's `SHA256SUMS` and starts it, leaving the terminal
 free. The installer GUI
 ([`installer/`](installer)) is a native Material 3 app written in Go with
 [MyGo](https://github.com/egoist/mygo); its colors follow the Windows accent
-color and light/dark mode. It covers the same flow:
+color and light/dark mode. It covers the same flow (on Linux, Prerequisites only
+checks the tools and clones, and there is no Packages page):
 
 1. **Prerequisites**: installs the missing Git, Gpg4win and chezmoi with winget
    and clones the repository to `chezmoi source-path`.
@@ -72,10 +105,14 @@ color and light/dark mode. It covers the same flow:
 ### Building and releasing the GUI
 
 - **CI**: `.github/workflows/installer-ci.yml` runs on every push to `main` and
-  every pull request that touches the installer, its scripts, `.chezmoi.toml.tmpl`
-  or `packages/windows`. It vets, tests (the tests read the real template and
-  package lists), parses both PowerShell scripts, builds `dotfiles-installer.exe`
-  and uploads it with `SHA256SUMS` as the `dotfiles-installer` artifact.
+  every pull request that touches the installer, its scripts, the flake,
+  `.chezmoi.toml.tmpl` or `packages/windows`. It vets, tests (the tests read the
+  real template and package lists), parses the PowerShell scripts, shellchecks
+  the shell ones, builds `dotfiles-installer.exe` and the AppImage
+  ([`installer/packaging/appimage.sh`](installer/packaging/appimage.sh)) and
+  uploads them with `SHA256SUMS` as the `dotfiles-installer` artifact. A second
+  job builds the flake: change `vendorHash` in
+  [`installer/package.nix`](installer/package.nix) whenever `go.sum` changes.
 - **Release**: `.github/workflows/installer-release.yml` builds with the CI
   workflow and publishes a GitHub release on an `installer-v*` tag:
 
@@ -83,8 +120,8 @@ color and light/dark mode. It covers the same flow:
   git tag installer-v0.1.0 && git push origin installer-v0.1.0
   ```
 
-  `install-gui.ps1` always downloads the latest release, so the GUI flow does
-  not work until the first tag is pushed.
+  `install-gui.ps1` and `install-gui.sh` download the latest release; the flake
+  builds `main`.
 - **Local build**, from any OS (pure Go, no cgo):
 
   ```sh
@@ -93,9 +130,10 @@ color and light/dark mode. It covers the same flow:
     -tags mygo_nodownload,mygo_noinspector -o dotfiles-installer.exe .
   ```
 
-- **Screenshots without Windows**: `INSTALLER_SNAPSHOT=/tmp/shot go test -run Snapshot`
-  renders every page, light and dark, to PNGs. Text needs Pango; on NixOS put
-  pango, glib, cairo, fontconfig and harfbuzz in `LD_LIBRARY_PATH`.
+- **Screenshots without a window**: `INSTALLER_SNAPSHOT=/tmp/shot go test -run Snapshot`
+  renders every page, light and dark, to PNGs (`INSTALLER_GOOS=linux` for Linux's
+  pages). Text needs Pango; on NixOS put pango, glib, cairo, fontconfig and
+  harfbuzz in `LD_LIBRARY_PATH`.
 
 The manual steps below do the same thing by hand.
 
@@ -124,8 +162,9 @@ Windows and is not part of `chezmoi apply`.
 
 The Linux system must be configured with **NixOS + Hyprland + Dank Material
 Shell (DMS)** separately. Install Git, GnuPG, OpenSSH, and chezmoi
-declaratively through NixOS/Home Manager. Then follow the [common bootstrap
-guide](docs/install/bootstrap.md).
+declaratively through NixOS/Home Manager. Then run `install.sh` or the GUI
+above, or follow the [common bootstrap guide](docs/install/bootstrap.md) by
+hand.
 
 Do not use pacman/AUR or the old Arch bootstrap flow on NixOS.
 

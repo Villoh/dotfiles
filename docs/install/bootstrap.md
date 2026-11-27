@@ -21,6 +21,11 @@ personal Git identities, work configuration, secrets, and other encrypted
 files. The complete personal and secondary flows are documented in
 [`INSTALL.md`](../../INSTALL.md).
 
+Steps 2 to 5 are automated, in the same order, by the one-liners in
+[`INSTALL.md`](../../INSTALL.md): `install.ps1` and `install.sh` in a terminal,
+`install-gui.ps1` and `install-gui.sh` (or `nix run github:Villoh/dotfiles`)
+with the graphical installer. This guide is the manual version.
+
 ## 1. Install the bootstrap tools
 
 Install these using the operating-system guide:
