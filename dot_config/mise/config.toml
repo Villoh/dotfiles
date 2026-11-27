@@ -59,7 +59,8 @@ aube = { version = "latest", os = ["windows"] }
 "github:xdagiz/xytz" = { version = "latest", os = ["windows"] }
 # Not in winget or scoop. Yapfast tracks stable releases (NixOS uses the nightly).
 "github:crmne/zapfast" = { version = "latest", os = ["windows"] }
-"github:anomalyco/hex" = { version = "latest", os = ["windows"] }
+# A bare .exe whose name carries the version: bin fixes it for the Start Menu shortcut.
+"github:anomalyco/hex" = { version = "latest", bin = "hex", os = ["windows"] }
 # Tags are desktop-vX.Y.Z (full) and desktop-minimal-vX.Y.Z; take only the full build.
 "github:elianiva/meiro" = { version = "latest", version_prefix = "desktop-v", os = ["windows"] }
 "github:yapfast/yapfast" = { version = "latest", os = ["windows"] }
