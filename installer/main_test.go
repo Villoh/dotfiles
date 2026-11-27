@@ -32,8 +32,14 @@ func TestLoadRepo(t *testing.T) {
 			t.Errorf("module %s missing from %v", m, r.Modules)
 		}
 	}
-	if slices.Contains(r.Modules, "dms") || !slices.Contains(r.MinimalOff, "aether") {
-		t.Errorf("modules %v, minimal off %v", r.Modules, r.MinimalOff)
+	// The installer runs on Windows: it lists $common and $windowsOnly, never a
+	// Linux-only module such as dms.
+	if slices.Contains(r.Modules, "dms") {
+		t.Errorf("Linux-only module dms listed: %v", r.Modules)
+	}
+	// Minimal keeps the desktop for new users and turns off the extras.
+	if slices.Contains(r.MinimalOff, "aether") || !slices.Contains(r.MinimalOff, "warp") {
+		t.Errorf("minimal turns off %v", r.MinimalOff)
 	}
 	if len(r.Winget["full"]) == 0 || len(r.Winget["minimal"]) == 0 || len(r.Scoop["full"]) == 0 || len(r.Elevated) == 0 {
 		t.Errorf("package lists: winget %d/%d scoop %d elevated %d",

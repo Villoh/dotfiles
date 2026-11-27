@@ -1,5 +1,5 @@
 {{- $isWindows := eq .chezmoi.os "windows" -}}
-{{- /* Profile: full = everything, minimal = CLI + shell only, custom = ask per module */ -}}
+{{- /* Profile: full = everything, minimal = CLI, shell and the desktop (Aether), custom = ask per module */ -}}
 {{- $profile := promptChoiceOnce . "install_profile" "Install profile" (list "full" "minimal" "custom") "full" -}}
 
 {{- /* ai_agents = the coding agents' configs: .claude, .codex, .factory, .grok, .omp, .pi, .pi-lens, .agents, .config/caveman */ -}}
@@ -8,7 +8,8 @@
 {{- /* aether = the desktop shell (Aether: Caelestia on Quickshell + AetherWM) and its ~/.config/{caelestia,hypr} */ -}}
 {{- $windowsOnly := list "aether" "nilesoft" "autohotkey" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
-{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "aether" "nilesoft" "autohotkey" "altsnap" "warp" "startup" -}}
+{{- /* Off in minimal: personal apps and extras. Aether stays on: new users get the desktop. */ -}}
+{{- $minimalOff := list "aerc" "nchat" "freetube" "vesktop" "concord" "dms" "nilesoft" "autohotkey" "altsnap" "warp" "startup" -}}
 {{- $active := concat $common (ternary $windowsOnly $linuxOnly $isWindows) -}}
 {{- $inactive := ternary $linuxOnly $windowsOnly $isWindows -}}
 encryption = "gpg"
