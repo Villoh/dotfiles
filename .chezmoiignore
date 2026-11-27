@@ -91,6 +91,9 @@ scoop/
 # ── Reference only — never deployed to home ────────────────────────────────────
 packages/**
 program_files/**
+installer/**
+install.ps1
+install-gui.ps1
 other_config/**
 docs/**
 CLAUDE.md

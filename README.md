@@ -89,6 +89,17 @@ See the full installation guide: **[INSTALL.md](INSTALL.md)**. OS-specific
 installation guides live in [`docs/install/`](docs/install/), followed by the
 common GPG/SSH/Git/chezmoi bootstrap.
 
+On Windows, after the OS is installed, one line does the bootstrap. Pick the
+terminal or the GUI flow:
+
+```powershell
+# Terminal only
+irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install.ps1 | iex
+
+# Graphical installer (Material 3 app from the latest installer-v* release)
+irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
+```
+
 ## Wallpapers
 
 - [Gurjaka/Kanagawa-Wallpapers](https://github.com/Gurjaka/Kanagawa-Wallpapers)

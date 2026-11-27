@@ -22,6 +22,79 @@ Every operating-system guide ends at a working OS. The shared handoff is:
 See [`docs/install/bootstrap.md`](docs/install/bootstrap.md) for the complete
 procedure and the reason for this ordering.
 
+## One-shot install (Windows, CLI)
+
+In any PowerShell window:
+
+```powershell
+irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install.ps1 | iex
+```
+
+[`install.ps1`](install.ps1) runs entirely in the terminal. It relaunches itself as
+Administrator, installs Git, Gpg4win and chezmoi with winget, and asks for the
+personal or secondary flow. Then it runs `chezmoi init` with its usual prompts.
+For the personal flow it imports the GPG key from the paths you enter, seeds
+the GPG/SSH agent files and checks decryption with `chezmoi diff`. Last, it
+runs `chezmoi apply`, where packages are chosen with fzf.
+
+## GUI install (Windows)
+
+A separate flow, for those who prefer a window:
+
+```powershell
+irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
+```
+
+[`install-gui.ps1`](install-gui.ps1) relaunches itself as Administrator, downloads
+`dotfiles-installer.exe` from the latest `installer-v*` release, checks its
+SHA-256 against the release's `SHA256SUMS` and runs it. The installer GUI
+([`installer/`](installer)) is a native Material 3 app written in Go with
+[MyGo](https://github.com/egoist/mygo); its colors follow the Windows accent
+color and light/dark mode. It covers the same flow:
+
+1. **Prerequisites**: installs the missing Git, Gpg4win and chezmoi with winget
+   and clones the repository to `chezmoi source-path`.
+2. **GPG key**: personal flow (imports the secret key and ownertrust) or
+   secondary flow (`--exclude=encrypted`).
+3. **Profile**: `install_profile`, `enable_secrets` and, for `custom`, each
+   module. They are passed to `chezmoi init` as `--promptChoice`/`--promptBool`.
+4. **Packages**: the winget, winget (elevated) and scoop checklists. The choice
+   is written to a JSON file named by `DOTFILES_PACKAGE_SELECTION`, which
+   `run_once_00_windows-install` reads instead of asking with fzf.
+5. **Install**: `chezmoi init`, then for the personal flow it seeds the GPG/SSH
+   agent files and checks decryption with `chezmoi diff`. Last, `chezmoi apply`
+   runs in its own console window, where the scripts can ask questions.
+
+### Building and releasing the GUI
+
+- **CI**: `.github/workflows/installer-ci.yml` runs on every push to `main` and
+  every pull request that touches the installer, its scripts, `.chezmoi.toml.tmpl`
+  or `packages/windows`. It vets, tests (the tests read the real template and
+  package lists), parses both PowerShell scripts, builds `dotfiles-installer.exe`
+  and uploads it with `SHA256SUMS` as the `dotfiles-installer` artifact.
+- **Release**: `.github/workflows/installer-release.yml` builds with the CI
+  workflow and publishes a GitHub release on an `installer-v*` tag:
+
+  ```sh
+  git tag installer-v0.1.0 && git push origin installer-v0.1.0
+  ```
+
+  `install-gui.ps1` always downloads the latest release, so the GUI flow does
+  not work until the first tag is pushed.
+- **Local build**, from any OS (pure Go, no cgo):
+
+  ```sh
+  cd installer
+  GOOS=windows CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -H=windowsgui" \
+    -tags mygo_nodownload,mygo_noinspector -o dotfiles-installer.exe .
+  ```
+
+- **Screenshots without Windows**: `INSTALLER_SNAPSHOT=/tmp/shot go test -run Snapshot`
+  renders every page, light and dark, to PNGs. Text needs Pango; on NixOS put
+  pango, glib, cairo, fontconfig and harfbuzz in `LD_LIBRARY_PATH`.
+
+The manual steps below do the same thing by hand.
+
 ## Prerequisites
 
 ### Windows
