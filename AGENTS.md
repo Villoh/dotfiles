@@ -16,7 +16,11 @@ that are not managed by Nix. Do not make both systems manage the same file.
 
 Linux files in this repository are not an Arch/CachyOS installer. Package
 installation belongs in NixOS/Home Manager; do not add pacman, AUR, or
-imperative package-bootstrap logic here.
+imperative package-bootstrap logic here. The one exception is the installer's
+own prerequisites (Git, GnuPG, chezmoi) on non-NixOS systems, in
+`install.sh` and `installer/prereqs.go`: chezmoi's pinned static build into
+`~/.local/bin`, git and gnupg with the distribution's package manager (brew on
+atomic images). On NixOS they install nothing and point to Home Manager.
 
 ## chezmoi essentials
 

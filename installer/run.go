@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 )
 
@@ -126,6 +127,15 @@ func (a *app) step(title string, fn func() error) {
 
 func (a *app) checkDeps() {
 	deps := defaultDeps(a.goos)
+	hasBrew := false
+	if a.goos != "windows" {
+		// chezmoi may sit in ~/.local/bin, which a desktop launch's PATH can lack.
+		if dir, err := userBin(); err == nil {
+			addToPath(dir)
+		}
+		_, err := exec.LookPath("brew")
+		hasBrew = err == nil
+	}
 	for i := range deps {
 		deps[i].Path = findExe(deps[i].Exe)
 	}
@@ -137,7 +147,7 @@ func (a *app) checkDeps() {
 	}
 	info, repoErr := loadRepo(src, a.goos)
 	a.post(func() {
-		a.deps, a.sourceDir = deps, src
+		a.deps, a.sourceDir, a.hasBrew = deps, src, hasBrew
 		if repoErr == nil {
 			a.setRepo(info)
 		}
@@ -162,15 +172,54 @@ func (a *app) snapshotDeps() []dep {
 	return deps
 }
 
-// prepare installs the missing tools with winget (Windows) and clones the
-// repository, whose files the next steps read.
-func (a *app) prepare() error {
-	for _, d := range a.snapshotDeps() {
-		if d.Path != "" {
-			continue
+// prereqPlan is how Linux gets the missing tools (prereqs.go), for the view
+// and for prepare. Main thread.
+func (a *app) prereqPlan() prereqPlan {
+	var missing []string
+	for _, d := range a.deps {
+		if d.Path == "" {
+			missing = append(missing, d.Exe)
 		}
-		if d.WingetID == "" {
-			return fmt.Errorf("%s is missing: install it with NixOS/Home Manager (or your package manager), then Check again", d.Name)
+	}
+	return planPrereqs(a.linuxOS, missing, runtime.GOARCH, a.hasBrew, "pkexec")
+}
+
+// installLinuxPrereqs does what it can of the plan, then reports what is
+// left for the user.
+func (a *app) installLinuxPrereqs() error {
+	var p prereqPlan
+	a.sync(func() { p = a.prereqPlan() })
+	if p.cmd != nil {
+		a.logf("Installing git/gnupg; the system asks for your password.")
+		if err := a.run(false, p.cmd[0], p.cmd[1:]...); err != nil {
+			return err
+		}
+	}
+	if p.chezmoi {
+		path, err := installChezmoi(chezmoiURL, chezmoiSHA256)
+		if err != nil {
+			return err
+		}
+		a.logf("Installed chezmoi into %s (checked SHA-256)", path)
+	}
+	if p.manual != "" {
+		a.checkDeps()
+		return errors.New(p.manual)
+	}
+	return nil
+}
+
+// prepare installs the missing tools (winget on Windows, installLinuxPrereqs
+// on Linux) and clones the repository, whose files the next steps read.
+func (a *app) prepare() error {
+	if a.goos != "windows" {
+		if err := a.installLinuxPrereqs(); err != nil {
+			return err
+		}
+	}
+	for _, d := range a.snapshotDeps() {
+		if d.Path != "" || d.WingetID == "" {
+			continue
 		}
 		if err := a.run(false, "winget", "install", "-e", "--id", d.WingetID,
 			"--accept-package-agreements", "--accept-source-agreements", "--silent"); err != nil {
