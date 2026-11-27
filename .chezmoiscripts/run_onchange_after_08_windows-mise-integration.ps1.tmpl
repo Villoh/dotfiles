@@ -3,6 +3,8 @@
 # which moves the install directory the Start Menu shortcuts point to):
 # shortcuts.json {{ include "packages/windows/system/shortcuts.json" | sha256sum }}
 # mise.lock      {{ include "dot_config/mise/mise.lock" | sha256sum }}
+# config.toml    {{ include "dot_config/mise/config.toml" | sha256sum }}
+# windows.toml   {{ include "dot_config/mise/conf.d/windows.toml" | sha256sum }}
 $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $pkgDir     = "$chezmoisrc\packages\windows"
 $ok = 0; $skip = 0; $fail = 0
@@ -17,11 +19,23 @@ function TryRun {
     catch { LogFail "$name - $($_.Exception.Message)" }
 }
 
+# run_once_00 may have installed mise with scoop in this same apply; this process
+# started with the PATH from before that.
+$env:PATH = [System.Environment]::GetEnvironmentVariable('PATH', 'Machine') + ';' +
+            [System.Environment]::GetEnvironmentVariable('PATH', 'User')
+
 if (-not (Get-Command mise -ErrorAction SilentlyContinue)) {
     LogSkip "mise not installed"
     Write-Host "[windows-mise-integration] $ok OK  $skip skipped  $fail failed" -ForegroundColor Cyan
     return
 }
+
+# -- Tools ---------------------------------------------------------------------
+# Here and not in run_once_00: scripts without after_ run before chezmoi writes
+# ~/.config/mise, so on a new machine mise would find no tools.
+LogSec "mise install"
+TryRun "mise trust" { mise trust --all; if ($LASTEXITCODE) { throw "exit code $LASTEXITCODE" } }
+TryRun "mise install" { mise install; if ($LASTEXITCODE) { throw "exit code $LASTEXITCODE" } }
 
 # -- User PATH: mise shims -----------------------------------------------------
 # `mise activate pwsh` only covers PowerShell sessions. Shims on the user PATH make global
