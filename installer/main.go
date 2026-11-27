@@ -1,7 +1,8 @@
-// Command installer is a GUI for bootstrapping these dotfiles on Windows:
-// it installs Git, Gpg4win and chezmoi, clones the repository, imports the
-// GPG key, answers chezmoi's init prompts, picks the packages that
-// run_once_00_windows-install would ask for with fzf, and runs chezmoi apply.
+// Command installer is a GUI for bootstrapping these dotfiles on Windows and
+// Linux: it installs Git, Gpg4win and chezmoi (Windows; NixOS provides them on
+// Linux), clones the repository, imports the GPG key, answers chezmoi's init
+// prompts, picks the packages that run_once_00_windows-install would ask for
+// with fzf (Windows), and runs chezmoi apply.
 package main
 
 import (
@@ -9,6 +10,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"time"
@@ -31,7 +33,8 @@ type pkgList struct {
 }
 
 type app struct {
-	win *mygo.Window // nil in tests
+	win  *mygo.Window // nil in tests
+	goos string       // runtime.GOOS; tests set it to check either platform
 
 	tab       int
 	busy      string // title of the running step, "" when idle
@@ -61,9 +64,14 @@ type app struct {
 }
 
 func newApp() *app {
+	return newAppFor(runtime.GOOS)
+}
+
+func newAppFor(goos string) *app {
 	home, _ := os.UserHomeDir()
 	a := &app{
-		deps:       defaultDeps(),
+		goos:       goos,
+		deps:       defaultDeps(goos),
 		sourceDir:  filepath.Join(home, ".local", "share", "chezmoi"),
 		mode:       modePersonal,
 		profile:    "full",
@@ -183,13 +191,27 @@ func (a *app) selection() map[string]any {
 	return sel
 }
 
-// steps are the destinations of the navigation rail.
-var steps = []struct{ icon, label, title, blurb string }{
-	{"build", "Setup", "Prerequisites", "Installs Git, Gpg4win and chezmoi with winget, and clones the repository."},
-	{"key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
-	{"tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
-	{"inventory_2", "Packages", "Packages", "What run_once_00_windows-install installs, instead of asking with fzf."},
-	{"rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
+// page is a destination of the navigation rail.
+type page struct{ id, icon, label, title, blurb string }
+
+// pages are the rail's destinations on this OS. Linux has no Packages page:
+// NixOS/Home Manager installs its packages.
+func (a *app) pages() []page {
+	if a.goos != "windows" {
+		return []page{
+			{"setup", "build", "Setup", "Prerequisites", "Checks Git, GnuPG and chezmoi, which NixOS/Home Manager installs, and clones the repository."},
+			{"key", "key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
+			{"profile", "tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
+			{"install", "rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
+		}
+	}
+	return []page{
+		{"setup", "build", "Setup", "Prerequisites", "Installs Git, Gpg4win and chezmoi with winget, and clones the repository."},
+		{"key", "key", "GPG key", "GPG key", "Choose how to handle the encrypted files."},
+		{"profile", "tune", "Profile", "Install profile", "What chezmoi deploys. Answers chezmoi init's prompts."},
+		{"packages", "inventory_2", "Packages", "Packages", "What run_once_00_windows-install installs, instead of asking with fzf."},
+		{"install", "rocket_launch", "Install", "Install", "Review the choices and run chezmoi."},
+	}
 }
 
 // appTitle names the window (taskbar, Alt+Tab) and its title bar.
@@ -223,13 +245,13 @@ func (a *app) body(c *ui.Context) {
 	ui.Row(c).Grow(1).FillWidth().Children(func() {
 		// Navigation rail.
 		ui.Column(c).Width(96).FillHeight().PaddingY(8).Gap(12).AlignItems(ui.Center).Children(func() {
-			for i, st := range steps {
-				a.railItem(c, i, st.icon, st.label)
+			for i, p := range a.pages() {
+				a.railItem(c, i, p.icon, p.label)
 			}
 		})
 		// Content.
 		ui.Column(c).Grow(1).Shrink(1).FillHeight().Padding(8, 24, 16, 8).Gap(16).Children(func() {
-			st := steps[a.tab]
+			st := a.pages()[a.tab]
 			ui.Row(c).Gap(12).Children(func() {
 				ui.Column(c).Gap(4).Grow(1).Shrink(1).Children(func() {
 					ui.Text(c, st.title).FontSize(28).TextColor(s.OnSurface)
@@ -243,16 +265,16 @@ func (a *app) body(c *ui.Context) {
 				ui.Progress(c, -1).Label(a.busy)
 			}
 			ui.Scroll(c.Key(a.tab)).Grow(1).Gap(16).Children(func() {
-				switch a.tab {
-				case 0:
+				switch st.id {
+				case "setup":
 					a.prereqView(c)
-				case 1:
+				case "key":
 					a.keyView(c)
-				case 2:
+				case "profile":
 					a.profileView(c)
-				case 3:
+				case "packages":
 					a.packagesView(c)
-				case 4:
+				case "install":
 					a.installView(c)
 				}
 			})
@@ -300,8 +322,10 @@ func (a *app) prereqView(c *ui.Context) {
 	a.card(c, func() {
 		for _, d := range a.deps {
 			body := d.Path
-			if d.Path == "" {
+			if d.Path == "" && d.WingetID != "" {
 				body = "Missing. winget: " + d.WingetID
+			} else if d.Path == "" {
+				body = "Missing. Install it with NixOS/Home Manager (or your package manager)."
 			}
 			a.listItem(c, d.Path != "", d.Name, body)
 		}
@@ -312,7 +336,11 @@ func (a *app) prereqView(c *ui.Context) {
 		a.listItem(c, a.repoOK, "Repository", repo)
 	})
 	ui.Row(c).Gap(8).Children(func() {
-		if a.button(c, filled, "Install missing tools and clone", a.busy != "") {
+		label := "Install missing tools and clone"
+		if a.goos != "windows" {
+			label = "Clone the repository"
+		}
+		if a.button(c, filled, label, a.busy != "") {
 			a.step("Preparing", a.prepare)
 		}
 		if a.button(c, outlined, "Check again", a.busy != "") {
@@ -385,9 +413,13 @@ func (a *app) profileView(c *ui.Context) {
 		return
 	}
 	ui.Row(c).Gap(12).AlignItems(ui.Stretch).Children(func() {
+		full, minimal := "Every module and the full package lists.", "CLI, shell and the Aether desktop."
+		if a.goos != "windows" {
+			full, minimal = "Every module for Linux.", "CLI and shell configs."
+		}
 		for _, p := range []struct{ id, body string }{
-			{"full", "Every module for Windows and the full package lists."},
-			{"minimal", "CLI, shell and the Aether desktop. Turns off " + strings.Join(a.repo.MinimalOff, ", ") + "."},
+			{"full", full},
+			{"minimal", minimal + " Turns off " + strings.Join(a.repo.MinimalOff, ", ") + "."},
 			{"custom", "Choose the modules one by one."},
 		} {
 			if a.choiceCard(c, a.profile == p.id, "", p.id, p.body) {
@@ -399,9 +431,18 @@ func (a *app) profileView(c *ui.Context) {
 		ui.Row(c).Gap(16).Children(func() {
 			ui.Column(c).Gap(2).Grow(1).Shrink(1).Children(func() {
 				ui.Text(c, "Personal secrets").FontSize(16).TextColor(a.scheme.OnSurface)
-				a.muted(c, "Owner only: fetches API keys from Bitwarden.")
+				if a.goos == "windows" {
+					a.muted(c, "Owner only: fetches API keys from Bitwarden.")
+				} else {
+					// Its script picks secrets with fzf and Bitwarden asks for the login: it
+					// needs a terminal, which a desktop launch does not give it.
+					a.muted(c, "Owner only. On Linux it needs a terminal: use install.sh.")
+				}
 			})
-			ui.Switch(c, &a.secrets).Label("Personal secrets")
+			if a.goos != "windows" {
+				a.secrets = false
+			}
+			ui.Switch(c, &a.secrets).Label("Personal secrets").Disabled(a.goos != "windows")
 		})
 	})
 	a.card(c, func() {
@@ -527,8 +568,10 @@ func (a *app) installView(c *ui.Context) {
 			mods += ", off: " + strings.Join(off, ", ")
 		}
 		row("Modules", mods)
-		for i, p := range a.pkgs {
-			row(p.title, fmt.Sprintf("%d of %d packages", len(a.chosen(i)), len(a.items(i))))
+		if a.goos == "windows" {
+			for i, p := range a.pkgs {
+				row(p.title, fmt.Sprintf("%d of %d packages", len(a.chosen(i)), len(a.items(i))))
+			}
 		}
 		row("Source", a.sourceDir)
 	})
@@ -536,10 +579,13 @@ func (a *app) installView(c *ui.Context) {
 	if !ready {
 		a.banner(c, info, "Import the GPG key first, or switch to the secondary flow.")
 	}
-	if a.secrets {
+	switch {
+	case a.secrets:
 		a.banner(c, info, "chezmoi apply opens in a console window: the secrets script asks for your Bitwarden login there. UAC may prompt.")
-	} else {
+	case a.goos == "windows":
 		a.banner(c, info, "chezmoi runs here: its output goes to the log below and to "+a.logPath()+". UAC may prompt for the elevated installs.")
+	default:
+		a.banner(c, info, "chezmoi runs here: its output goes to the log below and to "+a.logPath()+".")
 	}
 	ui.Row(c).Children(func() { // a column would stretch the button
 		if a.button(c, filled, "Install", a.busy != "" || !ready) {

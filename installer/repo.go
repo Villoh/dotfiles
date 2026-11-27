@@ -16,7 +16,7 @@ type repoInfo struct {
 	ProfilePrompt string   // promptChoiceOnce text of install_profile
 	SecretsPrompt string   // promptBool text of enable_secrets
 	ModuleFormat  string   // printf format of the per-module promptBool, e.g. "Enable %s"
-	Modules       []string // modules that exist on Windows
+	Modules       []string // modules that exist on this OS ($common and $windowsOnly or $linuxOnly)
 	MinimalOff    []string // modules the minimal profile turns off
 	Recipient     string   // GPG recipient of the encrypted files
 
@@ -34,8 +34,9 @@ var (
 	recipientRe = regexp.MustCompile(`recipient = "([^"]+)"`)
 )
 
-// parseConfigTemplate extracts prompts and module lists from .chezmoi.toml.tmpl.
-func parseConfigTemplate(src string) (repoInfo, error) {
+// parseConfigTemplate extracts prompts and the modules of goos from
+// .chezmoi.toml.tmpl.
+func parseConfigTemplate(src, goos string) (repoInfo, error) {
 	var r repoInfo
 	lists := map[string][]string{}
 	for _, m := range listRe.FindAllStringSubmatch(src, -1) {
@@ -63,10 +64,14 @@ func parseConfigTemplate(src string) (repoInfo, error) {
 	if r.Recipient, err = one(recipientRe, "gpg recipient"); err != nil {
 		return r, err
 	}
-	if len(lists["common"]) == 0 || len(lists["windowsOnly"]) == 0 {
-		return r, fmt.Errorf(".chezmoi.toml.tmpl: $common/$windowsOnly module lists not found")
+	osList := map[string]string{"windows": "windowsOnly", "linux": "linuxOnly"}[goos]
+	if osList == "" {
+		return r, fmt.Errorf("no modules for %s: the installer supports Windows and Linux", goos)
 	}
-	r.Modules = append(slices.Clone(lists["common"]), lists["windowsOnly"]...)
+	if len(lists["common"]) == 0 || len(lists[osList]) == 0 {
+		return r, fmt.Errorf(".chezmoi.toml.tmpl: $common/$%s module lists not found", osList)
+	}
+	r.Modules = append(slices.Clone(lists["common"]), lists[osList]...)
 	for _, m := range lists["minimalOff"] {
 		if slices.Contains(r.Modules, m) {
 			r.MinimalOff = append(r.MinimalOff, m)
@@ -75,18 +80,22 @@ func parseConfigTemplate(src string) (repoInfo, error) {
 	return r, nil
 }
 
-// loadRepo reads everything the GUI needs from the source directory.
-func loadRepo(src string) (repoInfo, error) {
+// loadRepo reads everything the GUI needs on goos from the source directory.
+// Package lists exist on Windows only: NixOS installs Linux's packages.
+func loadRepo(src, goos string) (repoInfo, error) {
 	b, err := os.ReadFile(filepath.Join(src, ".chezmoi.toml.tmpl"))
 	if err != nil {
 		return repoInfo{}, err
 	}
-	r, err := parseConfigTemplate(string(b))
+	r, err := parseConfigTemplate(string(b), goos)
 	if err != nil {
 		return r, err
 	}
-	pkg := filepath.Join(src, "packages", "windows")
 	r.Winget, r.Scoop = map[string][]string{}, map[string][]string{}
+	if goos != "windows" {
+		return r, nil
+	}
+	pkg := filepath.Join(src, "packages", "windows")
 	for _, v := range []string{"minimal", "full"} {
 		file := map[string]string{"minimal": "minimal.json", "full": "packages.json"}[v]
 		if r.Winget[v], err = wingetIDs(filepath.Join(pkg, "winget", file)); err != nil {
