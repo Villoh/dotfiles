@@ -10,8 +10,9 @@ import (
 
 // The installer targets Windows; these stand-ins let the view and its tests
 // build and run on Linux.
-func hideWindow(*exec.Cmd) {}
-func refreshPath()         {}
+func hideWindow(*exec.Cmd)   {}
+func refreshPath()           {}
+func windowsEdition() string { return "" }
 
 // runConsole runs args in this terminal, the closest thing to a console of
 // its own.

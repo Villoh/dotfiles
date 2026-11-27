@@ -162,6 +162,36 @@ func userBin() (string, error) {
 	return filepath.Join(home, ".local", "bin"), err
 }
 
+// fetchVerified downloads url to dest, which only appears once its SHA-256 is
+// sum: a download that does not match is deleted, never left to be run.
+func fetchVerified(url, sum, dest string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("downloading %s: %s", filepath.Base(dest), resp.Status)
+	}
+	tmp, err := os.CreateTemp(filepath.Dir(dest), ".download-*")
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp.Name()) // a no-op once renamed
+	h := sha256.New()
+	if _, err := io.Copy(io.MultiWriter(tmp, h), resp.Body); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	if got := hex.EncodeToString(h.Sum(nil)); !strings.EqualFold(got, sum) {
+		return fmt.Errorf("%s SHA-256 mismatch: got %s, want %s", filepath.Base(dest), got, sum)
+	}
+	return os.Rename(tmp.Name(), dest)
+}
+
 // installChezmoi downloads the pinned chezmoi into ~/.local/bin, checks it,
 // and puts the directory on this process's PATH.
 func installChezmoi(url, sum string) (string, error) {
@@ -172,35 +202,11 @@ func installChezmoi(url, sum string) (string, error) {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return "", err
 	}
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("downloading chezmoi: %s", resp.Status)
-	}
-	tmp, err := os.CreateTemp(dir, ".chezmoi-*")
-	if err != nil {
-		return "", err
-	}
-	defer os.Remove(tmp.Name()) // a no-op once renamed
-	h := sha256.New()
-	if _, err := io.Copy(io.MultiWriter(tmp, h), resp.Body); err != nil {
-		tmp.Close()
-		return "", err
-	}
-	if err := tmp.Close(); err != nil {
-		return "", err
-	}
-	if got := hex.EncodeToString(h.Sum(nil)); got != sum {
-		return "", fmt.Errorf("chezmoi SHA-256 mismatch: got %s, want %s", got, sum)
-	}
-	if err := os.Chmod(tmp.Name(), 0o755); err != nil {
-		return "", err
-	}
 	path := filepath.Join(dir, "chezmoi")
-	if err := os.Rename(tmp.Name(), path); err != nil {
+	if err := fetchVerified(url, sum, path); err != nil {
+		return "", err
+	}
+	if err := os.Chmod(path, 0o755); err != nil {
 		return "", err
 	}
 	addToPath(dir)
