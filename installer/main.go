@@ -91,7 +91,6 @@ func newAppFor(goos string) *app {
 	if goos == "linux" && runtime.GOOS == "linux" {
 		a.linuxOS = readOS()
 		a.nixos.dir = filepath.Join(home, "nixos-config")
-		a.nixos.host, _ = os.Hostname()
 	}
 	a.logState.FollowEnd = true
 	return a

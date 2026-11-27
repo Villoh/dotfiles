@@ -125,6 +125,26 @@ func TestNixosSystemPage(t *testing.T) {
 	}
 }
 
+// The host is the flake's name, which need not be the machine's hostname.
+func TestCheckHost(t *testing.T) {
+	const hosts = `["desktop","zenbook"]`
+	if err := checkHost(hosts, "zenbook"); err != nil {
+		t.Errorf("known host: %v", err)
+	}
+	for _, host := range []string{"", "nixos-zenbook"} {
+		err := checkHost(hosts, host)
+		if err == nil || !strings.Contains(err.Error(), "desktop, zenbook") {
+			t.Errorf("host %q: %v", host, err)
+		}
+	}
+	if checkHost(`[]`, "x") == nil || checkHost(`oops`, "x") == nil {
+		t.Error("empty or invalid host list accepted")
+	}
+	if got := strings.Join(hostsCmd("/d"), " "); !strings.HasSuffix(got, "eval --json /d#nixosConfigurations --apply builtins.attrNames") {
+		t.Errorf("hostsCmd: %s", got)
+	}
+}
+
 func TestNixosCommands(t *testing.T) {
 	c := nixosCfg{url: "https://x/y", dir: "/d", host: "box"}
 	if got := strings.Join(cloneCmd(true, c), " "); got != "git clone --recurse-submodules https://x/y /d" {
