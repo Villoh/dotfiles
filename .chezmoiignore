@@ -1,7 +1,7 @@
 {{- /* Modules added after a machine's last chezmoi init stay on until init asks */ -}}
 {{- $aiAgentsOff := and (hasKey . "enable_ai_agents") (not .enable_ai_agents) -}}
 {{- $altsnapOff := and (hasKey . "enable_altsnap") (not .enable_altsnap) -}}
-{{- $pnpmOff := and (hasKey . "enable_pnpm") (not .enable_pnpm) -}}
+{{- $packageManagersOff := and (hasKey . "enable_package_managers") (not .enable_package_managers) -}}
 {{- $mailOff := and (hasKey . "enable_mail") (not .enable_mail) -}}
 # ── Windows-only modules (ignored on Linux, or if disabled) ───────────────────
 {{ if or (ne .chezmoi.os "windows") $altsnapOff }}AppData/Roaming/AltSnap/**{{ end }}
@@ -35,7 +35,7 @@ scoop/
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/dms/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_dms) }}.config/zapfast/**{{ end }}
 {{ if eq .chezmoi.os "windows" }}.config/autostart/**{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/devin/**{{ end }}
+{{ if or (eq .chezmoi.os "windows") $aiAgentsOff }}.config/devin/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_zsh) }}.zshrc
 .zprofile
 .profile
@@ -55,21 +55,21 @@ scoop/
 {{ if not .enable_cava }}.config/cava/**{{ end }}
 {{ if not .enable_gh_dash }}.config/gh-dash/**{{ end }}
 {{ if not .enable_micro }}.config/micro/**{{ end }}
-{{ if not .enable_opencode }}.config/opencode/**{{ end }}
+{{ if $aiAgentsOff }}.config/opencode/**{{ end }}
 {{ if not .enable_ohmyposh }}.config/ohmyposh/**{{ end }}
-{{ if not .enable_bun }}.config/.bunfig.toml{{ end }}
+{{ if $packageManagersOff }}.config/.bunfig.toml{{ end }}
 {{ if not .enable_git }}.config/git/**{{ end }}
 {{ if not .enable_gitui }}.config/gitui/**{{ end }}
-{{ if not .enable_uv }}.config/uv/**{{ end }}
+{{ if $packageManagersOff }}.config/uv/**{{ end }}
 {{ if not .enable_zellij }}.config/zellij/**{{ end }}
 {{ if not .enable_ytm_player }}.config/ytm-player/**{{ end }}
 {{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.config/tmux/**
 .local/bin/omarchy-menu-tmux-keybindings{{ end }}
 {{ if eq .chezmoi.os "linux" }}{{ if eq .chezmoi.osRelease.id "nixos" }}.config/tmux/plugins.conf{{ end }}{{ end }}
-{{ if eq .chezmoi.os "windows" }}.config/workmux/**
+{{ if or (eq .chezmoi.os "windows") (not .enable_tmux) }}.config/workmux/**
 .pi/agent/extensions/workmux-status.ts{{ end }}
 {{ if not .enable_wezterm }}.config/wezterm/**{{ end }}
-{{ if $pnpmOff }}.config/pnpm/**
+{{ if $packageManagersOff }}.config/pnpm/**
 AppData/Local/pnpm/**{{ end }}
 {{ if $aiAgentsOff }}.agents/**
 .claude/**

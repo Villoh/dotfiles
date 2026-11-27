@@ -2,12 +2,14 @@
 {{- /* Profile: full = everything, minimal = CLI, shell and the desktop (Aether), custom = ask per module */ -}}
 {{- $profile := promptChoiceOnce . "install_profile" "Install profile" (list "full" "minimal" "custom") "full" -}}
 
-{{- /* ai_agents = the coding agents' configs: .claude, .codex, .grok, .omp, .pi, .pi-lens, .agents, .config/caveman */ -}}
-{{- $common := list "zed" "yazi" "btop" "fastfetch" "cava" "gh_dash" "micro" "opencode" "starship" "ohmyposh" "bun" "git" "gitui" "uv" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "alacritty" "ai_agents" "pnpm" -}}
+{{- /* ai_agents = the coding agents' configs: .claude, .codex, .grok, .omp, .pi, .pi-lens, .agents, .config/{caveman,opencode,devin} */ -}}
+{{- /* package_managers = the bun, uv and pnpm configs; tmux includes workmux */ -}}
+{{- $common := list "zed" "yazi" "cava" "gh_dash" "micro" "ohmyposh" "git" "gitui" "zellij" "ytm_player" "tmux" "herdr" "wezterm" "ai_agents" "package_managers" -}}
 {{- /* mail = the mail clients' configs (himalaya, meli) and the sieve filters */ -}}
 {{- $linuxOnly := list "zsh" "mail" "nchat" "freetube" "concord" "dms" -}}
 {{- /* aether = the desktop shell (Aether: Caelestia on Quickshell + AetherWM) and its ~/.config/{caelestia,hypr} */ -}}
-{{- $windowsOnly := list "aether" "nilesoft" "altsnap" "warp" "windows_terminal" "junctions" "startup" -}}
+{{- /* btop, fastfetch, starship, alacritty: NixOS/Home Manager owns their Linux configs */ -}}
+{{- $windowsOnly := list "aether" "nilesoft" "altsnap" "warp" "windows_terminal" "junctions" "startup" "btop" "fastfetch" "starship" "alacritty" -}}
 {{- /* Modules turned off by the minimal profile; everything else stays on */ -}}
 {{- /* Off in minimal: personal apps and extras. Aether stays on: new users get the desktop. */ -}}
 {{- $minimalOff := list "ai_agents" "mail" "nchat" "freetube" "concord" "nilesoft" "altsnap" "warp" "startup" -}}
