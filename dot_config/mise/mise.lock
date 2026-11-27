@@ -774,13 +774,6 @@ backend = "npm:@opencode/cli"
 [tools."npm:@opencode/cli".options]
 allow_builds = '["@opencode/cli"]'
 
-[[tools."npm:@piewf/cli"]]
-version = "6.4.0"
-backend = "npm:@piewf/cli"
-
-[tools."npm:@piewf/cli".options]
-aube_args = "--allow-low-downloads"
-
 [[tools."npm:@playwright/cli"]]
 version = "0.1.25"
 backend = "npm:@playwright/cli"
