@@ -6,7 +6,9 @@ common [bootstrap guide](bootstrap.md), which restores everything else through c
 Atlas comes first and is not part of `chezmoi apply`: it needs a fresh Windows, updates Windows itself,
 restarts the PC several times, and asks you to turn off four Windows Security switches by hand.
 
-Everything here comes from Atlas's own documentation (0.6.1); it has not been run from this repository. The
+Everything here comes from Atlas's own documentation, read at 0.6.1; it has not been run from this repository.
+The pinned Atlas Manager is 0.6.2, whose app was redesigned (Get ready runs by itself, one page of choices): the four
+steps below still match it, but its screens and defaults may differ from this text. The
 installer's Atlas page reads `%windir%\AtlasOS\state.json` (`installedVersion`) and `Install\active.json` (an
 install in progress), as Atlas documents in `docs/install-state.md`; that reading has only been run against
 sample files, not on a Windows with Atlas.
@@ -31,8 +33,8 @@ Check the file before running it. The version and SHA-256 below are the ones pin
 `packages/windows/system/atlas.json`; change both together when you bump Atlas.
 
 ```powershell
-$url  = "https://github.com/Atlas-OS/Atlas/releases/download/0.6.1/AtlasManager.exe"
-$sha  = "578ce1628fe311b4d953f10837586c7f98d7046a75b19d30959a0692af1cf94f"
+$url  = "https://github.com/Atlas-OS/Atlas/releases/download/0.6.2/AtlasManager.exe"
+$sha  = "26c1152dafaa5e500fbfc27f0e4305c4ad94c46ab0d847dfb6cb72b9fef35d81"
 $exe  = "$env:USERPROFILE\Downloads\AtlasManager.exe"
 Invoke-WebRequest $url -OutFile $exe
 if ((Get-FileHash $exe -Algorithm SHA256).Hash -ne $sha.ToUpper()) { Remove-Item $exe; throw "SHA-256 mismatch" }

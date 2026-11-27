@@ -141,7 +141,7 @@ func TestAtlasPage(t *testing.T) {
 
 	a := newAppFor("windows")
 	tt := ui.NewTester(a.view, 1000, 900)
-	if !tt.HasText("Download and open Atlas Manager 0.6.1") && !tt.HasText("Download and open Atlas Manager "+mustPin(t).Version) {
+	if !tt.HasText("Download and open Atlas Manager " + mustPin(t).Version) {
 		t.Fatalf("Atlas page: %q", tt.Texts())
 	}
 	for state, want := range map[atlasStatus]string{
