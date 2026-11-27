@@ -466,13 +466,6 @@
             "Source": "main"
         },
         {
-            "Name": "opencode2-beta",
-            "Updated": "2026-09-08T08:27:23.9963763+02:00",
-            "Info": "",
-            "Version": "0.0.0-beta-19271",
-            "Source": "versions"
-        },
-        {
             "Name": "oxipng",
             "Updated": "2026-09-03T09:35:17.3097597+02:00",
             "Info": "",
@@ -695,12 +688,6 @@
             "Source": "https://github.com/ScoopInstaller/Extras",
             "Updated": "2026-09-08T06:33:36+02:00",
             "Manifests": 2381
-        },
-        {
-            "Name": "versions",
-            "Source": "https://github.com/ScoopInstaller/Versions",
-            "Updated": "2026-09-08T06:51:15+02:00",
-            "Manifests": 602
         },
         {
             "Name": "nerd-fonts",
