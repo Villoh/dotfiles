@@ -170,8 +170,9 @@ The mise executable itself must be updated through NixOS or its package manager.
 
 Linux user CLI configuration lives in `dot_config/mise/config.toml`, shared
 with Windows. Linux-only tools live in `conf.d/linux.toml` (ignored on
-Windows); Windows-only tools live in `conf.d/windows.toml` (ignored on Linux). `npm:` tools use the Nix-provided standalone aube CLI
-(`npm.package_manager = "aube_cli"`); Python tools use uv through `pypi:`.
+Windows); Windows-only tools live in `conf.d/windows.toml` (ignored on Linux). `npm:` tools use mise's embedded aube
+(`npm.package_manager = "aube"`), the only installer that verifies provenance, which `paranoid`
+requires; Python tools use uv through `pypi:`.
 Nix still provides Node, uv, and pnpm. Bun is declared in mise for tools such
 as ocx. Zsh activates mise, and the login profile exposes shims to desktop apps;
 pnpm's former global bin directory is no longer added to PATH.
@@ -201,7 +202,7 @@ from package names. Root pins are not transitive dependency lockfiles.
 
 Install scripts are allowed only for selected native components. CCS and ASM
 root hooks remain disabled to avoid modifying user configuration during
-installation. Reviewed low-download tools have individual `aube_args`
+installation. Reviewed low-download tools have individual `allow_low_downloads`
 exceptions; no global download-threshold bypass is configured. Preserve these
 options in versioned mise configuration. The retired pnpm inventory must not be
 used to reinstall the migrated tools as duplicate globals.

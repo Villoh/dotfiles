@@ -4,9 +4,12 @@ lockfile = true
 paranoid = true
 locked = true
 
-# The packaged CLI supports scoped exceptions for reviewed low-download tools.
+# mise's embedded aube installs the npm: tools. It is the only installer that verifies their
+# provenance, which `paranoid` requires: with aube_cli (the standalone executable) every npm:
+# install fails. Reviewed low-download tools carry allow_low_downloads (embedded aube ignores
+# aube_cli's aube_args).
 [settings.npm]
-package_manager = "aube_cli"
+package_manager = "aube"
 
 [settings.pypi]
 uvx = true
@@ -25,13 +28,13 @@ oh-my-pi = { version = "latest", rename_exe = "omp", os = ["linux"] }
 "npm:happy" = { version = "latest", allow_builds = ["happy"] }
 "npm:@opencode/cli" = { version = "latest", allow_builds = ["@opencode/cli"], os = ["linux"] }
 "npm:@earendil-works/pi-server" = "latest"
-"npm:@gsd-build/sdk" = { version = "latest", aube_args = "--allow-low-downloads" }
+"npm:@gsd-build/sdk" = { version = "latest", allow_low_downloads = true }
 "npm:@kaitranntt/ccs" = "latest"
 "npm:@playwright/cli" = "latest"
-"npm:agent-skill-manager" = { version = "latest", aube_args = "--allow-low-downloads" }
+"npm:agent-skill-manager" = { version = "latest", allow_low_downloads = true }
 "npm:cf" = { version = "latest", allow_builds = ["workerd"] }
-"npm:gitquarry" = { version = "latest", aube_args = "--allow-low-downloads", allow_builds = ["gitquarry"] }
-"npm:ocx" = { version = "latest", aube_args = "--allow-low-downloads" }
+"npm:gitquarry" = { version = "latest", allow_low_downloads = true, allow_builds = ["gitquarry"] }
+"npm:ocx" = { version = "latest", allow_low_downloads = true }
 "npm:openwiki" = { version = "latest", allow_builds = ["better-sqlite3"] }
 "npm:tokscale" = "latest"
 vercel = { version = "latest", allow_builds = ["esbuild"], trust_policy_excludes = [] }
@@ -51,9 +54,8 @@ git-filter-repo = { version = "latest", os = ["linux"] }
 # -- Windows only ---------------------------------------------------------------
 # os = ["windows"] keeps them off Linux, while `mise lock` on Linux still locks them
 # for Windows: one mise.lock serves both systems.
-# Package manager for the npm: backend (settings.npm.package_manager).
-# Linux gets it from NixOS.
-aube = { version = "latest", os = ["windows"] }
+# Runs the pypi: tools (settings.pypi.uvx); without it they fail asking for pipx. Linux gets it from NixOS.
+uv = { version = "latest", os = ["windows"] }
 # Former `bin` inventory (GitHub release binaries).
 "github:cakama3a/Polling" = { version = "latest", os = ["windows"] }
 "github:vertopolkaLF/silence" = { version = "latest", os = ["windows"] }

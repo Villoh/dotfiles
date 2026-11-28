@@ -91,7 +91,7 @@ restored or updated by these scripts. Their old Windows inventories
 Windows reads two chezmoi-managed files:
 
 - `dot_config/mise/config.toml` — every tool for both systems; `os = ["windows"]`
-  (aube, GitHub release apps, cargo tools) or `os = ["linux"]` gates the
+  (uv, GitHub release apps, cargo tools) or `os = ["linux"]` gates the
   platform-specific ones. `mise lock` on Linux also locks the Windows-only
   tools for Windows, so the one `mise.lock` covers both (`locked = true`).
 
