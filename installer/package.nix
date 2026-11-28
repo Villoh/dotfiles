@@ -40,13 +40,14 @@ buildGoModule {
   pname = "dotfiles-installer";
   version = "0-unstable";
 
-  # The tests read the real .chezmoi.toml.tmpl, package lists, mise config and install.sh's
-  # pins next to installer/.
+  # The tests read the real .chezmoi.toml.tmpl, package lists, mise config, install.sh's
+  # pins and the chezmoi scripts next to installer/.
   src = lib.fileset.toSource {
     root = ../.;
     fileset = lib.fileset.unions [
       ./.
       ../.chezmoi.toml.tmpl
+      ../.chezmoiscripts
       ../packages/windows
       ../install.sh
       ../dot_config/mise/config.toml
