@@ -57,7 +57,7 @@ func TestMiseTools(t *testing.T) {
 		t.Fatal(err)
 	}
 	full, minimal := r.Mise["full"], r.Mise["minimal"]
-	for _, tool := range []string{"github:ViceVerse-cz/Serein", "aube", "bun", "npm:tokscale"} {
+	for _, tool := range []string{"github:ViceVerse-cz/Serein", "uv", "bun", "npm:tokscale"} {
 		if !slices.Contains(full, tool) {
 			t.Errorf("mise full lacks %s: %v", tool, full)
 		}
@@ -67,7 +67,7 @@ func TestMiseTools(t *testing.T) {
 			t.Errorf("mise full has the Linux-only %s", tool)
 		}
 	}
-	if !slices.Contains(minimal, "github:ViceVerse-cz/Serein") || slices.Contains(minimal, "aube") || len(minimal) >= len(full) {
+	if !slices.Contains(minimal, "github:ViceVerse-cz/Serein") || slices.Contains(minimal, "uv") || len(minimal) >= len(full) {
 		t.Errorf("mise minimal %v", minimal)
 	}
 }
