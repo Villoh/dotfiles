@@ -117,7 +117,7 @@ if (Test-Path "$pkgDir\system\startup.json") {
         }
 
         TryRun "scheduler: $($entry.name)" {
-            $action    = New-ScheduledTaskAction -Execute "`"$expanded`"" -Argument ($entry.args ?? "")
+            $action    = New-ScheduledTaskAction -Execute "`"$expanded`"" -Argument $(if ($entry.args) { $entry.args } else { "" })
             $trigger   = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
             $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel $runLevel
             $settings  = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero)
