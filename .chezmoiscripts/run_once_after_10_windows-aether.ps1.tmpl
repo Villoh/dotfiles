@@ -15,6 +15,7 @@
 # The version and SHA-256 are pinned in packages/windows/system/aether.json; bump both together.
 $pkgDir = ("{{ .chezmoi.sourceDir }}").Replace('/', '\') + "\packages\windows"
 $aether = Get-Content "$pkgDir\system\aether.json" | ConvertFrom-Json
+# installedExe is where AetherSetup puts it by default: Programs\Aether Shell (its AppName), not Programs\Aether.
 $aetherExe = [System.Environment]::ExpandEnvironmentVariables($aether.installedExe)
 
 Write-Host ""
