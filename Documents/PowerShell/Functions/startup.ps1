@@ -173,8 +173,11 @@ function _Set-StartupEntryState {
             $startupFolder = [System.Environment]::GetFolderPath("Startup")
             $lnk           = "$startupFolder\$($Entry.Name).lnk"
             if ($Enable) {
-                $expanded = [System.Environment]::ExpandEnvironmentVariables($Entry.Raw.path)
-                if (-not (Test-Path $expanded)) { Write-Warning "$($Entry.Name): exe not found at $expanded"; return }
+                $expanded = if ($Entry.Raw.tool) {
+                    $dir = (& mise where $Entry.Raw.tool 2>$null | Select-Object -First 1)
+                    if ($dir) { Get-ChildItem $dir -Recurse -Filter $Entry.Raw.exe -File -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName }
+                } else { [System.Environment]::ExpandEnvironmentVariables($Entry.Raw.path) }
+                if (-not $expanded -or -not (Test-Path $expanded)) { Write-Warning "$($Entry.Name): exe not found at $expanded"; return }
                 $shell    = New-Object -ComObject WScript.Shell
                 $shortcut = $shell.CreateShortcut($lnk)
                 $shortcut.TargetPath = $expanded

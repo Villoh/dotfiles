@@ -1,6 +1,7 @@
 {{ if and (eq .chezmoi.os "windows") .enable_startup -}}
 # run_onchange_ triggers when any of these change:
 # startup.json {{ include "packages/windows/system/startup.json" | sha256sum }}
+# mise.lock    {{ include "dot_config/mise/mise.lock" | sha256sum }} (a version bump moves the install dir of `tool` entries)
 $chezmoisrc = ("{{ .chezmoi.sourceDir }}").Replace('/', '\')
 $pkgDir     = "$chezmoisrc\packages\windows"
 $ok = 0; $skip = 0; $fail = 0
@@ -44,9 +45,16 @@ if (Test-Path "$pkgDir\system\startup.json") {
     # -- Startup folder shortcuts --------------------------------------------------
     $startupFolder = [System.Environment]::GetFolderPath("Startup")
     foreach ($entry in $startup.folder) {
-        $expanded = [System.Environment]::ExpandEnvironmentVariables($entry.path)
+        # `tool` + `exe` entries are portable mise apps: the install dir moves with each version.
+        $expanded = if ($entry.tool) {
+            $dir = (& mise where $entry.tool 2>$null | Select-Object -First 1)
+            if ($dir -and (Test-Path $dir)) {
+                Get-ChildItem $dir -Recurse -Filter $entry.exe -File -ErrorAction SilentlyContinue |
+                    Select-Object -First 1 -ExpandProperty FullName
+            }
+        } else { [System.Environment]::ExpandEnvironmentVariables($entry.path) }
 
-        if (-not (Test-Path $expanded)) {
+        if (-not $expanded -or -not (Test-Path $expanded)) {
             LogSkip "folder: $($entry.name) (exe not found)"
             continue
         }

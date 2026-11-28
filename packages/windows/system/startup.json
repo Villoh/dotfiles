@@ -4,10 +4,6 @@
       "name": "AltSnap",
       "path": "%APPDATA%\\AltSnap\\AltSnap.exe",
       "args": "-hide"
-    },
-    {
-      "name": "Handy",
-      "path": "%LOCALAPPDATA%\\Handy\\handy.exe"
     }
   ],
   "msix": [],
@@ -24,6 +20,9 @@
       "path": "%ProgramFiles%\\GnuPG\\bin\\gpg-connect-agent.exe",
       "args": "/bye",
       "windowStyle": 7
-    }
+    },
+    { "name": "Hex", "tool": "github:anomalyco/hex", "exe": "hex.exe" },
+    { "name": "Yapfast", "tool": "github:yapfast/yapfast", "exe": "yapfast.exe" },
+    { "name": "ZapFast", "tool": "github:crmne/zapfast", "exe": "zapfast.exe" }
   ]
 }
