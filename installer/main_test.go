@@ -581,3 +581,26 @@ func TestWindowIcon(t *testing.T) {
 		t.Errorf("corner alpha %d: the rounded corners are not transparent", a)
 	}
 }
+
+// chezmoi runs the .chezmoiscripts of a new Windows with Windows PowerShell 5.1:
+// pwsh, which they install, does not exist yet. PowerShell 7's null-coalescing
+// operator is a parse error there, and it stops the whole `chezmoi apply`.
+func TestChezmoiScriptsParseInWindowsPowerShell(t *testing.T) {
+	files, err := filepath.Glob("../.chezmoiscripts/*.ps1*")
+	if err != nil || len(files) == 0 {
+		t.Fatalf("no .chezmoiscripts found: %v", err)
+	}
+	for _, f := range files {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for i, line := range strings.Split(string(b), "\n") {
+			code, _, _ := strings.Cut(line, "#")
+			if strings.Contains(code, "??") || strings.Contains(code, "?.") {
+				t.Errorf("%s:%d uses PowerShell 7 syntax (?? or ?.), which Windows PowerShell 5.1 cannot parse: %s",
+					filepath.Base(f), i+1, strings.TrimSpace(line))
+			}
+		}
+	}
+}
