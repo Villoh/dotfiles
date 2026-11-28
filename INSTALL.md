@@ -302,9 +302,9 @@ updates the system and its packages declaratively.
 
 | Script | What it does |
 |--------|--------------|
-| `run_once_after_06_windows-aether` | Downloads `AetherSetup.exe` at the version and SHA-256 pinned in `packages/windows/system/aether.json` and runs its setup window (it has no silent mode). Runs after the files are applied so your `hyprland.conf` exists before AetherWM's build could write a starter one. Tick the AetherWM box in that window to get tiling: it is opt-in, built from source and personal-use only |
 | `run_once_after_07_windows-setup` | Starts the apps in `startup.json` once (`enable_startup`) |
 | `run_onchange_after_08_windows-mise-integration` | Runs `mise install` (minus `MISE_DISABLE_TOOLS`), adds the mise shims to the user `PATH` and creates Start Menu shortcuts for the portable mise apps in `packages/windows/system/shortcuts.json` (re-runs when `mise.lock` or `config.toml` changes) |
+| `run_once_after_10_windows-aether` | Downloads `AetherSetup.exe` at the version and SHA-256 pinned in `packages/windows/system/aether.json` and runs its setup window (it has no silent mode). Runs after the files are applied so your `hyprland.conf` exists before AetherWM's build could write a starter one. Tick the AetherWM box in that window to get tiling: it is opt-in, built from source and personal-use only. It is the last script, so it never blocks mise or the startup apps. In Aether 2.2.0 the optional AetherWM build fails with `gnu-as\as.exe is missing` (the release lacks that folder): Aether installs, the tiling does not |
 
 ---
 

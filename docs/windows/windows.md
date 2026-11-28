@@ -119,9 +119,9 @@ installs and the `uv` calls mise makes for `pypi:` tools.
 | `.chezmoiscripts/run_onchange_02_windows-junctions.ps1.tmpl` | Creates the junctions in `junctions.json` |
 | `.chezmoiscripts/run_onchange_03_windows-startup.ps1.tmpl` | Registers the entries in `startup.json` |
 | `.chezmoiscripts/run_onchange_04_windows-nilesoft.ps1.tmpl` | Nilesoft Shell context menu imports |
-| `.chezmoiscripts/run_once_after_06_windows-aether.ps1.tmpl` | Installs Aether (pinned in `packages/windows/system/aether.json`) after the files are applied |
 | `.chezmoiscripts/run_once_after_07_windows-setup.ps1.tmpl` | Starts the `startup.json` apps once |
 | `.chezmoiscripts/run_onchange_after_08_windows-mise-integration.ps1.tmpl` | Adds the mise shims to the user `PATH` and creates Start Menu shortcuts for the portable mise apps in `packages/windows/system/shortcuts.json` (re-runs when `mise.lock` changes) |
+| `.chezmoiscripts/run_once_after_10_windows-aether.ps1.tmpl` | Installs Aether (pinned in `packages/windows/system/aether.json`) last, after the files are applied (it ends in a window of its own, so nothing waits behind it) |
 
 ## Desktop shell
 

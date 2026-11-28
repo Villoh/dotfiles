@@ -84,7 +84,7 @@ above.
 
 2. Continue with the [common bootstrap](bootstrap.md) and [`INSTALL.md`](../../INSTALL.md): import the GPG key,
    `chezmoi init`, `chezmoi diff`, `chezmoi apply`. The Windows desktop is Aether, installed by
-   `run_once_after_06_windows-aether`.
+   `run_once_after_10_windows-aether`.
 3. If a feature of the shell is missing (media controls, Wi-Fi, Bluetooth, volume, brightness), open Atlas Manager
    again, choose **Update to Atlas** and **Choose again**, and bring back only the setting you need. Which Atlas
    choices Aether depends on has not been checked yet.
