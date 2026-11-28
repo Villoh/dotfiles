@@ -84,10 +84,11 @@ start the installer detached, leaving the terminal free.
 irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
 ```
 
-[`install-gui.ps1`](install-gui.ps1) relaunches itself as Administrator, downloads
-`dotfiles-installer.exe` from the latest `installer-v*` release, checks its
-SHA-256 against the release's `SHA256SUMS` and starts it, leaving the terminal
-free. The installer GUI
+[`install-gui.ps1`](install-gui.ps1) downloads `dotfiles-installer.exe` from the
+latest `installer-v*` release and checks its SHA-256 against the release's
+`SHA256SUMS`, in your own terminal, not elevated. Then it starts only the
+installer as Administrator (one UAC prompt, no second terminal), leaving the
+terminal free. The installer GUI
 ([`installer/`](installer)) is a native Material 3 app written in Go with
 [MyGo](https://github.com/egoist/mygo); its colors follow the Windows accent
 color and light/dark mode. It covers the same flow (on Linux, Prerequisites gets

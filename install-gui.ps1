@@ -3,10 +3,11 @@
 #
 #   irm https://raw.githubusercontent.com/Villoh/dotfiles/main/install-gui.ps1 | iex
 #
-# Relaunches itself as Administrator (winget and run_once_00_windows-install
-# expect it), downloads the installer GUI from the latest GitHub release,
-# checks its SHA-256 against the release's SHA256SUMS, and starts it without
-# waiting: the terminal is free once the installer window opens.
+# Downloads the installer GUI from the latest GitHub release and checks its
+# SHA-256 against the release's SHA256SUMS, all in this terminal, not elevated.
+# Only the installer itself is started as Administrator (winget and
+# run_once_00_windows-install expect it): one UAC prompt, no second terminal.
+# It starts without waiting: the terminal is free once the installer opens.
 # Runs in Windows PowerShell 5.1 and PowerShell 7. Never `exit`: under iex it
 # would close the user's terminal.
 
@@ -16,18 +17,8 @@
     [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
     $repo    = 'Villoh/dotfiles'
-    $self    = "https://raw.githubusercontent.com/$repo/main/install-gui.ps1"
     $base    = "https://github.com/$repo/releases/latest/download"
     $exeName = 'dotfiles-installer.exe'
-
-    $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
-        [Security.Principal.WindowsBuiltInRole]::Administrator)
-    if (-not $isAdmin) {
-        Write-Host 'Relaunching as Administrator (accept the UAC prompt)...' -ForegroundColor Cyan
-        Start-Process powershell.exe -Verb RunAs -ArgumentList @(
-            '-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', "irm '$self' | iex")
-        return
-    }
 
     $dir = Join-Path $env:TEMP 'dotfiles-installer'
     New-Item -ItemType Directory -Force -Path $dir | Out-Null
@@ -46,7 +37,12 @@
     $actual   = (Get-FileHash $exe -Algorithm SHA256).Hash
     if ($actual -ne $expected) { Remove-Item $exe; throw "SHA-256 mismatch for ${exeName}: expected $expected, got $actual" }
 
-    Write-Host 'Checksum OK. Starting the installer...' -ForegroundColor Green
-    Start-Process $exe
+    Write-Host 'Checksum OK. Starting the installer (accept the UAC prompt)...' -ForegroundColor Green
+    try {
+        Start-Process $exe -Verb RunAs
+    } catch {
+        # Declining the UAC prompt lands here.
+        throw "The installer was not started: it needs Administrator rights. $($_.Exception.Message)"
+    }
     Write-Host 'The installer runs in its own window; this terminal is free.' -ForegroundColor Green
 }
