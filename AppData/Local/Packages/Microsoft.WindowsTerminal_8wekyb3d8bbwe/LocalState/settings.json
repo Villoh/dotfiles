@@ -272,7 +272,7 @@
             },
             {
                 "colorScheme": "Kanagawa Dragon",
-                "commandline": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\"",
+                "commandline": "pwsh.exe",
                 "elevate": true,
                 "guid": "{e855660d-7a78-4616-b7a4-426dc6e48698}",
                 "hidden": false,
