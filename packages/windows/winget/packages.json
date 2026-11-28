@@ -5,9 +5,6 @@
     {
       "Packages": [
         {
-          "PackageIdentifier": "ObinsKit.ObinsKit"
-        },
-        {
           "PackageIdentifier": "NexusMods.Vortex"
         },
         {
